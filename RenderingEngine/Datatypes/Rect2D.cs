@@ -25,6 +25,18 @@ namespace RenderingEngine.Datatypes
         public float Top { get { return Y0 < Y1 ? Y1 : Y0; } }
 
 
+        public float SmallerDimension {
+            get {
+                return MathF.Min(Width, Height);
+            }
+        }
+
+        public float LargerDimension {
+            get {
+                return MathF.Max(Width, Height);
+            }
+        }
+
         public float Width {
             get {
                 return Right - Left;

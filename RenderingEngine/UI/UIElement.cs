@@ -117,7 +117,7 @@ namespace RenderingEngine.UI
 
         protected bool IsMouseOver(GraphicsWindow window)
         {
-            return Intersections.IsInside(window.MouseX, window.Height - window.MouseY, _rect);
+            return Intersections.IsInside(window.MouseX, window.MouseY, _rect);
         }
     }
 }

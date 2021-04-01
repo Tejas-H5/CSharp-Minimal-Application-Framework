@@ -12,13 +12,13 @@ namespace RenderingEngine
         {
             EntryPoint[] tests =
             {
+                new UITest(),
                 new GeometryAndTextTest(),
                 new Benchmark(5),
                 new TextureTest(),
                 new ArcTest(),
                 new TextTest(),
                 new TriangleTest(),
-                new UITest()
             };
 
 

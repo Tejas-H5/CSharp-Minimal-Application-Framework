@@ -19,20 +19,21 @@ namespace RenderingEngine.Logic
     public class GraphicsWindow : GameWindow
     {
         EntryPoint _program;
-
         RenderingContext _ctx;
+        MouseInputManager _mouseInputManager;
+
+        public float Height { get { return Size.Y; } }
+        public float Width { get { return Size.X; } }
+        public Rect2D Rect { get { return new Rect2D(0, 0, Width, Height); } }
+        public float MouseX { get { return MousePosition.X; } }
+        public float MouseY { get { return Height - MousePosition.Y; }}
 
         double time = 0;
         int renderFrames = 0;
         int updateFrames = 0;
         float _fps;
 
-        public float CurrentFPS {
-            get {
-                return _fps;
-            }
-        }
-
+        public float CurrentFPS { get { return _fps; } }
 
         public GraphicsWindow(EntryPoint program)
             : base(GameWindowSettings.Default, new NativeWindowSettings {
@@ -42,6 +43,7 @@ namespace RenderingEngine.Logic
             _program = program;
 
             _ctx = new RenderingContext(Context);
+            _mouseInputManager = new MouseInputManager(this);
         }
 
 
@@ -54,6 +56,9 @@ namespace RenderingEngine.Logic
             base.OnLoad();
         }
 
+        public bool[] MouseButtonStates { get { return _mouseInputManager.MouseButtonStates; } }
+        public bool[] PrevMouseButtonStates { get { return _mouseInputManager.PrevMouseButtonStates; } }
+
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
             if (KeyboardState.IsKeyDown(Keys.Escape))
@@ -62,6 +67,8 @@ namespace RenderingEngine.Logic
             }
 
             TrackFPS(args);
+
+            _mouseInputManager.Update();
 
             _program.Update(args.Time);
 
@@ -83,34 +90,6 @@ namespace RenderingEngine.Logic
                 time = 0;
                 renderFrames = 0;
                 updateFrames = 0;
-            }
-        }
-
-        public float Height {
-            get {
-                return Size.Y;
-            }
-        }
-        public float Width {
-            get {
-                return Size.X;
-            }
-        }
-
-        public Rect2D Rect {
-            get {
-                return new Rect2D(0, 0, Width, Height);
-            }
-        }
-
-        public float MouseX { 
-            get {
-                return MousePosition.X;
-            }
-        }
-        public float MouseY {
-            get {
-                return Height - MousePosition.Y;
             }
         }
 
@@ -140,50 +119,35 @@ namespace RenderingEngine.Logic
             base.OnClosing(e);
         }
 
+        // -------- mouseInputManager wrappers
 
-        /*
-        protected override void OnMouseDown(MouseButtonEventArgs e)
+        public bool MouseClicked(MouseButton b)
         {
-            base.OnMouseDown(e);
-
-            _program.OnMouseClick(this);
+            return _mouseInputManager.MouseClicked(b);
         }
 
-        protected override void OnMouseUp(MouseButtonEventArgs e)
+        public bool MouseReleased(MouseButton b)
         {
-            base.OnMouseUp(e);
-
-            _program.OnMouseRelease(this);
+            return _mouseInputManager.MouseReleased(b);
         }
 
-        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        public bool MouseHeld(MouseButton b)
         {
-            base.OnMouseWheel(e);
-
-            //TODO: Test if this is the correct offset
-            _program.OnMouseWheel(this, e.OffsetY);
+            return _mouseInputManager.MouseHeld(b);
         }
 
-        protected override void OnMouseMove(MouseMoveEventArgs e)
+        public void StartMouseDrag(float x, float y)
         {
-            base.OnMouseMove(e);
-
-            _program.OnMouseMove(this);
+            _mouseInputManager.StartDrag(x, y);
         }
 
-        protected override void OnKeyDown(KeyboardKeyEventArgs e)
-        {
-            base.OnKeyDown(e);
-
-            _program.OnKeyPress(this);
-        }
-
-        protected override void OnKeyUp(KeyboardKeyEventArgs e)
-        {
-            base.OnKeyUp(e);
-
-            _program.OnKeyRelease(this);
-        }
-        */
+        public bool AnyClicked { get { return _mouseInputManager.AnyClicked; } }
+        public bool IsMouseDragging { get { return _mouseInputManager.IsDragging; } }
+        public bool WasMouseDragging { get { return _mouseInputManager.WasDragging; } }
+        public float DragStartX { get { return _mouseInputManager.DragStartX; } }
+        public float DragStartY { get { return _mouseInputManager.DragStartY; } }
+        public float DragDeltaX { get { return _mouseInputManager.DragDeltaX; } }
+        public float DragDeltaY { get { return _mouseInputManager.DragDeltaY; } }
+        public float DragDisplacement { get { return _mouseInputManager.DragDisplacement; } }
     }
 }

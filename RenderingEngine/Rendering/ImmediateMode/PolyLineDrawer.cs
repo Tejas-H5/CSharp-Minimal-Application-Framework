@@ -106,13 +106,11 @@ namespace RenderingEngine.Rendering.ImmediateMode
         {
             float dirX = x - _lastX;
             float dirY = y - _lastY;
-            float mag = MathF.Sqrt(dirX * dirX + dirY * dirY);
-
-            float perpX = -_thickness * dirY / mag;
-            float perpY = _thickness * dirX / mag;
 
             AppendToPolyLine(x, y);
-            ExtendLineSegment(perpX, perpY);
+            AppendToPolyLine(x + dirX, y+dirY);
+            _lastX = x;
+            _lastY = y;
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
             _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle + MathF.PI);

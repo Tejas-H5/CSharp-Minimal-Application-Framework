@@ -12,6 +12,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
         TriangleDrawer _triangleDrawer;
         QuadDrawer _quadDrawer;
         NGonDrawer _ngonDrawer;
+        PolyLineDrawer _polyLineDrawer;
 
         ArcDrawer _arcDrawer;
         LineDrawer _lineDrawer;
@@ -20,11 +21,16 @@ namespace RenderingEngine.Rendering.ImmediateMode
         public GeometryDrawer(IGeometryOutput outputStream)
         {
             _outputStream = outputStream;
+
             _triangleDrawer = new TriangleDrawer(_outputStream);
             _quadDrawer = new QuadDrawer(_outputStream);
             _ngonDrawer = new NGonDrawer(_outputStream);
+
             _arcDrawer = new ArcDrawer(_ngonDrawer, circleEdgeLength: 5, maxCircleEdgeCount: 32);
+
             _lineDrawer = new LineDrawer(_quadDrawer, _arcDrawer);
+
+            _polyLineDrawer = new PolyLineDrawer(_lineDrawer, _outputStream);
         }
 
         public void AppendTriangle(Vertex v1, Vertex v2, Vertex v3)
@@ -67,6 +73,21 @@ namespace RenderingEngine.Rendering.ImmediateMode
         public void DrawLine(float x0, float y0, float x1, float y1, float thickness, CapType cap)
         {
             _lineDrawer.DrawLine(x0, y0, x1, y1, thickness, cap);
+        }
+
+        public void BeginPolyLine(float x0, float y0, float thickness, CapType cap)
+        {
+            _polyLineDrawer.BeginPolyLine(x0, y0, thickness, cap);
+        }
+
+        public void AppendToPolyLine(float x0, float y0)
+        {
+            _polyLineDrawer.AppendToPolyLine(x0, y0);
+        }
+
+        public void EndPolyLine(float x0, float y0)
+        {
+            _polyLineDrawer.EndPolyLine(x0, y0);
         }
 
         public void DrawFilledCircle(float x0, float y0, float r, int edges)

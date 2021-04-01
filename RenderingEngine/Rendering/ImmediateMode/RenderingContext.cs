@@ -233,6 +233,25 @@ namespace RenderingEngine.Rendering.ImmediateMode
             _geometryDrawer.DrawLine(x0, y0, x1, y1, thickness, cap);
         }
 
+        public void BeginPolyLine(float x0, float y0, float thickness, CapType cap)
+        {
+            StopUsingTextTexture();
+            _geometryDrawer.BeginPolyLine(x0, y0, thickness, cap);
+        }
+
+        public void AppendToPolyLine(float x0, float y0)
+        {
+            StopUsingTextTexture();
+            _geometryDrawer.AppendToPolyLine(x0, y0);
+        }
+
+        public void EndPolyLine(float x0, float y0)
+        {
+            StopUsingTextTexture();
+            _geometryDrawer.EndPolyLine(x0, y0);
+        }
+
+
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 

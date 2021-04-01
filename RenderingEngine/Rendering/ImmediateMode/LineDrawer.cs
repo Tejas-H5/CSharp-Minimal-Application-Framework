@@ -41,12 +41,19 @@ namespace RenderingEngine.Rendering.ImmediateMode
                 x1 + perpX, y1 + perpY
                 );
 
+
+            float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
+            DrawCap(x0, y0, thickness, cap, startAngle);
+            DrawCap(x1, y1, thickness, cap, startAngle + MathF.PI);
+        }
+
+        public void DrawCap(float x0, float y0, float radius, CapType cap, float startAngle)
+        {
             switch (cap)
             {
                 case CapType.Circle:
                     {
-                        DrawCircleCaps(x0, y0, x1, y1, thickness, dirX, dirY);
-
+                        DrawCircleCap(x0, y0, radius, startAngle);
                         break;
                     }
                 default:
@@ -54,15 +61,9 @@ namespace RenderingEngine.Rendering.ImmediateMode
             }
         }
 
-
-        private void DrawCircleCaps(float x0, float y0, float x1, float y1, float thickness, float dirX, float dirY)
+        public void DrawCircleCap(float x0, float y0, float thickness, float angle)
         {
-            float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
-            _arcDrawer.DrawFilledArc(x0, y0, thickness, startAngle, startAngle + MathF.PI);
-
-            startAngle += MathF.PI;
-            _arcDrawer.DrawFilledArc(x1, y1, thickness, startAngle, startAngle + MathF.PI);
+            _arcDrawer.DrawFilledArc(x0, y0, thickness, angle, angle + MathF.PI);
         }
-
     }
 }

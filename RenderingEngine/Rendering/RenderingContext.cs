@@ -8,9 +8,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using RenderingEngine.Datatypes;
+using RenderingEngine.Rendering.ImmediateMode;
 
-namespace RenderingEngine.Rendering.ImmediateMode
+namespace RenderingEngine.Rendering
 {
+    //TODO: Extend this to draw meshes and other retained geometry
     public class RenderingContext : IDisposable
     {
         //Here solely for the SwapBuffers function
@@ -104,10 +106,11 @@ namespace RenderingEngine.Rendering.ImmediateMode
             if (_textureManager.CurrentTexture() == texture)
                 return;
 
-            if(!_drawingText)
+            if (!_drawingText)
             {
                 _previousNonTextTexture = _textureManager.CurrentTexture();
-            } else
+            }
+            else
             {
                 if (!_textDrawingCodeCalledSetTexture)
                 {

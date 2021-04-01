@@ -1,5 +1,5 @@
 ﻿using OpenTK.Windowing.Common;
-using RenderingEngine.Rendering.ImmediateMode;
+using RenderingEngine.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -1,5 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using RenderingEngine.Rendering.ImmediateMode;
 using RenderingEngine.UI;
 using RenderingEngine.UI.BasicUI;
 using RenderingEngine.Logic;
@@ -7,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using RenderingEngine.Datatypes;
+using RenderingEngine.Rendering;
 
 namespace RenderingEngine.VisualTests
 {

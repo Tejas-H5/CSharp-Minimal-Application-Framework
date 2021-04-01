@@ -9,10 +9,10 @@ using OpenTK.Windowing.Common;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using RenderingEngine.UI;
-using RenderingEngine.Rendering.ImmediateMode;
 using System.ComponentModel;
 using RenderingEngine.Datatypes;
 using System.Drawing;
+using RenderingEngine.Rendering;
 
 namespace RenderingEngine.Logic
 {

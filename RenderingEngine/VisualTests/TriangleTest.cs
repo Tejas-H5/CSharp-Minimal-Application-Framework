@@ -3,6 +3,7 @@ using RenderingEngine.Logic;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using RenderingEngine.Rendering;
 
 namespace RenderingEngine.VisualTests
 {

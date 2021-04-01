@@ -1,6 +1,5 @@
 ﻿using OpenTK.Mathematics;
 using RenderingEngine.Rendering;
-using RenderingEngine.Rendering.ImmediateMode;
 using RenderingEngine.Logic;
 using System;
 using System.Collections.Generic;

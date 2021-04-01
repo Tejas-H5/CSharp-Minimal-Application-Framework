@@ -22,6 +22,18 @@ namespace RenderingEngine.Logic
 
         RenderingContext _ctx;
 
+        double time = 0;
+        int renderFrames = 0;
+        int updateFrames = 0;
+        float _fps;
+
+        public float CurrentFPS {
+            get {
+                return _fps;
+            }
+        }
+
+
         public GraphicsWindow(EntryPoint program)
             : base(GameWindowSettings.Default, new NativeWindowSettings {
                 StartVisible = false
@@ -41,8 +53,6 @@ namespace RenderingEngine.Logic
 
             base.OnLoad();
         }
-
-        double time = 0;
 
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
@@ -66,16 +76,15 @@ namespace RenderingEngine.Logic
 
             if (time >= 1)
             {
-                Console.WriteLine($"Render FPS: {renderFrames / time}, Update FPS: {updateFrames / time}");
+                _fps = renderFrames / (float)time;
+
+                Console.WriteLine($"Render FPS: {_fps}, Update FPS: {updateFrames / time}");
 
                 time = 0;
                 renderFrames = 0;
                 updateFrames = 0;
             }
         }
-
-        int renderFrames = 0;
-        int updateFrames = 0;
 
         public float Height {
             get {

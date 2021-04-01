@@ -140,6 +140,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
         {
             _drawingText = true;
             _textDrawer.SetCurrentFont(name, size);
+            _textureManager.SetTexture(_textureManager.CurrentTexture());
         }
 
         public void DrawText(string text, float x, float y)

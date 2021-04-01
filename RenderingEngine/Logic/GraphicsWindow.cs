@@ -12,6 +12,7 @@ using RenderingEngine.UI;
 using RenderingEngine.Rendering.ImmediateMode;
 using System.ComponentModel;
 using RenderingEngine.Datatypes;
+using System.Drawing;
 
 namespace RenderingEngine.Logic
 {
@@ -90,6 +91,17 @@ namespace RenderingEngine.Logic
         public Rect2D Rect {
             get {
                 return new Rect2D(0, 0, Width, Height);
+            }
+        }
+
+        public float MouseX { 
+            get {
+                return MousePosition.X;
+            }
+        }
+        public float MouseY {
+            get {
+                return Height - MousePosition.Y;
             }
         }
 

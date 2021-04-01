@@ -24,6 +24,8 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         public void DrawLine(float x0, float y0, float x1, float y1, float thickness, CapType cap)
         {
+            thickness /= 2;
+
             float dirX = x1 - x0;
             float dirY = y1 - y0;
             float mag = MathF.Sqrt(dirX * dirX + dirY * dirY);

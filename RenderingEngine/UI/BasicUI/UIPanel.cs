@@ -58,22 +58,27 @@ namespace RenderingEngine.UI.BasicUI
 
         private void DrawBackgroundRect(RenderingContext ctx)
         {
+            Color4 color;
             if (_isMouseOver)
             {
                 if (_isMouseDown)
                 {
-                    ctx.SetDrawColor(ClickedColor);
+                    color = ClickedColor;
                 }
                 else
                 {
-                    ctx.SetDrawColor(HoverColor);
+                    color = HoverColor;
                 }
             }
             else
             {
-                ctx.SetDrawColor(Color);
+                color = Color;
             }
 
+            if (color.A < 0.0001f)
+                return;
+
+            ctx.SetDrawColor(color);
             ctx.DrawRect(_rect);
         }
 

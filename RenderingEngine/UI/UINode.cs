@@ -21,6 +21,8 @@ namespace RenderingEngine.UI
 
         public override void Update(double deltaTime)
         {
+            base.Update(deltaTime);
+
             for (int i = 0; i < _children.Count; i++)
             {
                 _children[i].Update(deltaTime);
@@ -49,6 +51,8 @@ namespace RenderingEngine.UI
 
         public override void Draw(double deltaTime)
         {
+            base.Draw(deltaTime);
+
             for (int i = 0; i < _children.Count; i++)
             {
                 _children[i].Draw(deltaTime);
@@ -58,6 +62,7 @@ namespace RenderingEngine.UI
         public override void Resize()
         {
             base.Resize();
+
             for (int i = 0; i < _children.Count; i++)
             {
                 _children[i].Resize();

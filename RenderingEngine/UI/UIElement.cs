@@ -25,6 +25,9 @@ namespace RenderingEngine.UI
         protected Rect2D _anchoring;
         private bool _dirty = true;
 
+        protected bool _isMouseOver;
+        protected bool _isMouseDown;
+
         public Rect2D Rect {
             get {
                 return _rect;
@@ -47,8 +50,11 @@ namespace RenderingEngine.UI
             _anchoring = anchor;
         }
 
+
         public virtual void Update(double deltaTime)
         {
+            _isMouseDown = false;
+            _isMouseOver = false;
         }
 
         public virtual void Draw(double deltaTime)
@@ -62,6 +68,16 @@ namespace RenderingEngine.UI
 
         public virtual bool ProcessEvents()
         {
+            if (IsMouseOver())
+            {
+                _isMouseOver = true;
+                if (Input.IsAnyClicked)
+                {
+                    _isMouseDown = true;
+                }
+                return true;
+            }
+
             return false;
         }
 

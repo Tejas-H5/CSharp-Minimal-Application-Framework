@@ -25,28 +25,13 @@ namespace RenderingEngine.UI.BasicUI
 
         public override void Update(double deltaTime)
         {
-            _isMouseDown = false;
-            _isMouseOver = false;
 
             base.Update(deltaTime);
         }
 
-        bool _isMouseOver;
-        bool _isMouseDown;
-
         public override bool ProcessEvents()
         {
-            if (IsMouseOver())
-            {
-                _isMouseOver = true;
-                if (Input.IsAnyClicked)
-                {
-                    _isMouseDown = true;
-                }
-                return true;
-            }
-
-            return false;
+            return base.ProcessEvents();
         }
 
         public override void Draw(double deltaTime)

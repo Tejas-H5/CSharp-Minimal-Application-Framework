@@ -45,7 +45,7 @@ namespace RenderingEngine.UI.BasicUI
             _isMouseOver = IsMouseOver(window);
 
             if (_isMouseOver)
-                _isMouseDown = window.MouseState.IsAnyButtonDown;
+                _isMouseDown = Input.IsAnyClicked;
         }
 
 

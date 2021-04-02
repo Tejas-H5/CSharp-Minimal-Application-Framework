@@ -119,8 +119,8 @@ namespace RenderingEngine.Logic
 
             _isAnyHeld = _wasAnyClicked && _anyClicked;
 
-            float x = _window.MouseX;
-            float y = _window.MouseY;
+            float x = Input.MouseX;
+            float y = Input.MouseY;
 
             if (!_wasAnyHeld && _isAnyHeld)
             {

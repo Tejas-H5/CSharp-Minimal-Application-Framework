@@ -13,6 +13,12 @@ using RenderingEngine.Rendering.ImmediateMode;
 namespace RenderingEngine.Rendering
 {
     //TODO: Extend this to draw meshes and other retained geometry
+    //Was initially called RenderingContext, and was not a static class.
+    //Instead, each class that needed to be drawn held a reference to an instance of this class
+    //and each instance was usually named _ctx 
+    //but if every single instance needs to have a reference to this in order do draw, then wouldn't it be
+    //better off as a static class?
+    //so that is what I ended up doing
     public static class CTX
     {
         //Here solely for the SwapBuffers function

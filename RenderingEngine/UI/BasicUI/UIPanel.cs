@@ -16,24 +16,13 @@ namespace RenderingEngine.UI.BasicUI
         {
             _anchoring = new Rect2D(0, 0,1, 1);
             _rectOffset = new Rect2D(0, 0, 0, 0);
+            _backgroundRect = new UIBackgroundRect(this);
         }
 
-        protected Color4 _color;
-        public Color4 Color {
-            get => _color;
-            set {
-                _color = value;
-                HoverColor = value;
-                ClickedColor = value;
-            }
-        }
+        UIBackgroundRect _backgroundRect;
 
-        public Color4 HoverColor { get; set; }
-        public Color4 ClickedColor { get; set; }
+        public UIBackgroundRect BackgroundRect { get { return _backgroundRect; } }
 
-
-        protected bool _isMouseOver;
-        protected bool _isMouseDown;
 
         public override void Update(double deltaTime)
         {
@@ -43,9 +32,6 @@ namespace RenderingEngine.UI.BasicUI
                 return;
 
             _isMouseOver = IsMouseOver();
-
-            if (_isMouseOver)
-                _isMouseDown = Input.IsAnyClicked;
         }
 
 
@@ -53,33 +39,7 @@ namespace RenderingEngine.UI.BasicUI
         {
             base.Draw(deltaTime);
 
-            DrawBackgroundRect();
-        }
-
-        private void DrawBackgroundRect()
-        {
-            Color4 color;
-            if (_isMouseOver)
-            {
-                if (_isMouseDown)
-                {
-                    color = ClickedColor;
-                }
-                else
-                {
-                    color = HoverColor;
-                }
-            }
-            else
-            {
-                color = Color;
-            }
-
-            if (color.A < 0.0001f)
-                return;
-
-            CTX.SetDrawColor(color);
-            CTX.DrawRect(_rect);
+            _backgroundRect.Draw(isMouseOver: _isMouseOver, isMouseDown: Input.IsAnyClicked);
         }
 
     }

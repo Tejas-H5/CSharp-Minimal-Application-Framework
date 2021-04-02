@@ -83,9 +83,9 @@ namespace RenderingEngine.VisualTests
         private static UIPanel GeneratePanel()
         {
             var subPanelLeft = new UIPanel();
-            subPanelLeft.Color = new Color4(0, 0, 0, 0.1f);
-            subPanelLeft.HoverColor = new Color4(1, 0, 0, 0.2f);
-            subPanelLeft.ClickedColor = new Color4(0, 0, 1, 0.2f);
+            subPanelLeft.BackgroundRect.Color = new Color4(0, 0, 0, 0.1f);
+            subPanelLeft.BackgroundRect.HoverColor = new Color4(1, 0, 0, 0.2f);
+            subPanelLeft.BackgroundRect.ClickedColor = new Color4(0, 0, 1, 0.2f);
             subPanelLeft.SetRectOffset(new Rect2D(-5, -5, -5, -5));
             return subPanelLeft;
         }

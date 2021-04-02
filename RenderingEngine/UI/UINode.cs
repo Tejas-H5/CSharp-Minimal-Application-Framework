@@ -34,6 +34,18 @@ namespace RenderingEngine.UI
             }
         }
 
+        public UIElement this[int index] {
+            get {
+                return _children[index];
+            }
+        }
+
+        public int Count {
+            get {
+                return _children.Count;
+            }
+        }
+
         internal override bool ProcessChildEvents()
         {
             bool hasProcessed = false;

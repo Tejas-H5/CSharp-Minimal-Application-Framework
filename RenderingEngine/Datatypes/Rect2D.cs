@@ -24,6 +24,8 @@ namespace RenderingEngine.Datatypes
         public float Bottom { get { return Y0 < Y1 ? Y0 : Y1; } }
         public float Top { get { return Y0 < Y1 ? Y1 : Y0; } }
 
+        public float CenterX { get { return X0 + (X1 - X0) * 0.5f; } }
+        public float CenterY { get { return Y0 + (Y1 - Y0) * 0.5f; } }
 
         public float SmallerDimension { get { return Width < Height ? Width : Height; } }
 

@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Text;
 using RenderingEngine.Datatypes;
 using RenderingEngine.Rendering.ImmediateMode;
+using Color4 = RenderingEngine.Datatypes.Color4;
 
 namespace RenderingEngine.Rendering
 {
@@ -176,6 +177,17 @@ namespace RenderingEngine.Rendering
         public static float GetCharWidth(char c)
         {
             return _textDrawer.GetCharWidth(c);
+        }
+
+        public static float GetStringWidth(string s)
+        {
+            float width = 0;
+            for(int i = 0; i < s.Length; i++)
+            {
+                width += GetCharWidth(s[i]);
+            }
+
+            return width;
         }
 
 

@@ -10,8 +10,8 @@ namespace RenderingEngine.UI
     //TODO: make UIElement actually decent
     public abstract class UIElement
     {
-        UIElement _parent = null;
-        public UIElement Parent {
+        UINode _parent = null;
+        public UINode Parent {
             get {
                 return _parent;
             }
@@ -24,15 +24,6 @@ namespace RenderingEngine.UI
         protected Rect2D _rectOffset;
         protected Rect2D _anchoring;
         private bool _dirty = true;
-
-        protected List<UIElement> _children = new List<UIElement>();
-
-
-        public void AddChild(UIElement element)
-        {
-            _children.Add(element);
-            element.Parent = this;
-        }
 
         public Rect2D Rect {
             get {
@@ -58,29 +49,16 @@ namespace RenderingEngine.UI
 
         public virtual void Update(double deltaTime)
         {
-            for (int i = 0; i < _children.Count; i++)
-            {
-                _children[i].Update(deltaTime);
-            }
         }
 
         public virtual void Draw(double deltaTime)
         {
-            for (int i = 0; i < _children.Count; i++)
-            {
-                _children[i].Draw(deltaTime);
-            }
         }
 
         public virtual void Resize()
         {
             _dirty = true;
             UpdateRect();
-
-            for (int i = 0; i < _children.Count; i++)
-            {
-                _children[i].Resize();
-            }
         }
 
         protected void UpdateRect()

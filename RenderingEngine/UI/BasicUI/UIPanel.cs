@@ -10,7 +10,7 @@ using RenderingEngine.Rendering;
 
 namespace RenderingEngine.UI.BasicUI
 {
-    public class UIPanel : UIElement
+    public class UIPanel : UINode
     {
         public UIPanel()
         {

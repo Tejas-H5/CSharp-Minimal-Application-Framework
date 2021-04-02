@@ -22,7 +22,6 @@ namespace RenderingEngine.Logic
             _instance = null;
         }
 
-
         public static Vector2i Size { get { return _instance.Size; } set { _instance.Size = value; } }
         public static string Title { get { return _instance.Title; } set { _instance.Title = value; } }
         public static float Height { get { return _instance.Height; } }

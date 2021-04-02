@@ -27,8 +27,8 @@ namespace RenderingEngine.VisualTests
         }
 
 
-        protected UIElement _UIRoot = new UIPanel();
-        public UIElement UIRoot {
+        protected UINode _UIRoot = new UIPanel();
+        public UINode UIRoot {
             get {
                 return _UIRoot;
             }
@@ -37,7 +37,7 @@ namespace RenderingEngine.VisualTests
         private void InitUI()
         {
             //Create a golden ratio spiral
-            UIElement starting = UIRoot;
+            UINode starting = UIRoot;
 
             for(int i = 0; i < 5; i++)
             {
@@ -48,7 +48,7 @@ namespace RenderingEngine.VisualTests
             }
         }
 
-        private UIPanel Generate2PanelsVer(UIElement attatchTo, bool top)
+        private UIPanel Generate2PanelsVer(UINode attatchTo, bool top)
         {
             UIPanel subPanelTop = GeneratePanel();
             subPanelTop.SetAnchoring(new Rect2D(0, 0.5f, 1, 1));
@@ -64,7 +64,7 @@ namespace RenderingEngine.VisualTests
             return subPanelBottom;
         }
 
-        private UIPanel Generate2PanelsHor(UIElement attatchTo, bool left)
+        private UIPanel Generate2PanelsHor(UINode attatchTo, bool left)
         {
             UIPanel subPanelLeft = GeneratePanel();
             subPanelLeft.SetAnchoring(new Rect2D(0f,0f,0.5f,1f));

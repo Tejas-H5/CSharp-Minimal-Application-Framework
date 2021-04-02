@@ -10,7 +10,7 @@ namespace RenderingEngine.UI
     //TODO: make UIElement actually decent
     public abstract class UIElement
     {
-        UINode _parent = null;
+        protected UINode _parent = null;
         public UINode Parent {
             get {
                 return _parent;
@@ -24,8 +24,6 @@ namespace RenderingEngine.UI
         protected Rect2D _rectOffset;
         protected Rect2D _anchoring;
         private bool _dirty = true;
-
-        protected bool _isMouseOver;
 
         public Rect2D Rect {
             get {
@@ -51,11 +49,20 @@ namespace RenderingEngine.UI
 
         public virtual void Update(double deltaTime)
         {
-            _isMouseOver = IsMouseOver();
         }
 
         public virtual void Draw(double deltaTime)
         {
+        }
+
+        internal virtual bool ProcessChildEvents()
+        {
+            return ProcessEvents();
+        }
+
+        public virtual bool ProcessEvents()
+        {
+            return false;
         }
 
         public virtual void Resize()

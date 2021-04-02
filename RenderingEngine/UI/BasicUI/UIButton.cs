@@ -10,10 +10,9 @@ namespace RenderingEngine.UI.BasicUI
         Action _onReleaseEvent;
         string _text;
 
-        public UIButton(string text)
-        {
+        UIBackgroundRect _backgroundRect;
+        public UIBackgroundRect BackgroundRect { get { return _backgroundRect; } }
 
-        }
 
         public event Action OnClicked {
             add {
@@ -44,5 +43,22 @@ namespace RenderingEngine.UI.BasicUI
                 }
             }
         }
+
+        public UIButton(string text)
+        {
+            _backgroundRect = new UIBackgroundRect(this);
+        }
+
+        public override void Update(double deltaTime)
+        {
+            base.Update(deltaTime);
+
+        }
+
+
+        public override void Draw(double deltaTime)
+        {
+        }
+
     }
 }

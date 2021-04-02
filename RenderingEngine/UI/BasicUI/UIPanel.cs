@@ -20,26 +20,40 @@ namespace RenderingEngine.UI.BasicUI
         }
 
         UIBackgroundRect _backgroundRect;
-
         public UIBackgroundRect BackgroundRect { get { return _backgroundRect; } }
 
 
         public override void Update(double deltaTime)
         {
+            _isMouseDown = false;
+            _isMouseOver = false;
+
             base.Update(deltaTime);
-
-            if (_children.Count > 0)
-                return;
-
-            _isMouseOver = IsMouseOver();
         }
 
+        bool _isMouseOver;
+        bool _isMouseDown;
+
+        public override bool ProcessEvents()
+        {
+            if (IsMouseOver())
+            {
+                _isMouseOver = true;
+                if (Input.IsAnyClicked)
+                {
+                    _isMouseDown = true;
+                }
+                return true;
+            }
+
+            return false;
+        }
 
         public override void Draw(double deltaTime)
         {
             base.Draw(deltaTime);
 
-            _backgroundRect.Draw(isMouseOver: _isMouseOver, isMouseDown: Input.IsAnyClicked);
+            _backgroundRect.Draw(isMouseOver: _isMouseOver, isMouseDown: _isMouseDown);
         }
 
     }

@@ -4,6 +4,11 @@ using System.Text;
 
 namespace RenderingEngine.UI
 {
+    public class EventState
+    {
+        public bool Handled = false;
+    }
+
     public class UINode : UIElement
     {
         protected List<UIElement> _children = new List<UIElement>();
@@ -20,7 +25,27 @@ namespace RenderingEngine.UI
             {
                 _children[i].Update(deltaTime);
             }
+
+            if (_parent == null)
+            {
+                ProcessChildEvents();
+            }
         }
+
+        internal override bool ProcessChildEvents()
+        {
+            bool hasProcessed = false;
+            for (int i = 0; i < _children.Count; i++)
+            {
+                hasProcessed = hasProcessed || _children[i].ProcessChildEvents();
+            }
+
+            if (hasProcessed)
+                return true;
+
+            return ProcessEvents();
+        }
+
 
         public override void Draw(double deltaTime)
         {

@@ -22,7 +22,6 @@ namespace RenderingEngine.UI.BasicUI
         public Color4 HoverColor { get; set; }
         public Color4 ClickedColor { get; set; }
 
-
         public UIBackgroundRect(UIElement parent)
         {
             _parent = parent;

@@ -28,13 +28,13 @@ namespace RenderingEngine.Logic
         /// </summary>
         public virtual void Resize()
         {
-            RenderingContext.Viewport2D(_window.Width, _window.Height);
+            CTX.Viewport2D(_window.Width, _window.Height);
         }
         
 
         public virtual void Cleanup()
         {
-            RenderingContext.Dispose(true);
+            CTX.Dispose(true);
         }
 
         /*

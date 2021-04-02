@@ -21,9 +21,9 @@ namespace RenderingEngine.VisualTests
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            RenderingContext.SetClearColor(0, 0, 0, 0);
+            CTX.SetClearColor(0, 0, 0, 0);
 
-            RenderingContext.SetCurrentFont("Consolas", 24);
+            CTX.SetCurrentFont("Consolas", 24);
 
             _window.MouseWheel += MousewheelScroll;
 
@@ -53,11 +53,11 @@ namespace RenderingEngine.VisualTests
 
                 sb.Append(c);
 
-                totalLength += RenderingContext.GetCharWidth(c);
+                totalLength += CTX.GetCharWidth(c);
             }
 
             rain.Insert(0, sb.ToString());
-            if ((rain.Count - 2) * RenderingContext.GetCharHeight() > _window.Height)
+            if ((rain.Count - 2) * CTX.GetCharHeight() > _window.Height)
             {
                 rain.RemoveAt(rain.Count - 1);
             }
@@ -86,26 +86,26 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            RenderingContext.Clear();
+            CTX.Clear();
 
-            RenderingContext.SetDrawColor(0, 1, 0, 0.8f);
-            RenderingContext.SetTexture(null);
+            CTX.SetDrawColor(0, 1, 0, 0.8f);
+            CTX.SetTexture(null);
 
             for (int i = 0; i < rain.Count; i++)
             {
-                RenderingContext.DrawText(rain[i], 0, _window.Height - RenderingContext.GetCharHeight() * i);
+                CTX.DrawText(rain[i], 0, _window.Height - CTX.GetCharHeight() * i);
             }
 
             
-            RenderingContext.DrawFilledArc(_window.Width / 2, _window.Height / 2, MathF.Min(_window.Height / 2f,_window.Width / 2f), a, MathF.PI*2 + a, 6);
+            CTX.DrawFilledArc(_window.Width / 2, _window.Height / 2, MathF.Min(_window.Height / 2f,_window.Width / 2f), a, MathF.PI*2 + a, 6);
 
-            RenderingContext.SetTexture(_tex);
+            CTX.SetTexture(_tex);
             //RenderingContext.DrawFilledArc(window.Width / 2, window.Height / 2, MathF.Min(window.Height / 2f, window.Width / 2f)/2f, a/2f, MathF.PI * 2 + a/2f, 6);
 
-            RenderingContext.DrawRect(_window.Width / 2 - 50, _window.Height / 2 - 50, _window.Width / 2 + 50, _window.Height / 2 + 50);
+            CTX.DrawRect(_window.Width / 2 - 50, _window.Height / 2 - 50, _window.Width / 2 + 50, _window.Height / 2 + 50);
 
             //RenderingContext.DrawRect(100,100,window.Width-100, window.Height-100);
-            RenderingContext.Flush();
+            CTX.Flush();
         }
 
 

@@ -78,8 +78,8 @@ namespace RenderingEngine.UI.BasicUI
             if (color.A < 0.0001f)
                 return;
 
-            RenderingContext.SetDrawColor(color);
-            RenderingContext.DrawRect(_rect);
+            CTX.SetDrawColor(color);
+            CTX.DrawRect(_rect);
         }
 
     }

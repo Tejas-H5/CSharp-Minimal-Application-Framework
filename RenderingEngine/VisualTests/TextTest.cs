@@ -20,9 +20,9 @@ namespace RenderingEngine.VisualTests
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            RenderingContext.SetClearColor(0,0,0,0);
+            CTX.SetClearColor(0,0,0,0);
 
-            RenderingContext.SetCurrentFont("Consolas", 24);
+            CTX.SetCurrentFont("Consolas", 24);
 
             _window.MouseWheel += MousewheelScroll;
 
@@ -45,11 +45,11 @@ namespace RenderingEngine.VisualTests
 
                 sb.Append(c);
 
-                totalLength += RenderingContext.GetCharWidth(c);
+                totalLength += CTX.GetCharWidth(c);
             }
 
             rain.Insert(0, sb.ToString());
-            if((rain.Count-2) * RenderingContext.GetCharHeight() > _window.Height)
+            if((rain.Count-2) * CTX.GetCharHeight() > _window.Height)
             {
                 rain.RemoveAt(rain.Count - 1);
             }
@@ -78,18 +78,18 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            RenderingContext.Clear();
+            CTX.Clear();
 
-            RenderingContext.SetDrawColor(0, 1, 0, 0.8f);
+            CTX.SetDrawColor(0, 1, 0, 0.8f);
 
             for(int i = 0; i < rain.Count; i++)
             {
-                RenderingContext.DrawText(rain[i], 0, _window.Height - RenderingContext.GetCharHeight() * i);
+                CTX.DrawText(rain[i], 0, _window.Height - CTX.GetCharHeight() * i);
             }
 
-            RenderingContext.SetDrawColor(1, 0, 0, 1);
+            CTX.SetDrawColor(1, 0, 0, 1);
 
-            RenderingContext.Flush();
+            CTX.Flush();
         }
 
 

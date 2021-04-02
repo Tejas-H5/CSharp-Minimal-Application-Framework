@@ -21,7 +21,7 @@ namespace RenderingEngine.VisualTests
             _window.RenderFrequency = 60;
             _window.UpdateFrequency = 120;
 
-            RenderingContext.SetClearColor(1, 1, 1, 1);
+            CTX.SetClearColor(1, 1, 1, 1);
 
             InitUI();
         }
@@ -92,18 +92,18 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            RenderingContext.Clear();
+            CTX.Clear();
 
             _UIRoot.Draw(deltaTime);
 
-            RenderingContext.DrawText("Bruv", _window.Width / 2.0f, _window.Height / 2.0f);
+            CTX.DrawText("Bruv", _window.Width / 2.0f, _window.Height / 2.0f);
 
-            RenderingContext.Flush();
+            CTX.Flush();
         }
 
         public override void Resize()
         {
-            RenderingContext.Viewport2D(_window.Width, _window.Height);
+            CTX.Viewport2D(_window.Width, _window.Height);
 
             _UIRoot.Resize(_window);
         }

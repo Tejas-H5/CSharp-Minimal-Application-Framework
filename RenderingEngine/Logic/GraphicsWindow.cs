@@ -41,7 +41,7 @@ namespace RenderingEngine.Logic
         {
             _program = program;
 
-            RenderingContext.Init(Context);
+            CTX.Init(Context);
 
             _mouseInputManager = new MouseInputManager(this);
         }

@@ -13,7 +13,7 @@ using RenderingEngine.Rendering.ImmediateMode;
 namespace RenderingEngine.Rendering
 {
     //TODO: Extend this to draw meshes and other retained geometry
-    public static class RenderingContext
+    public static class CTX
     {
         //Here solely for the SwapBuffers function
         private static IGLFWGraphicsContext _glContext;

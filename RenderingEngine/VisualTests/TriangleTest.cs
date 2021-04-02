@@ -18,7 +18,7 @@ namespace RenderingEngine.VisualTests
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            RenderingContext.SetClearColor(0, 1, 1, 1);
+            CTX.SetClearColor(0, 1, 1, 1);
         }
 
 
@@ -29,16 +29,16 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            RenderingContext.Clear();
+            CTX.Clear();
 
-            RenderingContext.SetDrawColor(1, 0, 0, 1);
+            CTX.SetDrawColor(1, 0, 0, 1);
 
-            RenderingContext.DrawTriangle(_window.Width/2, 0, 0, 0,_window.Width/4, _window.Height/2);
+            CTX.DrawTriangle(_window.Width/2, 0, 0, 0,_window.Width/4, _window.Height/2);
 
             int lineSize = 100;
-            RenderingContext.DrawLine(lineSize, lineSize, _window.Width - lineSize, _window.Height - lineSize, lineSize/2, CapType.Circle);
+            CTX.DrawLine(lineSize, lineSize, _window.Width - lineSize, _window.Height - lineSize, lineSize/2, CapType.Circle);
 
-            RenderingContext.Flush();
+            CTX.Flush();
         }
 
 

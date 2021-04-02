@@ -118,7 +118,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         public void DrawText(string text, float x, float y)
         {
-            RenderingContext.SetTexture(_activeFont.FontTexture);
+            CTX.SetTexture(_activeFont.FontTexture);
 
             for (int i = 0; i < text.Length; i++)
             {

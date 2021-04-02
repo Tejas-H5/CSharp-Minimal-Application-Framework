@@ -22,7 +22,7 @@ namespace RenderingEngine.VisualTests
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            RenderingContext.SetClearColor(0, 0, 0, 1);
+            CTX.SetClearColor(0, 0, 0, 1);
 
             TextureMap.RegisterTexture("placeholder", "settings_icon.png", new TextureImportSettings());
             TextureMap.RegisterTexture("placeholderNN", "settings_icon.png", new TextureImportSettings { Filtering = FilteringType.NearestNeighbour } );
@@ -40,17 +40,17 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            RenderingContext.Clear();
+            CTX.Clear();
 
-            RenderingContext.SetDrawColor(1,1,1,1);
+            CTX.SetDrawColor(1,1,1,1);
 
-            RenderingContext.SetTexture(_tex);
-            RenderingContext.DrawRect(20, 20, _window.Width/2 - 20, _window.Height - 20);
+            CTX.SetTexture(_tex);
+            CTX.DrawRect(20, 20, _window.Width/2 - 20, _window.Height - 20);
 
-            RenderingContext.SetTexture(_tex2);
-            RenderingContext.DrawRect(new Rect2D(_window.Width / 2 + 20, 20, _window.Width - 20, _window.Height - 20), new Rect2D(0,1,1,0));
+            CTX.SetTexture(_tex2);
+            CTX.DrawRect(new Rect2D(_window.Width / 2 + 20, 20, _window.Width - 20, _window.Height - 20), new Rect2D(0,1,1,0));
 
-            RenderingContext.Flush();
+            CTX.Flush();
         }
 
 

@@ -12,19 +12,19 @@ namespace RenderingEngine.VisualTests
     {
         List<string> rain;
 
-        public override void Start(RenderingContext ctx, GraphicsWindow window)
+        public override void Start()
         {
-			base.Start(ctx, window);
-            window.Size=(800, 600);
-            window.Title=("Texture loading test");
+			
+            _window.Size=(800, 600);
+            _window.Title=("Texture loading test");
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            ctx.SetClearColor(0,0,0,0);
+            _ctx.SetClearColor(0,0,0,0);
 
-            ctx.SetCurrentFont("Consolas", 24);
+            _ctx.SetCurrentFont("Consolas", 24);
 
-            window.MouseWheel += MousewheelScroll;
+            _window.MouseWheel += MousewheelScroll;
 
             rain = new List<string>();
         }
@@ -36,7 +36,7 @@ namespace RenderingEngine.VisualTests
             sb.Clear();
 
             float totalLength = 0;
-            while(totalLength < window.Width)
+            while(totalLength < _window.Width)
             {
                 int character = rand.Next(0, 512);
                 char c = (char)character;
@@ -49,7 +49,7 @@ namespace RenderingEngine.VisualTests
             }
 
             rain.Insert(0, sb.ToString());
-            if((rain.Count-2) * ctx.GetCharHeight() > window.Height)
+            if((rain.Count-2) * ctx.GetCharHeight() > _window.Height)
             {
                 rain.RemoveAt(rain.Count - 1);
             }
@@ -71,25 +71,25 @@ namespace RenderingEngine.VisualTests
             //*/
             timer = 0;
 
-            PushGibberish(ctx);
+            PushGibberish(_ctx);
         }
 
         float pos = 0;
 
         public override void Render(double deltaTime)
         {
-            ctx.Clear();
+            _ctx.Clear();
 
-            ctx.SetDrawColor(0, 1, 0, 0.8f);
+            _ctx.SetDrawColor(0, 1, 0, 0.8f);
 
             for(int i = 0; i < rain.Count; i++)
             {
-                ctx.DrawText(rain[i], 0, window.Height - ctx.GetCharHeight() * i);
+                _ctx.DrawText(rain[i], 0, _window.Height - _ctx.GetCharHeight() * i);
             }
 
-            ctx.SetDrawColor(1, 0, 0, 1);
+            _ctx.SetDrawColor(1, 0, 0, 1);
 
-            ctx.Flush();
+            _ctx.Flush();
         }
 
 

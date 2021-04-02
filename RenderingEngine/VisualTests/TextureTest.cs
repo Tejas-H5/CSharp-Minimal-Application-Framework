@@ -14,15 +14,15 @@ namespace RenderingEngine.VisualTests
         Texture _tex;
         Texture _tex2;
 
-        public override void Start(RenderingContext ctx, GraphicsWindow window)
+        public override void Start()
         {
-			base.Start(ctx, window);
-            window.Size=(800, 600);
-            window.Title=("Texture loading test");
+			
+            _window.Size=(800, 600);
+            _window.Title=("Texture loading test");
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            ctx.SetClearColor(0, 0, 0, 1);
+            _ctx.SetClearColor(0, 0, 0, 1);
 
             TextureMap.RegisterTexture("placeholder", "settings_icon.png", new TextureImportSettings());
             TextureMap.RegisterTexture("placeholderNN", "settings_icon.png", new TextureImportSettings { Filtering = FilteringType.NearestNeighbour } );
@@ -40,17 +40,17 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            ctx.Clear();
+            _ctx.Clear();
 
-            ctx.SetDrawColor(1,1,1,1);
+            _ctx.SetDrawColor(1,1,1,1);
 
-            ctx.SetTexture(_tex);
-            ctx.DrawRect(20, 20, window.Width/2 - 20, window.Height - 20);
+            _ctx.SetTexture(_tex);
+            _ctx.DrawRect(20, 20, _window.Width/2 - 20, _window.Height - 20);
 
-            ctx.SetTexture(_tex2);
-            ctx.DrawRect(new Rect2D(window.Width / 2 + 20, 20, window.Width - 20, window.Height - 20), new Rect2D(0,1,1,0));
+            _ctx.SetTexture(_tex2);
+            _ctx.DrawRect(new Rect2D(_window.Width / 2 + 20, 20, _window.Width - 20, _window.Height - 20), new Rect2D(0,1,1,0));
 
-            ctx.Flush();
+            _ctx.Flush();
         }
 
 

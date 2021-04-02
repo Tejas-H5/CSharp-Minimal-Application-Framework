@@ -10,16 +10,16 @@ namespace RenderingEngine.VisualTests
     //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
     class ArcTest : EntryPoint
     {
-        public override void Start(RenderingContext ctx, GraphicsWindow window)
+        public override void Start()
         {
-            base.Start(ctx, window);
+            
 
-            window.Size=(800, 600);
-            window.Title=("Arc Test");
+            _window.Size=(800, 600);
+            _window.Title=("Arc Test");
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            ctx.SetClearColor(1, 1, 1, 1);
+            _ctx.SetClearColor(1, 1, 1, 1);
         }
 
 
@@ -33,28 +33,28 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            ctx.Clear();
+            _ctx.Clear();
 
-            ctx.SetDrawColor(1, 0, 0, 0.5f);
+            _ctx.SetDrawColor(1, 0, 0, 0.5f);
 
-            float x0 = window.Width / 2;
-            float y0 = window.Height / 2;
-            float r = MathF.Min(window.Height, window.Width) * 0.45f;
+            float x0 = _window.Width / 2;
+            float y0 = _window.Height / 2;
+            float r = MathF.Min(_window.Height, _window.Width) * 0.45f;
 
-            ctx.DrawFilledArc(x0, y0, r, a, b);
+            _ctx.DrawFilledArc(x0, y0, r, a, b);
 
-            ctx.SetDrawColor(0, 0, 0, 0.5f);
-            DrawHand(ctx, x0, y0, r, a);
-            DrawHand(ctx, x0, y0, r, b);
+            _ctx.SetDrawColor(0, 0, 0, 0.5f);
+            DrawHand(_ctx, x0, y0, r, a);
+            DrawHand(_ctx, x0, y0, r, b);
 
-            ctx.SetDrawColor(0, 0, 0, 1);
-            ctx.DrawText($"Angle a: {a}", 0, window.Height-30);
-            ctx.DrawText($"Angle b: {b}", 0, window.Height-50);
+            _ctx.SetDrawColor(0, 0, 0, 1);
+            _ctx.DrawText($"Angle a: {a}", 0, _window.Height-30);
+            _ctx.DrawText($"Angle b: {b}", 0, _window.Height-50);
 
             a += (float)deltaTime;
             b += (float)deltaTime * 2;
 
-            ctx.Flush();
+            _ctx.Flush();
         }
 
         private void DrawHand(RenderingContext ctx, float x0, float y0, float r, float angle)

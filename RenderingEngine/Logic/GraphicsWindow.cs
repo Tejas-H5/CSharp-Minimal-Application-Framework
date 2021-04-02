@@ -46,7 +46,6 @@ namespace RenderingEngine.Logic
             _mouseInputManager = new MouseInputManager(this);
         }
 
-
         protected override void OnLoad()
         {
             _program.Start(_ctx, this);

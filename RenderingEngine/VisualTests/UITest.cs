@@ -12,16 +12,16 @@ namespace RenderingEngine.VisualTests
 {
     public class UITest : EntryPoint
     {
-        public override void Start(RenderingContext ctx, GraphicsWindow window)
+        public override void Start()
         {
-			base.Start(ctx, window);
-            window.Size = new Vector2i(800, 600);
-            window.Title = "UI Test";
+			
+            _window.Size = new Vector2i(800, 600);
+            _window.Title = "UI Test";
 
-            window.RenderFrequency = 60;
-            window.UpdateFrequency = 120;
+            _window.RenderFrequency = 60;
+            _window.UpdateFrequency = 120;
 
-            ctx.SetClearColor(1, 1, 1, 1);
+            _ctx.SetClearColor(1, 1, 1, 1);
 
             InitUI();
         }
@@ -92,25 +92,25 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            ctx.Clear();
+            _ctx.Clear();
 
-            _UIRoot.Draw(deltaTime, ctx);
+            _UIRoot.Draw(deltaTime, _ctx);
 
-            ctx.DrawText("Bruv", window.Width / 2.0f, window.Height / 2.0f);
+            _ctx.DrawText("Bruv", _window.Width / 2.0f, _window.Height / 2.0f);
 
-            ctx.Flush();
+            _ctx.Flush();
         }
 
         public override void Resize()
         {
-            ctx.Viewport2D(window.Width, window.Height);
+            _ctx.Viewport2D(_window.Width, _window.Height);
 
-            _UIRoot.Resize(window);
+            _UIRoot.Resize(_window);
         }
 
         public override void Update(double deltaTime)
         {
-            _UIRoot.Update(deltaTime, window);
+            _UIRoot.Update(deltaTime, _window);
         }
     }
 }

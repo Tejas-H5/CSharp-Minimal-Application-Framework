@@ -10,15 +10,15 @@ namespace RenderingEngine.VisualTests
     //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
     class TriangleTest : EntryPoint
     {
-        public override void Start(RenderingContext ctx, GraphicsWindow window)
+        public override void Start()
         {
-			base.Start(ctx, window);
-            window.Size = (800, 600);
-            window.Title = "Triangle";
+			
+            _window.Size = (800, 600);
+            _window.Title = "Triangle";
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            ctx.SetClearColor(0, 1, 1, 1);
+            _ctx.SetClearColor(0, 1, 1, 1);
         }
 
 
@@ -29,16 +29,16 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            ctx.Clear();
+            _ctx.Clear();
 
-            ctx.SetDrawColor(1, 0, 0, 1);
+            _ctx.SetDrawColor(1, 0, 0, 1);
 
-            ctx.DrawTriangle(window.Width/2, 0, 0, 0,window.Width/4, window.Height/2);
+            _ctx.DrawTriangle(_window.Width/2, 0, 0, 0,_window.Width/4, _window.Height/2);
 
             int lineSize = 100;
-            ctx.DrawLine(lineSize, lineSize, window.Width - lineSize, window.Height - lineSize, lineSize/2, CapType.Circle);
+            _ctx.DrawLine(lineSize, lineSize, _window.Width - lineSize, _window.Height - lineSize, lineSize/2, CapType.Circle);
 
-            ctx.Flush();
+            _ctx.Flush();
         }
 
 

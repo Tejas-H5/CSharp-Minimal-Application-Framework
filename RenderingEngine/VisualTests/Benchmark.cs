@@ -16,16 +16,16 @@ namespace RenderingEngine.VisualTests
             _lineThiccness = thickness;
         }
 
-        public override void Start(RenderingContext ctx, GraphicsWindow window)
+        public override void Start()
         {
-			base.Start(ctx, window);
-            window.Size=(800, 600);
-            window.Title=("Rendering Engine Line benchmark");
+			
+            _window.Size=(800, 600);
+            _window.Title=("Rendering Engine Line benchmark");
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            ctx.SetClearColor(1, 1, 1, 1);
-            ctx.SetCurrentFont("Consolas", 24);
+            _ctx.SetClearColor(1, 1, 1, 1);
+            _ctx.SetCurrentFont("Consolas", 24);
         }
 
         Random rand = new Random(1);
@@ -43,26 +43,26 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            ctx.Clear();
+            _ctx.Clear();
 
-            ctx.SetDrawColor(1, 0, 0, 0.1f);
+            _ctx.SetDrawColor(1, 0, 0, 0.1f);
 
             for (int i = 0; i < amount; i++)
             {
-                float x1 = (float)rand.NextDouble() * window.Width;
-                float y1 = (float)rand.NextDouble() * window.Height;
+                float x1 = (float)rand.NextDouble() * _window.Width;
+                float y1 = (float)rand.NextDouble() * _window.Height;
 
-                float x2 = (float)rand.NextDouble() * window.Width;
-                float y2 = (float)rand.NextDouble() * window.Height;
+                float x2 = (float)rand.NextDouble() * _window.Width;
+                float y2 = (float)rand.NextDouble() * _window.Height;
 
-                ctx.DrawLine(x1, y1, x2, y2, _lineThiccness, CapType.Circle);
+                _ctx.DrawLine(x1, y1, x2, y2, _lineThiccness, CapType.Circle);
             }
 
 
             double FPS = frames / time;
-            ctx.SetDrawColor(0, 0, 0, 1f);
-            ctx.DrawText($"FPS: {FPS.ToString("0.000")}", 10, window.Height-50);
-            ctx.DrawText($"Lines drawn: {amount}", 10, window.Height - 100);
+            _ctx.SetDrawColor(0, 0, 0, 1f);
+            _ctx.DrawText($"FPS: {FPS.ToString("0.000")}", 10, _window.Height-50);
+            _ctx.DrawText($"Lines drawn: {amount}", 10, _window.Height - 100);
 
             time += deltaTime;
             frames++;
@@ -98,7 +98,7 @@ namespace RenderingEngine.VisualTests
             //ctx.DrawLine(-size, -size, size, size, 0.02f, CapType.Circle);
 
             //ctx.DrawFilledArc(window.Width/2, window.Height/2, size, 0, MathF.PI * 2);
-            ctx.Flush();
+            _ctx.Flush();
         }
 
 

@@ -54,11 +54,11 @@ namespace RenderingEngine.VisualTests
             GL.DeleteVertexArray(_vertexArrayObject);
         }
 
-        public override void Start(RenderingContext ctx, GraphicsWindow window)
+        public override void Start()
         {
-			base.Start(ctx, window);
-            window.Size=(800, 600);
-            window.Title=("Element buffer demo");
+			
+            _window.Size=(800, 600);
+            _window.Title=("Element buffer demo");
 
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -98,7 +98,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            ctx.Clear();
+            _ctx.Clear();
             // Because ElementArrayObject is a property of the currently bound VAO
             // the buffer you will find in the ElementArrayBuffer will change with the currently bound VAO.
             GL.BindVertexArray(_vertexArrayObject);
@@ -111,7 +111,7 @@ namespace RenderingEngine.VisualTests
             //   Offset in the EBO. Set this to 0 because we want to draw the whole thing.
             GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, (IntPtr)0);
 
-            ctx.Flush();
+            _ctx.Flush();
         }
 
         public override void Resize()

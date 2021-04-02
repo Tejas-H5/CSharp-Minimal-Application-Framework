@@ -49,11 +49,12 @@ namespace RenderingEngine.UI.BasicUI
         {
             _backgroundRect.Draw(_isMouseOver, _isMouseDown);
 
-            float textHeight = CTX.GetCharHeight();
-            float textWidth = CTX.GetStringWidth(_text);
+            float scale = 1;
+            float textHeight = scale * CTX.GetCharHeight();
+            float textWidth = scale * CTX.GetStringWidth(_text);
 
             CTX.SetDrawColor(TextColor);
-            CTX.DrawText(_text, _rect.CenterX - textWidth/2, _rect.CenterY -textHeight/2);
+            CTX.DrawText(_text, _rect.CenterX - textWidth/2, _rect.CenterY -textHeight/2, scale);
         }
 
     }

@@ -116,7 +116,10 @@ namespace RenderingEngine.Rendering.ImmediateMode
             return new Rect2D(0, 0, 0, 0);
         }
 
-        public void DrawText(string text, float x, float y)
+
+        //TODO: IMPLEMENT tabs and newlines
+        //And vertical/horizontal aiignment features
+        public void DrawText(string text, float x, float y, float scale = 1.0f)
         {
             CTX.SetTexture(_activeFont.FontTexture);
 
@@ -129,10 +132,10 @@ namespace RenderingEngine.Rendering.ImmediateMode
                 {
                     Rect2D uv = _activeFont.FontAtlas.GetCharacterUV(c);
 
-                    _geomDrawer.DrawRect(new Rect2D(x, y, x + size.Width, y + size.Height), uv);
+                    _geomDrawer.DrawRect(new Rect2D(x, y, x + size.Width * scale, y + size.Height * scale), uv);
                 }
 
-                x += size.Width;
+                x += size.Width * scale;
             }
         }
 

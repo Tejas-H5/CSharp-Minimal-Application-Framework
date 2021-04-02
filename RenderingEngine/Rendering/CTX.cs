@@ -159,6 +159,12 @@ namespace RenderingEngine.Rendering
             _textDrawer.DrawText(text, x, y);
         }
 
+        public static void DrawText(string text, float x, float y, float scale)
+        {
+            _drawingText = true;
+            _textDrawer.DrawText(text, x, y, scale);
+        }
+
         public static float GetCharHeight()
         {
             return _textDrawer.CharHeight;

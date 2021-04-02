@@ -14,8 +14,8 @@ namespace RenderingEngine.VisualTests
         {
             
 
-            _window.Size=(800, 600);
-            _window.Title=("Arc Test");
+            Window.Size=(800, 600);
+            Window.Title=("Arc Test");
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
@@ -37,9 +37,9 @@ namespace RenderingEngine.VisualTests
 
             CTX.SetDrawColor(1, 0, 0, 0.5f);
 
-            float x0 = _window.Width / 2;
-            float y0 = _window.Height / 2;
-            float r = MathF.Min(_window.Height, _window.Width) * 0.45f;
+            float x0 = Window.Width / 2;
+            float y0 = Window.Height / 2;
+            float r = MathF.Min(Window.Height, Window.Width) * 0.45f;
 
             CTX.DrawFilledArc(x0, y0, r, a, b);
 
@@ -48,8 +48,8 @@ namespace RenderingEngine.VisualTests
             DrawHand(x0, y0, r, b);
 
             CTX.SetDrawColor(0, 0, 0, 1);
-            CTX.DrawText($"Angle a: {a}", 0, _window.Height-30);
-            CTX.DrawText($"Angle b: {b}", 0, _window.Height-50);
+            CTX.DrawText($"Angle a: {a}", 0, Window.Height-30);
+            CTX.DrawText($"Angle b: {b}", 0, Window.Height-50);
 
             a += (float)deltaTime;
             b += (float)deltaTime * 2;

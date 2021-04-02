@@ -1,15 +1,21 @@
-﻿using OpenTK.Windowing.GraphicsLibraryFramework;
-using RenderingEngine.Datatypes;
+﻿using RenderingEngine.Datatypes;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace RenderingEngine.Logic
 {
+    public enum MouseButton
+    {
+        Left,
+        Right,
+        Middle
+    }
+
     public static class Input
     {
-        private static GraphicsWindow _window;
-        internal static void Init(GraphicsWindow window)
+        private static WindowInstance _window;
+        internal static void Init(WindowInstance window)
         {
             _window = window;
             _mouseInputManager = new MouseInputManager(window);

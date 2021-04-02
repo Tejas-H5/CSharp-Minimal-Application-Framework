@@ -15,11 +15,11 @@ namespace RenderingEngine.VisualTests
         public override void Start()
         {
 			
-            _window.Size = new Vector2i(800, 600);
-            _window.Title = "UI Test";
+            Window.Size = new Vector2i(800, 600);
+            Window.Title = "UI Test";
 
-            _window.RenderFrequency = 60;
-            _window.UpdateFrequency = 120;
+            Window.RenderFrequency = 60;
+            Window.UpdateFrequency = 120;
 
             CTX.SetClearColor(1, 1, 1, 1);
 
@@ -96,21 +96,21 @@ namespace RenderingEngine.VisualTests
 
             _UIRoot.Draw(deltaTime);
 
-            CTX.DrawText("Bruv", _window.Width / 2.0f, _window.Height / 2.0f);
+            CTX.DrawText("Bruv", Window.Width / 2.0f, Window.Height / 2.0f);
 
             CTX.Flush();
         }
 
         public override void Resize()
         {
-            CTX.Viewport2D(_window.Width, _window.Height);
+            CTX.Viewport2D(Window.Width, Window.Height);
 
-            _UIRoot.Resize(_window);
+            _UIRoot.Resize();
         }
 
         public override void Update(double deltaTime)
         {
-            _UIRoot.Update(deltaTime, _window);
+            _UIRoot.Update(deltaTime);
         }
     }
 }

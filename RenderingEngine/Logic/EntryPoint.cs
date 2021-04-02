@@ -9,18 +9,10 @@ namespace RenderingEngine.Logic
     //Used by all classes associated with program logic
     public abstract class EntryPoint
     {
-        protected GraphicsWindow _window;
         //Program lifecycle
-        internal void Start(GraphicsWindow window)
-        {
-            this._window = window;
-            Start();
-        }
-
         public abstract void Start();
         public abstract void Update(double deltaTime);
         public abstract void Render(double deltaTime);
-
 
         /// <summary>
         /// Called whenever the window resizes. 
@@ -28,7 +20,7 @@ namespace RenderingEngine.Logic
         /// </summary>
         public virtual void Resize()
         {
-            CTX.Viewport2D(_window.Width, _window.Height);
+            CTX.Viewport2D(Window.Width, Window.Height);
         }
         
 

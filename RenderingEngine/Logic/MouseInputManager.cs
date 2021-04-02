@@ -8,8 +8,8 @@ namespace RenderingEngine.Logic
 {
     class MouseInputManager
     {
-        GraphicsWindow _window;
-        public MouseInputManager(GraphicsWindow window)
+        WindowInstance _window;
+        public MouseInputManager(WindowInstance window)
         {
             _window = window;
         }
@@ -113,7 +113,8 @@ namespace RenderingEngine.Logic
 
             for (int i = 0; i < 3; i++)
             {
-                _mouseButtonStates[i] = _window.MouseState.IsButtonDown((MouseButton)i);
+                _mouseButtonStates[i] = _window.MouseState.IsButtonDown(
+                    (OpenTK.Windowing.GraphicsLibraryFramework.MouseButton)i);
                 _anyClicked = _anyClicked || _mouseButtonStates[i];
             }
 

@@ -1,5 +1,4 @@
-﻿using OpenTK.Windowing.GraphicsLibraryFramework;
-using RenderingEngine.Logic;
+﻿using RenderingEngine.Logic;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -57,11 +56,11 @@ namespace RenderingEngine.UI
             _anchoring = anchor;
         }
 
-        public virtual void Update(double deltaTime, GraphicsWindow window)
+        public virtual void Update(double deltaTime)
         {
             for (int i = 0; i < _children.Count; i++)
             {
-                _children[i].Update(deltaTime, window);
+                _children[i].Update(deltaTime);
             }
         }
 
@@ -73,18 +72,18 @@ namespace RenderingEngine.UI
             }
         }
 
-        public virtual void Resize(GraphicsWindow window)
+        public virtual void Resize()
         {
             _dirty = true;
-            UpdateRect(window);
+            UpdateRect();
 
             for (int i = 0; i < _children.Count; i++)
             {
-                _children[i].Resize(window);
+                _children[i].Resize();
             }
         }
 
-        protected void UpdateRect(GraphicsWindow window)
+        protected void UpdateRect()
         {
             if (!_dirty)
                 return;
@@ -99,7 +98,7 @@ namespace RenderingEngine.UI
             }
             else
             {
-                parentRect = window.Rect;
+                parentRect = Window.Rect;
             }
 
             float anchorLeft = parentRect.X0 + _anchoring.X0 * parentRect.Width;
@@ -115,7 +114,7 @@ namespace RenderingEngine.UI
             _rect = new Rect2D(left, bottom, right, top);
         }
 
-        protected bool IsMouseOver(GraphicsWindow window)
+        protected bool IsMouseOver()
         {
             return Intersections.IsInside(Input.MouseX, Input.MouseY, _rect);
         }

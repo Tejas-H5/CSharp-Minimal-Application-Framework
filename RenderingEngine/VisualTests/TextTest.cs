@@ -15,8 +15,8 @@ namespace RenderingEngine.VisualTests
         public override void Start()
         {
 			
-            _window.Size=(800, 600);
-            _window.Title=("Texture loading test");
+            Window.Size=(800, 600);
+            Window.Title=("Texture loading test");
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
@@ -24,7 +24,7 @@ namespace RenderingEngine.VisualTests
 
             CTX.SetCurrentFont("Consolas", 24);
 
-            _window.MouseWheel += MousewheelScroll;
+            Window.MouseWheel += MousewheelScroll;
 
             rain = new List<string>();
         }
@@ -36,7 +36,7 @@ namespace RenderingEngine.VisualTests
             sb.Clear();
 
             float totalLength = 0;
-            while(totalLength < _window.Width)
+            while(totalLength < Window.Width)
             {
                 int character = rand.Next(0, 512);
                 char c = (char)character;
@@ -49,7 +49,7 @@ namespace RenderingEngine.VisualTests
             }
 
             rain.Insert(0, sb.ToString());
-            if((rain.Count-2) * CTX.GetCharHeight() > _window.Height)
+            if((rain.Count-2) * CTX.GetCharHeight() > Window.Height)
             {
                 rain.RemoveAt(rain.Count - 1);
             }
@@ -84,7 +84,7 @@ namespace RenderingEngine.VisualTests
 
             for(int i = 0; i < rain.Count; i++)
             {
-                CTX.DrawText(rain[i], 0, _window.Height - CTX.GetCharHeight() * i);
+                CTX.DrawText(rain[i], 0, Window.Height - CTX.GetCharHeight() * i);
             }
 
             CTX.SetDrawColor(1, 0, 0, 1);

@@ -1,7 +1,6 @@
 ﻿using OpenTK.Windowing.Desktop;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Windowing.Common;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using RenderingEngine.Rendering;
 using OpenTK.Mathematics;
@@ -57,8 +56,8 @@ namespace RenderingEngine.VisualTests
         public override void Start()
         {
 			
-            _window.Size=(800, 600);
-            _window.Title=("Element buffer demo");
+            Window.Size=(800, 600);
+            Window.Title=("Element buffer demo");
 
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 

@@ -19,8 +19,8 @@ namespace RenderingEngine.VisualTests
         public override void Start()
         {
 			
-            _window.Size=(800, 600);
-            _window.Title=("Rendering Engine Line benchmark");
+            Window.Size=(800, 600);
+            Window.Title=("Rendering Engine Line benchmark");
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
@@ -49,11 +49,11 @@ namespace RenderingEngine.VisualTests
 
             for (int i = 0; i < amount; i++)
             {
-                float x1 = (float)rand.NextDouble() * _window.Width;
-                float y1 = (float)rand.NextDouble() * _window.Height;
+                float x1 = (float)rand.NextDouble() * Window.Width;
+                float y1 = (float)rand.NextDouble() * Window.Height;
 
-                float x2 = (float)rand.NextDouble() * _window.Width;
-                float y2 = (float)rand.NextDouble() * _window.Height;
+                float x2 = (float)rand.NextDouble() * Window.Width;
+                float y2 = (float)rand.NextDouble() * Window.Height;
 
                 CTX.DrawLine(x1, y1, x2, y2, _lineThiccness, CapType.Circle);
             }
@@ -61,8 +61,8 @@ namespace RenderingEngine.VisualTests
 
             double FPS = frames / time;
             CTX.SetDrawColor(0, 0, 0, 1f);
-            CTX.DrawText($"FPS: {FPS.ToString("0.000")}", 10, _window.Height-50);
-            CTX.DrawText($"Lines drawn: {amount}", 10, _window.Height - 100);
+            CTX.DrawText($"FPS: {FPS.ToString("0.000")}", 10, Window.Height-50);
+            CTX.DrawText($"Lines drawn: {amount}", 10, Window.Height - 100);
 
             time += deltaTime;
             frames++;

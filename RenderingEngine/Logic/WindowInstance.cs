@@ -16,7 +16,7 @@ using RenderingEngine.Rendering;
 
 namespace RenderingEngine.Logic
 {
-    public class GraphicsWindow : GameWindow
+    internal class WindowInstance : GameWindow
     {
         EntryPoint _program;
 
@@ -28,10 +28,9 @@ namespace RenderingEngine.Logic
         public float Height { get { return Size.Y; } }
         public float Width { get { return Size.X; } }
         public Rect2D Rect { get { return new Rect2D(0, 0, Width, Height); } }
-
         public float CurrentFPS { get { return _fps; } }
 
-        public GraphicsWindow(EntryPoint program)
+        public WindowInstance(EntryPoint program)
             : base(GameWindowSettings.Default, new NativeWindowSettings {
                 StartVisible = false
             })
@@ -44,7 +43,7 @@ namespace RenderingEngine.Logic
 
         protected override void OnLoad()
         {
-            _program.Start(this);
+            _program.Start();
 
             IsVisible = true;
 

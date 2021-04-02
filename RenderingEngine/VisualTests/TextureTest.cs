@@ -17,8 +17,8 @@ namespace RenderingEngine.VisualTests
         public override void Start()
         {
 			
-            _window.Size=(800, 600);
-            _window.Title=("Texture loading test");
+            Window.Size=(800, 600);
+            Window.Title=("Texture loading test");
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
@@ -45,10 +45,10 @@ namespace RenderingEngine.VisualTests
             CTX.SetDrawColor(1,1,1,1);
 
             CTX.SetTexture(_tex);
-            CTX.DrawRect(20, 20, _window.Width/2 - 20, _window.Height - 20);
+            CTX.DrawRect(20, 20, Window.Width/2 - 20, Window.Height - 20);
 
             CTX.SetTexture(_tex2);
-            CTX.DrawRect(new Rect2D(_window.Width / 2 + 20, 20, _window.Width - 20, _window.Height - 20), new Rect2D(0,1,1,0));
+            CTX.DrawRect(new Rect2D(Window.Width / 2 + 20, 20, Window.Width - 20, Window.Height - 20), new Rect2D(0,1,1,0));
 
             CTX.Flush();
         }

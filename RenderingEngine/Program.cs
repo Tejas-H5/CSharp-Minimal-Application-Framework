@@ -24,10 +24,7 @@ namespace RenderingEngine
 
             foreach(EntryPoint entryPoint in tests)
             {
-                using (var window = new GraphicsWindow(entryPoint))
-                {
-                    window.Run();
-                }
+                Window.RunProgram(entryPoint);
             }
         }
     }

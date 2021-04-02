@@ -35,14 +35,14 @@ namespace RenderingEngine.UI.BasicUI
         protected bool _isMouseOver;
         protected bool _isMouseDown;
 
-        public override void Update(double deltaTime, GraphicsWindow window)
+        public override void Update(double deltaTime)
         {
-            base.Update(deltaTime, window);
+            base.Update(deltaTime);
 
             if (_children.Count > 0)
                 return;
 
-            _isMouseOver = IsMouseOver(window);
+            _isMouseOver = IsMouseOver();
 
             if (_isMouseOver)
                 _isMouseDown = Input.IsAnyClicked;

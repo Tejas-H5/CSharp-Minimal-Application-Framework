@@ -13,8 +13,8 @@ namespace RenderingEngine.VisualTests
         public override void Start()
         {
 			
-            _window.Size = (800, 600);
-            _window.Title = "Triangle";
+            Window.Size = (800, 600);
+            Window.Title = "Triangle";
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
@@ -33,10 +33,10 @@ namespace RenderingEngine.VisualTests
 
             CTX.SetDrawColor(1, 0, 0, 1);
 
-            CTX.DrawTriangle(_window.Width/2, 0, 0, 0,_window.Width/4, _window.Height/2);
+            CTX.DrawTriangle(Window.Width/2, 0, 0, 0,Window.Width/4, Window.Height/2);
 
             int lineSize = 100;
-            CTX.DrawLine(lineSize, lineSize, _window.Width - lineSize, _window.Height - lineSize, lineSize/2, CapType.Circle);
+            CTX.DrawLine(lineSize, lineSize, Window.Width - lineSize, Window.Height - lineSize, lineSize/2, CapType.Circle);
 
             CTX.Flush();
         }

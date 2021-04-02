@@ -21,9 +21,9 @@ namespace RenderingEngine.VisualTests
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            _ctx.SetClearColor(0, 0, 0, 0);
+            RenderingContext.SetClearColor(0, 0, 0, 0);
 
-            _ctx.SetCurrentFont("Consolas", 24);
+            RenderingContext.SetCurrentFont("Consolas", 24);
 
             _window.MouseWheel += MousewheelScroll;
 
@@ -39,7 +39,7 @@ namespace RenderingEngine.VisualTests
 
         StringBuilder sb = new StringBuilder();
         Random rand = new Random();
-        void PushGibberish(RenderingContext ctx)
+        void PushGibberish()
         {
             sb.Clear();
 
@@ -53,11 +53,11 @@ namespace RenderingEngine.VisualTests
 
                 sb.Append(c);
 
-                totalLength += ctx.GetCharWidth(c);
+                totalLength += RenderingContext.GetCharWidth(c);
             }
 
             rain.Insert(0, sb.ToString());
-            if ((rain.Count - 2) * ctx.GetCharHeight() > _window.Height)
+            if ((rain.Count - 2) * RenderingContext.GetCharHeight() > _window.Height)
             {
                 rain.RemoveAt(rain.Count - 1);
             }
@@ -79,33 +79,33 @@ namespace RenderingEngine.VisualTests
             //*/
             timer = 0;
 
-            PushGibberish(_ctx);
+            PushGibberish();
         }
 
         float a = 0;
 
         public override void Render(double deltaTime)
         {
-            _ctx.Clear();
+            RenderingContext.Clear();
 
-            _ctx.SetDrawColor(0, 1, 0, 0.8f);
-            _ctx.SetTexture(null);
+            RenderingContext.SetDrawColor(0, 1, 0, 0.8f);
+            RenderingContext.SetTexture(null);
 
             for (int i = 0; i < rain.Count; i++)
             {
-                _ctx.DrawText(rain[i], 0, _window.Height - _ctx.GetCharHeight() * i);
+                RenderingContext.DrawText(rain[i], 0, _window.Height - RenderingContext.GetCharHeight() * i);
             }
 
             
-            _ctx.DrawFilledArc(_window.Width / 2, _window.Height / 2, MathF.Min(_window.Height / 2f,_window.Width / 2f), a, MathF.PI*2 + a, 6);
+            RenderingContext.DrawFilledArc(_window.Width / 2, _window.Height / 2, MathF.Min(_window.Height / 2f,_window.Width / 2f), a, MathF.PI*2 + a, 6);
 
-            _ctx.SetTexture(_tex);
-            //ctx.DrawFilledArc(window.Width / 2, window.Height / 2, MathF.Min(window.Height / 2f, window.Width / 2f)/2f, a/2f, MathF.PI * 2 + a/2f, 6);
+            RenderingContext.SetTexture(_tex);
+            //RenderingContext.DrawFilledArc(window.Width / 2, window.Height / 2, MathF.Min(window.Height / 2f, window.Width / 2f)/2f, a/2f, MathF.PI * 2 + a/2f, 6);
 
-            _ctx.DrawRect(_window.Width / 2 - 50, _window.Height / 2 - 50, _window.Width / 2 + 50, _window.Height / 2 + 50);
+            RenderingContext.DrawRect(_window.Width / 2 - 50, _window.Height / 2 - 50, _window.Width / 2 + 50, _window.Height / 2 + 50);
 
-            //ctx.DrawRect(100,100,window.Width-100, window.Height-100);
-            _ctx.Flush();
+            //RenderingContext.DrawRect(100,100,window.Width-100, window.Height-100);
+            RenderingContext.Flush();
         }
 
 

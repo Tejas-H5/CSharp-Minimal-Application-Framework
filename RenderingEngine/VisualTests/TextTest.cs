@@ -20,9 +20,9 @@ namespace RenderingEngine.VisualTests
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            _ctx.SetClearColor(0,0,0,0);
+            RenderingContext.SetClearColor(0,0,0,0);
 
-            _ctx.SetCurrentFont("Consolas", 24);
+            RenderingContext.SetCurrentFont("Consolas", 24);
 
             _window.MouseWheel += MousewheelScroll;
 
@@ -31,7 +31,7 @@ namespace RenderingEngine.VisualTests
 
         StringBuilder sb = new StringBuilder();
         Random rand = new Random();
-        void PushGibberish(RenderingContext ctx)
+        void PushGibberish()
         {
             sb.Clear();
 
@@ -45,11 +45,11 @@ namespace RenderingEngine.VisualTests
 
                 sb.Append(c);
 
-                totalLength += ctx.GetCharWidth(c);
+                totalLength += RenderingContext.GetCharWidth(c);
             }
 
             rain.Insert(0, sb.ToString());
-            if((rain.Count-2) * ctx.GetCharHeight() > _window.Height)
+            if((rain.Count-2) * RenderingContext.GetCharHeight() > _window.Height)
             {
                 rain.RemoveAt(rain.Count - 1);
             }
@@ -71,25 +71,25 @@ namespace RenderingEngine.VisualTests
             //*/
             timer = 0;
 
-            PushGibberish(_ctx);
+            PushGibberish();
         }
 
         float pos = 0;
 
         public override void Render(double deltaTime)
         {
-            _ctx.Clear();
+            RenderingContext.Clear();
 
-            _ctx.SetDrawColor(0, 1, 0, 0.8f);
+            RenderingContext.SetDrawColor(0, 1, 0, 0.8f);
 
             for(int i = 0; i < rain.Count; i++)
             {
-                _ctx.DrawText(rain[i], 0, _window.Height - _ctx.GetCharHeight() * i);
+                RenderingContext.DrawText(rain[i], 0, _window.Height - RenderingContext.GetCharHeight() * i);
             }
 
-            _ctx.SetDrawColor(1, 0, 0, 1);
+            RenderingContext.SetDrawColor(1, 0, 0, 1);
 
-            _ctx.Flush();
+            RenderingContext.Flush();
         }
 
 

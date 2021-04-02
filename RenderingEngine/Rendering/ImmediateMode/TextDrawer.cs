@@ -29,16 +29,14 @@ namespace RenderingEngine.Rendering.ImmediateMode
     class TextDrawer : IDisposable
     {
         GeometryDrawer _geomDrawer;
-        RenderingContext _ctx;
 
         FontAtlasTexture _activeFont;
         Dictionary<string, FontAtlasTexture> _allLoadedFonts;
 
-        public TextDrawer(GeometryDrawer geomDrawer, RenderingContext ctx)
+        public TextDrawer(GeometryDrawer geomDrawer)
         {
             _allLoadedFonts = new Dictionary<string, FontAtlasTexture>();
             _geomDrawer = geomDrawer;
-            _ctx = ctx;
 
             SetCurrentFont("", -1);
         }
@@ -120,7 +118,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         public void DrawText(string text, float x, float y)
         {
-            _ctx.SetTexture(_activeFont.FontTexture);
+            RenderingContext.SetTexture(_activeFont.FontTexture);
 
             for (int i = 0; i < text.Length; i++)
             {

@@ -19,7 +19,6 @@ namespace RenderingEngine.Logic
     public class GraphicsWindow : GameWindow
     {
         EntryPoint _program;
-        RenderingContext _ctx;
         MouseInputManager _mouseInputManager;
 
         public float Height { get { return Size.Y; } }
@@ -42,13 +41,14 @@ namespace RenderingEngine.Logic
         {
             _program = program;
 
-            _ctx = new RenderingContext(Context);
+            RenderingContext.Init(Context);
+
             _mouseInputManager = new MouseInputManager(this);
         }
 
         protected override void OnLoad()
         {
-            _program.Start(_ctx, this);
+            _program.Start(this);
 
             IsVisible = true;
 

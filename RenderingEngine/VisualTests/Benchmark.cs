@@ -24,8 +24,8 @@ namespace RenderingEngine.VisualTests
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            _ctx.SetClearColor(1, 1, 1, 1);
-            _ctx.SetCurrentFont("Consolas", 24);
+            RenderingContext.SetClearColor(1, 1, 1, 1);
+            RenderingContext.SetCurrentFont("Consolas", 24);
         }
 
         Random rand = new Random(1);
@@ -43,9 +43,9 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            _ctx.Clear();
+            RenderingContext.Clear();
 
-            _ctx.SetDrawColor(1, 0, 0, 0.1f);
+            RenderingContext.SetDrawColor(1, 0, 0, 0.1f);
 
             for (int i = 0; i < amount; i++)
             {
@@ -55,14 +55,14 @@ namespace RenderingEngine.VisualTests
                 float x2 = (float)rand.NextDouble() * _window.Width;
                 float y2 = (float)rand.NextDouble() * _window.Height;
 
-                _ctx.DrawLine(x1, y1, x2, y2, _lineThiccness, CapType.Circle);
+                RenderingContext.DrawLine(x1, y1, x2, y2, _lineThiccness, CapType.Circle);
             }
 
 
             double FPS = frames / time;
-            _ctx.SetDrawColor(0, 0, 0, 1f);
-            _ctx.DrawText($"FPS: {FPS.ToString("0.000")}", 10, _window.Height-50);
-            _ctx.DrawText($"Lines drawn: {amount}", 10, _window.Height - 100);
+            RenderingContext.SetDrawColor(0, 0, 0, 1f);
+            RenderingContext.DrawText($"FPS: {FPS.ToString("0.000")}", 10, _window.Height-50);
+            RenderingContext.DrawText($"Lines drawn: {amount}", 10, _window.Height - 100);
 
             time += deltaTime;
             frames++;
@@ -95,10 +95,10 @@ namespace RenderingEngine.VisualTests
             }
 
 
-            //ctx.DrawLine(-size, -size, size, size, 0.02f, CapType.Circle);
+            //RenderingContext.DrawLine(-size, -size, size, size, 0.02f, CapType.Circle);
 
-            //ctx.DrawFilledArc(window.Width/2, window.Height/2, size, 0, MathF.PI * 2);
-            _ctx.Flush();
+            //RenderingContext.DrawFilledArc(window.Width/2, window.Height/2, size, 0, MathF.PI * 2);
+            RenderingContext.Flush();
         }
 
 

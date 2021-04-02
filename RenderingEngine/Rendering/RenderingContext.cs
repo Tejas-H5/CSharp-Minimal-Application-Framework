@@ -13,52 +13,52 @@ using RenderingEngine.Rendering.ImmediateMode;
 namespace RenderingEngine.Rendering
 {
     //TODO: Extend this to draw meshes and other retained geometry
-    public class RenderingContext : IDisposable
+    public static class RenderingContext
     {
         //Here solely for the SwapBuffers function
-        private IGLFWGraphicsContext _ctx;
+        private static IGLFWGraphicsContext _glContext;
 
-        ImmediateModeShader _solidShader;
-        MeshOutputStream _meshOutputStream;
-        GeometryDrawer _geometryDrawer;
-        TextDrawer _textDrawer;
-        TextureManager _textureManager;
+        private static ImmediateModeShader _solidShader;
+        private static MeshOutputStream _meshOutputStream;
+        private static GeometryDrawer _geometryDrawer;
+        private static TextDrawer _textDrawer;
+        private static TextureManager _textureManager;
 
-        bool _drawingText = false;
-        bool _textDrawingCodeCalledSetTexture = false;
-        Texture _previousNonTextTexture = null;
+        private static bool _drawingText = false;
+        private static bool _textDrawingCodeCalledSetTexture = false;
+        private static Texture _previousNonTextTexture = null;
 
-        public RenderingContext(IGLFWGraphicsContext context)
-        {
-            _ctx = context;
-
+		internal static void Init(IGLFWGraphicsContext context){
             int bufferSize = 4096;
             _meshOutputStream = new MeshOutputStream(bufferSize, 4 * bufferSize);
 
             _geometryDrawer = new GeometryDrawer(_meshOutputStream);
-            _textDrawer = new TextDrawer(_geometryDrawer, this);
+            _textDrawer = new TextDrawer(_geometryDrawer);
 
             _solidShader = new ImmediateModeShader();
             _solidShader.Use();
 
             _textureManager = new TextureManager();
-        }
 
-        public void SetClearColor(float r, float g, float b, float a)
+            _glContext = context;
+            _disposed = false;
+		}
+
+        public static void SetClearColor(float r, float g, float b, float a)
         {
             GL.ClearColor(r, g, b, a);
         }
 
 
-        public void Clear()
+        public static void Clear()
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
-        public void Flush()
+        public static void Flush()
         {
             _meshOutputStream.Flush();
-            _ctx.SwapBuffers();
+            _glContext.SwapBuffers();
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace RenderingEngine.Rendering
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public void Viewport2D(float width, float height)
+        public static void Viewport2D(float width, float height)
         {
             _solidShader.ProjectionMatrix = Matrix4.Identity;
 
@@ -85,13 +85,13 @@ namespace RenderingEngine.Rendering
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         }
 
-        public void SetDrawColor(float r, float g, float b, float a)
+        public static void SetDrawColor(float r, float g, float b, float a)
         {
             Color4 col = new Color4(r, g, b, a);
             SetDrawColor(col);
         }
 
-        public void SetDrawColor(Color4 col)
+        public static void SetDrawColor(Color4 col)
         {
             if (_solidShader.CurrentColor.Equals(col))
                 return;
@@ -101,7 +101,7 @@ namespace RenderingEngine.Rendering
             _solidShader.CurrentColor = col;
         }
 
-        public void SetTexture(Texture texture)
+        public static void SetTexture(Texture texture)
         {
             if (_textureManager.CurrentTexture() == texture)
                 return;
@@ -124,7 +124,7 @@ namespace RenderingEngine.Rendering
             _textureManager.SetTexture(texture);
         }
 
-        private void StopUsingTextTexture()
+        private static void StopUsingTextTexture()
         {
             if (!_drawingText)
                 return;
@@ -139,35 +139,35 @@ namespace RenderingEngine.Rendering
 
         // ------------------- _textDrawer Wrappers  -------------------
 
-        public void SetCurrentFont(string name, int size)
+        public static void SetCurrentFont(string name, int size)
         {
             _drawingText = true;
             _textDrawer.SetCurrentFont(name, size);
             _textureManager.SetTexture(_textureManager.CurrentTexture());
         }
 
-        public void DrawText(string text, float x, float y)
+        public static void DrawText(string text, float x, float y)
         {
             _drawingText = true;
             _textDrawer.DrawText(text, x, y);
         }
 
-        public float GetCharHeight()
+        public static float GetCharHeight()
         {
             return _textDrawer.CharHeight;
         }
 
-        public float GetCharHeight(char c)
+        public static float GetCharHeight(char c)
         {
             return _textDrawer.GetCharHeight(c);
         }
 
-        public float GetCharWidth()
+        public static float GetCharWidth()
         {
             return _textDrawer.CharWidth;
         }
 
-        public float GetCharWidth(char c)
+        public static float GetCharWidth(char c)
         {
             return _textDrawer.GetCharWidth(c);
         }
@@ -175,7 +175,7 @@ namespace RenderingEngine.Rendering
 
         // ------------------- _geometryDrawer Wrappers  -------------------
 
-        public void DrawTriangle(
+        public static void DrawTriangle(
                 float x0, float y0, float x1, float y1, float x2, float y2,
                 float u0 = 0.0f, float v0 = 0.0f, float u1 = 0.5f, float v1 = 1f, float u2 = 1, float v2 = 0)
         {
@@ -184,13 +184,13 @@ namespace RenderingEngine.Rendering
 
         }
 
-        public void DrawFilledCircle(float x0, float y0, float r, int edges)
+        public static void DrawFilledCircle(float x0, float y0, float r, int edges)
         {
             StopUsingTextTexture();
             _geometryDrawer.DrawFilledCircle(x0, y0, r, edges);
         }
 
-        public void DrawQuad(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
+        public static void DrawQuad(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
             float u0 = 0.0f, float v0 = 0.0f, float u1 = 0.0f, float v1 = 1f, float u2 = 1, float v2 = 1, float u3 = 1, float v3 = 0)
         {
             StopUsingTextTexture();
@@ -198,57 +198,57 @@ namespace RenderingEngine.Rendering
 
         }
 
-        public void DrawRect(Rect2D rect)
+        public static void DrawRect(Rect2D rect)
         {
             StopUsingTextTexture();
             _geometryDrawer.DrawRect(rect);
         }
 
-        public void DrawRect(Rect2D rect, Rect2D uvs)
+        public static void DrawRect(Rect2D rect, Rect2D uvs)
         {
             StopUsingTextTexture();
             _geometryDrawer.DrawRect(rect, uvs);
 
         }
 
-        public void DrawRect(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 1, float u1 = 1, float v1 = 0)
+        public static void DrawRect(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 1, float u1 = 1, float v1 = 0)
         {
             StopUsingTextTexture();
             _geometryDrawer.DrawRect(x0, y0, x1, y1, u0, v0, u1, v1);
         }
 
-        public void DrawFilledArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle)
+        public static void DrawFilledArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle)
         {
             StopUsingTextTexture();
             _geometryDrawer.DrawFilledArc(xCenter, yCenter, radius, startAngle, endAngle);
         }
 
 
-        public void DrawFilledArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount)
+        public static void DrawFilledArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount)
         {
             StopUsingTextTexture();
             _geometryDrawer.DrawFilledArc(xCenter, yCenter, radius, startAngle, endAngle, edgeCount);
         }
 
-        public void DrawLine(float x0, float y0, float x1, float y1, float thickness, CapType cap)
+        public static void DrawLine(float x0, float y0, float x1, float y1, float thickness, CapType cap)
         {
             StopUsingTextTexture();
             _geometryDrawer.DrawLine(x0, y0, x1, y1, thickness, cap);
         }
 
-        public void BeginPolyLine(float x0, float y0, float thickness, CapType cap)
+        public static void BeginPolyLine(float x0, float y0, float thickness, CapType cap)
         {
             StopUsingTextTexture();
             _geometryDrawer.BeginPolyLine(x0, y0, thickness, cap);
         }
 
-        public void AppendToPolyLine(float x0, float y0)
+        public static void AppendToPolyLine(float x0, float y0)
         {
             StopUsingTextTexture();
             _geometryDrawer.AppendToPolyLine(x0, y0);
         }
 
-        public void EndPolyLine(float x0, float y0)
+        public static void EndPolyLine(float x0, float y0)
         {
             StopUsingTextTexture();
             _geometryDrawer.EndPolyLine(x0, y0);
@@ -256,11 +256,11 @@ namespace RenderingEngine.Rendering
 
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private static bool _disposed = false; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
+        internal static void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposed)
             {
                 if (disposing)
                 {
@@ -276,20 +276,10 @@ namespace RenderingEngine.Rendering
 
                 // TODO: set large fields to null.
 
-                disposedValue = true;
+                _disposed = true;
             }
         }
 
-        ~RenderingContext()
-        {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
         #endregion
     }
 }

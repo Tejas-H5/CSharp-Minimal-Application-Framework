@@ -49,14 +49,14 @@ namespace RenderingEngine.UI.BasicUI
         }
 
 
-        public override void Draw(double deltaTime, RenderingContext ctx)
+        public override void Draw(double deltaTime)
         {
-            base.Draw(deltaTime, ctx);
+            base.Draw(deltaTime);
 
-            DrawBackgroundRect(ctx);
+            DrawBackgroundRect();
         }
 
-        private void DrawBackgroundRect(RenderingContext ctx)
+        private void DrawBackgroundRect()
         {
             Color4 color;
             if (_isMouseOver)
@@ -78,8 +78,8 @@ namespace RenderingEngine.UI.BasicUI
             if (color.A < 0.0001f)
                 return;
 
-            ctx.SetDrawColor(color);
-            ctx.DrawRect(_rect);
+            RenderingContext.SetDrawColor(color);
+            RenderingContext.DrawRect(_rect);
         }
 
     }

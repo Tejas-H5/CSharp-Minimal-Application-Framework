@@ -65,11 +65,11 @@ namespace RenderingEngine.UI
             }
         }
 
-        public virtual void Draw(double deltaTime, RenderingContext ctx)
+        public virtual void Draw(double deltaTime)
         {
             for (int i = 0; i < _children.Count; i++)
             {
-                _children[i].Draw(deltaTime, ctx);
+                _children[i].Draw(deltaTime);
             }
         }
 

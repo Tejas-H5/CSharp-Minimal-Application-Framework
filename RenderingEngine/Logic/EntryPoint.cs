@@ -9,12 +9,10 @@ namespace RenderingEngine.Logic
     //Used by all classes associated with program logic
     public abstract class EntryPoint
     {
-        protected RenderingContext _ctx;
         protected GraphicsWindow _window;
         //Program lifecycle
-        internal void Start(RenderingContext ctx, GraphicsWindow window)
+        internal void Start(GraphicsWindow window)
         {
-            this._ctx = ctx;
             this._window = window;
             Start();
         }
@@ -30,13 +28,13 @@ namespace RenderingEngine.Logic
         /// </summary>
         public virtual void Resize()
         {
-            _ctx.Viewport2D(_window.Width, _window.Height);
+            RenderingContext.Viewport2D(_window.Width, _window.Height);
         }
         
 
         public virtual void Cleanup()
         {
-            _ctx.Dispose();
+            RenderingContext.Dispose(true);
         }
 
         /*

@@ -31,11 +31,12 @@ namespace RenderingEngine.Logic
         bool _wasAnyHeld = false;
         bool _isAnyHeld = false;
         bool _wasDragging = false;
+        bool _startedDragging = false;
 
         public bool AnyClicked { get { return _anyClicked; } }
         public bool IsDragging {
             get {
-                return _isAnyHeld && _wasAnyHeld && (_dragDisplacement > 5);
+                return _startedDragging || (_isAnyHeld && _wasAnyHeld && (_dragDisplacement > 1));
             }
         }
 
@@ -55,6 +56,7 @@ namespace RenderingEngine.Logic
         public float DragDeltaY { get { return _dragDeltaY; } }
         public float DragDisplacement { get { return _dragDisplacement; } }
         public bool WasDragging { get { return _wasDragging; } }
+        public bool StartedDragging { get { return _startedDragging; } }
 
         float _dragStartX;
         float _dragStartY;
@@ -90,6 +92,7 @@ namespace RenderingEngine.Logic
             _dragDisplacement = 0;
             _displacementStartX = x;
             _displacementStartY = y;
+            _startedDragging = true;
         }
 
         private void CalculateDragDeltas(float x, float y)
@@ -120,6 +123,7 @@ namespace RenderingEngine.Logic
             _wasAnyHeld = _isAnyHeld;
             _wasAnyClicked = _anyClicked;
             _anyClicked = false;
+            _startedDragging = false;
 
             for (int i = 0; i < 3; i++)
             {

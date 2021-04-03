@@ -95,6 +95,11 @@ namespace RenderingEngine.Rendering.ImmediateMode
             _arcDrawer.DrawFilledCircle(x0, y0, r, edges);
         }
 
+        public void DrawFilledCircle(float x0, float y0, float r)
+        {
+            _arcDrawer.DrawFilledCircle(x0, y0, r);
+        }
+
         public void DrawFilledArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle)
         {
             _arcDrawer.DrawFilledArc(xCenter, yCenter, radius, startAngle, endAngle);

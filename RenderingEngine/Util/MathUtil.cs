@@ -55,5 +55,10 @@ namespace RenderingEngine.Util
         {
             return new PointF(a.X - b.X, a.Y - b.Y);
         }
+
+        public static PointF Add(PointF a, PointF b)
+        {
+            return new PointF(a.X + b.X, a.Y + b.Y);
+        }
     }
 }

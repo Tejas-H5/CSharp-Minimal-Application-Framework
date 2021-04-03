@@ -214,6 +214,12 @@ namespace RenderingEngine.Rendering
             _geometryDrawer.DrawFilledCircle(x0, y0, r, edges);
         }
 
+        public static void DrawFilledCircle(float x0, float y0, float r)
+        {
+            StopUsingTextTexture();
+            _geometryDrawer.DrawFilledCircle(x0, y0, r);
+        }
+
         public static void DrawQuad(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
             float u0 = 0.0f, float v0 = 0.0f, float u1 = 0.0f, float v1 = 1f, float u2 = 1, float v2 = 1, float u3 = 1, float v3 = 0)
         {

@@ -24,6 +24,11 @@ namespace RenderingEngine.Rendering.ImmediateMode
             DrawFilledArc(x0, y0, r, 0, MathF.PI * 2, edges);
         }
 
+        public void DrawFilledCircle(float x0, float y0, float r)
+        {
+            DrawFilledArc(x0, y0, r, 0, MathF.PI * 2);
+        }
+
         public void DrawFilledArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle)
         {
             float deltaAngle = _circleEdgeLength / radius;

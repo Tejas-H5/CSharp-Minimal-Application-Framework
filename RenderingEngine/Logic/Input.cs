@@ -27,8 +27,8 @@ namespace RenderingEngine.Logic
         }
 
 
-        public static float MouseX { get { return _window.MousePosition.X; } }
-        public static float MouseY { get { return _window.Height - _window.MousePosition.Y; } }
+        public static float MouseX { get { return _mouseInputManager.MouseX; } }
+        public static float MouseY { get { return _mouseInputManager.MouseY; } }
 
         // -------- mouseInputManager wrappers
         private static MouseInputManager _mouseInputManager;

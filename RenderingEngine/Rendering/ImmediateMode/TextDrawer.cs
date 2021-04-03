@@ -91,7 +91,23 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         public float GetCharWidth(char c)
         {
-            return _activeFont.FontAtlas.GetCharacterSize(c).Width;
+            if (_activeFont.FontAtlas.IsValidCharacter(c))
+            {
+                return _activeFont.FontAtlas.GetCharacterSize(c).Width;
+            }
+
+
+            float spaceWidth = _activeFont.FontAtlas.GetCharacterSize('|').Width;
+
+            switch (c)
+            {
+                case ' ':
+                    return spaceWidth;
+                case '\t':
+                    return 4 * spaceWidth;
+            }
+
+            return 0;
         }
 
         public float GetCharHeight(char c)
@@ -119,23 +135,37 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         //TODO: IMPLEMENT tabs and newlines
         //And vertical/horizontal aiignment features
-        public void DrawText(string text, float x, float y, float scale = 1.0f)
+        public void DrawText(string text, float startX, float startY, float scale = 1.0f)
         {
             CTX.SetTexture(_activeFont.FontTexture);
+
+            float x = startX;
+            float y = startY;
 
             for (int i = 0; i < text.Length; i++)
             {
                 char c = text[i];
-                SizeF size = GetCharSize(c);
 
-                if (c != ' ')
+                if (_activeFont.FontAtlas.IsValidCharacter(c))
                 {
+                    SizeF size = GetCharSize(c);
                     Rect2D uv = _activeFont.FontAtlas.GetCharacterUV(c);
 
                     _geomDrawer.DrawRect(new Rect2D(x, y, x + size.Width * scale, y + size.Height * scale), uv);
+
+                    x += size.Width * scale;
+                }
+                else
+                {
+                    x += GetCharWidth(c);
+
+                    if(c == '\n')
+                    {
+                        x = startX;
+                        y -= _activeFont.FontAtlas.CharHeight + 2;
+                    }
                 }
 
-                x += size.Width * scale;
             }
         }
 
@@ -145,6 +175,37 @@ namespace RenderingEngine.Rendering.ImmediateMode
             {
                 item.Value.FontTexture.Dispose();
             }
+        }
+
+        public float GetStringHeight(string s)
+        {
+            float height = 0;
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (s[i] == '\n')
+                    height += GetCharHeight('|') + 2;
+            }
+
+            return height;
+        }
+
+        public float GetStringWidth(string s)
+        {
+            float maxWidth = 0;
+            float width = 0;
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                width += GetCharWidth(s[i]);
+
+                if (s[i] == '\n')
+                    width = 0;
+
+                maxWidth = MathF.Max(width, maxWidth);
+            }
+
+            return maxWidth;
         }
     }
 }

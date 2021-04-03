@@ -26,7 +26,7 @@ namespace RenderingEngine.Rendering.Text
     //concept taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
     public class FontAtlas
     {
-        public const string DefaultCharacters = " !#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'";
+        public const string DefaultCharacters = "!#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'";
         private Font _systemFont;
         private Bitmap _bitmap;
         private Dictionary<char, Rect2D> _characterQuadCoords;
@@ -61,7 +61,7 @@ namespace RenderingEngine.Rendering.Text
 
         public Rect2D GetCharacterUV(char c)
         {
-            if (!_characterQuadCoords.ContainsKey(c))
+            if (!IsValidCharacter(c))
             {
                 c = '?';
             }
@@ -76,6 +76,11 @@ namespace RenderingEngine.Rendering.Text
                 normalized.Width * _bitmap.Width,
                 normalized.Height * _bitmap.Height
                 );
+        }
+
+        public bool IsValidCharacter(char c)
+        {
+            return _characterQuadCoords.ContainsKey(c);
         }
 
         private static Font GenerateSystemFontObject(FontImportSettings fontSettings)
@@ -174,10 +179,6 @@ namespace RenderingEngine.Rendering.Text
 
         private SizeF GetCharcterSize(FontImportSettings fontSettings, Font font, Graphics g, char c)
         {
-            //Spaces will have a width of 0 by themselves, so we need to use another character to calculate it's width instead
-            if (c == ' ')
-                c = '|';
-
             return g.MeasureString(c.ToString(), font, fontSettings.FontSize, StringFormat.GenericTypographic);
         }
 

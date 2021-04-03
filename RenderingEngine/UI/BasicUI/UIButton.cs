@@ -50,7 +50,7 @@ namespace RenderingEngine.UI.BasicUI
             _backgroundRect.Draw(_isMouseOver, _isMouseDown);
 
             float scale = 1;
-            float textHeight = scale * CTX.GetCharHeight();
+            float textHeight = scale * CTX.GetStringHeight(_text);
             float textWidth = scale * CTX.GetStringWidth(_text);
 
             CTX.SetDrawColor(TextColor);

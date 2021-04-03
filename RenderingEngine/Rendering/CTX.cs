@@ -32,6 +32,7 @@ namespace RenderingEngine.Rendering
         private static TextureManager _textureManager;
 
         private static bool _drawingText = false;
+
         private static bool _textDrawingCodeCalledSetTexture = false;
         private static Texture _previousNonTextTexture = null;
 
@@ -187,13 +188,12 @@ namespace RenderingEngine.Rendering
 
         public static float GetStringWidth(string s)
         {
-            float width = 0;
-            for(int i = 0; i < s.Length; i++)
-            {
-                width += GetCharWidth(s[i]);
-            }
+            return _textDrawer.GetStringWidth(s);
+        }
 
-            return width;
+        public static float GetStringHeight(string text)
+        {
+            return _textDrawer.GetStringHeight(text);
         }
 
 

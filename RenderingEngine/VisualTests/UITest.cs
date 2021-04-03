@@ -60,7 +60,7 @@ namespace RenderingEngine.VisualTests
             //Add a button
             UIButton button = new UIButton();
             button.SetAnchoringPositionCenter(0,0, 1, 1);
-            button.SetRectPositionSize(100, 100, 50, 50);
+            button.SetRectPositionSize(200, 200, 50, 50);
 
             //button.SetAnchoring(new Rect2D(0, 0, 1, 1));
             //button.SetRectOffset(new Rect2D(-20, -20, -20, -20));

@@ -41,6 +41,8 @@ namespace RenderingEngine.Logic
             Input.Init(this);
         }
 
+        bool _init = false;
+
         protected override void OnLoad()
         {
             _program.Start();
@@ -48,6 +50,9 @@ namespace RenderingEngine.Logic
             IsVisible = true;
 
             base.OnLoad();
+
+            _init = true;
+            _program.Resize();
         }
 
         protected override void OnUpdateFrame(FrameEventArgs args)
@@ -95,6 +100,8 @@ namespace RenderingEngine.Logic
 
         protected override void OnResize(ResizeEventArgs e)
         {
+            if (!_init)
+                return;
             base.OnResize(e);
 
             GL.Viewport(0, 0, Size.X, Size.Y);

@@ -14,8 +14,8 @@ namespace RenderingEngine.UI.BasicUI
     {
         public UIPanel()
         {
-            _anchoring = new Rect2D(0, 0,1, 1);
-            _rectOffset = new Rect2D(0, 0, 0, 0);
+            SetAnchoringOffset(new Rect2D(0, 0,1, 1));
+            SetRectOffset(new Rect2D(0, 0, 0, 0));
             _backgroundRect = new UIBackgroundRect(this);
         }
 
@@ -40,6 +40,5 @@ namespace RenderingEngine.UI.BasicUI
 
             _backgroundRect.Draw(isMouseOver: _isMouseOver, isMouseDown: _isMouseDown);
         }
-
     }
 }

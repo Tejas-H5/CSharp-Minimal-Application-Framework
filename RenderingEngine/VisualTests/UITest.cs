@@ -25,7 +25,6 @@ namespace RenderingEngine.VisualTests
             CTX.SetClearColor(1, 1, 1, 1);
 
             //CTX.SetCurrentFont("Consolas", 24);
-
             InitUI();
         }
 
@@ -39,12 +38,12 @@ namespace RenderingEngine.VisualTests
 
         private void InitUI()
         {
-            UIPanel top = GeneratePanel();
-            top.SetAnchoring(new Rect2D(0, 0.5f, 1, 1));
+            UINode top = GeneratePanel();
+            top.SetAnchoringOffset(new Rect2D(0, 0.5f, 1, 1));
             UIRoot.AddChild(top);
 
             UIPanel bottom = GeneratePanel();
-            bottom.SetAnchoring(new Rect2D(0, 0f, 1f, 0.5f));
+            bottom.SetAnchoringOffset(new Rect2D(0, 0f, 1f, 0.5f));
             UIRoot.AddChild(bottom);
 
             //Create a golden ratio spiral
@@ -60,13 +59,17 @@ namespace RenderingEngine.VisualTests
 
             //Add a button
             UIButton button = new UIButton();
-            button.SetAnchoring(new Rect2D(0, 0, 1, 1));
-            button.SetRectOffset(new Rect2D(-20, -20, -20, -20));
-            button.Text = "Basdruh XD";
+            button.SetAnchoringPositionSize(0,0);
+            button.SetRectPositionSize(100, 100, 50, 50);
+
+            //button.SetAnchoring(new Rect2D(0, 0, 1, 1));
+            //button.SetRectOffset(new Rect2D(-20, -20, -20, -20));
+            button.Text = "Absolute positioning x=100,y=100, \n width and height = 50, center = 0.5,0.5, ";
             button.TextColor = new Color4(0, 0, 0, 1f);
             button.BackgroundRect.Color = new Color4(0.7f, 0.7f, 0.7f, 1f);
             button.BackgroundRect.ClickedColor = new Color4(1f, 1f, 1f, 1f);
             //button.OnClicked += Button_OnClicked;
+
             top.AddChild(button);
         }
 
@@ -78,11 +81,11 @@ namespace RenderingEngine.VisualTests
         private UIPanel Generate2PanelsVer(UINode attatchTo, bool top)
         {
             UIPanel subPanelTop = GeneratePanel();
-            subPanelTop.SetAnchoring(new Rect2D(0, 0.5f, 1, 1));
+            subPanelTop.SetAnchoringOffset(new Rect2D(0, 0.5f, 1, 1));
             attatchTo.AddChild(subPanelTop);
 
             UIPanel subPanelBottom = GeneratePanel();
-            subPanelBottom.SetAnchoring(new Rect2D(0, 0f, 1f, 0.5f));
+            subPanelBottom.SetAnchoringOffset(new Rect2D(0, 0f, 1f, 0.5f));
             attatchTo.AddChild(subPanelBottom);
 
             if (top)
@@ -94,11 +97,11 @@ namespace RenderingEngine.VisualTests
         private UIPanel Generate2PanelsHor(UINode attatchTo, bool left)
         {
             UIPanel subPanelLeft = GeneratePanel();
-            subPanelLeft.SetAnchoring(new Rect2D(0f,0f,0.5f,1f));
+            subPanelLeft.SetAnchoringOffset(new Rect2D(0f,0f,0.5f,1f));
             attatchTo.AddChild(subPanelLeft);
 
             UIPanel subPanelRight = GeneratePanel();
-            subPanelRight.SetAnchoring(new Rect2D(0.5f, 0f, 1f, 1f));
+            subPanelRight.SetAnchoringOffset(new Rect2D(0.5f, 0f, 1f, 1f));
             attatchTo.AddChild(subPanelRight);
 
             if (left)
@@ -133,6 +136,7 @@ namespace RenderingEngine.VisualTests
             CTX.Viewport2D(Window.Width, Window.Height);
 
             _UIRoot.Resize();
+
         }
 
         public override void Update(double deltaTime)

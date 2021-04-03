@@ -23,9 +23,11 @@ namespace RenderingEngine.UI
         protected Rect2D _rect;
 
         Rect2D _rectOffset;
+        Rect2D _anchoring;
         bool _positionSize = false;
 
-        Rect2D _anchoring;
+        public Rect2D Anchoring { get { return _anchoring; }}
+        public Rect2D RectOffset { get { return _rectOffset; } }
 
         private bool _dirty = true;
 
@@ -62,10 +64,10 @@ namespace RenderingEngine.UI
             _anchoring = anchor;
         }
 
-        public void SetAnchoringPositionSize(float x, float y, float scaleX = 1, float scaleY = 1)
+        public void SetAnchoringPositionCenter(float x, float y, float centreX = 0.5f, float centreY = 0.5f)
         {
             _positionSize = true;
-            _anchoring = new Rect2D(x, y, scaleX, scaleY);
+            _anchoring = new Rect2D(x, y, centreX, centreY);
         }
 
         public virtual void Update(double deltaTime)
@@ -125,7 +127,7 @@ namespace RenderingEngine.UI
 
         private void UpdateRectPositionSize(Rect2D parentRect)
         {
-            //_anchoring contains the (still) normalized position position in X0 Y0 and scale in X1,Y1
+            //_anchoring contains the (still) normalized position position in X0 Y0 and normalized center in X1,Y1
             //_rectOffset contains position in X0, Y0 and width, heighit in X1 Y1
 
             float anchorLeft = parentRect.Left + _anchoring.X0 * parentRect.Width;
@@ -134,15 +136,13 @@ namespace RenderingEngine.UI
             float X = _rectOffset.X0 + anchorLeft;
             float Y = _rectOffset.Y0 + anchorBottom;
 
-            float scaleX = _anchoring.X1;
-            float scaleY = _anchoring.Y1;
-            float halfWidth = scaleX * _rectOffset.X1 / 2;
-            float halfHeight = scaleY * _rectOffset.Y1 / 2;
+            float width = _rectOffset.X1;
+            float height = _rectOffset.Y1;
 
-            float left =+ X - halfWidth;
-            float bottom =  Y - halfHeight;
-            float right = X + halfWidth;
-            float top = Y + halfHeight;
+            float left = X - _anchoring.X1 * width;
+            float bottom =  Y - _anchoring.Y1 * height;
+            float right = X + (1.0f - _anchoring.X1) * width;
+            float top = Y + (1.0f - _anchoring.Y1) * height;
 
             _rect = new Rect2D(left, bottom, right, top);
         }

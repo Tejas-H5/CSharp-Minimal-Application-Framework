@@ -59,12 +59,14 @@ namespace RenderingEngine.VisualTests
 
             //Add a button
             UIButton button = new UIButton();
-            button.SetAnchoringPositionSize(0,0);
+            button.SetAnchoringPositionCenter(0,0, 1, 1);
             button.SetRectPositionSize(100, 100, 50, 50);
 
             //button.SetAnchoring(new Rect2D(0, 0, 1, 1));
             //button.SetRectOffset(new Rect2D(-20, -20, -20, -20));
-            button.Text = "Absolute positioning x=100,y=100, \n width and height = 50, center = 0.5,0.5, ";
+            button.Text = $"Absolute positioning x={button.RectOffset.X0},y={button.RectOffset.Y0}, " +
+                $"\n width={button.RectOffset.X1} and height = {button.RectOffset.Y1}, " +
+                $"\n center = {button.Anchoring.X1},{button.Anchoring.Y1}, ";
             button.TextColor = new Color4(0, 0, 0, 1f);
             button.BackgroundRect.Color = new Color4(0.7f, 0.7f, 0.7f, 1f);
             button.BackgroundRect.ClickedColor = new Color4(1f, 1f, 1f, 1f);

@@ -40,15 +40,11 @@ namespace RenderingEngine.Logic
             }
         }
 
-        public float MouseX { get { return _mouseX; } }
-        public float MouseY { get { return _mouseY; } }
+        public float MouseX { get { return _window.MouseState.Position.X; } }
+        public float MouseY { get { return _window.Height - _window.MouseState.Position.Y; } }
 
-        float _mouseX;
-        float _mouseY;
-        float _prevMouseX;
-        float _prevMouseY;
-        public float MouseXDelta { get { return MouseX - _prevMouseX; } }
-        public float MouseYDelta { get { return MouseY - _prevMouseY; } }
+        public float MouseXDelta { get { return _window.MouseState.Delta.X; } }
+        public float MouseYDelta { get { return _window.MouseState.Delta.Y; } }
 
         public float DragStartX { get { return _dragStartX; } }
         public float DragStartY { get { return _dragStartY; } }
@@ -134,16 +130,13 @@ namespace RenderingEngine.Logic
 
             _isAnyHeld = _wasAnyClicked && _anyClicked;
 
-            _mouseX = _window.MousePosition.X;
-            _mouseY = _window.Height - _window.MousePosition.Y;
-
             if (!_wasAnyHeld && _isAnyHeld)
             {
-                SetDragDeltas(_mouseX, _mouseY);
+                SetDragDeltas(MouseX, MouseY);
             }
             else if (_wasAnyHeld && _isAnyHeld)
             {
-                CalculateDragDeltas(_mouseX, _mouseY);
+                CalculateDragDeltas(MouseX, MouseY);
             }
         }
     }

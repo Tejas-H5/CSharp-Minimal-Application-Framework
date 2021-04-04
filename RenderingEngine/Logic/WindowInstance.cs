@@ -31,7 +31,12 @@ namespace RenderingEngine.Logic
         public float CurrentFPS { get { return _fps; } }
 
         public WindowInstance(EntryPoint program)
-            : base(GameWindowSettings.Default, new NativeWindowSettings {
+            : base(new GameWindowSettings
+            {
+                IsMultiThreaded = false
+            }, 
+            new NativeWindowSettings 
+            {
                 StartVisible = false
             })
         {
@@ -57,20 +62,20 @@ namespace RenderingEngine.Logic
 
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
+            base.OnUpdateFrame(args);
+
             if (KeyboardState.IsKeyDown(Keys.Escape))
             {
                 Close();
             }
 
-            TrackFPS(args);
+            Input.Update();
 
             _program.Update(args.Time);
 
-            Input.Update();
+            TrackFPS(args);
 
             updateFrames++;
-
-            base.OnUpdateFrame(args);
         }
 
         private void TrackFPS(FrameEventArgs args)
@@ -91,11 +96,11 @@ namespace RenderingEngine.Logic
 
         protected override void OnRenderFrame(FrameEventArgs args)
         {
+            base.OnRenderFrame(args);
+
             _program.Render(args.Time);
 
             renderFrames++;
-
-            base.OnRenderFrame(args);
         }
 
         protected override void OnResize(ResizeEventArgs e)

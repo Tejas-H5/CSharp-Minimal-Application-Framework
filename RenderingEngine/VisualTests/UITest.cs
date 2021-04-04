@@ -20,7 +20,6 @@ namespace RenderingEngine.VisualTests
             Window.Title = "UI Test";
 
             Window.RenderFrequency = 60;
-            Window.UpdateFrequency = 120;
 
             CTX.SetClearColor(1, 1, 1, 1);
 
@@ -125,6 +124,9 @@ namespace RenderingEngine.VisualTests
         public override void Render(double deltaTime)
         {
             CTX.Clear();
+
+            CTX.SetDrawColor(0, 0, 0, 1);
+            CTX.DrawFilledCircle(Input.MouseX, Input.MouseY, 10);
 
             _UIRoot.Draw(deltaTime);
 

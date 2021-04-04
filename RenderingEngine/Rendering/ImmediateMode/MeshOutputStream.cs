@@ -65,6 +65,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
                 Flush();
                 return true;
             }
+
             return false;
         }
 

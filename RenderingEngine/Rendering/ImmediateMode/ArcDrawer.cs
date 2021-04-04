@@ -45,6 +45,9 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         public void DrawFilledArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount)
         {
+            if (edgeCount < 0)
+                return;
+
             float deltaAngle = (endAngle - startAngle) / edgeCount;
 
             _ngonDrawer.BeginNGon(new Vertex(xCenter, yCenter, 0), edgeCount + 2);

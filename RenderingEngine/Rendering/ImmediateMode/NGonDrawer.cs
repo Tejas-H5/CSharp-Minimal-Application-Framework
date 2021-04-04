@@ -11,6 +11,8 @@ namespace RenderingEngine.Rendering.ImmediateMode
         uint _polygonFirst;
         uint _polygonSecond = 0;
         uint _polygonCount = 0;
+        Vertex _firstVertex;
+        Vertex _secondVertex;
 
         public NGonDrawer(IGeometryOutput outputStream)
         {
@@ -27,6 +29,8 @@ namespace RenderingEngine.Rendering.ImmediateMode
             _outputStream.FlushIfRequired(n, 3 * (n - 2));
 
             _polygonFirst = _outputStream.AddVertex(v1);
+            _firstVertex = v1;
+
             _polygonCount = 1;
         }
 
@@ -44,20 +48,11 @@ namespace RenderingEngine.Rendering.ImmediateMode
             }
 
 
-            uint currentFirst = _polygonFirst;
-            uint currentSecond = _polygonSecond;
-
-            /*
             if (_outputStream.FlushIfRequired(1, 3))
             {
-                _backingMesh.Vertices[0] = _backingMesh.Vertices[currentFirst];
-                _backingMesh.Vertices[1] = _backingMesh.Vertices[currentSecond];
-                _polygonFirst = 0;
-                _polygonSecond = 1;
-
-                _currentVertexIndex = 2;
+                _polygonFirst = _outputStream.AddVertex(_firstVertex);
+                _polygonSecond = _outputStream.AddVertex(_secondVertex);
             }
-            */
 
 
             _polygonCount++;
@@ -66,11 +61,13 @@ namespace RenderingEngine.Rendering.ImmediateMode
             _outputStream.MakeTriangle(_polygonFirst, _polygonSecond, polygonThird);
 
             _polygonSecond = polygonThird;
+            _secondVertex = v;
         }
 
         private void AppendSecondVertexToNGon(Vertex v)
         {
             _polygonSecond = _outputStream.AddVertex(v);
+            _secondVertex = v;
 
             _polygonCount = 2;
         }

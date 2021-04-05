@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RenderingEngine.Rendering.ImmediateMode
 {
-    class ArcDrawer
+    class ArcDrawer : GeometryDrawer
     {
         NGonDrawer _ngonDrawer;
         int _circleEdgeLength;
@@ -19,17 +19,24 @@ namespace RenderingEngine.Rendering.ImmediateMode
             _maxCircleEdgeCount = maxCircleEdgeCount;
         }
 
-        public void DrawFilledCircle(float x0, float y0, float r, int edges)
+        public void DrawCircle(float x0, float y0, float r, int edges)
         {
-            DrawFilledArc(x0, y0, r, 0, MathF.PI * 2, edges);
+            DrawArc(x0, y0, r, 0, MathF.PI * 2, edges);
         }
 
-        public void DrawFilledCircle(float x0, float y0, float r)
+        public void DrawCircle(float x0, float y0, float r)
         {
-            DrawFilledArc(x0, y0, r, 0, MathF.PI * 2);
+            DrawArc(x0, y0, r, 0, MathF.PI * 2);
         }
 
-        public void DrawFilledArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle)
+        public void DrawArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle)
+        {
+            int edgeCount = GetEdgeCount(radius, startAngle, endAngle);
+
+            DrawArc(xCenter, yCenter, radius, startAngle, endAngle, edgeCount);
+        }
+
+        private int GetEdgeCount(float radius, float startAngle, float endAngle)
         {
             float deltaAngle = _circleEdgeLength / radius;
             int edgeCount = (int)((endAngle - startAngle) / deltaAngle) + 1;
@@ -39,11 +46,10 @@ namespace RenderingEngine.Rendering.ImmediateMode
                 edgeCount = _maxCircleEdgeCount;
             }
 
-            DrawFilledArc(xCenter, yCenter, radius, startAngle, endAngle, edgeCount);
+            return edgeCount;
         }
 
-
-        public void DrawFilledArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount)
+        public void DrawArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount)
         {
             if (edgeCount < 0)
                 return;
@@ -61,6 +67,52 @@ namespace RenderingEngine.Rendering.ImmediateMode
             }
 
             _ngonDrawer.EndNGon();
+        }
+
+        public void DrawCircleOutline(float thickness, float x0, float y0, float r, int edges)
+        {
+            DrawArcOutline(thickness, x0, y0, r, 0, MathF.PI * 2, edges);
+        }
+
+        public void DrawCircleOutline(float thickness, float x0, float y0, float r)
+        {
+            DrawArcOutline(thickness, x0, y0, r, 0, MathF.PI * 2);
+        }
+        public void DrawArcOutline(float thickness, float x0, float y0, float r, float startAngle, float endAngle)
+        {
+            int edges = GetEdgeCount(r, startAngle, endAngle);
+            DrawArcOutline(thickness, x0, y0, r, startAngle, endAngle, edges);
+        }
+
+        public void DrawArcOutline(float thickness, float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount)
+        {
+            if (edgeCount < 0)
+                return;
+
+            radius += thickness / 2  - 0.1f;
+
+            float deltaAngle = (endAngle - startAngle) / edgeCount;
+
+            bool first = true;
+            for (float angle = startAngle; angle < endAngle + deltaAngle - 0.001f; angle += deltaAngle)
+            {
+                float X = xCenter + radius * MathF.Sin(angle);
+                float Y = yCenter + radius * MathF.Cos(angle);
+
+                if (first)
+                {
+                    _outlineDrawer.BeginPolyLine(X, Y, thickness, CapType.None);
+                    first = false;
+                }
+                else if (angle + deltaAngle < endAngle + 0.00001f)
+                {
+                    _outlineDrawer.AppendToPolyLine(X, Y);
+                }
+                else
+                {
+                    _outlineDrawer.EndPolyLine(X, Y);
+                }
+            }
         }
     }
 }

@@ -42,6 +42,11 @@ namespace RenderingEngine.Rendering
         {
             _currentTexture = texture;
 
+            UseCurrentTexture();
+        }
+
+        public void UseCurrentTexture()
+        {
             if (_currentTexture == null)
             {
                 _nullTexture.Use(0);

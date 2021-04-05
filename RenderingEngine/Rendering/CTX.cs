@@ -27,7 +27,7 @@ namespace RenderingEngine.Rendering
 
         private static ImmediateModeShader _solidShader;
         private static MeshOutputStream _meshOutputStream;
-        private static GeometryDrawer _geometryDrawer;
+        private static CombinedDrawer _geometryDrawer;
         private static TextDrawer _textDrawer;
         private static TextureManager _textureManager;
 
@@ -40,8 +40,8 @@ namespace RenderingEngine.Rendering
             int bufferSize = 4096;
             _meshOutputStream = new MeshOutputStream(bufferSize, 4 * bufferSize);
 
-            _geometryDrawer = new GeometryDrawer(_meshOutputStream);
-            _textDrawer = new TextDrawer(_geometryDrawer);
+            _geometryDrawer = new CombinedDrawer(_meshOutputStream);
+            _textDrawer = new TextDrawer(_geometryDrawer.QuadDrawer);
 
             _solidShader = new ImmediateModeShader();
             _solidShader.Use();
@@ -60,7 +60,7 @@ namespace RenderingEngine.Rendering
 
         public static void Clear()
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
         }
 
         public static void Flush()
@@ -91,6 +91,9 @@ namespace RenderingEngine.Rendering
 
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
+            GL.Enable(EnableCap.StencilTest);
+            GL.StencilFunc(StencilFunction.Equal, 0, 0xFF);
         }
 
         public static void SetDrawColor(float r, float g, float b, float a)
@@ -208,16 +211,28 @@ namespace RenderingEngine.Rendering
 
         }
 
-        public static void DrawFilledCircle(float x0, float y0, float r, int edges)
+        public static void DrawCircle(float x0, float y0, float r, int edges)
         {
             StopUsingTextTexture();
-            _geometryDrawer.DrawFilledCircle(x0, y0, r, edges);
+            _geometryDrawer.DrawCircle(x0, y0, r, edges);
         }
 
-        public static void DrawFilledCircle(float x0, float y0, float r)
+        public static void DrawCircle(float x0, float y0, float r)
         {
             StopUsingTextTexture();
-            _geometryDrawer.DrawFilledCircle(x0, y0, r);
+            _geometryDrawer.DrawCircle(x0, y0, r);
+        }
+
+        public static void DrawCircleOutline(float thickness, float x0, float y0, float r, int edges)
+        {
+            StopUsingTextTexture();
+            _geometryDrawer.DrawCircleOutline(thickness, x0, y0, r, edges);
+        }
+
+        public static void DrawCircleOutline(float thickness, float x0, float y0, float r)
+        {
+            StopUsingTextTexture();
+            _geometryDrawer.DrawCircleOutline(thickness, x0, y0, r);
         }
 
         public static void DrawQuad(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
@@ -247,23 +262,54 @@ namespace RenderingEngine.Rendering
             _geometryDrawer.DrawRect(x0, y0, x1, y1, u0, v0, u1, v1);
         }
 
-        public static void DrawFilledArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle)
+
+        public static void DrawRectOutline(float thickness, Rect2D rect)
         {
-            StopUsingTextTexture();
-            _geometryDrawer.DrawFilledArc(xCenter, yCenter, radius, startAngle, endAngle);
+            _geometryDrawer.DrawRectOutline(thickness, rect);
+        }
+
+        public static void DrawRectOutline(float thickness, float x0, float y0, float x1, float y1)
+        {
+            _geometryDrawer.DrawRectOutline(thickness, x0, y0, x1, y1);
         }
 
 
-        public static void DrawFilledArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount)
+        public static void DrawArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle)
         {
             StopUsingTextTexture();
-            _geometryDrawer.DrawFilledArc(xCenter, yCenter, radius, startAngle, endAngle, edgeCount);
+            _geometryDrawer.DrawArc(xCenter, yCenter, radius, startAngle, endAngle);
         }
+
+
+        public static void DrawArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount)
+        {
+            StopUsingTextTexture();
+            _geometryDrawer.DrawArc(xCenter, yCenter, radius, startAngle, endAngle, edgeCount);
+        }
+
+        public static void DrawArcOutline(float thickness, float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount)
+        {
+            StopUsingTextTexture();
+            _geometryDrawer.DrawArcOutline(thickness, xCenter, yCenter, radius, startAngle, endAngle, edgeCount);
+        }
+
+        public static void DrawArcOutline(float thickness, float xCenter, float yCenter, float radius, float startAngle, float endAngle)
+        {
+            StopUsingTextTexture();
+            _geometryDrawer.DrawArcOutline(thickness, xCenter, yCenter, radius, startAngle, endAngle);
+        }
+
 
         public static void DrawLine(float x0, float y0, float x1, float y1, float thickness, CapType cap)
         {
             StopUsingTextTexture();
             _geometryDrawer.DrawLine(x0, y0, x1, y1, thickness, cap);
+        }
+
+        public static void DrawLineOutline(float outlineThickness, float x0, float y0, float x1, float y1, float thickness, CapType cap)
+        {
+            StopUsingTextTexture();
+            _geometryDrawer.DrawLineOutline(outlineThickness, x0, y0, x1, y1, thickness, cap);
         }
 
         public static void BeginPolyLine(float x0, float y0, float thickness, CapType cap)

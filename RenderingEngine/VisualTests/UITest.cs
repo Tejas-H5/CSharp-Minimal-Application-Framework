@@ -126,7 +126,7 @@ namespace RenderingEngine.VisualTests
             CTX.Clear();
 
             CTX.SetDrawColor(0, 0, 0, 1);
-            CTX.DrawFilledCircle(Input.MouseX, Input.MouseY, 10);
+            CTX.DrawCircle(Input.MouseX, Input.MouseY, 10);
 
             _UIRoot.Draw(deltaTime);
 

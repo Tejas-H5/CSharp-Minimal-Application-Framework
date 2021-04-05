@@ -97,7 +97,7 @@ namespace RenderingEngine.VisualTests
             }
 
             
-            CTX.DrawFilledArc(Window.Width / 2, Window.Height / 2, MathF.Min(Window.Height / 2f,Window.Width / 2f), a, MathF.PI*2 + a, 6);
+            CTX.DrawArc(Window.Width / 2, Window.Height / 2, MathF.Min(Window.Height / 2f,Window.Width / 2f), a, MathF.PI*2 + a, 6);
 
             CTX.SetTexture(_tex);
             //RenderingContext.DrawFilledArc(window.Width / 2, window.Height / 2, MathF.Min(window.Height / 2f, window.Width / 2f)/2f, a/2f, MathF.PI * 2 + a/2f, 6);

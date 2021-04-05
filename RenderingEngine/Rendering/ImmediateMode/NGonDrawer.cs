@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RenderingEngine.Rendering.ImmediateMode
 {
-    class NGonDrawer
+    class NGonDrawer : GeometryDrawer
     {
         IGeometryOutput _outputStream;
         bool _polygonBegun = false;

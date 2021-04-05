@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RenderingEngine.Rendering.ImmediateMode
 {
-    class QuadDrawer
+    class QuadDrawer : GeometryDrawer
     {
         IGeometryOutput _outputStream;
 
@@ -61,6 +61,20 @@ namespace RenderingEngine.Rendering.ImmediateMode
         public void DrawRect(Rect2D rect)
         {
             DrawRect(rect, new Rect2D(0, 1, 1, 0));
+        }
+
+        public void DrawRectOutline(float thickness, Rect2D rect)
+        {
+            DrawRectOutline(thickness, rect.X0, rect.Y0, rect.X1, rect.Y1);
+        }
+
+        public void DrawRectOutline(float thickness, float x0, float y0, float x1, float y1)
+        {
+            DrawRect(x0 - thickness, y0 - thickness, x1, y0);
+            DrawRect(x0, y1, x1 + thickness, y1 + thickness);
+
+            DrawRect(x0 - thickness, y0, x0, y1 + thickness);
+            DrawRect(x1, y0 - thickness, x1+thickness, y1);
         }
     }
 }

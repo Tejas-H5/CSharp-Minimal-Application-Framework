@@ -6,7 +6,7 @@ using System.Text;
 namespace RenderingEngine.Rendering.ImmediateMode
 {
     //TODO: add support for 3D lines if needed
-    class PolyLineDrawer
+    class PolyLineDrawer : GeometryDrawer
     {
         IGeometryOutput _geometryOutput;
         LineDrawer _lineDrawer;
@@ -18,9 +18,15 @@ namespace RenderingEngine.Rendering.ImmediateMode
         }
 
 
+        bool _canStart = true;
+        bool _canEnd = true;
+
         float _thickness = 0;
         float _lastX;
         float _lastY;
+        float _lastPerpX;
+        float _lastPerpY;
+
         uint _lastV1;
         uint _lastV2;
         Vertex _lastV1Vert;
@@ -32,8 +38,15 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         CapType _capType;
 
+        //Can also be used to continue an unfinished polyline
         public void BeginPolyLine(float x, float y, float thickness, CapType cap)
         {
+            if (!_canStart)
+            {
+                AppendToPolyLine(x, y);
+                return;
+            }
+
             _thickness = thickness /= 2;
             _lastX = x;
             _lastY = y;
@@ -41,6 +54,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
             _count = 1;
             _geometryOutput.FlushIfRequired(4, 6);
         }
+        
 
         public void AppendToPolyLine(float x, float y) {
             float dirX = x - _lastX;
@@ -66,6 +80,8 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         private void StartLineSegment(float dirX, float dirY, float perpX, float perpY)
         {
+            _lastPerpX = perpX;
+            _lastPerpY = perpY;
             Vertex v1 = new Vertex(_lastX + perpX, _lastY + perpY, 0);
             Vertex v2 = new Vertex(_lastX - perpX, _lastY - perpY, 0);
 
@@ -81,14 +97,20 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         private void ExtendLineSegment(float perpX, float perpY)
         {
-            if(_geometryOutput.FlushIfRequired(4, 6))
+            float avPerpX = (perpX + _lastPerpX) / 2f;
+            float avPerpY = (perpY + _lastPerpY) / 2f;
+            _lastPerpX = perpX;
+            _lastPerpY = perpY;
+
+            if (_geometryOutput.FlushIfRequired(4, 6))
             {
                 _lastV1 = _geometryOutput.AddVertex(_lastV1Vert);
                 _lastV2 = _geometryOutput.AddVertex(_lastV2Vert);
             }
 
-            Vertex v3 = new Vertex(_lastX + perpX, _lastY + perpY, 0);
-            Vertex v4 = new Vertex(_lastX - perpX, _lastY - perpY, 0);
+
+            Vertex v3 = new Vertex(_lastX + avPerpX, _lastY + avPerpY, 0);
+            Vertex v4 = new Vertex(_lastX - avPerpX, _lastY - avPerpY, 0);
 
             _lastV3 = _geometryOutput.AddVertex(v3);
             _lastV4 = _geometryOutput.AddVertex(v4);
@@ -104,6 +126,12 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         public void EndPolyLine(float x, float y)
         {
+            if (!_canEnd)
+            {
+                AppendToPolyLine(x, y);
+                return;
+            }
+
             float dirX = x - _lastX;
             float dirY = y - _lastY;
 
@@ -114,6 +142,19 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
             _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle + MathF.PI);
+
+            _canStart = true;
+        }
+
+        public void DisableEnding()
+        {
+            _canEnd = false;
+            _canStart = false;
+        }
+
+        public void EnableEnding()
+        {
+            _canEnd = true;
         }
     }
 }

@@ -41,7 +41,7 @@ namespace RenderingEngine.VisualTests
             float y0 = Window.Height / 2;
             float r = MathF.Min(Window.Height, Window.Width) * 0.45f;
 
-            CTX.DrawFilledArc(x0, y0, r, a, b);
+            CTX.DrawArc(x0, y0, r, a, b);
 
             CTX.SetDrawColor(0, 0, 0, 0.5f);
             DrawHand(x0, y0, r, a);

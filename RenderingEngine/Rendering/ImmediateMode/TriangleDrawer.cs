@@ -8,7 +8,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
     // It's like a stringbuilder, but for an OpenGL mesh
     // And with slightly different intentions.
     // When fillrate isn't a bottleneck, this is a great optimization
-    public class TriangleDrawer
+    class TriangleDrawer : GeometryDrawer
     {
         IGeometryOutput _outputStream;
 
@@ -38,6 +38,14 @@ namespace RenderingEngine.Rendering.ImmediateMode
                new Vertex(new Vector3(x1, y1, 0), new Vector2(u1, v1)),
                new Vertex(new Vector3(x2, y2, 0), new Vector2(u2, v2))
                );
+        }
+
+        public void DrawTriangleOutline(float thickness, float x0, float y0, float x1, float y1, float x2, float y2)
+        {
+            _outlineDrawer.BeginPolyLine(x0, y0, thickness, CapType.None);
+            _outlineDrawer.AppendToPolyLine(x1, y1);
+            _outlineDrawer.AppendToPolyLine(x2, y2);
+            _outlineDrawer.EndPolyLine(x0, y0);
         }
     }
 }

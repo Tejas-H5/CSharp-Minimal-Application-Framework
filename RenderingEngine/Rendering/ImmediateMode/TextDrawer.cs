@@ -28,15 +28,15 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
     class TextDrawer : IDisposable
     {
-        GeometryDrawer _geomDrawer;
+        QuadDrawer _quadDrawer;
 
         FontAtlasTexture _activeFont;
         Dictionary<string, FontAtlasTexture> _allLoadedFonts;
 
-        public TextDrawer(GeometryDrawer geomDrawer)
+        public TextDrawer(QuadDrawer quadDrawer)
         {
             _allLoadedFonts = new Dictionary<string, FontAtlasTexture>();
-            _geomDrawer = geomDrawer;
+            _quadDrawer = quadDrawer;
 
             SetCurrentFont("", -1);
         }
@@ -151,7 +151,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
                     SizeF size = GetCharSize(c);
                     Rect2D uv = _activeFont.FontAtlas.GetCharacterUV(c);
 
-                    _geomDrawer.DrawRect(new Rect2D(x, y, x + size.Width * scale, y + size.Height * scale), uv);
+                    _quadDrawer.DrawRect(new Rect2D(x, y, x + size.Width * scale, y + size.Height * scale), uv);
 
                     x += size.Width * scale;
                 }
@@ -165,7 +165,6 @@ namespace RenderingEngine.Rendering.ImmediateMode
                         y -= _activeFont.FontAtlas.CharHeight + 2;
                     }
                 }
-
             }
         }
 

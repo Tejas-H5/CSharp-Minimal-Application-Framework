@@ -19,6 +19,15 @@ namespace RenderingEngine.Rendering.ImmediateMode
             }
         }
 
+        public Vertex GetVertex(uint i)
+        {
+            return _backingMesh.Vertices[i];
+        }
+
+        public uint GetIndex(uint i)
+        {
+            return _backingMesh.Indices[i];
+        }
 
         public MeshOutputStream(int vertexBufferSize, int indexBufferSize)
         {

@@ -45,12 +45,22 @@ namespace RenderingEngine.VisualTests
 
             CTX.DrawText(KeysToString(Input.CharactersDown), Window.Width / 2, Window.Height / 2);
 
+
             CTX.Flush();
         }
 
         public override void Update(double deltaTime)
         {
 
+            if (Input.IsAnyKeyPressed)
+            {
+                Console.WriteLine("PRessed: " + Input.CharactersPressed);
+            }
+
+            if (Input.IsAnyKeyReleased)
+            {
+                Console.WriteLine("Released: " + Input.CharactersReleased);
+            }
         }
     }
 }

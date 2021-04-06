@@ -9,6 +9,10 @@ namespace RenderingEngine.Logic
     class KeyboardInputManager
     {
         WindowInstance _window;
+
+        bool[] _prevKeyStates = new bool[(int)KeyCode.LastKey];
+        bool[] _keyStates = new bool[(int)KeyCode.LastKey];
+
         public KeyboardInputManager(WindowInstance window)
         {
             _window = window;
@@ -16,17 +20,22 @@ namespace RenderingEngine.Logic
 
         public bool IsKeyDown(KeyCode key)
         {
-            return _window.KeyboardState.IsKeyDown((Keys)key);
+            return _keyStates[(int)key];
+        }
+
+        private bool WasKeyDown(KeyCode key)
+        {
+            return _prevKeyStates[(int)key];
         }
 
         public bool IsKeyReleased(KeyCode key)
         {
-            return _window.KeyboardState.IsKeyReleased((Keys)key);
+            return WasKeyDown(key) && (!IsKeyDown(key));
         }
 
         public bool IsKeyPressed(KeyCode key)
         {
-            return _window.KeyboardState.IsKeyPressed((Keys)key);
+            return (!WasKeyDown(key)) && (IsKeyDown(key));
         }
 
         public bool IsShiftPressed {
@@ -85,37 +94,72 @@ namespace RenderingEngine.Logic
         }
 
         StringBuilder _charactersPressedSB = new StringBuilder();
+        StringBuilder _charactersReleasedSB = new StringBuilder();
         StringBuilder _charactersDownSB = new StringBuilder();
 
         string _charactersPressed = "";
         string _charactersDown = "";
+        string _charactersReleased = "";
 
-        public string CharactersPressed { get { return _charactersPressed;  } }
+        public string CharactersPressed { get { return _charactersPressed; } }
+        public string CharactersReleased { get { return _charactersReleased; } }
         public string CharactersDown { get { return _charactersDown; } }
 
 
         const string keyboardChars = "\t\b\n `1234567890-=qwertyuiop[]asdfghjkl;'\\zxcvbnm,./";
 
+        bool _anyKeyDown = false;
+        bool _anyKeyPressed = false;
+        bool _anyKeyReleased = false;
+
+        public bool IsAnyDown { get { return _anyKeyDown; } }
+        public bool IsAnyPressed { get { return _anyKeyPressed; } }
+        public bool IsAnyReleased { get { return _anyKeyReleased; } }
+
+
         public void Update()
         {
+            _anyKeyDown = false;
+            _anyKeyPressed = false;
+            _anyKeyReleased = false;
             _charactersPressedSB.Clear();
             _charactersDownSB.Clear();
+            _charactersReleasedSB.Clear();
 
-            for (int i = 0; i < keyboardChars.Length; i++)
+            for (int i = 0; i < _keyStates.Length; i++)
             {
-                KeyCode key = CharKeyMapping.CharToKey(keyboardChars[i]);
-                if (IsKeyPressed(key))
+                _prevKeyStates[i] = _keyStates[i];
+
+                KeyCode key = (KeyCode)i;
+                _keyStates[i] = _window.KeyboardState.IsKeyDown((Keys)key);
+                _anyKeyDown = _anyKeyDown || _keyStates[i];
+
+                bool pressed = (!_prevKeyStates[i] && _keyStates[i]);
+                bool released = (_prevKeyStates[i] && !_keyStates[i]);
+
+                char c = CharKeyMapping.KeyCodeToChar(key);
+                if (_keyStates[i])
                 {
-                    _charactersPressedSB.Append(keyboardChars[i]);
+                    _charactersDownSB.Append(c);
                 }
 
-                if (IsKeyDown(key))
+                if (pressed)
                 {
-                    _charactersDownSB.Append(keyboardChars[i]);
+                    _charactersPressedSB.Append(c);
                 }
+
+                if (released)
+                {
+                    _charactersReleasedSB.Append(c);
+                }
+
+
+                _anyKeyPressed = _anyKeyPressed || pressed;
+                _anyKeyReleased = _anyKeyReleased || released; 
             }
 
-            _charactersPressed = _charactersPressed.ToString();
+            _charactersPressed = _charactersPressedSB.ToString();
+            _charactersReleased = _charactersReleasedSB.ToString();
             _charactersDown = _charactersDownSB.ToString();
         }
     }

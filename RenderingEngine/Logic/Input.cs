@@ -87,6 +87,7 @@ namespace RenderingEngine.Logic
         }
 
         public static string CharactersPressed { get { return _keyboardManager.CharactersPressed; } }
+        public static string CharactersReleased { get { return _keyboardManager.CharactersReleased; } }
         public static string CharactersDown { get { return _keyboardManager.CharactersDown; } }
 
 
@@ -103,5 +104,9 @@ namespace RenderingEngine.Logic
         public static bool IsShiftReleased { get { return _keyboardManager.IsShiftReleased; } }
         public static bool IsCtrlReleased { get { return _keyboardManager.IsCtrlReleased; } }
         public static bool IsAltReleased { get { return _keyboardManager.IsAltReleased; } }
+
+        public static bool IsAnyKeyDown { get { return  _keyboardManager.IsAnyDown; } }
+        public static bool IsAnyKeyPressed { get { return  _keyboardManager.IsAnyPressed; } }
+        public static bool IsAnyKeyReleased { get { return _keyboardManager.IsAnyReleased; } }
     }
 }

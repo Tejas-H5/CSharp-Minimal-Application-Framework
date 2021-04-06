@@ -1,4 +1,5 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
+using RenderingEngine.Logic;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,12 +13,13 @@ public static class CharKeyMapping
     public static string CharToString(char c)
     {
         if (!IsSpecial(c))
-            return "" + c;
+            return c.ToString();
 
         if (c == ' ') return "[ ]";
         if (c == '\n') return "\\n";
-        if (c == '\t') return "tab";
-        if (c == '\b') return "backspace";
+        if (c == '\t') return "\\t";
+        if (c == '\b') return "\\b";
+        if (c == '\r') return "\\r";
 
         return "[unknown]";
     }
@@ -26,8 +28,10 @@ public static class CharKeyMapping
     {
         if (c == ' ') return true;
         if (c == '\n') return true;
+        if (c == '\r') return true;
         if (c == '\t') return true;
         if (c == '\b') return true;
+
         return false;
     }
 
@@ -47,120 +51,120 @@ public static class CharKeyMapping
     }
 
 
-    public static Keys CharToKey(char key)
+    public static KeyCode CharToKey(char key)
     {
         switch (key)
         {
-            case '1': return Keys.D0;
-            case '2': return Keys.D2;
-            case '3': return Keys.D3;
-            case '4': return Keys.D4;
-            case '5': return Keys.D5;
-            case '6': return Keys.D6;
-            case '7': return Keys.D7;
-            case '8': return Keys.D8;
-            case '9': return Keys.D9;
-            case '0': return Keys.D0;
-            case 'q': return Keys.Q;
-            case 'w': return Keys.W;
-            case 'e': return Keys.E;
-            case 'r': return Keys.R;
-            case 't': return Keys.T;
-            case 'y': return Keys.Y;
-            case 'u': return Keys.U;
-            case 'i': return Keys.I;
-            case 'o': return Keys.O;
-            case 'p': return Keys.P;
-            case 'a': return Keys.A;
-            case 's': return Keys.S;
-            case 'd': return Keys.D;
-            case 'f': return Keys.F;
-            case 'g': return Keys.G;
-            case 'h': return Keys.H;
-            case 'j': return Keys.J;
-            case 'k': return Keys.K;
-            case 'l': return Keys.L;
-            case 'z': return Keys.Z;
-            case 'x': return Keys.X;
-            case 'c': return Keys.C;
-            case 'v': return Keys.V;
-            case 'b': return Keys.B;
-            case 'n': return Keys.N;
-            case 'm': return Keys.M;
-            case '`': return Keys.GraveAccent;
-            case '[': return Keys.LeftBracket;
-            case ']': return Keys.RightBracket;
-            case '\\': return Keys.Backslash;
-            case ';': return Keys.Semicolon;
-            case '\'': return Keys.Apostrophe;
-            case ',': return Keys.Comma;
-            case '.': return Keys.Period;
-            case '/': return Keys.Slash;
-            case '-': return Keys.Minus;
-            case '=': return Keys.Equal;
-            case ' ': return Keys.Space;
-            case '\t': return Keys.Tab;
-            case '\n': return Keys.Enter;
-            case '\b': return Keys.Backspace;
-            default: return Keys.Space;
+            case '1': return KeyCode.D0;
+            case '2': return KeyCode.D2;
+            case '3': return KeyCode.D3;
+            case '4': return KeyCode.D4;
+            case '5': return KeyCode.D5;
+            case '6': return KeyCode.D6;
+            case '7': return KeyCode.D7;
+            case '8': return KeyCode.D8;
+            case '9': return KeyCode.D9;
+            case '0': return KeyCode.D0;
+            case 'q': return KeyCode.Q;
+            case 'w': return KeyCode.W;
+            case 'e': return KeyCode.E;
+            case 'r': return KeyCode.R;
+            case 't': return KeyCode.T;
+            case 'y': return KeyCode.Y;
+            case 'u': return KeyCode.U;
+            case 'i': return KeyCode.I;
+            case 'o': return KeyCode.O;
+            case 'p': return KeyCode.P;
+            case 'a': return KeyCode.A;
+            case 's': return KeyCode.S;
+            case 'd': return KeyCode.D;
+            case 'f': return KeyCode.F;
+            case 'g': return KeyCode.G;
+            case 'h': return KeyCode.H;
+            case 'j': return KeyCode.J;
+            case 'k': return KeyCode.K;
+            case 'l': return KeyCode.L;
+            case 'z': return KeyCode.Z;
+            case 'x': return KeyCode.X;
+            case 'c': return KeyCode.C;
+            case 'v': return KeyCode.V;
+            case 'b': return KeyCode.B;
+            case 'n': return KeyCode.N;
+            case 'm': return KeyCode.M;
+            case '`': return KeyCode.BackTick;
+            case '[': return KeyCode.LeftBracket;
+            case ']': return KeyCode.RightBracket;
+            case '\\': return KeyCode.Backslash;
+            case ';': return KeyCode.Semicolon;
+            case '\'': return KeyCode.Apostrophe;
+            case ',': return KeyCode.Comma;
+            case '.': return KeyCode.Period;
+            case '/': return KeyCode.Slash;
+            case '-': return KeyCode.Minus;
+            case '=': return KeyCode.Equal;
+            case ' ': return KeyCode.Space;
+            case '\t': return KeyCode.Tab;
+            case '\n': return KeyCode.Enter;
+            case '\b': return KeyCode.Backspace;
+            default: return KeyCode.Space;
         }
     }
 
-    public static char KeyCodeToChar(Keys key)
+    public static char KeyCodeToChar(KeyCode key)
     {
         switch (key)
         {
-            case Keys.D1: { return '1'; }
-            case Keys.D2: { return '2'; }
-            case Keys.D3: { return '3'; }
-            case Keys.D4: { return '4'; }
-            case Keys.D5: { return '5'; }
-            case Keys.D6: { return '6'; }
-            case Keys.D7: { return '7'; }
-            case Keys.D8: { return '8'; }
-            case Keys.D9: { return '9'; }
-            case Keys.D0: { return '0'; }
-            case Keys.Q: { return 'q'; }
-            case Keys.W: { return 'w'; }
-            case Keys.E: { return 'e'; }
-            case Keys.R: { return 'r'; }
-            case Keys.T: { return 't'; }
-            case Keys.Y: { return 'y'; }
-            case Keys.U: { return 'u'; }
-            case Keys.I: { return 'i'; }
-            case Keys.O: { return 'o'; }
-            case Keys.P: { return 'p'; }
-            case Keys.A: { return 'a'; }
-            case Keys.S: { return 's'; }
-            case Keys.D: { return 'd'; }
-            case Keys.F: { return 'f'; }
-            case Keys.G: { return 'g'; }
-            case Keys.H: { return 'h'; }
-            case Keys.J: { return 'j'; }
-            case Keys.K: { return 'k'; }
-            case Keys.L: { return 'l'; }
-            case Keys.Z: { return 'z'; }
-            case Keys.X: { return 'x'; }
-            case Keys.C: { return 'c'; }
-            case Keys.V: { return 'v'; }
-            case Keys.B: { return 'b'; }
-            case Keys.N: { return 'n'; }
-            case Keys.M: { return 'm'; }
-            case Keys.GraveAccent: { return '`'; }
-            case Keys.LeftBracket: { return '['; }
-            case Keys.RightBracket: { return ']'; }
-            case Keys.Backslash: { return '\\'; }
-            case Keys.Semicolon: { return ';'; }
-            case Keys.Apostrophe: { return '\''; }
-            case Keys.Comma: { return ','; }
-            case Keys.Period: { return '.'; }
-            case Keys.Slash: { return '/'; }
-            case Keys.Minus: { return '-'; }
-            case Keys.Equal: { return '='; }
-            case Keys.Space: { return ' '; }
-            case Keys.Tab: { return '\t'; }
-            case Keys.Enter: { return '\n'; }
-            case Keys.Backspace: { return '\b'; }
+            case KeyCode.D1: { return '1'; }
+            case KeyCode.D2: { return '2'; }
+            case KeyCode.D3: { return '3'; }
+            case KeyCode.D4: { return '4'; }
+            case KeyCode.D5: { return '5'; }
+            case KeyCode.D6: { return '6'; }
+            case KeyCode.D7: { return '7'; }
+            case KeyCode.D8: { return '8'; }
+            case KeyCode.D9: { return '9'; }
+            case KeyCode.D0: { return '0'; }
+            case KeyCode.Q: { return 'q'; }
+            case KeyCode.W: { return 'w'; }
+            case KeyCode.E: { return 'e'; }
+            case KeyCode.R: { return 'r'; }
+            case KeyCode.T: { return 't'; }
+            case KeyCode.Y: { return 'y'; }
+            case KeyCode.U: { return 'u'; }
+            case KeyCode.I: { return 'i'; }
+            case KeyCode.O: { return 'o'; }
+            case KeyCode.P: { return 'p'; }
+            case KeyCode.A: { return 'a'; }
+            case KeyCode.S: { return 's'; }
+            case KeyCode.D: { return 'd'; }
+            case KeyCode.F: { return 'f'; }
+            case KeyCode.G: { return 'g'; }
+            case KeyCode.H: { return 'h'; }
+            case KeyCode.J: { return 'j'; }
+            case KeyCode.K: { return 'k'; }
+            case KeyCode.L: { return 'l'; }
+            case KeyCode.Z: { return 'z'; }
+            case KeyCode.X: { return 'x'; }
+            case KeyCode.C: { return 'c'; }
+            case KeyCode.V: { return 'v'; }
+            case KeyCode.B: { return 'b'; }
+            case KeyCode.N: { return 'n'; }
+            case KeyCode.M: { return 'm'; }
+            case KeyCode.BackTick: { return '`'; }
+            case KeyCode.LeftBracket: { return '['; }
+            case KeyCode.RightBracket: { return ']'; }
+            case KeyCode.Backslash: { return '\\'; }
+            case KeyCode.Semicolon: { return ';'; }
+            case KeyCode.Apostrophe: { return '\''; }
+            case KeyCode.Comma: { return ','; }
+            case KeyCode.Period: { return '.'; }
+            case KeyCode.Slash: { return '/'; }
+            case KeyCode.Minus: { return '-'; }
+            case KeyCode.Equal: { return '='; }
+            case KeyCode.Space: { return ' '; }
+            case KeyCode.Tab: { return '\t'; }
+            case KeyCode.Enter: { return '\n'; }
+            case KeyCode.Backspace: { return '\b'; }
         }
 
         return (char)0;

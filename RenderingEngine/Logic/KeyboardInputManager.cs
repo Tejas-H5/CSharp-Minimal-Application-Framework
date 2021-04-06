@@ -14,73 +14,73 @@ namespace RenderingEngine.Logic
             _window = window;
         }
 
-        public bool IsKeyDown(Keys key)
+        public bool IsKeyDown(KeyCode key)
         {
-            return _window.KeyboardState.IsKeyDown(key);
+            return _window.KeyboardState.IsKeyDown((Keys)key);
         }
 
-        public bool IsKeyReleased(Keys key)
+        public bool IsKeyReleased(KeyCode key)
         {
-            return _window.KeyboardState.IsKeyReleased(key);
+            return _window.KeyboardState.IsKeyReleased((Keys)key);
         }
 
-        public bool IsKeyPressed(Keys key)
+        public bool IsKeyPressed(KeyCode key)
         {
-            return _window.KeyboardState.IsKeyPressed(key);
+            return _window.KeyboardState.IsKeyPressed((Keys)key);
         }
 
         public bool IsShiftPressed {
             get {
-                return IsKeyPressed(Keys.LeftShift) || IsKeyPressed(Keys.RightShift);
+                return IsKeyPressed(KeyCode.LeftShift) || IsKeyPressed(KeyCode.RightShift);
             }
         }
 
         public bool IsCtrlPressed {
             get {
-                return IsKeyPressed(Keys.LeftControl) || IsKeyPressed(Keys.RightControl);
+                return IsKeyPressed(KeyCode.LeftControl) || IsKeyPressed(KeyCode.RightControl);
             }
         }
 
         public bool IsAltPressed {
             get {
-                return IsKeyPressed(Keys.LeftAlt) || IsKeyPressed(Keys.RightAlt);
+                return IsKeyPressed(KeyCode.LeftAlt) || IsKeyPressed(KeyCode.RightAlt);
             }
         }
 
         public bool IsShiftReleased {
             get {
-                return IsKeyReleased(Keys.LeftShift) || IsKeyReleased(Keys.RightShift);
+                return IsKeyReleased(KeyCode.LeftShift) || IsKeyReleased(KeyCode.RightShift);
             }
         }
 
         public bool IsCtrlReleased {
             get {
-                return IsKeyReleased(Keys.LeftControl) || IsKeyReleased(Keys.RightControl);
+                return IsKeyReleased(KeyCode.LeftControl) || IsKeyReleased(KeyCode.RightControl);
             }
         }
 
         public bool IsAltReleased {
             get {
-                return IsKeyReleased(Keys.LeftAlt) || IsKeyReleased(Keys.RightAlt);
+                return IsKeyReleased(KeyCode.LeftAlt) || IsKeyReleased(KeyCode.RightAlt);
             }
         }
 
 
         public bool IsShiftDown {
             get {
-                return IsKeyDown(Keys.LeftShift) || IsKeyDown(Keys.RightShift);
+                return IsKeyDown(KeyCode.LeftShift) || IsKeyDown(KeyCode.RightShift);
             }
         }
 
         public bool IsCtrlDown {
             get {
-                return IsKeyDown(Keys.LeftControl) || IsKeyDown(Keys.RightControl);
+                return IsKeyDown(KeyCode.LeftControl) || IsKeyDown(KeyCode.RightControl);
             }
         }
 
         public bool IsAltDown {
             get {
-                return IsKeyDown(Keys.LeftAlt) || IsKeyDown(Keys.RightAlt);
+                return IsKeyDown(KeyCode.LeftAlt) || IsKeyDown(KeyCode.RightAlt);
             }
         }
 
@@ -103,7 +103,7 @@ namespace RenderingEngine.Logic
 
             for (int i = 0; i < keyboardChars.Length; i++)
             {
-                Keys key = CharKeyMapping.CharToKey(keyboardChars[i]);
+                KeyCode key = CharKeyMapping.CharToKey(keyboardChars[i]);
                 if (IsKeyPressed(key))
                 {
                     _charactersPressedSB.Append(keyboardChars[i]);

@@ -71,17 +71,17 @@ namespace RenderingEngine.Logic
         // -------- Keyboard input wrappers
         private static KeyboardInputManager _keyboardManager;
 
-        public static bool IsKeyPressed(Keys key)
+        public static bool IsKeyPressed(KeyCode key)
         {
             return _keyboardManager.IsKeyPressed(key);
         }
 
-        public static bool IsKeyReleased(Keys key)
+        public static bool IsKeyReleased(KeyCode key)
         {
             return _keyboardManager.IsKeyReleased(key);
         }
 
-        public static bool IsKeyDown(Keys key)
+        public static bool IsKeyDown(KeyCode key)
         {
             return _keyboardManager.IsKeyDown(key);
         }

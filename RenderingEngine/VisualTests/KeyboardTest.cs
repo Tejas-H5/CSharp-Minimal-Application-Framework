@@ -17,8 +17,6 @@ namespace RenderingEngine.VisualTests
             CTX.SetCurrentFont("Consolas", 36);
         }
 
-        string _charactersPressed = "";
-
         string KeysToString(string s)
         {
             StringBuilder sb = new StringBuilder();

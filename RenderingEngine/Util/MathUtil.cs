@@ -60,5 +60,25 @@ namespace RenderingEngine.Util
         {
             return new PointF(a.X + b.X, a.Y + b.Y);
         }
+
+        public static PointF Rotate(PointF a, PointF center, float angle)
+        {
+            /*
+            PointF vecCenterToA = Sub(a, center);
+            PointF rotated = new PointF(MathF.Cos(angle) * vecCenterToA.X, MathF.Sin(angle) * vecCenterToA.Y);
+            return Add(center, rotated);
+            */
+
+            float x = (a.X - center.X);
+            float y = (a.Y - center.Y);
+
+            float cos = MathF.Cos(angle);
+            float sin = MathF.Sin(angle);
+
+            float xR =  x * cos - y * sin;
+            float yR =  y *cos + x * sin;
+
+            return new PointF(center.X + xR, center.Y + yR);
+        }
     }
 }

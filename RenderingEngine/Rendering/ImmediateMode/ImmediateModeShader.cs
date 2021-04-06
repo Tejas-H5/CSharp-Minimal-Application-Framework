@@ -46,8 +46,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
                 "uniform mat4 projection;" +
                 "uniform mat4 view;" +
                 "void main(){" +
-                "   mat4 combined = projection * view * model;" +
-                "   gl_Position = combined * vec4(position, 1);" +
+                "   gl_Position = projection * view * model * vec4(position, 1);" +
                 "   uv0 = uv;" +
                 //"   gl_Position =  vec4(position, 1);" +
                 "}" +
@@ -83,6 +82,11 @@ namespace RenderingEngine.Rendering.ImmediateMode
         {
             _shader.SetMatrix4(_projectionUniformLocation, _projectionMatrix);
             _shader.SetMatrix4(_viewUniformLocation, _viewMatrix);
+            _shader.SetMatrix4(_modelUniformLocation, _modelMatrix);
+        }
+
+        public void UpdateModel()
+        {
             _shader.SetMatrix4(_modelUniformLocation, _modelMatrix);
         }
 

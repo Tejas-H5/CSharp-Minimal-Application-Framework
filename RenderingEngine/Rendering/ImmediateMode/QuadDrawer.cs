@@ -1,7 +1,9 @@
 ﻿using OpenTK.Mathematics;
 using RenderingEngine.Datatypes;
+using RenderingEngine.Util;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace RenderingEngine.Rendering.ImmediateMode
@@ -60,7 +62,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         public void DrawRect(Rect2D rect)
         {
-            DrawRect(rect, new Rect2D(0, 1, 1, 0));
+            DrawRect(rect.X0, rect.Y0, rect.X1, rect.Y1, 0, 1, 1, 0);
         }
 
         public void DrawRectOutline(float thickness, Rect2D rect)

@@ -12,6 +12,7 @@ namespace RenderingEngine
         {
             EntryPoint[] tests =
             {
+                new TextureTest(),
                 new KeyboardTest(),
                 new Benchmark(5),
                 new PolylineTest(),
@@ -19,7 +20,6 @@ namespace RenderingEngine
                 new StencilTest(),
                 new UITest(),
                 new GeometryAndTextTest(),
-                new TextureTest(),
                 new ArcTest(),
                 new TextTest(),
             };

@@ -36,7 +36,12 @@ namespace RenderingEngine.Rendering
         private static bool _textDrawingCodeCalledSetTexture = false;
         private static Texture _previousNonTextTexture = null;
 
-		internal static void Init(IGLFWGraphicsContext context){
+        private static Matrix4 _viewMatrix = Matrix4.Identity;
+        private static Matrix4 _projectionMatrix = Matrix4.Identity;
+
+        private static List<Matrix4> _modelMatrices = new List<Matrix4>();
+
+        internal static void Init(IGLFWGraphicsContext context){
             int bufferSize = 4096;
             _meshOutputStream = new MeshOutputStream(bufferSize, 4 * bufferSize);
 
@@ -67,6 +72,14 @@ namespace RenderingEngine.Rendering
         {
             _meshOutputStream.Flush();
             _glContext.SwapBuffers();
+
+            _modelMatrices.Clear();
+            _solidShader.ModelMatrix = Matrix4.Identity;
+
+            _solidShader.ViewMatrix = _viewMatrix;
+            _solidShader.ProjectionMatrix = _projectionMatrix;
+            _solidShader.UpdateTransformUniforms();
+
         }
 
         /// <summary>
@@ -79,15 +92,14 @@ namespace RenderingEngine.Rendering
         /// <param name="height"></param>
         public static void Viewport2D(float width, float height)
         {
-            _solidShader.ProjectionMatrix = Matrix4.Identity;
+            _viewMatrix = Matrix4.Identity;
+            _projectionMatrix = Matrix4.Identity;
 
             Matrix4 translation = Matrix4.CreateTranslation(-1, -1, 0);
             translation.Transpose();
-            _solidShader.ProjectionMatrix *= translation;
+            _viewMatrix *= translation;
 
-            _solidShader.ProjectionMatrix *= Matrix4.CreateScale(2.0f / width, 2.0f / height, 1);
-
-            _solidShader.UpdateTransformUniforms();
+            _viewMatrix *= Matrix4.CreateScale(2.0f / width, 2.0f / height, 1);
 
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
@@ -147,6 +159,43 @@ namespace RenderingEngine.Rendering
             _textDrawingCodeCalledSetTexture = false;
         }
 
+        public static void PushMatrix(Matrix4 mat)
+        {
+            _meshOutputStream.Flush();
+
+            if (_modelMatrices.Count == 0)
+            {
+                _modelMatrices.Add(mat);
+            }
+            else
+            {
+                _modelMatrices.Add(_modelMatrices[_modelMatrices.Count - 1] * mat);
+            }
+
+            _solidShader.ModelMatrix = _modelMatrices[_modelMatrices.Count - 1];
+            _solidShader.UpdateModel();
+        }
+
+        public static void PopMatrix()
+        {
+            _meshOutputStream.Flush();
+
+            if (_modelMatrices.Count > 0)
+            {
+                _modelMatrices.RemoveAt(_modelMatrices.Count-1);
+            }
+
+            if (_modelMatrices.Count == 0)
+            {
+                _solidShader.ModelMatrix = Matrix4.Identity;
+            }
+            else
+            {
+                _solidShader.ModelMatrix = _modelMatrices[_modelMatrices.Count - 1];
+            }
+
+            _solidShader.UpdateModel();
+        }
 
         // ------------------- _textDrawer Wrappers  -------------------
 
@@ -249,11 +298,11 @@ namespace RenderingEngine.Rendering
             _geometryDrawer.DrawRect(rect);
         }
 
+
         public static void DrawRect(Rect2D rect, Rect2D uvs)
         {
             StopUsingTextTexture();
             _geometryDrawer.DrawRect(rect, uvs);
-
         }
 
         public static void DrawRect(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 1, float u1 = 1, float v1 = 0)
@@ -261,7 +310,6 @@ namespace RenderingEngine.Rendering
             StopUsingTextTexture();
             _geometryDrawer.DrawRect(x0, y0, x1, y1, u0, v0, u1, v1);
         }
-
 
         public static void DrawRectOutline(float thickness, Rect2D rect)
         {
@@ -298,7 +346,6 @@ namespace RenderingEngine.Rendering
             StopUsingTextTexture();
             _geometryDrawer.DrawArcOutline(thickness, xCenter, yCenter, radius, startAngle, endAngle);
         }
-
 
         public static void DrawLine(float x0, float y0, float x1, float y1, float thickness, CapType cap)
         {

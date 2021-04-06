@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Rendering\ImmediateMode\LineDrawer.cs~RF1af1429b.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Res\" />
   </ItemGroup>
 

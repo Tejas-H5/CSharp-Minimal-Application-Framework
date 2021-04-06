@@ -56,7 +56,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
         }
         
 
-        public void AppendToPolyLine(float x, float y) {
+        public void AppendToPolyLine(float x, float y, bool useAv = true) {
             float dirX = x - _lastX;
             float dirY = y - _lastY;
             float mag = MathF.Sqrt(dirX * dirX + dirY * dirY);
@@ -70,7 +70,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
             }
             else
             {
-                ExtendLineSegment(perpX, perpY);
+                ExtendLineSegment(perpX, perpY, useAv);
             }
 
             _lastX = x;
@@ -95,10 +95,21 @@ namespace RenderingEngine.Rendering.ImmediateMode
             _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
         }
 
-        private void ExtendLineSegment(float perpX, float perpY)
+        private void ExtendLineSegment(float perpX, float perpY, bool useAv = true)
         {
-            float avPerpX = (perpX + _lastPerpX) / 2f;
-            float avPerpY = (perpY + _lastPerpY) / 2f;
+            float perpUsedX, perpUsedY;
+
+            if (useAv)
+            {
+                perpUsedX = (perpX + _lastPerpX) / 2f;
+                perpUsedY = (perpY + _lastPerpY) / 2f;
+            }
+            else
+            {
+                perpUsedX = perpX;
+                perpUsedY = perpY;
+            }
+
             _lastPerpX = perpX;
             _lastPerpY = perpY;
 
@@ -109,8 +120,8 @@ namespace RenderingEngine.Rendering.ImmediateMode
             }
 
 
-            Vertex v3 = new Vertex(_lastX + avPerpX, _lastY + avPerpY, 0);
-            Vertex v4 = new Vertex(_lastX - avPerpX, _lastY - avPerpY, 0);
+            Vertex v3 = new Vertex(_lastX + perpUsedX, _lastY + perpUsedY, 0);
+            Vertex v4 = new Vertex(_lastX - perpUsedX, _lastY - perpUsedY, 0);
 
             _lastV3 = _geometryOutput.AddVertex(v3);
             _lastV4 = _geometryOutput.AddVertex(v4);
@@ -136,7 +147,8 @@ namespace RenderingEngine.Rendering.ImmediateMode
             float dirY = y - _lastY;
 
             AppendToPolyLine(x, y);
-            AppendToPolyLine(x + dirX, y+dirY);
+            AppendToPolyLine(x + dirX, y+dirY, false);
+
             _lastX = x;
             _lastY = y;
 

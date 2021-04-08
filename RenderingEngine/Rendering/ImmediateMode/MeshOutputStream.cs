@@ -58,6 +58,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
                 return;
 
             _backingMesh.UpdateBuffer(_currentVertexIndex, _currentIndexIndex);
+
             _backingMesh.Draw();
 
             _utilization = _currentIndexIndex / (double)_currentVertexIndex;

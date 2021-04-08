@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI
+namespace RenderingEngine.UI.Core
 {
     public abstract class UIComponent
     {

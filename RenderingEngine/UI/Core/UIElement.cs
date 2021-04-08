@@ -5,12 +5,25 @@ using System.Text;
 using RenderingEngine.Datatypes;
 using RenderingEngine.Rendering;
 
-namespace RenderingEngine.UI
+namespace RenderingEngine.UI.Core
 {
     public class UIElement
     {
         protected List<UIComponent> _components = new List<UIComponent>();
         protected List<UIElement> _children = new List<UIElement>();
+        protected UIRectTransform _rectTransform = new UIRectTransform();
+
+        public Rect2D Rect {
+            get { return _rectTransform.Rect; }
+        }
+
+        public Rect2D RectOffset {
+            get { return _rectTransform.RectOffset; }
+        }
+
+        public Rect2D Anchoring {
+            get { return _rectTransform.Anchoring; }
+        }
 
         public UIElement this[int index] {
             get {
@@ -26,7 +39,7 @@ namespace RenderingEngine.UI
 
         public UIElement AddChildren(params UIElement[] elements)
         {
-            for(int i = 0; i < elements.Length; i++)
+            for (int i = 0; i < elements.Length; i++)
             {
                 AddChild(elements[i]);
             }
@@ -80,10 +93,10 @@ namespace RenderingEngine.UI
         {
             int i = ComponentOfTypeIndex(typeof(T));
 
-            if(i != -1)
-                return (T)(_components[i]);
+            if (i != -1)
+                return (T)_components[i];
 
-            return default(T);
+            return default;
         }
 
         public UIElement AddComponent<T>(T comp) where T : UIComponent
@@ -103,7 +116,7 @@ namespace RenderingEngine.UI
             return null;
         }
 
-        
+
         protected UIElement _parent = null;
         public UIElement Parent {
             get {
@@ -115,32 +128,12 @@ namespace RenderingEngine.UI
             }
         }
 
-        protected Rect2D _rect;
-
-        Rect2D _rectOffset;
-        Rect2D _anchoring;
-        bool _positionSize = false;
-
-        public Rect2D Anchoring { get { return _anchoring; } }
-        public Rect2D RectOffset { get { return _rectOffset; } }
-
         protected bool _isVisible = true;
         public bool IsVisible { get => _isVisible; set => _isVisible = value; }
 
 
         protected bool _dirty = true;
 
-        public Rect2D Rect {
-            get {
-                return _rect;
-            }
-        }
-
-        public Rect2D Anchors {
-            get {
-                return _anchoring;
-            }
-        }
 
         public UIElement()
         {
@@ -155,32 +148,32 @@ namespace RenderingEngine.UI
 
         public UIElement SetRectOffset(Rect2D pos)
         {
-            _positionSize = false;
-            _rectOffset = pos;
+            _rectTransform.PositionSize = false;
+            _rectTransform.RectOffset = pos;
             _dirty = true;
             return this;
         }
 
         public UIElement SetRectPositionSize(float x, float y, float width, float height)
         {
-            _positionSize = true;
-            _rectOffset = new Rect2D(x, y, width, height);
+            _rectTransform.PositionSize = true;
+            _rectTransform.RectOffset = new Rect2D(x, y, width, height);
             _dirty = true;
             return this;
         }
 
         public UIElement SetAnchoringOffset(Rect2D anchor)
         {
-            _positionSize = false;
-            _anchoring = anchor;
+            _rectTransform.PositionSize = false;
+            _rectTransform.Anchoring = anchor;
             _dirty = true;
             return this;
         }
 
         public UIElement SetAnchoringPositionCenter(float x, float y, float centreX = 0.5f, float centreY = 0.5f)
         {
-            _positionSize = true;
-            _anchoring = new Rect2D(x, y, centreX, centreY);
+            _rectTransform.PositionSize = true;
+            _rectTransform.Anchoring = new Rect2D(x, y, centreX, centreY);
             _dirty = true;
             return this;
         }
@@ -227,7 +220,8 @@ namespace RenderingEngine.UI
             }
         }
 
-        public virtual void Draw(double deltaTime) {
+        public virtual void Draw(double deltaTime)
+        {
             for (int i = 0; i < _components.Count; i++)
             {
                 _components[i].Draw(deltaTime);
@@ -247,7 +241,7 @@ namespace RenderingEngine.UI
                 hasProcessed = hasProcessed || hasChildProcessed;
             }
 
-           if (hasProcessed)
+            if (hasProcessed)
                 return true;
 
             return ProcessComponentEvents();
@@ -267,7 +261,7 @@ namespace RenderingEngine.UI
 
         public virtual void Resize()
         {
-            UpdateRect();
+            _rectTransform.UpdateRect(GetParentRect());
 
             for (int i = 0; i < _children.Count; i++)
             {
@@ -278,57 +272,6 @@ namespace RenderingEngine.UI
         public virtual void SetDirty()
         {
             _dirty = true;
-        }
-
-        protected void UpdateRect()
-        {
-            Rect2D parentRect = GetParentRect();
-
-            if (_positionSize)
-            {
-                UpdateRectPositionSize(parentRect);
-            }
-            else
-            {
-                UpdateRectOffset(parentRect);
-            }
-        }
-
-        private void UpdateRectPositionSize(Rect2D parentRect)
-        {
-            //_anchoring contains the (still) normalized position position in X0 Y0 and normalized center in X1,Y1
-            //_rectOffset contains position in X0, Y0 and width, heighit in X1 Y1
-
-            float anchorLeft = parentRect.Left + _anchoring.X0 * parentRect.Width;
-            float anchorBottom = parentRect.Bottom + _anchoring.Y0 * parentRect.Height;
-
-            float X = _rectOffset.X0 + anchorLeft;
-            float Y = _rectOffset.Y0 + anchorBottom;
-
-            float width = _rectOffset.X1;
-            float height = _rectOffset.Y1;
-
-            float left = X - _anchoring.X1 * width;
-            float bottom = Y - _anchoring.Y1 * height;
-            float right = X + (1.0f - _anchoring.X1) * width;
-            float top = Y + (1.0f - _anchoring.Y1) * height;
-
-            _rect = new Rect2D(left, bottom, right, top);
-        }
-
-        private void UpdateRectOffset(Rect2D parentRect)
-        {
-            float anchorLeft = parentRect.Left + _anchoring.X0 * parentRect.Width;
-            float anchorBottom = parentRect.Bottom + _anchoring.Y0 * parentRect.Height;
-            float anchorRight = parentRect.Left + _anchoring.X1 * parentRect.Width;
-            float anchorTop = parentRect.Bottom + _anchoring.Y1 * parentRect.Height;
-
-            float left = anchorLeft + _rectOffset.X0;
-            float bottom = anchorBottom + _rectOffset.Y0;
-            float right = anchorRight - _rectOffset.X1;
-            float top = anchorTop - _rectOffset.Y1;
-
-            _rect = new Rect2D(left, bottom, right, top);
         }
 
         private Rect2D GetParentRect()

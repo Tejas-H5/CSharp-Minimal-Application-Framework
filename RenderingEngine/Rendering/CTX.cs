@@ -137,7 +137,7 @@ namespace RenderingEngine.Rendering
 
         public static void SetTexture(Texture texture)
         {
-            if (_textureManager.CurrentTexture() == texture)
+            if (_textureManager.CurrentTexture() == texture && (!TextureManager.GlobalTextureHasChanged()))
                 return;
 
             if (!_drawingText)

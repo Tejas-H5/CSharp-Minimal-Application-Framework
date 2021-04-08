@@ -25,13 +25,16 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
+
             GL.Enable(EnableCap.DepthTest);
+
+            GL.Enable(EnableCap.StencilTest);
             GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
 
 
             GL.StencilMask(0x00);
 
-            //geometryAndTextTest.Render(deltaTime);
+            geometryAndTextTest.Render(deltaTime);
 
             GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
             GL.StencilMask(0xFF);
@@ -46,14 +49,10 @@ namespace RenderingEngine.VisualTests
 
             size = 70;
             DrawBlueRectangle(size, xPos);
-            CTX.Flush();
 
-            //GL.StencilMask(0xFF);
-            //GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
-            //GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.DepthTest);
-
-
+            GL.StencilMask(0xFF);
+            GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
+            GL.Disable(EnableCap.StencilTest);
         }
 
         private static void DrawBlueRectangle(float size, float xPos)
@@ -62,6 +61,7 @@ namespace RenderingEngine.VisualTests
             CTX.SetDrawColor(0, 0, 1, 1);
             CTX.DrawRect(Window.Width / 2 - size + xPos, Window.Height / 2 - size,
                 Window.Width / 2 + size + xPos, Window.Height / 2 + size);
+            CTX.Flush();
         }
 
         private static void DrawRedRectangle(float size, float xPos)
@@ -70,6 +70,7 @@ namespace RenderingEngine.VisualTests
             CTX.SetDrawColor(1, 0, 0, 1);
             CTX.DrawRect(Window.Width / 2 - size + xPos, Window.Height / 2 - size,
                 Window.Width / 2 + size + xPos, Window.Height / 2 + size);
+            CTX.Flush();
         }
 
         public override void Update(double deltaTime)

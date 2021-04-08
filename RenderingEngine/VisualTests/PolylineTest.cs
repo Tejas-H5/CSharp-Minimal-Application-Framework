@@ -33,7 +33,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            CTX.Clear();
+           
             CTX.SetDrawColor(0, 0, 1, 0.5f);
 
             if(_points.Count > 0)
@@ -49,7 +49,7 @@ namespace RenderingEngine.VisualTests
             }
 
 
-            CTX.SwapBuffers();
+            
         }
     }
 }

@@ -98,7 +98,7 @@ namespace RenderingEngine.Logic
         {
             base.OnRenderFrame(args);
 
-            _program.Render(args.Time);
+            _program.RenderLoopIteration(args.Time);
 
             renderFrames++;
         }

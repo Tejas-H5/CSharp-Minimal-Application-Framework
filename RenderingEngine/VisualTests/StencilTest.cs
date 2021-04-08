@@ -17,25 +17,27 @@ namespace RenderingEngine.VisualTests
 
             CTX.SetClearColor(0, 0, 0, 1);
             CTX.SetCurrentFont("Consolas", 24);
+
+            geometryAndTextTest.Init();
         }
+
+        GeometryAndTextTest geometryAndTextTest = new GeometryAndTextTest();
 
         public override void Render(double deltaTime)
         {
-            GL.Enable(EnableCap.DepthTest);
+            //Enable writing to the stencil buffer
             GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
-
-            CTX.Clear();
-
-            GL.StencilFunc(StencilFunction.Always, 1, 0xFF); // all fragments should pass the stencil test
-            GL.StencilMask(0xFF); // enable writing to the stencil buffer
+            GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
+            GL.StencilMask(0xFF);
 
             float size = 60;
             CTX.SetDrawColor(1, 0, 0, 1);
             CTX.DrawRect(Window.Width / 2 - size, Window.Height / 2 - size, Window.Width / 2 + size, Window.Height / 2 + size);
             CTX.Flush();
 
+            // disable writing to the stencil buffer
             GL.StencilFunc(StencilFunction.Notequal, 1, 0xFF); 
-            GL.StencilMask(0x00); // disable writing to the stencil buffer
+            GL.StencilMask(0x00); 
             GL.Disable(EnableCap.DepthTest);
 
             size = 70;
@@ -43,17 +45,13 @@ namespace RenderingEngine.VisualTests
             CTX.DrawRect(Window.Width / 2 - size, Window.Height / 2 - size, Window.Width / 2 + size, Window.Height / 2 + size);
             CTX.Flush();
 
-            GL.StencilMask(0xFF);
-            GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
-            GL.Enable(EnableCap.DepthTest);
-
-            CTX.SwapBuffers();
+            geometryAndTextTest.Render(deltaTime);
         }
 
 
         public override void Update(double deltaTime)
         {
-            
+            geometryAndTextTest.Update(deltaTime);
         }
     }
 }

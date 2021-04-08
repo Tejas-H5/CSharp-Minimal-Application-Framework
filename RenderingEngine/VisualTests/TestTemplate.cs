@@ -18,11 +18,11 @@ namespace RenderingEngine.Templates
 
         public override void Render(double deltaTime)
         {
-            CTX.Clear();
+           
 
             //Rendering code goes here
 
-            CTX.SwapBuffers();
+            
         }
 
         public override void Update(double deltaTime)

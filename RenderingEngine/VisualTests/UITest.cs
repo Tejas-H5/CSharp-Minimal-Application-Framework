@@ -201,14 +201,14 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            CTX.Clear();
+           
 
             _zStack.DrawIfVisible(deltaTime);
 
             CTX.SetDrawColor(0, 0, 0, 1);
             CTX.DrawCircle(Input.MouseX, Input.MouseY, 10);
 
-            CTX.SwapBuffers();
+            
         }
 
         public override void Resize()

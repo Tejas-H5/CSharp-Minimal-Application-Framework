@@ -10,7 +10,7 @@ namespace RenderingEngine.VisualTests
     //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
     class GeometryAndTextTest : EntryPoint
     {
-        List<string> rain;
+        List<string> rain = new List<string>();
         Texture _tex;
 
         public override void Start()
@@ -25,10 +25,11 @@ namespace RenderingEngine.VisualTests
 
             CTX.SetCurrentFont("Consolas", 24);
 
-            Window.MouseWheel += MousewheelScroll;
+            Init();
+        }
 
-            rain = new List<string>();
-
+        public void Init()
+        {
             TextureMap.RegisterTexture("placeholder", "settings_icon.png", new TextureImportSettings
             {
                 Filtering = FilteringType.NearestNeighbour
@@ -63,10 +64,6 @@ namespace RenderingEngine.VisualTests
             }
         }
 
-        private void MousewheelScroll(OpenTK.Windowing.Common.MouseWheelEventArgs obj)
-        {
-        }
-
 
         double timer = 0;
         public override void Update(double deltaTime)
@@ -86,8 +83,6 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            CTX.Clear();
-
             CTX.SetDrawColor(0, 1, 0, 0.8f);
             CTX.SetTexture(null);
 
@@ -105,9 +100,7 @@ namespace RenderingEngine.VisualTests
             CTX.DrawRect(Window.Width / 2 - 50, Window.Height / 2 - 50, Window.Width / 2 + 50, Window.Height / 2 + 50);
 
             //RenderingContext.DrawRect(100,100,window.Width-100, window.Height-100);
-            CTX.SwapBuffers();
         }
-
 
 
         public override void Cleanup()

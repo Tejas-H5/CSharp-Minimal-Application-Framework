@@ -43,7 +43,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            CTX.Clear();
+           
 
             CTX.SetDrawColor(1, 0, 0, 0.1f);
 
@@ -98,7 +98,7 @@ namespace RenderingEngine.VisualTests
             //RenderingContext.DrawLine(-size, -size, size, size, 0.02f, CapType.Circle);
 
             //RenderingContext.DrawFilledArc(window.Width/2, window.Height/2, size, 0, MathF.PI * 2);
-            CTX.SwapBuffers();
+            
         }
 
 

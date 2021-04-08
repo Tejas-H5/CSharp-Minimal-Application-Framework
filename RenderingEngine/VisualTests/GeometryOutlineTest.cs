@@ -29,7 +29,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            CTX.Clear();
+           
 
             CTX.SetDrawColor(1, 0, 0, 0.5f);
 
@@ -60,7 +60,7 @@ namespace RenderingEngine.VisualTests
 
             CTX.DrawLineOutline(10, lineSize, lineSize, Window.Width - lineSize, Window.Height - lineSize, lineSize / 2, CapType.Circle);
 
-            CTX.SwapBuffers();
+            
         }
     }
 }

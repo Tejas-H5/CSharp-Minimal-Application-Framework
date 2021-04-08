@@ -41,7 +41,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            CTX.Clear();
+           
 
             CTX.SetDrawColor(1,1,1,1);
 
@@ -59,7 +59,7 @@ namespace RenderingEngine.VisualTests
 
             CTX.PopMatrix();
 
-            CTX.SwapBuffers();
+            
         }
 
 

@@ -22,7 +22,20 @@ namespace RenderingEngine.Logic
         {
             CTX.Viewport2D(Window.Width, Window.Height);
         }
-        
+
+        /// <summary>
+        /// Calls the Render method sandwiched between Clear() and SwapBuffers().
+        /// This should be overridden if you don't want to clear and swap after every frame
+        /// for whatever reason
+        /// </summary>
+        public virtual void RenderLoopIteration(double deltaTime)
+        {
+            CTX.Clear();
+
+            Render(deltaTime);
+
+            CTX.SwapBuffers();
+        }
 
         public virtual void Cleanup()
         {

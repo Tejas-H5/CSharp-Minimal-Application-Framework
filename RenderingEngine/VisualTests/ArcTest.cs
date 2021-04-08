@@ -33,7 +33,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            CTX.Clear();
+           
 
             CTX.SetDrawColor(1, 0, 0, 0.5f);
 
@@ -54,7 +54,7 @@ namespace RenderingEngine.VisualTests
             a += (float)deltaTime;
             b += (float)deltaTime * 2;
 
-            CTX.SwapBuffers();
+            
         }
 
         private void DrawHand(float x0, float y0, float r, float angle)

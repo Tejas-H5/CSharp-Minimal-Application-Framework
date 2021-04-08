@@ -97,7 +97,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            CTX.Clear();
+           
             // Because ElementArrayObject is a property of the currently bound VAO
             // the buffer you will find in the ElementArrayBuffer will change with the currently bound VAO.
             GL.BindVertexArray(_vertexArrayObject);
@@ -110,7 +110,7 @@ namespace RenderingEngine.VisualTests
             //   Offset in the EBO. Set this to 0 because we want to draw the whole thing.
             GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, (IntPtr)0);
 
-            CTX.SwapBuffers();
+            
         }
 
         public override void Resize()

@@ -35,7 +35,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            CTX.Clear();
+           
 
             CTX.SetDrawColor(1, 1, 1, 1);
 
@@ -44,7 +44,7 @@ namespace RenderingEngine.VisualTests
             CTX.DrawText(KeysToString(Input.CharactersDown), Window.Width / 2, Window.Height / 2);
 
 
-            CTX.SwapBuffers();
+            
         }
 
         public override void Update(double deltaTime)

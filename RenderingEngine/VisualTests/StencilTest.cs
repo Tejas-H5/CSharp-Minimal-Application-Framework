@@ -23,36 +23,30 @@ namespace RenderingEngine.VisualTests
 
         GeometryAndTextTest geometryAndTextTest = new GeometryAndTextTest();
 
+        float _xPos = 0;
+
         public override void Render(double deltaTime)
         {
-
-            GL.Enable(EnableCap.DepthTest);
+            geometryAndTextTest.Render(deltaTime);
+            CTX.Flush();
 
             GL.Enable(EnableCap.StencilTest);
             GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
-
-
-            GL.StencilMask(0x00);
-
-            geometryAndTextTest.Render(deltaTime);
-
-            GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
-            GL.StencilMask(0xFF);
+            GL.StencilFunc(StencilFunction.Always, 1, ~0);
+            GL.StencilMask(~0);
 
             float size = 60;
-            float xPos = -100;
-            DrawRedRectangle(size, xPos);
+            DrawRedRectangle(size, _xPos);
 
-            GL.StencilFunc(StencilFunction.Notequal, 1, 0xFF);
-            GL.StencilMask(0x00);
-            GL.Disable(EnableCap.DepthTest);
+            GL.StencilFunc(StencilFunction.Notequal, 1, ~0);
+            GL.StencilMask(0);
 
             size = 70;
-            DrawBlueRectangle(size, xPos);
+            DrawBlueRectangle(size, _xPos);
 
-            GL.StencilMask(0xFF);
-            GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
-            GL.Disable(EnableCap.StencilTest);
+            GL.Disable(EnableCap.StencilTest);  
+            GL.StencilMask(~0);
+
         }
 
         private static void DrawBlueRectangle(float size, float xPos)
@@ -73,9 +67,14 @@ namespace RenderingEngine.VisualTests
             CTX.Flush();
         }
 
+        float _time = 0;
+
         public override void Update(double deltaTime)
         {
+            _time += (float)deltaTime;
+
             geometryAndTextTest.Update(deltaTime);
+            _xPos = 200 * MathF.Sin(_time / 2.0f);
         }
     }
 }

@@ -49,11 +49,13 @@ namespace RenderingEngine.UI.Components
 
         public override void Draw(double deltaTime)
         {
+            /*
             if (_isProcessingEvents)
             {
                 CTX.SetDrawColor(1, 0, 0, 1);
                 CTX.DrawRect(_parent.Rect.Left + 5, _parent.Rect.Top - 5, _parent.Rect.Left + 15, _parent.Rect.Top - 15);
             }
+            */
         }
 
         public override bool ProcessEvents()

@@ -45,7 +45,7 @@ namespace RenderingEngine.VisualTests
             _zStack = new UIZStack();
 
             UIElement top;
-            UIElement bottom;
+            UIElement goldenRatioSpiralContainer;
             UIElement button;
 
             UIElement bruhButton;
@@ -59,9 +59,21 @@ namespace RenderingEngine.VisualTests
                             button = UICreator.CreateButton("")
                                 .SetAnchoringPositionCenter(0, 0, 1, 1)
                                 .SetRectPositionSize(200, 200, 50, 50)
+                            ,
+                            GeneratePanel()
+                                .SetAnchoringOffsetsX(0, 1)
+                                .SetRectOffsetsX(5, 220)
+                                .SetAnchoringPositionCenterY(1,1)
+                                .SetPositionSizeY(-10, 100)
+                            ,
+                            GeneratePanel()
+                                .SetAnchoringPositionCenterX(1, 1)
+                                .SetPositionSizeX(-10, 200)
+                                .SetAnchoringPositionCenterY(1, 1)
+                                .SetPositionSizeY(-10, 200)
                         )
                     ,
-                    bottom = GeneratePanel()
+                    goldenRatioSpiralContainer = GeneratePanel()
                         .SetAnchoringOffset(new Rect2D(0, 0f, 1f, 0.5f))
                     )
                 ,
@@ -103,7 +115,7 @@ namespace RenderingEngine.VisualTests
 
 
             //Create a golden ratio spiral with UI panels
-            UIElement starting = bottom;
+            UIElement starting = goldenRatioSpiralContainer;
             for (int i = 0; i < 5; i++)
             {
                 starting = Generate2PanelsHor(starting, false);

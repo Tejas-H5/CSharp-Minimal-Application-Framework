@@ -141,6 +141,21 @@ namespace RenderingEngine.UI.Core
             SetRectOffset(new Rect2D(0, 0, 0, 0));
         }
 
+
+        public UIElement SetRectOffsetsX(float left, float right)
+        {
+            _rectTransform.SetRectOffsetsX(left, right);
+            _dirty = true;
+            return this;
+        }
+
+        public UIElement SetRectOffsetsY(float bottom, float top)
+        {
+            _rectTransform.SetRectOffsetsY(bottom, top);
+            _dirty = true;
+            return this;
+        }
+
         public UIElement SetRectOffset(float offset)
         {
             return SetRectOffset(new Rect2D(offset, offset, offset, offset));
@@ -148,32 +163,72 @@ namespace RenderingEngine.UI.Core
 
         public UIElement SetRectOffset(Rect2D pos)
         {
-            _rectTransform.PositionSize = false;
-            _rectTransform.RectOffset = pos;
+            _rectTransform.SetRectOffset(pos);
             _dirty = true;
             return this;
         }
+
+        public UIElement SetPositionSizeX(float x, float width)
+        {
+            _rectTransform.SetPositionSizeX(x, width);
+            _dirty = true;
+            return this;
+        }
+
+        public UIElement SetPositionSizeY(float y, float height)
+        {
+            _rectTransform.SetPositionSizeY(y, height);
+            _dirty = true;
+            return this;
+        }
+
 
         public UIElement SetRectPositionSize(float x, float y, float width, float height)
         {
-            _rectTransform.PositionSize = true;
-            _rectTransform.RectOffset = new Rect2D(x, y, width, height);
+            _rectTransform.SetRectPositionSize(x, y, width, height);
             _dirty = true;
             return this;
         }
 
+        public UIElement SetAnchoringOffsetsX(float left, float right)
+        {
+            _rectTransform.SetAnchoringOffsetsX(left, right);
+            _dirty = true;
+            return this;
+        }
+
+        public UIElement SetAnchoringOffsetsY(float bottom, float top)
+        {
+            _rectTransform.SetAnchoringOffsetsY(bottom, top);
+            _dirty = true;
+            return this;
+        }
+
+
         public UIElement SetAnchoringOffset(Rect2D anchor)
         {
-            _rectTransform.PositionSize = false;
-            _rectTransform.Anchoring = anchor;
+            _rectTransform.SetAnchoringOffset(anchor);
+            _dirty = true;
+            return this;
+        }
+
+        public UIElement SetAnchoringPositionCenterX(float x, float centreX = 0.5f)
+        {
+            _rectTransform.SetAnchoringPositionCenterX(x, centreX);
+            _dirty = true;
+            return this;
+        }
+
+        public UIElement SetAnchoringPositionCenterY(float y, float centreY = 0.5f)
+        {
+            _rectTransform.SetAnchoringPositionCenterY(y, centreY);
             _dirty = true;
             return this;
         }
 
         public UIElement SetAnchoringPositionCenter(float x, float y, float centreX = 0.5f, float centreY = 0.5f)
         {
-            _rectTransform.PositionSize = true;
-            _rectTransform.Anchoring = new Rect2D(x, y, centreX, centreY);
+            _rectTransform.SetAnchoringPositionCenter(x, y, centreX, centreY);
             _dirty = true;
             return this;
         }

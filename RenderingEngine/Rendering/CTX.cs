@@ -209,9 +209,24 @@ namespace RenderingEngine.Rendering
             _solidShader.UpdateModel();
         }
 
-        public static void StartStencilling()
+        public static void StartStencillingWhileDrawing()
+        {
+            StartStencilling(true);
+        }
+
+        public static void StartStencillingWithoutDrawing()
+        {
+            StartStencilling(false);
+        }
+
+        private static void StartStencilling(bool canDraw)
         {
             Flush();
+
+            if (!canDraw)
+            {
+                GL.ColorMask(false, false, false, false);
+            }
 
             GL.Enable(EnableCap.StencilTest);
             GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
@@ -223,6 +238,7 @@ namespace RenderingEngine.Rendering
         {
             Flush();
 
+            GL.ColorMask(true,true,true,true);
             GL.StencilFunc(StencilFunction.Notequal, 1, ~0);
             GL.StencilMask(0);
         }
@@ -232,6 +248,8 @@ namespace RenderingEngine.Rendering
             Flush();
 
             GL.Disable(EnableCap.StencilTest);
+            GL.StencilMask(~0);
+            GL.Clear(ClearBufferMask.StencilBufferBit);
         }
 
         #region _textDrawer Wrappers 

@@ -27,9 +27,19 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
+            CTX.StartStencillingWithoutDrawing();
+
+            float barSize = MathF.Abs((Window.Height/2 - 5) * MathF.Sin(_time / 4f));
+            CTX.DrawRect(0, Window.Height, Window.Width, Window.Height - barSize);
+            CTX.DrawRect(0, 0, Window.Width, barSize);
+
+            CTX.StartUsingStencil();
+
             geometryAndTextTest.Render(deltaTime);
 
-            CTX.StartStencilling();
+            CTX.LiftStencil();
+
+            CTX.StartStencillingWhileDrawing();
 
             float size = 60;
             DrawRedRectangle(size, _xPos);

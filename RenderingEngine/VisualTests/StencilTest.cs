@@ -25,29 +25,52 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            //Enable writing to the stencil buffer
+            GL.Enable(EnableCap.DepthTest);
             GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
+
+
+            GL.StencilMask(0x00);
+
+            //geometryAndTextTest.Render(deltaTime);
+
             GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
             GL.StencilMask(0xFF);
 
             float size = 60;
-            CTX.SetDrawColor(1, 0, 0, 1);
-            CTX.DrawRect(Window.Width / 2 - size, Window.Height / 2 - size, Window.Width / 2 + size, Window.Height / 2 + size);
-            CTX.Flush();
+            float xPos = -100;
+            DrawRedRectangle(size, xPos);
 
-            // disable writing to the stencil buffer
-            GL.StencilFunc(StencilFunction.Notequal, 1, 0xFF); 
-            GL.StencilMask(0x00); 
+            GL.StencilFunc(StencilFunction.Notequal, 1, 0xFF);
+            GL.StencilMask(0x00);
             GL.Disable(EnableCap.DepthTest);
 
             size = 70;
-            CTX.SetDrawColor(0, 0, 1, 1);
-            CTX.DrawRect(Window.Width / 2 - size, Window.Height / 2 - size, Window.Width / 2 + size, Window.Height / 2 + size);
+            DrawBlueRectangle(size, xPos);
             CTX.Flush();
 
-            geometryAndTextTest.Render(deltaTime);
+            //GL.StencilMask(0xFF);
+            //GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
+            //GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.DepthTest);
+
+
         }
 
+        private static void DrawBlueRectangle(float size, float xPos)
+        {
+            CTX.SetTexture(null);
+            CTX.SetDrawColor(0, 0, 1, 1);
+            CTX.DrawRect(Window.Width / 2 - size + xPos, Window.Height / 2 - size,
+                Window.Width / 2 + size + xPos, Window.Height / 2 + size);
+        }
+
+        private static void DrawRedRectangle(float size, float xPos)
+        {
+            CTX.SetTexture(null);
+            CTX.SetDrawColor(1, 0, 0, 1);
+            CTX.DrawRect(Window.Width / 2 - size + xPos, Window.Height / 2 - size,
+                Window.Width / 2 + size + xPos, Window.Height / 2 + size);
+        }
 
         public override void Update(double deltaTime)
         {

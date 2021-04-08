@@ -1,5 +1,6 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using RenderingEngine.Datatypes;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,14 @@ namespace RenderingEngine.Logic
 
         public static void RunProgram(EntryPoint program)
         {
+            /*
+            GLFW.WindowHint(WindowHintInt.GreenBits, 8);
+            GLFW.WindowHint(WindowHintInt.BlueBits, 8);
+            GLFW.WindowHint(WindowHintInt.AlphaBits, 8);
+            GLFW.WindowHint(WindowHintInt.DepthBits, 24);
+            GLFW.WindowHint(WindowHintInt.StencilBits, 8);
+            //*/
+
             using (var instance = new WindowInstance(program))
             {
                 _instance = instance;

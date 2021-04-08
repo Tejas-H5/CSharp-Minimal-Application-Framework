@@ -9,9 +9,16 @@ namespace RenderingEngine.Rendering
     //TODO: implement multiple units if needed
     class TextureManager : IDisposable
     {
-        Texture _currentTexture = null;
+        static Texture _currentTexture = null;
 
-        Texture _nullTexture;
+        //Since the current texture can be changed outside of this class even though it shouldnt,
+        //this can be used to inform this class of it
+        public static void SetCurrentTexture(Texture t)
+        {
+            _currentTexture = t;
+        }
+
+        static Texture _nullTexture = null;
 
         public Texture CurrentTexture()
         {
@@ -25,6 +32,9 @@ namespace RenderingEngine.Rendering
 
         private void InitNullTexture()
         {
+            if (_nullTexture != null)
+                return;
+
             Bitmap white1x1 = new Bitmap(1, 1);
             white1x1.SetPixel(0, 0, Color.FromArgb(255, 255, 255, 255));
 

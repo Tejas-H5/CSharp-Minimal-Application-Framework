@@ -112,6 +112,11 @@ namespace RenderingEngine.Rendering
 
             GL.Enable(EnableCap.StencilTest);
             GL.StencilFunc(StencilFunction.Equal, 0, 0xFF);
+
+            
+            GL.Enable(EnableCap.DepthTest);
+            //TODO: change this for viewport3D
+            GL.DepthFunc(DepthFunction.Always);
         }
 
         public static void SetDrawColor(float r, float g, float b, float a)

@@ -126,10 +126,12 @@ namespace RenderingEngine.Logic
             _charactersDownSB.Clear();
             _charactersReleasedSB.Clear();
 
-            for (int i = 0; i < _keyStates.Length; i++)
-            {
-                _prevKeyStates[i] = _keyStates[i];
+            bool[] temp = _prevKeyStates;
+            _prevKeyStates = _keyStates;
+            _keyStates = temp;
 
+            for (int i = 0; i < _keyStates.Length - 1; i++)
+            {
                 KeyCode key = (KeyCode)i;
                 _keyStates[i] = _window.KeyboardState.IsKeyDown((Keys)key);
                 _anyKeyDown = _anyKeyDown || _keyStates[i];

@@ -58,7 +58,9 @@ namespace RenderingEngine.Logic
             _mouseInputManager.StartDrag(x, y);
         }
 
-        public static bool IsAnyClicked { get { return _mouseInputManager.AnyClicked; } }
+        public static bool MouseClickedAny { get { return _mouseInputManager.MouseClickedAny; } }
+        public static bool MouseReleasedAny { get { return _mouseInputManager.MouseReleasedAny; } }
+        public static bool MouseHeldAny { get { return _mouseInputManager.MouseDownAny; } }
         public static bool MouseStartedDragging { get { return _mouseInputManager.StartedDragging; } }
         public static bool IsMouseDragging { get { return _mouseInputManager.IsDragging; } }
         public static bool WasMouseDragging { get { return _mouseInputManager.WasDragging; } }

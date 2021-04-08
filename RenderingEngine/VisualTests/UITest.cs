@@ -1,6 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using RenderingEngine.UI;
-using RenderingEngine.UI.BasicUI;
 using RenderingEngine.Logic;
 using System;
 using System.Collections.Generic;
@@ -8,7 +6,9 @@ using System.Text;
 using RenderingEngine.Datatypes;
 using RenderingEngine.Rendering;
 using Color4 = RenderingEngine.Datatypes.Color4;
-
+using RenderingEngine.UI.Core;
+using RenderingEngine.UI.Components;
+using RenderingEngine.UI;
 
 namespace RenderingEngine.VisualTests
 {
@@ -28,27 +28,83 @@ namespace RenderingEngine.VisualTests
         }
 
 
-        protected UINode _UIRoot = new UIPanel();
-        public UINode UIRoot {
+        protected UIElement _uiRoot;
+        protected UIZStack _zStack;
+
+        public UIElement UIRoot {
             get {
-                return _UIRoot;
+                return _uiRoot;
             }
         }
 
+        UIElement _modal;
+
+
         private void InitUI()
         {
-            UINode top = GeneratePanel();
-            top.SetAnchoringOffset(new Rect2D(0, 0.5f, 1, 1));
-            UIRoot.AddChild(top);
+            _zStack = new UIZStack();
 
-            UIPanel bottom = GeneratePanel();
-            bottom.SetAnchoringOffset(new Rect2D(0, 0f, 1f, 0.5f));
-            UIRoot.AddChild(bottom);
+            UIElement top;
+            UIElement bottom;
+            UIElement button;
 
-            //Create a golden ratio spiral
-            UINode starting = bottom;
+            UIElement bruhButton;
+            UIElement closeButton;
 
-            for(int i = 0; i < 5; i++)
+            _zStack.AddChildren(
+                _uiRoot = GeneratePanel().AddChildren(
+                    top = GeneratePanel()
+                        .SetAnchoringOffset(new Rect2D(0, 0.5f, 1, 1))
+                        .AddChildren(
+                            button = UICreator.CreateButton("")
+                                .SetAnchoringPositionCenter(0, 0, 1, 1)
+                                .SetRectPositionSize(200, 200, 50, 50)
+                        )
+                    ,
+                    bottom = GeneratePanel()
+                        .SetAnchoringOffset(new Rect2D(0, 0f, 1f, 0.5f))
+                    )
+                ,
+                _modal = UICreator.CreateUIElement(
+                    new UIRect(new Color4(0, 0, 0, 0.2f))
+                    )
+                    .AddChildren(
+                        bruhButton = UICreator.CreateButton(
+                            "Bruh XD", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
+                            )
+                            .SetAnchoringPositionCenter(0.5f, 0.5f)
+                            .SetRectPositionSize(0, 0, 400, 200)
+                        ,
+                        closeButton = UICreator.CreateButton(
+                            "X", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
+                            )
+                            .SetAnchoringPositionCenter(1, 1, 1, 1)
+                            .SetRectPositionSize(-10, -10, 40, 40)
+                        ,
+                        UICreator.CreateButton(
+                            "someText", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
+                            )
+                            .SetAnchoringPositionCenter(1, 1, 1, 1)
+                            .SetRectPositionSize(-10, -50, 100, 40)
+                        ,
+                        UICreator.CreateButton(
+                            "some more textaoiuoawhiaohwifa", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
+                            )
+                            .SetAnchoringPositionCenter(1, 1, 1, 1)
+                            .SetRectPositionSize(-10, -100, 100, 40)
+                        ,
+                        UICreator.CreateButton(
+                            "some more textaoiuoawhiaohwifaa asd foifsd iasfhpdihs pasdhfosh paihsd foafopha d \na weoifo awiefoaewhfoi", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
+                            )
+                            .SetAnchoringPositionCenter(1, 1, 1, 1)
+                            .SetRectPositionSize(-10, -150, 100, 40)
+                    )
+                );
+
+
+            //Create a golden ratio spiral with UI panels
+            UIElement starting = bottom;
+            for (int i = 0; i < 5; i++)
             {
                 starting = Generate2PanelsHor(starting, false);
                 starting = Generate2PanelsVer(starting, false);
@@ -56,38 +112,47 @@ namespace RenderingEngine.VisualTests
                 starting = Generate2PanelsVer(starting, true);
             }
 
-            //Add a button
-            UIButton button = new UIButton();
-            button.SetAnchoringPositionCenter(0,0, 1, 1);
-            button.SetRectPositionSize(200, 200, 50, 50);
-
-            //button.SetAnchoring(new Rect2D(0, 0, 1, 1));
-            //button.SetRectOffset(new Rect2D(-20, -20, -20, -20));
-            button.Text = $"Absolute positioning x={button.RectOffset.X0},y={button.RectOffset.Y0}, " +
+            UIText buttonText = button.GetComponentOfType<UIText>();
+            buttonText.Text = $"Absolute positioning x={button.RectOffset.X0},y={button.RectOffset.Y0}, " +
                 $"\n width={button.RectOffset.X1} and height = {button.RectOffset.Y1}, " +
                 $"\n center = {button.Anchoring.X1},{button.Anchoring.Y1}, ";
-            button.TextColor = new Color4(0, 0, 0, 1f);
-            button.BackgroundRect.Color = new Color4(0.7f, 0.7f, 0.7f, 1f);
-            button.BackgroundRect.ClickedColor = new Color4(1f, 1f, 1f, 1f);
-            //button.OnClicked += Button_OnClicked;
 
-            top.AddChild(button);
+            button.GetComponentOfType<UIMouseListener>().OnMouseReleased += Button_OnClicked;
+
+            bruhButton.GetComponentOfType<UIMouseListener>().OnMouseReleased += BruhButton_OnClicked;
+            closeButton.GetComponentOfType<UIMouseListener>().OnMouseReleased += CloseButton_OnClicked;
         }
 
-        private void Button_OnClicked()
+        private void CloseButton_OnClicked()
+        {
+            _modal.IsVisible = false;
+        }
+
+        private void BruhButton_OnClicked()
         {
             Console.WriteLine("Bruh XD");
         }
 
-        private UIPanel Generate2PanelsVer(UINode attatchTo, bool top)
+        private void Button_OnClicked()
         {
-            UIPanel subPanelTop = GeneratePanel();
-            subPanelTop.SetAnchoringOffset(new Rect2D(0, 0.5f, 1, 1));
-            attatchTo.AddChild(subPanelTop);
+            ToggleModal();
+        }
 
-            UIPanel subPanelBottom = GeneratePanel();
-            subPanelBottom.SetAnchoringOffset(new Rect2D(0, 0f, 1f, 0.5f));
-            attatchTo.AddChild(subPanelBottom);
+        private void ToggleModal()
+        {
+            _modal.IsVisible = !_modal.IsVisible;
+        }
+
+        private UIElement Generate2PanelsVer(UIElement attatchTo, bool top)
+        {
+            UIElement subPanelTop, subPanelBottom;
+            attatchTo.AddChildren(
+                subPanelTop = GeneratePanel()
+                    .SetAnchoringOffset(new Rect2D(0, 0.5f, 1, 1))
+                ,
+                subPanelBottom = GeneratePanel()
+                    .SetAnchoringOffset(new Rect2D(0, 0f, 1f, 0.5f))
+                );
 
             if (top)
                 return subPanelTop;
@@ -95,15 +160,16 @@ namespace RenderingEngine.VisualTests
             return subPanelBottom;
         }
 
-        private UIPanel Generate2PanelsHor(UINode attatchTo, bool left)
+        private UIElement Generate2PanelsHor(UIElement attatchTo, bool left)
         {
-            UIPanel subPanelLeft = GeneratePanel();
-            subPanelLeft.SetAnchoringOffset(new Rect2D(0f,0f,0.5f,1f));
-            attatchTo.AddChild(subPanelLeft);
-
-            UIPanel subPanelRight = GeneratePanel();
-            subPanelRight.SetAnchoringOffset(new Rect2D(0.5f, 0f, 1f, 1f));
-            attatchTo.AddChild(subPanelRight);
+            UIElement subPanelLeft, subPanelRight;
+            attatchTo.AddChildren(
+                subPanelLeft = GeneratePanel()
+                    .SetAnchoringOffset(new Rect2D(0f, 0f, 0.5f, 1f))
+                ,
+                subPanelRight = GeneratePanel()
+                    .SetAnchoringOffset(new Rect2D(0.5f, 0f, 1f, 1f))
+                );
 
             if (left)
                 return subPanelLeft;
@@ -111,26 +177,24 @@ namespace RenderingEngine.VisualTests
             return subPanelRight;
         }
 
-        private static UIPanel GeneratePanel()
+        private static UIElement GeneratePanel()
         {
-            var subPanelLeft = new UIPanel();
-            subPanelLeft.BackgroundRect.Color = new Color4(0, 0, 0, 0.1f);
-            subPanelLeft.BackgroundRect.HoverColor = new Color4(1, 0, 0, 0.2f);
-            subPanelLeft.BackgroundRect.ClickedColor = new Color4(0, 0, 1, 0.2f);
-            subPanelLeft.SetRectOffset(new Rect2D(-5, -5, -5, -5));
-            return subPanelLeft;
+            return UICreator.CreatePanel(
+                    color: new Color4(0, 0, 0, 0.1f),
+                    hoverColor: new Color4(1, 0, 0, 0.2f),
+                    clickedColor: new Color4(0, 0, 1, 0.2f)
+                )
+                .SetRectOffset(5);
         }
 
         public override void Render(double deltaTime)
         {
             CTX.Clear();
 
+            _zStack.DrawIfVisible(deltaTime);
+
             CTX.SetDrawColor(0, 0, 0, 1);
             CTX.DrawCircle(Input.MouseX, Input.MouseY, 10);
-
-            _UIRoot.Draw(deltaTime);
-
-            CTX.DrawText("Bruv", Window.Width / 2.0f, Window.Height / 2.0f);
 
             CTX.Flush();
         }
@@ -139,13 +203,12 @@ namespace RenderingEngine.VisualTests
         {
             CTX.Viewport2D(Window.Width, Window.Height);
 
-            _UIRoot.Resize();
-
+            _zStack.Resize();
         }
 
         public override void Update(double deltaTime)
         {
-            _UIRoot.Update(deltaTime);
+            _zStack.Update(deltaTime);
         }
     }
 }

@@ -26,14 +26,20 @@ namespace RenderingEngine.Logic
             _mouseButtonStates = temp;
         }
 
-        bool _wasAnyClicked = false;
-        bool _anyClicked = false;
+        bool _wasAnyDown = false;
+        bool _anyDown = false;
         bool _wasAnyHeld = false;
         bool _isAnyHeld = false;
         bool _wasDragging = false;
         bool _startedDragging = false;
 
-        public bool AnyClicked { get { return _anyClicked; } }
+        bool _anyClicked = false;
+        bool _anyReleased = false;
+
+        public bool MouseDownAny { get { return _anyDown; } }
+        public bool MouseClickedAny { get { return _anyReleased; } }
+        public bool MouseReleasedAny { get { return _anyClicked; } }
+
         public bool IsDragging {
             get {
                 return _startedDragging || (_isAnyHeld && _wasAnyHeld && (_dragDisplacement > 1));
@@ -103,8 +109,8 @@ namespace RenderingEngine.Logic
 
         public void StartDrag(float x, float y)
         {
-            _anyClicked = true;
-            _wasAnyClicked = true;
+            _anyDown = true;
+            _wasAnyDown = true;
             _isAnyHeld = true;
             _wasAnyHeld = true;
             _wasDragging = true;
@@ -117,18 +123,24 @@ namespace RenderingEngine.Logic
             SwapInputBuffers();
             _wasDragging = IsDragging;
             _wasAnyHeld = _isAnyHeld;
-            _wasAnyClicked = _anyClicked;
-            _anyClicked = false;
+            _wasAnyDown = _anyDown;
+            _anyDown = false;
             _startedDragging = false;
 
-            for (int i = 0; i < 3; i++)
+            _anyClicked = false;
+            _anyReleased = false;
+
+            for (int i = 0; i < _mouseButtonStates.Length; i++)
             {
                 _mouseButtonStates[i] = _window.MouseState.IsButtonDown(
                     (OpenTK.Windowing.GraphicsLibraryFramework.MouseButton)i);
-                _anyClicked = _anyClicked || _mouseButtonStates[i];
+                _anyDown = _anyDown || _mouseButtonStates[i];
+
+                _anyClicked = _anyClicked || (!_prevMouseButtonStates[i] && _mouseButtonStates[i]);
+                _anyReleased = _anyReleased || (_prevMouseButtonStates[i] && !_mouseButtonStates[i]);
             }
 
-            _isAnyHeld = _wasAnyClicked && _anyClicked;
+            _isAnyHeld = _wasAnyDown && _anyDown;
 
             if (!_wasAnyHeld && _isAnyHeld)
             {

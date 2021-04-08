@@ -65,6 +65,7 @@ namespace RenderingEngine.Rendering
 
         public static void Clear()
         {
+            GL.StencilMask(~0);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
         }
 
@@ -208,7 +209,32 @@ namespace RenderingEngine.Rendering
             _solidShader.UpdateModel();
         }
 
-        // ------------------- _textDrawer Wrappers  -------------------
+        public static void StartStencilling()
+        {
+            Flush();
+
+            GL.Enable(EnableCap.StencilTest);
+            GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
+            GL.StencilFunc(StencilFunction.Always, 1, ~0);
+            GL.StencilMask(~0);
+        }
+
+        public static void StartUsingStencil()
+        {
+            Flush();
+
+            GL.StencilFunc(StencilFunction.Notequal, 1, ~0);
+            GL.StencilMask(0);
+        }
+
+        public static void LiftStencil()
+        {
+            Flush();
+
+            GL.Disable(EnableCap.StencilTest);
+        }
+
+        #region _textDrawer Wrappers 
 
         public static void SetCurrentFont(string name, int size)
         {
@@ -258,10 +284,9 @@ namespace RenderingEngine.Rendering
         {
             return _textDrawer.GetStringHeight(text);
         }
+        #endregion
 
-
-        // ------------------- _geometryDrawer Wrappers  -------------------
-
+        #region _geometryDrawer Wrappers
         public static void DrawTriangle(
                 float x0, float y0, float x1, float y1, float x2, float y2,
                 float u0 = 0.0f, float v0 = 0.0f, float u1 = 0.5f, float v1 = 1f, float u2 = 1, float v2 = 0)
@@ -388,6 +413,7 @@ namespace RenderingEngine.Rendering
             _geometryDrawer.EndPolyLine(x0, y0);
         }
 
+        #endregion
 
         #region IDisposable Support
         private static bool _disposed = false; // To detect redundant calls
@@ -413,7 +439,6 @@ namespace RenderingEngine.Rendering
                 _disposed = true;
             }
         }
-
         #endregion
     }
 }

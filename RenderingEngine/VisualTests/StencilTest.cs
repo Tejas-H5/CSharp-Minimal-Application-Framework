@@ -28,25 +28,18 @@ namespace RenderingEngine.VisualTests
         public override void Render(double deltaTime)
         {
             geometryAndTextTest.Render(deltaTime);
-            CTX.Flush();
 
-            GL.Enable(EnableCap.StencilTest);
-            GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
-            GL.StencilFunc(StencilFunction.Always, 1, ~0);
-            GL.StencilMask(~0);
+            CTX.StartStencilling();
 
             float size = 60;
             DrawRedRectangle(size, _xPos);
 
-            GL.StencilFunc(StencilFunction.Notequal, 1, ~0);
-            GL.StencilMask(0);
+            CTX.StartUsingStencil();
 
             size = 70;
             DrawBlueRectangle(size, _xPos);
 
-            GL.Disable(EnableCap.StencilTest);  
-            GL.StencilMask(~0);
-
+            CTX.LiftStencil();
         }
 
         private static void DrawBlueRectangle(float size, float xPos)

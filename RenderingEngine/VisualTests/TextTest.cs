@@ -89,7 +89,7 @@ namespace RenderingEngine.VisualTests
 
             CTX.SetDrawColor(1, 0, 0, 1);
 
-            CTX.Flush();
+            CTX.SwapBuffers();
         }
 
 

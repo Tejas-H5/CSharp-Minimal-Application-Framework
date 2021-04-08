@@ -68,9 +68,15 @@ namespace RenderingEngine.Rendering
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
         }
 
+
         public static void Flush()
         {
             _meshOutputStream.Flush();
+        }
+
+        public static void SwapBuffers()
+        {
+            Flush();
             _glContext.SwapBuffers();
 
             _modelMatrices.Clear();
@@ -119,7 +125,7 @@ namespace RenderingEngine.Rendering
             if (_solidShader.CurrentColor.Equals(col))
                 return;
 
-            _meshOutputStream.Flush();
+            Flush();
 
             _solidShader.CurrentColor = col;
         }
@@ -142,7 +148,7 @@ namespace RenderingEngine.Rendering
                 }
             }
 
-            _meshOutputStream.Flush();
+            Flush();
 
             _textureManager.SetTexture(texture);
         }
@@ -161,7 +167,7 @@ namespace RenderingEngine.Rendering
 
         public static void PushMatrix(Matrix4 mat)
         {
-            _meshOutputStream.Flush();
+            Flush();
 
             if (_modelMatrices.Count == 0)
             {
@@ -178,7 +184,7 @@ namespace RenderingEngine.Rendering
 
         public static void PopMatrix()
         {
-            _meshOutputStream.Flush();
+            Flush();
 
             if (_modelMatrices.Count > 0)
             {

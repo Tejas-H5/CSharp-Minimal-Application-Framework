@@ -60,7 +60,7 @@ namespace RenderingEngine.VisualTests
 
             CTX.DrawLineOutline(10, lineSize, lineSize, Window.Width - lineSize, Window.Height - lineSize, lineSize / 2, CapType.Circle);
 
-            CTX.Flush();
+            CTX.SwapBuffers();
         }
     }
 }

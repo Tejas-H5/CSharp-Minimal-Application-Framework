@@ -59,7 +59,7 @@ namespace RenderingEngine.VisualTests
 
             CTX.PopMatrix();
 
-            CTX.Flush();
+            CTX.SwapBuffers();
         }
 
 

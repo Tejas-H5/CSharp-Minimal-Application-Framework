@@ -22,7 +22,7 @@ namespace RenderingEngine.Templates
 
             //Rendering code goes here
 
-            CTX.Flush();
+            CTX.SwapBuffers();
         }
 
         public override void Update(double deltaTime)

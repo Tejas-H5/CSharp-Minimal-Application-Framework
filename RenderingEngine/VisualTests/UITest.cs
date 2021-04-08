@@ -208,7 +208,7 @@ namespace RenderingEngine.VisualTests
             CTX.SetDrawColor(0, 0, 0, 1);
             CTX.DrawCircle(Input.MouseX, Input.MouseY, 10);
 
-            CTX.Flush();
+            CTX.SwapBuffers();
         }
 
         public override void Resize()

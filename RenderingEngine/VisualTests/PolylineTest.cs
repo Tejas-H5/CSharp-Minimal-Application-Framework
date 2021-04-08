@@ -49,7 +49,7 @@ namespace RenderingEngine.VisualTests
             }
 
 
-            CTX.Flush();
+            CTX.SwapBuffers();
         }
     }
 }

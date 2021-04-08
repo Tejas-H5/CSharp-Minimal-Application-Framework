@@ -47,7 +47,7 @@ namespace RenderingEngine.VisualTests
             GL.StencilFunc(StencilFunction.Always, 1, 0xFF);
             GL.Enable(EnableCap.DepthTest);
 
-            CTX.Flush();
+            CTX.SwapBuffers();
         }
 
 

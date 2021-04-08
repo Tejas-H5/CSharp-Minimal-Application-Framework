@@ -105,7 +105,7 @@ namespace RenderingEngine.VisualTests
             CTX.DrawRect(Window.Width / 2 - 50, Window.Height / 2 - 50, Window.Width / 2 + 50, Window.Height / 2 + 50);
 
             //RenderingContext.DrawRect(100,100,window.Width-100, window.Height-100);
-            CTX.Flush();
+            CTX.SwapBuffers();
         }
 
 

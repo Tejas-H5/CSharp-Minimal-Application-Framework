@@ -110,7 +110,7 @@ namespace RenderingEngine.VisualTests
             //   Offset in the EBO. Set this to 0 because we want to draw the whole thing.
             GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, (IntPtr)0);
 
-            CTX.Flush();
+            CTX.SwapBuffers();
         }
 
         public override void Resize()

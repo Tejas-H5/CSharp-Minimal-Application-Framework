@@ -54,7 +54,7 @@ namespace RenderingEngine.VisualTests
             a += (float)deltaTime;
             b += (float)deltaTime * 2;
 
-            CTX.Flush();
+            CTX.SwapBuffers();
         }
 
         private void DrawHand(float x0, float y0, float r, float angle)

@@ -44,7 +44,7 @@ namespace RenderingEngine.VisualTests
             CTX.DrawText(KeysToString(Input.CharactersDown), Window.Width / 2, Window.Height / 2);
 
 
-            CTX.Flush();
+            CTX.SwapBuffers();
         }
 
         public override void Update(double deltaTime)

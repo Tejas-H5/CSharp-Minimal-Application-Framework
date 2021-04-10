@@ -54,27 +54,27 @@ namespace RenderingEngine.VisualTests
             _zStack.AddChildren(
                 _uiRoot = GeneratePanel().AddChildren(
                     top = GeneratePanel()
-                        .SetAnchoringOffset(new Rect2D(0, 0.5f, 1, 1))
+                        .SetNormalizedAnchoring(new Rect2D(0, 0.5f, 1, 1))
                         .AddChildren(
                             button = UICreator.CreateButton("")
-                                .SetAnchoringPositionCenter(0, 0, 1, 1)
-                                .SetRectPositionSize(200, 200, 50, 50)
+                                .SetNormalizedPositionCenter(0, 0, 1, 1)
+                                .SetAbsPositionSize(200, 200, 50, 50)
                             ,
                             GeneratePanel()
-                                .SetAnchoringOffsetsX(0, 1)
-                                .SetRectOffsetsX(5, 220)
-                                .SetAnchoringPositionCenterY(1,1)
-                                .SetPositionSizeY(-10, 100)
+                                .SetNormalizedAnchoringX(0, 1)
+                                .SetAbsOffsetsX(5, 220)
+                                .SetNormalizedPositionCenterY(1,1)
+                                .SetAbsPositionSizeY(-10, 100)
                             ,
                             GeneratePanel()
-                                .SetAnchoringPositionCenterX(1, 1)
-                                .SetPositionSizeX(-10, 200)
-                                .SetAnchoringPositionCenterY(1, 1)
-                                .SetPositionSizeY(-10, 200)
+                                .SetNormalizedPositionCenterX(1, 1)
+                                .SetAbsPositionSizeX(-10, 200)
+                                .SetNormalizedPositionCenterY(1, 1)
+                                .SetAbsPositionSizeY(-10, 200)
                         )
                     ,
                     goldenRatioSpiralContainer = GeneratePanel()
-                        .SetAnchoringOffset(new Rect2D(0, 0f, 1f, 0.5f))
+                        .SetNormalizedAnchoring(new Rect2D(0, 0f, 1f, 0.5f))
                     )
                 ,
                 _modal = UICreator.CreateUIElement(
@@ -84,32 +84,32 @@ namespace RenderingEngine.VisualTests
                         bruhButton = UICreator.CreateButton(
                             "Bruh XD", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
                             )
-                            .SetAnchoringPositionCenter(0.5f, 0.5f)
-                            .SetRectPositionSize(0, 0, 400, 200)
+                            .SetNormalizedPositionCenter(0.5f, 0.5f)
+                            .SetAbsPositionSize(0, 0, 400, 200)
                         ,
                         closeButton = UICreator.CreateButton(
                             "X", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
                             )
-                            .SetAnchoringPositionCenter(1, 1, 1, 1)
-                            .SetRectPositionSize(-10, -10, 40, 40)
+                            .SetNormalizedPositionCenter(1, 1, 1, 1)
+                            .SetAbsPositionSize(-10, -10, 40, 40)
                         ,
                         UICreator.CreateButton(
                             "someText", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
                             )
-                            .SetAnchoringPositionCenter(1, 1, 1, 1)
-                            .SetRectPositionSize(-10, -50, 100, 40)
+                            .SetNormalizedPositionCenter(1, 1, 1, 1)
+                            .SetAbsPositionSize(-10, -50, 100, 40)
                         ,
                         UICreator.CreateButton(
                             "some more textaoiuoawhiaohwifa", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
                             )
-                            .SetAnchoringPositionCenter(1, 1, 1, 1)
-                            .SetRectPositionSize(-10, -100, 100, 40)
+                            .SetNormalizedPositionCenter(1, 1, 1, 1)
+                            .SetAbsPositionSize(-10, -100, 100, 40)
                         ,
                         UICreator.CreateButton(
                             "some more textaoiuoawhiaohwifaa asd foifsd iasfhpdihs pasdhfosh paihsd foafopha d \na weoifo awiefoaewhfoi", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
                             )
-                            .SetAnchoringPositionCenter(1, 1, 1, 1)
-                            .SetRectPositionSize(-10, -150, 100, 40)
+                            .SetNormalizedPositionCenter(1, 1, 1, 1)
+                            .SetAbsPositionSize(-10, -150, 100, 40)
                     )
                 );
 
@@ -160,10 +160,10 @@ namespace RenderingEngine.VisualTests
             UIElement subPanelTop, subPanelBottom;
             attatchTo.AddChildren(
                 subPanelTop = GeneratePanel()
-                    .SetAnchoringOffset(new Rect2D(0, 0.5f, 1, 1))
+                    .SetNormalizedAnchoring(new Rect2D(0, 0.5f, 1, 1))
                 ,
                 subPanelBottom = GeneratePanel()
-                    .SetAnchoringOffset(new Rect2D(0, 0f, 1f, 0.5f))
+                    .SetNormalizedAnchoring(new Rect2D(0, 0f, 1f, 0.5f))
                 );
 
             if (top)
@@ -177,10 +177,10 @@ namespace RenderingEngine.VisualTests
             UIElement subPanelLeft, subPanelRight;
             attatchTo.AddChildren(
                 subPanelLeft = GeneratePanel()
-                    .SetAnchoringOffset(new Rect2D(0f, 0f, 0.5f, 1f))
+                    .SetNormalizedAnchoring(new Rect2D(0f, 0f, 0.5f, 1f))
                 ,
                 subPanelRight = GeneratePanel()
-                    .SetAnchoringOffset(new Rect2D(0.5f, 0f, 1f, 1f))
+                    .SetNormalizedAnchoring(new Rect2D(0.5f, 0f, 1f, 1f))
                 );
 
             if (left)
@@ -196,7 +196,7 @@ namespace RenderingEngine.VisualTests
                     hoverColor: new Color4(1, 0, 0, 0.2f),
                     clickedColor: new Color4(0, 0, 1, 0.2f)
                 )
-                .SetRectOffset(5);
+                .SetAbsoluteOffset(5);
         }
 
         public override void Render(double deltaTime)

@@ -9,8 +9,8 @@ namespace RenderingEngine.UI.Core
     {
         Rect2D _rect;
 
-        Rect2D _rectOffset;
-        Rect2D _anchoring;
+        Rect2D _absoluteOffset;
+        Rect2D _normalizedAnchoring;
 
         public bool PositionSizeX { get; set; }
         public bool PositionSizeY { get; set; }
@@ -19,99 +19,99 @@ namespace RenderingEngine.UI.Core
             get { return _rect; }
         }
 
-        public Rect2D Anchoring { get { return _anchoring; } set { _anchoring = value; } }
-        public Rect2D RectOffset { get { return _rectOffset; } set { _rectOffset = value; } }
+        public Rect2D NormalizedAnchoring { get { return _normalizedAnchoring; } set { _normalizedAnchoring = value; } }
+        public Rect2D AbsoluteOffset { get { return _absoluteOffset; } set { _absoluteOffset = value; } }
 
 
-        public void SetRectOffsetsX(float left, float right)
+        public void SetAbsOffsetsX(float left, float right)
         {
             PositionSizeX = false;
-            _rectOffset.X0 = left;
-            _rectOffset.X1 = right;
+            _absoluteOffset.X0 = left;
+            _absoluteOffset.X1 = right;
         }
 
-        public void SetRectOffsetsY(float bottom, float top)
+        public void SetAbsOffsetsY(float bottom, float top)
         {
             PositionSizeY = false;
-            _rectOffset.Y0 = bottom;
-            _rectOffset.Y1 = top;
+            _absoluteOffset.Y0 = bottom;
+            _absoluteOffset.Y1 = top;
         }
 
-        public void SetRectOffset(float offset)
+        public void SetAbsoluteOffset(float offset)
         {
-            SetRectOffset(new Rect2D(offset, offset, offset, offset));
+            SetAbsoluteOffset(new Rect2D(offset, offset, offset, offset));
         }
 
-        public void SetRectOffset(Rect2D rectOffset)
-        {
-            PositionSizeX = false;
-            PositionSizeY = false;
-
-            _rectOffset = rectOffset;
-        }
-
-        public void SetPositionSizeX(float x, float width)
-        {
-            PositionSizeX = true;
-            _rectOffset.X0 = x;
-            _rectOffset.X1 = width;
-        }
-
-        public void SetPositionSizeY(float y, float height)
-        {
-            PositionSizeY = true;
-            _rectOffset.Y0 = y;
-            _rectOffset.Y1 = height;
-        }
-
-        public void SetRectPositionSize(float x, float y, float width, float height)
-        {
-            PositionSizeX = true;
-            PositionSizeY = true;
-            _rectOffset = new Rect2D(x, y, width, height);
-        }
-
-
-        public void SetAnchoringOffsetsX(float left, float right)
-        {
-            PositionSizeX = false;
-            _anchoring.X0 = left;
-            _anchoring.X1 = right;
-        }
-
-        public void SetAnchoringOffsetsY(float bottom, float top)
-        {
-            PositionSizeY = false;
-            _anchoring.Y0 = bottom;
-            _anchoring.Y1 = top;
-        }
-
-        public void SetAnchoringOffset(Rect2D anchor)
+        public void SetAbsoluteOffset(Rect2D rectOffset)
         {
             PositionSizeX = false;
             PositionSizeY = false;
-            _anchoring = anchor;
+
+            _absoluteOffset = rectOffset;
         }
 
-        public void SetAnchoringPositionCenterX(float x, float centreX = 0.5f)
+        public void SetAbsPositionSizeX(float x, float width)
         {
             PositionSizeX = true;
-            _anchoring.X0 = x;
-            _anchoring.X1 = centreX;
+            _absoluteOffset.X0 = x;
+            _absoluteOffset.X1 = width;
         }
 
-        public void SetAnchoringPositionCenterY(float y, float centreY = 0.5f)
+        public void SetAbsPositionSizeY(float y, float height)
         {
             PositionSizeY = true;
-            _anchoring.Y0 = y;
-            _anchoring.Y1 = centreY;
+            _absoluteOffset.Y0 = y;
+            _absoluteOffset.Y1 = height;
         }
 
-        public void SetAnchoringPositionCenter(float x, float y, float centreX = 0.5f, float centreY = 0.5f)
+        public void SetAbsPositionSize(float x, float y, float width, float height)
         {
             PositionSizeX = true;
             PositionSizeY = true;
-            _anchoring = new Rect2D(x, y, centreX, centreY);
+            _absoluteOffset = new Rect2D(x, y, width, height);
+        }
+
+
+        public void SetNormalizedAnchoringX(float left, float right)
+        {
+            PositionSizeX = false;
+            _normalizedAnchoring.X0 = left;
+            _normalizedAnchoring.X1 = right;
+        }
+
+        public void SetNormalizedAnchoringY(float bottom, float top)
+        {
+            PositionSizeY = false;
+            _normalizedAnchoring.Y0 = bottom;
+            _normalizedAnchoring.Y1 = top;
+        }
+
+        public void SetNormalizedAnchoring(Rect2D anchor)
+        {
+            PositionSizeX = false;
+            PositionSizeY = false;
+            _normalizedAnchoring = anchor;
+        }
+
+        public void SetNormalizedPositionCenterX(float x, float centerX = 0.5f)
+        {
+            PositionSizeX = true;
+            _normalizedAnchoring.X0 = x;
+            _normalizedAnchoring.X1 = centerX;
+        }
+
+        public void SetNormalizedPositionCenterY(float y, float centreY = 0.5f)
+        {
+            PositionSizeY = true;
+            _normalizedAnchoring.Y0 = y;
+            _normalizedAnchoring.Y1 = centreY;
+        }
+
+        public void SetNormalizedPositionCenter(float x, float y, float centreX = 0.5f, float centreY = 0.5f)
+        {
+            PositionSizeX = true;
+            PositionSizeY = true;
+            _normalizedAnchoring = new Rect2D(x, y, centreX, centreY);
         }
 
 
@@ -141,14 +141,14 @@ namespace RenderingEngine.UI.Core
             //_anchoring contains the (still) normalized position position in X0 Y0 and normalized center in X1,Y1
             //_rectOffset contains position in X0, Y0 and width, heighit in X1 Y1
 
-            float anchorLeft = parentRect.Left + _anchoring.X0 * parentRect.Width;
+            float anchorLeft = parentRect.Left + _normalizedAnchoring.X0 * parentRect.Width;
 
-            float X = _rectOffset.X0 + anchorLeft;
+            float X = _absoluteOffset.X0 + anchorLeft;
 
-            float width = _rectOffset.X1;
+            float width = _absoluteOffset.X1;
 
-            float left = X - _anchoring.X1 * width;
-            float right = X + (1.0f - _anchoring.X1) * width;
+            float left = X - _normalizedAnchoring.X1 * width;
+            float right = X + (1.0f - _normalizedAnchoring.X1) * width;
 
             _rect = new Rect2D(left, _rect.X1, right, _rect.Y1);
         }
@@ -158,36 +158,36 @@ namespace RenderingEngine.UI.Core
             //_anchoring contains the (still) normalized position position in X0 Y0 and normalized center in X1,Y1
             //_rectOffset contains position in X0, Y0 and width, heighit in X1 Y1
 
-            float anchorBottom = parentRect.Bottom + _anchoring.Y0 * parentRect.Height;
+            float anchorBottom = parentRect.Bottom + _normalizedAnchoring.Y0 * parentRect.Height;
 
-            float Y = _rectOffset.Y0 + anchorBottom;
+            float Y = _absoluteOffset.Y0 + anchorBottom;
 
-            float height = _rectOffset.Y1;
+            float height = _absoluteOffset.Y1;
 
-            float bottom = Y - _anchoring.Y1 * height;
-            float top = Y + (1.0f - _anchoring.Y1) * height;
+            float bottom = Y - _normalizedAnchoring.Y1 * height;
+            float top = Y + (1.0f - _normalizedAnchoring.Y1) * height;
 
             _rect = new Rect2D(_rect.X0, bottom, _rect.X1, top);
         }
 
         private void UpdateRectOffsetX(Rect2D parentRect)
         {
-            float anchorLeft = parentRect.Left + _anchoring.X0 * parentRect.Width;
-            float anchorRight = parentRect.Left + _anchoring.X1 * parentRect.Width;
+            float anchorLeft = parentRect.Left + _normalizedAnchoring.X0 * parentRect.Width;
+            float anchorRight = parentRect.Left + _normalizedAnchoring.X1 * parentRect.Width;
 
-            float left = anchorLeft + _rectOffset.X0;
-            float right = anchorRight - _rectOffset.X1;
+            float left = anchorLeft + _absoluteOffset.X0;
+            float right = anchorRight - _absoluteOffset.X1;
 
             _rect = new Rect2D(left, _rect.Y0, right, _rect.Y1);
         }
 
         private void UpdateRectOffsetY(Rect2D parentRect)
         {
-            float anchorBottom = parentRect.Bottom + _anchoring.Y0 * parentRect.Height;
-            float anchorTop = parentRect.Bottom + _anchoring.Y1 * parentRect.Height;
+            float anchorBottom = parentRect.Bottom + _normalizedAnchoring.Y0 * parentRect.Height;
+            float anchorTop = parentRect.Bottom + _normalizedAnchoring.Y1 * parentRect.Height;
 
-            float bottom = anchorBottom + _rectOffset.Y0;
-            float top = anchorTop - _rectOffset.Y1;
+            float bottom = anchorBottom + _absoluteOffset.Y0;
+            float top = anchorTop - _absoluteOffset.Y1;
 
             _rect = new Rect2D(_rect.X0, bottom, _rect.X1, top);
         }

@@ -18,11 +18,11 @@ namespace RenderingEngine.UI.Core
         }
 
         public Rect2D RectOffset {
-            get { return _rectTransform.RectOffset; }
+            get { return _rectTransform.AbsoluteOffset; }
         }
 
         public Rect2D Anchoring {
-            get { return _rectTransform.Anchoring; }
+            get { return _rectTransform.NormalizedAnchoring; }
         }
 
         public UIElement this[int index] {
@@ -137,98 +137,98 @@ namespace RenderingEngine.UI.Core
 
         public UIElement()
         {
-            SetAnchoringOffset(new Rect2D(0, 0, 1, 1));
-            SetRectOffset(new Rect2D(0, 0, 0, 0));
+            SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1));
+            SetAbsoluteOffset(new Rect2D(0, 0, 0, 0));
         }
 
 
-        public UIElement SetRectOffsetsX(float left, float right)
+        public UIElement SetAbsOffsetsX(float left, float right)
         {
-            _rectTransform.SetRectOffsetsX(left, right);
+            _rectTransform.SetAbsOffsetsX(left, right);
             _dirty = true;
             return this;
         }
 
-        public UIElement SetRectOffsetsY(float bottom, float top)
+        public UIElement SetAbsOffsetsY(float bottom, float top)
         {
-            _rectTransform.SetRectOffsetsY(bottom, top);
+            _rectTransform.SetAbsOffsetsY(bottom, top);
             _dirty = true;
             return this;
         }
 
-        public UIElement SetRectOffset(float offset)
+        public UIElement SetAbsoluteOffset(float offset)
         {
-            return SetRectOffset(new Rect2D(offset, offset, offset, offset));
+            return SetAbsoluteOffset(new Rect2D(offset, offset, offset, offset));
         }
 
-        public UIElement SetRectOffset(Rect2D pos)
+        public UIElement SetAbsoluteOffset(Rect2D pos)
         {
-            _rectTransform.SetRectOffset(pos);
+            _rectTransform.SetAbsoluteOffset(pos);
             _dirty = true;
             return this;
         }
 
-        public UIElement SetPositionSizeX(float x, float width)
+        public UIElement SetAbsPositionSizeX(float x, float width)
         {
-            _rectTransform.SetPositionSizeX(x, width);
+            _rectTransform.SetAbsPositionSizeX(x, width);
             _dirty = true;
             return this;
         }
 
-        public UIElement SetPositionSizeY(float y, float height)
+        public UIElement SetAbsPositionSizeY(float y, float height)
         {
-            _rectTransform.SetPositionSizeY(y, height);
-            _dirty = true;
-            return this;
-        }
-
-
-        public UIElement SetRectPositionSize(float x, float y, float width, float height)
-        {
-            _rectTransform.SetRectPositionSize(x, y, width, height);
-            _dirty = true;
-            return this;
-        }
-
-        public UIElement SetAnchoringOffsetsX(float left, float right)
-        {
-            _rectTransform.SetAnchoringOffsetsX(left, right);
-            _dirty = true;
-            return this;
-        }
-
-        public UIElement SetAnchoringOffsetsY(float bottom, float top)
-        {
-            _rectTransform.SetAnchoringOffsetsY(bottom, top);
+            _rectTransform.SetAbsPositionSizeY(y, height);
             _dirty = true;
             return this;
         }
 
 
-        public UIElement SetAnchoringOffset(Rect2D anchor)
+        public UIElement SetAbsPositionSize(float x, float y, float width, float height)
         {
-            _rectTransform.SetAnchoringOffset(anchor);
+            _rectTransform.SetAbsPositionSize(x, y, width, height);
             _dirty = true;
             return this;
         }
 
-        public UIElement SetAnchoringPositionCenterX(float x, float centreX = 0.5f)
+        public UIElement SetNormalizedAnchoringX(float left, float right)
         {
-            _rectTransform.SetAnchoringPositionCenterX(x, centreX);
+            _rectTransform.SetNormalizedAnchoringX(left, right);
             _dirty = true;
             return this;
         }
 
-        public UIElement SetAnchoringPositionCenterY(float y, float centreY = 0.5f)
+        public UIElement SetNormalizedAnchoringY(float bottom, float top)
         {
-            _rectTransform.SetAnchoringPositionCenterY(y, centreY);
+            _rectTransform.SetNormalizedAnchoringY(bottom, top);
             _dirty = true;
             return this;
         }
 
-        public UIElement SetAnchoringPositionCenter(float x, float y, float centreX = 0.5f, float centreY = 0.5f)
+
+        public UIElement SetNormalizedAnchoring(Rect2D anchor)
         {
-            _rectTransform.SetAnchoringPositionCenter(x, y, centreX, centreY);
+            _rectTransform.SetNormalizedAnchoring(anchor);
+            _dirty = true;
+            return this;
+        }
+
+        public UIElement SetNormalizedPositionCenterX(float x, float centreX = 0.5f)
+        {
+            _rectTransform.SetNormalizedPositionCenterX(x, centreX);
+            _dirty = true;
+            return this;
+        }
+
+        public UIElement SetNormalizedPositionCenterY(float y, float centreY = 0.5f)
+        {
+            _rectTransform.SetNormalizedPositionCenterY(y, centreY);
+            _dirty = true;
+            return this;
+        }
+
+        public UIElement SetNormalizedPositionCenter(float x, float y, float centreX = 0.5f, float centreY = 0.5f)
+        {
+            _rectTransform.SetNormalizedPositionCenter(x, y, centreX, centreY);
             _dirty = true;
             return this;
         }

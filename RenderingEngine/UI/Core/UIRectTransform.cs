@@ -1,6 +1,7 @@
 ﻿using RenderingEngine.Datatypes;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace RenderingEngine.UI.Core
@@ -11,12 +12,19 @@ namespace RenderingEngine.UI.Core
 
         Rect2D _absoluteOffset;
         Rect2D _normalizedAnchoring;
+        PointF _normalizedCenter;
 
         public bool PositionSizeX { get; set; }
         public bool PositionSizeY { get; set; }
 
+        public PointF Center {
+            get { return _normalizedCenter; }
+            set { _normalizedCenter = value; }
+        }
+
         public Rect2D Rect {
             get { return _rect; }
+            set { _rect = value; }
         }
 
         public Rect2D NormalizedAnchoring { get { return _normalizedAnchoring; } set { _normalizedAnchoring = value; } }
@@ -97,23 +105,23 @@ namespace RenderingEngine.UI.Core
         {
             PositionSizeX = true;
             _normalizedAnchoring.X0 = x;
-            _normalizedAnchoring.X1 = centerX;
+            _normalizedCenter.X = centerX;
         }
 
         public void SetNormalizedPositionCenterY(float y, float centreY = 0.5f)
         {
             PositionSizeY = true;
             _normalizedAnchoring.Y0 = y;
-            _normalizedAnchoring.Y1 = centreY;
+            _normalizedCenter.Y = centreY;
         }
 
-        public void SetNormalizedPositionCenter(float x, float y, float centreX = 0.5f, float centreY = 0.5f)
+        public void SetNormalizedPositionCenter(float x, float y, float centerX = 0.5f, float centerY = 0.5f)
         {
             PositionSizeX = true;
             PositionSizeY = true;
-            _normalizedAnchoring = new Rect2D(x, y, centreX, centreY);
+            _normalizedAnchoring = new Rect2D(x, y, 0,0);
+            _normalizedCenter = new PointF(centerX, centerY);
         }
-
 
         public void UpdateRect(Rect2D parentRect)
         {
@@ -147,15 +155,15 @@ namespace RenderingEngine.UI.Core
 
             float width = _absoluteOffset.X1;
 
-            float left = X - _normalizedAnchoring.X1 * width;
-            float right = X + (1.0f - _normalizedAnchoring.X1) * width;
+            float left = X - _normalizedCenter.X * width;
+            float right = X + (1.0f - _normalizedCenter.X) * width;
 
             _rect = new Rect2D(left, _rect.X1, right, _rect.Y1);
         }
 
         private void UpdateRectPositionSizeY(Rect2D parentRect)
         {
-            //_anchoring contains the (still) normalized position position in X0 Y0 and normalized center in X1,Y1
+            //_anchoring contains the (still) normalized position position in X0 Y0 
             //_rectOffset contains position in X0, Y0 and width, heighit in X1 Y1
 
             float anchorBottom = parentRect.Bottom + _normalizedAnchoring.Y0 * parentRect.Height;
@@ -164,8 +172,8 @@ namespace RenderingEngine.UI.Core
 
             float height = _absoluteOffset.Y1;
 
-            float bottom = Y - _normalizedAnchoring.Y1 * height;
-            float top = Y + (1.0f - _normalizedAnchoring.Y1) * height;
+            float bottom = Y - _normalizedCenter.Y * height;
+            float top = Y + (1.0f - _normalizedCenter.Y) * height;
 
             _rect = new Rect2D(_rect.X0, bottom, _rect.X1, top);
         }

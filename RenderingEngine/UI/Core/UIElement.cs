@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using RenderingEngine.Datatypes;
 using RenderingEngine.Rendering;
+using System.Drawing;
 
 namespace RenderingEngine.UI.Core
 {
@@ -12,6 +13,12 @@ namespace RenderingEngine.UI.Core
         protected List<UIComponent> _components = new List<UIComponent>();
         protected List<UIElement> _children = new List<UIElement>();
         protected UIRectTransform _rectTransform = new UIRectTransform();
+
+        /// <summary>
+        /// Should not be used over the other wrapped getters/setters if possible.
+        /// mainly for components to make some modification for example after a Resize()
+        /// </summary>
+        public UIRectTransform RectTransform { get { return _rectTransform; } }
 
         public Rect2D Rect {
             get { return _rectTransform.Rect; }
@@ -233,6 +240,13 @@ namespace RenderingEngine.UI.Core
             return this;
         }
 
+        public UIElement SetNormalizedCenter(float centerX = 0.5f, float centerY = 0.5f)
+        {
+            _rectTransform.Center = new PointF(centerX, centerY);
+            _dirty = true;
+            return this;
+        }
+
         public virtual void Update(double deltaTime)
         {
             if (_dirty)
@@ -317,6 +331,11 @@ namespace RenderingEngine.UI.Core
         public virtual void Resize()
         {
             _rectTransform.UpdateRect(GetParentRect());
+
+            for (int i = 0; i < _components.Count; i++)
+            {
+                _components[i].OnResize();
+            }
 
             for (int i = 0; i < _children.Count; i++)
             {

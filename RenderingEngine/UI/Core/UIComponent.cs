@@ -16,5 +16,7 @@ namespace RenderingEngine.UI.Core
         public virtual void Update(double deltaTime) { }
         public virtual void Draw(double deltaTime) { }
         public virtual bool ProcessEvents() { return false; }
+
+        public virtual void OnResize() { }
     }
 }

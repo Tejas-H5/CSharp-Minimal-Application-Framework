@@ -1,4 +1,6 @@
-﻿namespace RenderingEngine.VisualTests.UIEditor
+﻿using RenderingEngine.UI.Core;
+
+namespace RenderingEngine.VisualTests.UIEditor
 {
     class DraggableRectSelectedState
     {
@@ -14,6 +16,7 @@
         }
 
         UIDraggableRect _selRect;
+
         public bool selectionChanged = false;
         public float DimensionSnap = 5f;
 

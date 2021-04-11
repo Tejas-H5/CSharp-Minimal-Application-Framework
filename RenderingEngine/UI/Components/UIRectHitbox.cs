@@ -8,7 +8,8 @@ namespace RenderingEngine.UI.Components
     {
         public override bool PointIsInside(float x, float y)
         {
-            return Intersections.IsInside(x, y, _parent.Rect);
+            return Intersections.IsInside(x, y, _parent.Rect) 
+                && Intersections.IsInside(x, y, _parent.GetParentRect());
         }
     }
 }

@@ -384,11 +384,13 @@ namespace RenderingEngine.Rendering
 
         public static void DrawRectOutline(float thickness, Rect2D rect)
         {
+            StopUsingTextTexture();
             _geometryDrawer.DrawRectOutline(thickness, rect);
         }
 
         public static void DrawRectOutline(float thickness, float x0, float y0, float x1, float y1)
         {
+            StopUsingTextTexture();
             _geometryDrawer.DrawRectOutline(thickness, x0, y0, x1, y1);
         }
 

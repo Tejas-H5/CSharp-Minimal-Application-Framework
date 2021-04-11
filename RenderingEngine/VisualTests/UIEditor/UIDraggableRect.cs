@@ -20,7 +20,7 @@ namespace RenderingEngine.VisualTests.UIEditor
                     new UIMouseListener(),
                     new UIDraggableRect(selectionState),
                     new UIMouseFeedback(Color4.FromRGBA(0, 0, 0, 20), Color4.FromRGBA(0, 0, 1, 20))
-                ); 
+                );
         }
 
         DraggableRectSelectedState _state;
@@ -97,24 +97,34 @@ namespace RenderingEngine.VisualTests.UIEditor
             }
 
             //_parent.SetRectAndRecalcAnchoring(r);
+            _parent.SetDirty();
             _parent.Resize();
         }
 
         private void DragCenter(UIRectTransform rtf, float dragDX, float dragDY, bool shouldSnap)
         {
-            dragDX /= _parent.Rect.Width;
-            dragDY /= _parent.Rect.Height;
-
-            float newCenterX = _initCenter.X + dragDX;
-            float newCenterY = _initCenter.Y + dragDY;
+            float newCenterX = _initCenter.X + dragDX / _parent.Rect.Width;
+            float newCenterY = _initCenter.Y + dragDY / _parent.Rect.Height;
 
             if (shouldSnap)
             {
                 newCenterX = SnapCenter(newCenterX);
                 newCenterY = SnapCenter(newCenterY);
+                dragDX = (newCenterX - _initCenter.X) * _parent.Rect.Width;
+                dragDY = (newCenterY - _initCenter.Y) * _parent.Rect.Height;
             }
 
             _parent.SetNormalizedCenter(newCenterX, newCenterY);
+
+            if (rtf.PositionSizeX)
+            {
+                _parent.SetAbsPositionSizeX(_initRectOffset.X0 + dragDX, rtf.Rect.Width);
+            }
+
+            if (rtf.PositionSizeY)
+            {
+                _parent.SetAbsPositionSizeY(_initRectOffset.Y0 + dragDY, rtf.Rect.Height);
+            }
         }
 
         private static float SnapCenter(float newCenterX)
@@ -137,22 +147,46 @@ namespace RenderingEngine.VisualTests.UIEditor
 
         private void DragEntireRect(float dragDX, float dragDY, Rect2D initOffsets)
         {
-            Rect2D moved = new Rect2D(
-                initOffsets.X0 + dragDX,
-                initOffsets.Y0 + dragDY,
-                initOffsets.X1 - dragDX,
-                initOffsets.Y1 - dragDY
-            );
+            if (_parent.RectTransform.PositionSizeX)
+            {
+                _parent.SetAbsPositionSizeX(initOffsets.X0 + dragDX, _parent.Rect.Width);
+            }
+            else
+            {
+                _parent.SetAbsOffsetsX(initOffsets.X0 + dragDX, initOffsets.X1 - dragDX);
+            }
 
-
-            _parent.SetAbsoluteOffset(moved);
+            if (_parent.RectTransform.PositionSizeY)
+            {
+                _parent.SetAbsPositionSizeY(initOffsets.Y0 + dragDY, _parent.Rect.Height);
+            }
+            else
+            {
+                _parent.SetAbsOffsetsY(initOffsets.Y0 + dragDY, initOffsets.Y1 - dragDY);
+            }
         }
 
         private void DragEdgeOffsets(UIRectTransform rtf, Rect2D initOffsets, float dragDX, float dragDY)
         {
+
             if (rtf.PositionSizeY)
             {
+                float newY = initOffsets.Y0;
+                float newHeight = initOffsets.Y1;
+                //float newCenterY = _initCenter.Y;
 
+                if (_topEdge)
+                {
+                    newHeight = initOffsets.Y1 + dragDY;
+                    newY = initOffsets.Y0 + dragDY * (_initCenter.Y);
+                }
+                else if (_bottomEdge)
+                {
+                    newHeight = initOffsets.Y1 - dragDY;
+                    newY = initOffsets.Y0 + dragDY * (1.0f - _initCenter.Y);
+                }
+
+                _parent.SetAbsPositionSizeY(newY, newHeight);
             }
             else
             {
@@ -175,7 +209,22 @@ namespace RenderingEngine.VisualTests.UIEditor
 
             if (rtf.PositionSizeX)
             {
+                float newX = initOffsets.X0;
+                float newWidth = initOffsets.X1;
+                //float newCenterX = _initCenter.X;
 
+                if (_rightEdge)
+                {
+                    newWidth = initOffsets.X1 + dragDX;
+                    newX = initOffsets.X0 + dragDX * (_initCenter.X);
+                }
+                else if (_leftEdge)
+                {
+                    newWidth = initOffsets.X1 - dragDX;
+                    newX = initOffsets.X0 + dragDX * (1.0f - _initCenter.X);
+                }
+
+                _parent.SetAbsPositionSizeX(newX, newWidth);
             }
             else
             {
@@ -279,23 +328,22 @@ namespace RenderingEngine.VisualTests.UIEditor
             UIRectTransform rtf = _parent.RectTransform;
 
 
+            CTX.SetDrawColor(0, 0, 0, 0.5f);
             if (_parent.RectTransform.PositionSizeX)
             {
-
+                DrawPosSizeInfoX(r, pR, rtf);
             }
             else
             {
-                CTX.SetDrawColor(0, 0, 0, 0.5f);
                 DrawOffsetInfoX(r, pR, rtf);
             }
 
             if (_parent.RectTransform.PositionSizeY)
             {
-                
+                DrawPosSizeInfoY(r, pR, rtf);
             }
             else
             {
-                CTX.SetDrawColor(0, 0, 0, 0.5f);
                 DrawOffsetInfoY(r, pR, rtf);
             }
 
@@ -308,9 +356,33 @@ namespace RenderingEngine.VisualTests.UIEditor
             );
         }
 
+        private void DrawPosSizeInfoY(Rect2D r, Rect2D pR, UIRectTransform rtf)
+        {
+            float anchor = pR.Y0 + rtf.NormalizedAnchoring.Y0 * pR.Height;
+            CTX.DrawLine(r.CenterX, _parent.AbsCenterY, r.CenterX, anchor, 2, CapType.None);
+            CTX.DrawText($"{rtf.AbsoluteOffset.Y0}px", r.CenterX, (_parent.AbsCenterY + anchor) / 2f);
+
+            CTX.DrawLine(r.CenterX - 10, _parent.AbsCenterY, r.CenterX + 10, _parent.AbsCenterY, 5, CapType.None);
+
+            CTX.DrawLine(r.CenterX, r.Bottom, r.CenterX, r.Top, 2, CapType.None);
+            CTX.DrawText($"{rtf.Rect.Height}px", r.CenterX, (r.Bottom + r.Top) / 2f);
+        }
+
+        private void DrawPosSizeInfoX(Rect2D r, Rect2D pR, UIRectTransform rtf)
+        {
+            float anchor = pR.X0 + rtf.NormalizedAnchoring.X0 * pR.Height;
+            CTX.DrawLine(_parent.AbsCenterX, r.CenterY, anchor, r.CenterY, 2, CapType.None);
+            CTX.DrawText($"{rtf.AbsoluteOffset.Y0}px", (_parent.AbsCenterY + anchor) / 2f, r.CenterY);
+
+            CTX.DrawLine(_parent.AbsCenterX, r.CenterY - 10, _parent.AbsCenterX, r.CenterY + 10, 5, CapType.None);
+
+            CTX.DrawLine(r.Left, r.CenterY, r.Right, r.CenterY, 2, CapType.None);
+            CTX.DrawText($"{rtf.Rect.Height}px", (r.Bottom + r.Top) / 2f, r.CenterY);
+        }
+
         private void DrawCenterHandle()
         {
-            CTX.SetDrawColor(0, 0, 0, 1f);
+            CTX.SetDrawColor(0, 0, 0, 0.5f);
             CTX.DrawCircle(_parent.AbsCenterX, _parent.AbsCenterY, HANDLESIZE);
         }
 
@@ -367,7 +439,7 @@ namespace RenderingEngine.VisualTests.UIEditor
                     Input.CancelDrag();
                 }
             }
-            
+
         }
 
         public void Select()

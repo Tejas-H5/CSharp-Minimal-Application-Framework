@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RenderingEngine.Datatypes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -25,47 +26,43 @@ namespace RenderingEngine.UI.Core
 
             if (_vertical)
             {
-                element.SetNormalizedCenter(0.5f, 1f);
+                float side = _reverse ? 0 : 1;
+                element.SetNormalizedPositionCenterY(side, side);
             }
             else
             {
-                element.SetNormalizedCenter(0f, 0.5f);
-            }
-
-            if (_reverse)
-            {
-                element.SetNormalizedCenter(
-                    (1.0f - element.RectTransform.NormalizedCenter.X),
-                    (1.0f - element.RectTransform.NormalizedCenter.Y)
-                );
+                float side = _reverse ? 1 : 0;
+                element.SetNormalizedPositionCenterX(side, side);
             }
         }
 
         public override void ResizeChildren()
         {
+
+            for (int i = 0; i < _children.Count; i++)
+            {
+                _children[i].UpdateRect();
+            }
+
+
+            for (int i = 0; i < _children.Count; i++)
+            {
+                if (_vertical)
+                {
+                    _children[i].RectTransform.SetNormalizedAnchoring(
+                        new Rect2D(
+                            0,
+                            i / (float)_children.Count,
+                            1,
+                            (i + 1) / (float)_children.Count
+                            )
+                        );
+
+                    _children[i].SetAbsoluteOffset(new Rect2D(_padding / 2f, _padding / 2f, _padding / 2f, _padding / 2f));
+                }
+            }
+
             base.ResizeChildren();
-
-            float amountX = 0, amountY = 0;
-
-            if (_vertical)
-            {
-                amountY = 1;
-            }
-            else
-            {
-                amountX = 1;
-            }
-
-            if (_reverse)
-            {
-                amountX = -amountX;
-                amountY = -amountY;
-            }
-
-            for(int i = 0; i < _children.Count; i++)
-            {
-
-            }
         }
     }
 }

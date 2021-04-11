@@ -92,6 +92,7 @@ namespace RenderingEngine.UI.Core
         {
             if (_children.Contains(element))
             {
+                //Not sure what to do with this. will it just get deleted automatically?
                 _children.Remove(element);
                 element.Parent = null;
             }
@@ -299,17 +300,12 @@ namespace RenderingEngine.UI.Core
 
             for (int i = 0; i < _components.Count; i++)
             {
-                _components[i].BeforeUpdate(deltaTime);
-            }
-
-            for (int i = 0; i < _components.Count; i++)
-            {
                 _components[i].Update(deltaTime);
             }
 
             for (int i = 0; i < _components.Count; i++)
             {
-                _components[i].AfterUpdate(deltaTime);
+                _components[i].AfterDraw(deltaTime);
             }
 
             if (_parent == null)
@@ -326,27 +322,37 @@ namespace RenderingEngine.UI.Core
             }
         }
 
-        public virtual void DrawIfVisible(double deltaTime)
+        public void DrawIfVisible(double deltaTime)
         {
             if (!_isVisible)
             {
+#if DEBUG
                 CTX.SetDrawColor(Color4.FromRGBA(255, 0, 255, 10));
                 CTX.DrawRectOutline(2, Rect);
+#endif
                 return;
             }
 
-            Draw(deltaTime);
+            BeforeDraw(deltaTime);
 
-            for (int i = 0; i < _children.Count; i++)
-            {
-                _children[i].DrawIfVisible(deltaTime);
-            }
+            Draw(deltaTime);
+            DrawChildren(deltaTime);
+
+            AfterDraw(deltaTime);
 #if DEBUG
             if (UICreator.Debug)
             {
                 DrawDebug();
             }
 #endif
+        }
+
+        protected virtual void DrawChildren(double deltaTime)
+        {
+            for (int i = 0; i < _children.Count; i++)
+            {
+                _children[i].DrawIfVisible(deltaTime);
+            }
         }
 
 #if DEBUG
@@ -366,11 +372,27 @@ namespace RenderingEngine.UI.Core
         }
 #endif
 
+        public void BeforeDraw(double deltaTime)
+        {
+            for (int i = 0; i < _components.Count; i++)
+            {
+                _components[i].BeforeDraw(deltaTime);
+            }
+        }
+
         public virtual void Draw(double deltaTime)
         {
             for (int i = 0; i < _components.Count; i++)
             {
                 _components[i].Draw(deltaTime);
+            }
+        }
+
+        public void AfterDraw(double deltaTime)
+        {
+            for (int i = 0; i < _components.Count; i++)
+            {
+                _components[i].AfterDraw(deltaTime);
             }
         }
 
@@ -405,14 +427,21 @@ namespace RenderingEngine.UI.Core
             return res;
         }
 
-        public void Resize()
+        public void UpdateRect()
         {
             _rectTransform.UpdateRect(GetParentRect());
+        }
+
+        public void Resize()
+        {
+            UpdateRect();
 
             for (int i = 0; i < _components.Count; i++)
             {
                 _components[i].OnResize();
             }
+
+            ResizeChildren();
         }
 
         public virtual void ResizeChildren()

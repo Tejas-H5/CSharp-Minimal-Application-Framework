@@ -10,21 +10,6 @@ namespace RenderingEngine.UI.Core
         {
         }
 
-        public override void Draw(double deltaTime)
-        {
-            DrawIfVisible(deltaTime);
-        }
-
-        public override void DrawIfVisible(double deltaTime)
-        {
-            if (!_isVisible)
-                return;
-
-            for (int i = 0; i < _children.Count; i++)
-            {
-                _children[i].DrawIfVisible(deltaTime);
-            }
-        }
 
         public override void UpdateChildren(double deltaTime)
         {

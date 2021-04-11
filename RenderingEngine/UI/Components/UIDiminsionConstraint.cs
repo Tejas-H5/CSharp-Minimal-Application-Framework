@@ -27,7 +27,7 @@ namespace RenderingEngine.UI.Components.Uncompleted
             float width = wantedRect.X1 - wantedRect.X0;
             float minWidth = _boundsRect.X0;
             float maxWidth = _boundsRect.X1;
-            float centerX = _parent.RectTransform.Center.X;
+            float centerX = _parent.RectTransform.NormalizedCenter.X;
 
             if (minWidth > 0 && width < minWidth)
             {
@@ -43,7 +43,7 @@ namespace RenderingEngine.UI.Components.Uncompleted
             float height = wantedRect.Y1 - wantedRect.Y0;
             float minHeight = _boundsRect.Y0;
             float maxHeight = _boundsRect.Y1;
-            float centerY = _parent.RectTransform.Center.Y;
+            float centerY = _parent.RectTransform.NormalizedCenter.Y;
 
             if (minHeight > 0 && height < minHeight)
             {

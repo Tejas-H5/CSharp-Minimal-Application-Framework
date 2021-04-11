@@ -17,7 +17,7 @@ namespace RenderingEngine.UI.Core
         public bool PositionSizeX { get; set; }
         public bool PositionSizeY { get; set; }
 
-        public PointF Center {
+        public PointF NormalizedCenter {
             get { return _normalizedCenter; }
             set { _normalizedCenter = value; }
         }

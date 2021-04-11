@@ -24,7 +24,7 @@ namespace RenderingEngine.UI.Components
             {
                 //The height is fine, the width needs to be changed
                 float wantedWidth = (parentRect.Height) * _widthToHeight;
-                float centerX = _parent.RectTransform.Center.X;
+                float centerX = _parent.RectTransform.NormalizedCenter.X;
 
                 float deltaW = parentRect.Width - wantedWidth;
                 wantedRect.X0 += deltaW * (centerX);
@@ -34,7 +34,7 @@ namespace RenderingEngine.UI.Components
             {
                 //The width is fine, the height needs to be changed
                 float wantedHeight = (parentRect.Width) * (1.0f / _widthToHeight);
-                float centerY = _parent.RectTransform.Center.Y;
+                float centerY = _parent.RectTransform.NormalizedCenter.Y;
 
                 float deltaH = parentRect.Height - wantedHeight;
 

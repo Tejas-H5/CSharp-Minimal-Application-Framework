@@ -6,6 +6,7 @@ using RenderingEngine.UI;
 using RenderingEngine.UI.Components;
 using RenderingEngine.UI.Core;
 using System;
+using System.Drawing;
 
 namespace RenderingEngine.VisualTests.UIEditor
 {
@@ -41,11 +42,15 @@ namespace RenderingEngine.VisualTests.UIEditor
         bool _leftEdge = false;
         bool _rightEdge = false;
 
+        bool _centerHeld = false;
+
         Rect2D _initRectOffset;
+        PointF _initCenter;
 
         private void StartDrag()
         {
             _initRectOffset = _parent.RectTransform.AbsoluteOffset;
+            _initCenter = _parent.RectTransform.NormalizedCenter;
         }
 
         private static float Snap(float x, float snapVal)
@@ -53,7 +58,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             return MathF.Floor(x / snapVal) * snapVal;
         }
 
-        private void Drag()
+        private void Drag(float dragDeltaX, float dragDeltaY, bool shouldSnap)
         {
             Rect2D r = _parent.Rect;
             Rect2D pR = _parent.GetParentRect();
@@ -61,12 +66,12 @@ namespace RenderingEngine.VisualTests.UIEditor
 
             float mouseY = MathF.Round(Input.MouseY);
             float mouseX = MathF.Round(Input.MouseX);
-            float dragDX = Input.DragDeltaX;
-            float dragDY = Input.DragDeltaY;
+            float dragDX = dragDeltaX;
+            float dragDY = dragDeltaY;
 
             Rect2D initOffsets = _initRectOffset;
 
-            if (Input.IsShiftDown)
+            if (shouldSnap)
             {
                 dragDX = Snap(dragDX, _state.DimensionSnap);
                 dragDY = Snap(dragDY, _state.DimensionSnap);
@@ -78,25 +83,61 @@ namespace RenderingEngine.VisualTests.UIEditor
             }
 
 
-            if (IsEdgeHeld())
+            if (_centerHeld)
+            {
+                DragCenter(rtf, dragDX, dragDY, shouldSnap);
+            }
+            else if (IsEdgeHeld())
             {
                 DragEdgeOffsets(rtf, initOffsets, dragDX, dragDY);
             }
             else
             {
-                Rect2D moved = new Rect2D(
-                    initOffsets.X0 + dragDX,
-                    initOffsets.Y0 + dragDY,
-                    initOffsets.X1 - dragDX,
-                    initOffsets.Y1 - dragDY
-                );
-
-
-                _parent.SetAbsoluteOffset(moved);
+                DragEntireRect(dragDX, dragDY, initOffsets);
             }
 
             //_parent.SetRectAndRecalcAnchoring(r);
             _parent.Resize();
+        }
+
+        private void DragCenter(UIRectTransform rtf, float dragDX, float dragDY, bool shouldSnap)
+        {
+            dragDX /= _parent.Rect.Width;
+            dragDY /= _parent.Rect.Height;
+
+            float newCenterX = _initCenter.X + dragDX;
+            float newCenterY = _initCenter.Y + dragDY;
+
+            if (shouldSnap)
+            {
+                if(newCenterX < 0.25f)
+                {
+                    newCenterX = 0f;
+                }
+                else if(newCenterX > 0.75f)
+                {
+                    newCenterX = 1.0f;
+                }
+                else
+                {
+                    newCenterX = 0.5f;
+                }
+            }
+
+            _parent.SetNormalizedCenter(newCenterX, newCenterY);
+        }
+
+        private void DragEntireRect(float dragDX, float dragDY, Rect2D initOffsets)
+        {
+            Rect2D moved = new Rect2D(
+                initOffsets.X0 + dragDX,
+                initOffsets.Y0 + dragDY,
+                initOffsets.X1 - dragDX,
+                initOffsets.Y1 - dragDY
+            );
+
+
+            _parent.SetAbsoluteOffset(moved);
         }
 
         private void DragEdgeOffsets(UIRectTransform rtf, Rect2D initOffsets, float dragDX, float dragDY)
@@ -157,6 +198,8 @@ namespace RenderingEngine.VisualTests.UIEditor
             if (Input.IsMouseDragging)
                 return true;
 
+            _centerHeld = Intersections.IsInsideCircle(Input.MouseX, Input.MouseY, _parent.AbsCenterX, _parent.AbsCenterY, HANDLESIZE);
+
             _topEdge = Intersections.IsInside(Input.MouseX, Input.MouseY,
                 GetEdgeRect(_parent.Rect.X0, _parent.Rect.Y1, _parent.Rect.X1, _parent.Rect.Y1));
             _bottomEdge = Intersections.IsInside(Input.MouseX, Input.MouseY,
@@ -167,8 +210,9 @@ namespace RenderingEngine.VisualTests.UIEditor
             _rightEdge = Intersections.IsInside(Input.MouseX, Input.MouseY,
                 GetEdgeRect(_parent.Rect.X1, _parent.Rect.Y0, _parent.Rect.X1, _parent.Rect.Y1));
 
-            return IsEdgeHeld();
+            return IsEdgeHeld() || _centerHeld;
         }
+
 
         private void OnClicked()
         {
@@ -211,7 +255,13 @@ namespace RenderingEngine.VisualTests.UIEditor
             if (!isSelected)
                 return;
 
+            DrawSelectionInfo();
+        }
+
+        private void DrawSelectionInfo()
+        {
             DrawEdgeHandles();
+            DrawCenterHandle();
 
             if (_parent.Rect.IsInverted())
                 return;
@@ -220,33 +270,55 @@ namespace RenderingEngine.VisualTests.UIEditor
             Rect2D pR = _parent.GetParentRect();
             UIRectTransform rtf = _parent.RectTransform;
 
-            if (_parent.RectTransform.PositionSizeY)
+
+            if (_parent.RectTransform.PositionSizeX)
             {
 
             }
             else
             {
                 CTX.SetDrawColor(0, 0, 0, 0.5f);
-
-                CTX.DrawLine(r.CenterX, r.Y1, r.CenterX, pR.Y1, 2, CapType.None);
-                CTX.DrawText($"{rtf.AbsoluteOffset.Y1}px", r.CenterX, r.Y1 - 20);
-
-                CTX.DrawLine(r.CenterX, r.Y0, r.CenterX, pR.Y0, 2, CapType.None);
-                CTX.DrawText($"{rtf.AbsoluteOffset.Y0}px", r.CenterX, r.Y0 + 20);
-
-                CTX.DrawLine(r.X0, r.CenterY, pR.X0, r.CenterY, 2, CapType.None);
-                CTX.DrawText($"{rtf.AbsoluteOffset.X0}px", r.X0 + 10, r.CenterY);
-
-                CTX.DrawLine(r.X1, r.CenterY, pR.X1, r.CenterY, 2, CapType.None);
-                CTX.DrawText($"{rtf.AbsoluteOffset.X1}px", r.X1 - 50, r.CenterY);
-
-
+                DrawOffsetInfoX(r, pR, rtf);
             }
+
+            if (_parent.RectTransform.PositionSizeY)
+            {
+                
+            }
+            else
+            {
+                CTX.SetDrawColor(0, 0, 0, 0.5f);
+                DrawOffsetInfoY(r, pR, rtf);
+            }
+        }
+
+        private void DrawCenterHandle()
+        {
+            CTX.SetDrawColor(0, 0, 0, 1f);
+            CTX.DrawCircle(_parent.AbsCenterX, _parent.AbsCenterY, HANDLESIZE);
+        }
+
+        private static void DrawOffsetInfoX(Rect2D r, Rect2D pR, UIRectTransform rtf)
+        {
+            CTX.DrawLine(r.X0, r.CenterY, pR.X0, r.CenterY, 2, CapType.None);
+            CTX.DrawText($"{rtf.AbsoluteOffset.X0}px", r.X0 + 10, r.CenterY);
+
+            CTX.DrawLine(r.X1, r.CenterY, pR.X1, r.CenterY, 2, CapType.None);
+            CTX.DrawText($"{rtf.AbsoluteOffset.X1}px", r.X1 - 50, r.CenterY);
+        }
+
+        private static void DrawOffsetInfoY(Rect2D r, Rect2D pR, UIRectTransform rtf)
+        {
+            CTX.DrawLine(r.CenterX, r.Y1, r.CenterX, pR.Y1, 2, CapType.None);
+            CTX.DrawText($"{rtf.AbsoluteOffset.Y1}px", r.CenterX, r.Y1 - 20);
+
+            CTX.DrawLine(r.CenterX, r.Y0, r.CenterX, pR.Y0, 2, CapType.None);
+            CTX.DrawText($"{rtf.AbsoluteOffset.Y0}px", r.CenterX, r.Y0 + 20);
         }
 
         private void DrawEdgeHandles()
         {
-            CTX.SetDrawColor(0, 0, 1, 0.5f);
+            CTX.SetDrawColor(0, 0, 1, 0.25f);
             float x0 = _parent.Rect.X0;
             float y0 = _parent.Rect.Y0;
             float x1 = _parent.Rect.X1;
@@ -271,8 +343,15 @@ namespace RenderingEngine.VisualTests.UIEditor
             }
             else if (Input.IsMouseDragging)
             {
-                Drag();
+                Drag(Input.DragDeltaX, Input.DragDeltaY, Input.IsShiftDown);
+
+                if (Input.IsKeyPressed(KeyCode.Escape))
+                {
+                    Drag(0, 0, false);
+                    Input.CancelDrag();
+                }
             }
+            
         }
 
         public void Select()

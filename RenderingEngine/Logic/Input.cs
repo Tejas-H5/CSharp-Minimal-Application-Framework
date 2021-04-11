@@ -70,6 +70,11 @@ namespace RenderingEngine.Logic
         public static float DragDeltaY { get { return _mouseInputManager.DragDeltaY; } }
         public static float DragDisplacement { get { return _mouseInputManager.DragDisplacement; } }
 
+        public static void CancelDrag()
+        {
+            _mouseInputManager.CancelDrag();
+        }
+
         // -------- Keyboard input wrappers
         private static KeyboardInputManager _keyboardManager;
 

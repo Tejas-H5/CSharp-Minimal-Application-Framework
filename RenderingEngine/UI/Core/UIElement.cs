@@ -28,6 +28,18 @@ namespace RenderingEngine.UI.Core
             }
         }
 
+        public float AbsCenterX {
+            get {
+                return Rect.X0 + _rectTransform.NormalizedCenter.X * Rect.Width;
+            }
+        }
+
+        public float AbsCenterY {
+            get {
+                return Rect.Y0 + _rectTransform.NormalizedCenter.Y * Rect.Height;
+            }
+        }
+
         public void SetRectAndRecalcAnchoring(Rect2D value)
         {
             _rectTransform.SetRectAndRecalcAnchoring(value, GetParentRect());
@@ -264,7 +276,7 @@ namespace RenderingEngine.UI.Core
 
         public UIElement SetNormalizedCenter(float centerX = 0.5f, float centerY = 0.5f)
         {
-            _rectTransform.Center = new PointF(centerX, centerY);
+            _rectTransform.NormalizedCenter = new PointF(centerX, centerY);
             _dirty = true;
             return this;
         }

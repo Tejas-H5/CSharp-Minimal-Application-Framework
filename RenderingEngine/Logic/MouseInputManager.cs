@@ -26,6 +26,8 @@ namespace RenderingEngine.Logic
             _mouseButtonStates = temp;
         }
 
+        bool _dragCancelled;
+
         bool _wasAnyDown = false;
         bool _anyDown = false;
         bool _wasAnyHeld = false;
@@ -42,7 +44,7 @@ namespace RenderingEngine.Logic
 
         public bool IsDragging {
             get {
-                return _startedDragging || (_isAnyHeld && _wasAnyHeld && (_dragDisplacement > 1));
+                return (!_dragCancelled) && (_startedDragging || (_isAnyHeld && _wasAnyHeld && (_dragDisplacement > 1)));
             }
         }
 
@@ -78,6 +80,11 @@ namespace RenderingEngine.Logic
         public bool MouseReleased(MouseButton b)
         {
             return _prevMouseButtonStates[(int)b] && (!_mouseButtonStates[(int)b]);
+        }
+
+        public void CancelDrag()
+        {
+            _dragCancelled = true;
         }
 
         public bool MouseHeld(MouseButton b)
@@ -142,14 +149,20 @@ namespace RenderingEngine.Logic
 
             _isAnyHeld = _wasAnyDown && _anyDown;
 
+            if (!_isAnyHeld)
+            {
+                _dragCancelled = false;
+            }
+
             if (!_wasAnyHeld && _isAnyHeld)
             {
                 SetDragDeltas(MouseX, MouseY);
             }
-            else if (_wasAnyHeld && _isAnyHeld)
+            else if (_wasAnyHeld && _isAnyHeld && !_dragCancelled)
             {
                 CalculateDragDeltas(MouseX, MouseY);
             }
+
         }
     }
 }

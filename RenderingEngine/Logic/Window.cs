@@ -22,10 +22,9 @@ namespace RenderingEngine.Logic
             GLFW.WindowHint(WindowHintInt.StencilBits, 8);
             //*/
 
-            using (var instance = new WindowInstance(program))
+            using (_instance = new WindowInstance(program))
             {
-                _instance = instance;
-                instance.Run();
+                _instance.Run();
             }
 
             _instance = null;
@@ -33,6 +32,10 @@ namespace RenderingEngine.Logic
 
 
         public static Vector2i Size { get { return _instance.Size; } set { _instance.Size = value; } }
+        public static void Maximize() { _instance.Maximize(); }
+        public static void Fullscreen() { _instance.Fullscreen(); }
+        public static void Unmaximize() { _instance.Unmaximize(); }
+
         public static string Title { get { return _instance.Title; } set { _instance.Title = value; } }
         public static float Height { get { return _instance.Height; } }
         public static float Width { get { return _instance.Width; } }

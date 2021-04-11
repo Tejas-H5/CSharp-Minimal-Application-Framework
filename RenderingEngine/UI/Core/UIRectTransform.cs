@@ -24,7 +24,54 @@ namespace RenderingEngine.UI.Core
 
         public Rect2D Rect {
             get { return _rect; }
-            set { _rect = value; }
+            set { 
+                _rect = value;
+            }
+        }
+
+        public void SetRectAndRecalcAnchoring(Rect2D value, Rect2D parentRect)
+        {
+            _rect = value;
+            _rect.Rectify();
+            ///*
+            if (PositionSizeX)
+            {
+                float anchor = parentRect.Left + _normalizedAnchoring.X0 * parentRect.Width;
+                float absCenter = _rect.X0 + _rect.Width * _normalizedCenter.X - parentRect.X0;
+                float xPosition = absCenter - anchor;
+
+                SetAbsPositionSizeX(xPosition, _rect.Width);
+            }
+            else
+            {
+                float anchorLeft = parentRect.Left + _normalizedAnchoring.X0 * parentRect.Width;
+                float anchorRight = parentRect.Left + _normalizedAnchoring.X1 * parentRect.Width;
+
+                float leftOffset = _rect.X0 - anchorLeft;
+                float rightOffset =  anchorRight - _rect.X1;
+
+                SetAbsOffsetsX(leftOffset, rightOffset);
+            }
+
+            if (PositionSizeY)
+            {
+                float anchor = parentRect.Bottom + _normalizedAnchoring.Y0 * parentRect.Height;
+                float absCenter = _rect.Y0 + _rect.Height * _normalizedCenter.Y - parentRect.Y0;
+                float yPosition = absCenter - anchor;
+
+                SetAbsPositionSizeY(yPosition, _rect.Height);
+            }
+            else
+            {
+                float anchorBottom = parentRect.Bottom + _normalizedAnchoring.Y0 * parentRect.Height;
+                float anchorTop = parentRect.Bottom + _normalizedAnchoring.Y1 * parentRect.Height;
+
+                float bottomOffset = _rect.Y0 - anchorBottom;
+                float topOffset = anchorTop - _rect.Y1;
+
+                SetAbsOffsetsY(bottomOffset, topOffset);
+            }
+            //*/
         }
 
         public Rect2D NormalizedAnchoring { get { return _normalizedAnchoring; } set { _normalizedAnchoring = value; } }
@@ -147,7 +194,7 @@ namespace RenderingEngine.UI.Core
         private void UpdateRectPositionSizeX(Rect2D parentRect)
         {
             //_anchoring contains the (still) normalized position position in X0 Y0 and normalized center in X1,Y1
-            //_rectOffset contains position in X0, Y0 and width, heighit in X1 Y1
+            //_rectOffset contains position in X0, Y0 and width, height in X1 Y1
 
             float anchorLeft = parentRect.Left + _normalizedAnchoring.X0 * parentRect.Width;
 

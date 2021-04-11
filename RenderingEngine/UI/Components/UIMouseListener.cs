@@ -20,6 +20,8 @@ namespace RenderingEngine.UI.Components
         public bool IsMouseOver { get { return _isMouseOver; } }
         public bool WasMouseOver { get { return _wasMouseOver; } }
 
+        public bool IsProcessingEvents { get { return _isProcessingEvents; } }
+
         bool _wasMouseOver = false;
         bool _isMouseOver;
 

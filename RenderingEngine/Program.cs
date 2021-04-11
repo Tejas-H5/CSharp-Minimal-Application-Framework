@@ -3,6 +3,7 @@ using OpenTK.Windowing.Desktop;
 using RenderingEngine.VisualTests;
 using RenderingEngine.Logic;
 using System;
+using RenderingEngine.VisualTests.UIEditor;
 
 namespace RenderingEngine
 {
@@ -12,7 +13,8 @@ namespace RenderingEngine
         {
             EntryPoint[] tests =
             {
-                new UITest(),
+                new UIEditor(),
+               /* new UITest(),
                 new StencilTest(),
                 new TextureTest(),
                 new KeyboardTest(),
@@ -21,7 +23,7 @@ namespace RenderingEngine
                 new GeometryOutlineTest(),
                 new GeometryAndTextTest(),
                 new ArcTest(),
-                new TextTest(),
+                new TextTest(),*/
             };
 
 

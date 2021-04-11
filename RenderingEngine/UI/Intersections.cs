@@ -10,19 +10,19 @@ namespace RenderingEngine.UI
     {
         public static bool IsInside(PointF p, Rect2D a)
         {
-            return IsInside(p.X, p.Y, a.X0, a.Y0, a.X1, a.Y1);
+            return IsInside(p.X, p.Y, a.Left, a.Bottom, a.Right, a.Top);
         }
 
         public static bool IsInside(float x, float y, Rect2D a)
         {
-            return IsInside(x, y, a.X0, a.Y0, a.X1, a.Y1);
+            return IsInside(x, y, a.Left, a.Bottom, a.Right, a.Top);
         }
 
         public static bool IsInside(float x, float y, float left, float bottom, float right, float top)
         {
-            if (x > left && x < right)
+            if (x >= left && x <= right)
             {
-                if (y < top && y > bottom)
+                if (y <= top && y >= bottom)
                 {
                     return true;
                 }

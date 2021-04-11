@@ -5,6 +5,7 @@ using System.Text;
 using RenderingEngine.Datatypes;
 using RenderingEngine.Rendering;
 using System.Drawing;
+using RenderingEngine.UI.Components;
 
 namespace RenderingEngine.UI.Core
 {
@@ -22,6 +23,14 @@ namespace RenderingEngine.UI.Core
 
         public Rect2D Rect {
             get { return _rectTransform.Rect; }
+            set {
+                _rectTransform.Rect = value;
+            }
+        }
+
+        public void SetRectAndRecalcAnchoring(Rect2D value)
+        {
+            _rectTransform.SetRectAndRecalcAnchoring(value, GetParentRect());
         }
 
         public Rect2D RectOffset {
@@ -117,10 +126,16 @@ namespace RenderingEngine.UI.Core
             {
                 _components.Add(comp);
                 comp.SetParent(this);
+
+                if (UICreator.Debug)
+                {
+                    SetParentDebug();
+                }
+
                 return this;
             }
 
-            return null;
+            throw new Exception("A component of this type already exists");
         }
 
 
@@ -141,6 +156,13 @@ namespace RenderingEngine.UI.Core
 
         protected bool _dirty = true;
 
+#if DEBUG
+        UIMouseListener _mouseListenComponent;
+        void SetParentDebug()
+        {
+            _mouseListenComponent = GetComponentOfType<UIMouseListener>();
+        }
+#endif
 
         public UIElement()
         {
@@ -279,7 +301,11 @@ namespace RenderingEngine.UI.Core
         public virtual void DrawIfVisible(double deltaTime)
         {
             if (!_isVisible)
+            {
+                CTX.SetDrawColor(Color4.FromRGBA(255, 0, 255, 10));
+                CTX.DrawRectOutline(2, Rect);
                 return;
+            }
 
             Draw(deltaTime);
 
@@ -287,7 +313,30 @@ namespace RenderingEngine.UI.Core
             {
                 _children[i].DrawIfVisible(deltaTime);
             }
+#if DEBUG
+            if (UICreator.Debug)
+            {
+                DrawDebug();
+            }
+#endif
         }
+
+#if DEBUG
+        void DrawDebug()
+        {
+            CTX.SetDrawColor(0, 0, 0, 0.5f);
+            CTX.DrawRectOutline(1, Rect);
+
+            if (_mouseListenComponent != null)
+            {
+                if (_mouseListenComponent.IsProcessingEvents)
+                {
+                    CTX.SetDrawColor(1, 0, 0, 1);
+                    CTX.DrawRect(Rect.X0 + 5, Rect.Y1 - 5, Rect.X0 + 15, Rect.Y1 - 15);
+                }
+            }
+        }
+#endif
 
         public virtual void Draw(double deltaTime)
         {
@@ -348,7 +397,7 @@ namespace RenderingEngine.UI.Core
             _dirty = true;
         }
 
-        private Rect2D GetParentRect()
+        public Rect2D GetParentRect()
         {
             Rect2D parentRect;
 

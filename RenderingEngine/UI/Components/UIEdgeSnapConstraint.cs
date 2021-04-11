@@ -14,7 +14,7 @@ namespace RenderingEngine.UI.Components
         Right
     }
 
-    public class UIEdgeSnapPreserver : UIComponent
+    public class UIEdgeSnapConstraint : UIComponent
     {
         UIElement _other;
         UIRectEdgeSnapEdge _mine;
@@ -22,7 +22,7 @@ namespace RenderingEngine.UI.Components
 
         //Assumes that the UIElement it is assigned to 
         // is using RectOffset and not PositionSize
-        public UIEdgeSnapPreserver(UIElement other, UIRectEdgeSnapEdge mine, UIRectEdgeSnapEdge theirs)
+        public UIEdgeSnapConstraint(UIElement other, UIRectEdgeSnapEdge mine, UIRectEdgeSnapEdge theirs)
         {
             _other = other;
             _mine = mine;

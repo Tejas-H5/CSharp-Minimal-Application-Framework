@@ -50,24 +50,18 @@ namespace RenderingEngine.Logic
 
         protected override void OnLoad()
         {
-            _program.Start();
-
-            IsVisible = true;
-
             base.OnLoad();
+            _program.Start();
 
             _init = true;
             _program.Resize();
+
+            IsVisible = true;
         }
 
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
             base.OnUpdateFrame(args);
-
-            if (KeyboardState.IsKeyDown(Keys.Escape))
-            {
-                Close();
-            }
 
             Input.Update();
 
@@ -103,15 +97,26 @@ namespace RenderingEngine.Logic
             renderFrames++;
         }
 
+        void OnResize()
+        {
+            GL.Viewport(0, 0, Size.X, Size.Y);
+
+            _program.Resize();
+        }
+
         protected override void OnResize(ResizeEventArgs e)
         {
             if (!_init)
                 return;
+
             base.OnResize(e);
 
-            GL.Viewport(0, 0, Size.X, Size.Y);
+            OnResize();
+        }
 
-            _program.Resize();
+        protected override void OnMaximized(MaximizedEventArgs e)
+        {
+            OnResize();
         }
 
         //TODO: Find out why OnUnload() wasn't working
@@ -120,6 +125,21 @@ namespace RenderingEngine.Logic
             _program.Cleanup();
             e.Cancel = false;
             base.OnClosing(e);
+        }
+
+        public void Maximize()
+        {
+            WindowState = WindowState.Maximized;
+        }
+
+        public void Fullscreen()
+        {
+            WindowState = WindowState.Fullscreen;
+        }
+
+        public void Unmaximize()
+        {
+            WindowState = WindowState.Normal;
         }
     }
 }

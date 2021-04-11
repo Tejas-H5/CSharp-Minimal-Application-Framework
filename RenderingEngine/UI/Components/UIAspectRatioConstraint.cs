@@ -6,11 +6,11 @@ using System.Text;
 
 namespace RenderingEngine.UI.Components
 {
-    public class UIAspectRatioPreserver : UIComponent
+    public class UIAspectRatioConstraint : UIComponent
     {
         float _widthToHeight;
 
-        public UIAspectRatioPreserver(float aspectRatio)
+        public UIAspectRatioConstraint(float aspectRatio)
         {
             _widthToHeight = aspectRatio;
         }
@@ -20,7 +20,7 @@ namespace RenderingEngine.UI.Components
             Rect2D parentRect = _parent.Rect;
             Rect2D wantedRect = _parent.Rect;
 
-            if ((4.0f / 3.0f) * parentRect.Height < parentRect.Width)
+            if (_widthToHeight * parentRect.Height < parentRect.Width)
             {
                 //The height is fine, the width needs to be changed
                 float wantedWidth = (parentRect.Height) * _widthToHeight;

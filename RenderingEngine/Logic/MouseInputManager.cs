@@ -37,8 +37,8 @@ namespace RenderingEngine.Logic
         bool _anyReleased = false;
 
         public bool MouseDownAny { get { return _anyDown; } }
-        public bool MouseClickedAny { get { return _anyReleased; } }
-        public bool MouseReleasedAny { get { return _anyClicked; } }
+        public bool MouseClickedAny { get { return _anyClicked; } }
+        public bool MouseReleasedAny { get { return _anyReleased; } }
 
         public bool IsDragging {
             get {

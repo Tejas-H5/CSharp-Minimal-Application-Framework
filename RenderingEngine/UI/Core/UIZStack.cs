@@ -39,15 +39,20 @@ namespace RenderingEngine.UI.Core
 
         internal override bool ProcessChildEvents()
         {
+            bool res = false;
             for (int i = _children.Count - 1; i >= 0; i--)
             {
                 if (_children[i].IsVisible)
                 {
-                    return _children[i].ProcessChildEvents();
+                    res = _children[i].ProcessChildEvents();
+                    break;
                 }
             }
 
-            return false;
+            if (res)
+                return true;
+
+            return ProcessComponentEvents();
         }
     }
 }

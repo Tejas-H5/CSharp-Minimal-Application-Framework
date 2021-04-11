@@ -9,6 +9,11 @@ namespace RenderingEngine.UI
 {
     public static class UICreator
     {
+
+#if DEBUG
+        public static bool Debug = false;
+#endif
+
         public static UIElement CreateUIElement(params UIComponent[] components)
         {
             UIElement root = new UIElement();
@@ -37,6 +42,17 @@ namespace RenderingEngine.UI
                 );
         }
 
+        public static UIElement CreateColoredRect(Color4 color)
+        {
+            return CreateUIElement(
+                new UIRect(color)
+                );
+        }
+
+        public static UIElement CreatePanel(Color4 color)
+        {
+            return CreatePanel(color, color, color);
+        }
 
         public static UIElement CreatePanel(Color4 color, Color4 hoverColor, Color4 clickedColor)
         {

@@ -4,17 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Components
+namespace RenderingEngine.UI.Components.Uncompleted
 {
-    public class UIMinDimensionsPreserver : UIComponent
+    public class UIDiminsionConstraint : UIComponent
     {
-        public UIMinDimensionsPreserver(float minWidth, float minHeight, float maxWidth, float maxHeight)
+        public UIDiminsionConstraint(float minWidth, float minHeight, float maxWidth, float maxHeight)
             : this(new Rect2D(minWidth, minHeight, maxWidth, maxHeight))
                   { }
 
         Rect2D _boundsRect;
 
-        public UIMinDimensionsPreserver(Rect2D boundsRect)
+        public UIDiminsionConstraint(Rect2D boundsRect)
         {
             _boundsRect = boundsRect;
         }
@@ -50,7 +50,7 @@ namespace RenderingEngine.UI.Components
                 wantedRect.Y1 = wantedRect.Y0 + (1f - centerY) * minHeight;
                 wantedRect.Y0 = wantedRect.Y1 - (centerY) * minHeight;
             }
-            else if (maxHeight > 0 && width > maxWidth)
+            else if (maxHeight > 0 && height > maxHeight)
             {
                 wantedRect.Y1 = wantedRect.Y0 + (1f - centerY) * maxHeight;
                 wantedRect.Y0 = wantedRect.Y1 - (centerY) * maxHeight;

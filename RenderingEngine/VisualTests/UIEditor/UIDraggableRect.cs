@@ -110,21 +110,29 @@ namespace RenderingEngine.VisualTests.UIEditor
 
             if (shouldSnap)
             {
-                if(newCenterX < 0.25f)
-                {
-                    newCenterX = 0f;
-                }
-                else if(newCenterX > 0.75f)
-                {
-                    newCenterX = 1.0f;
-                }
-                else
-                {
-                    newCenterX = 0.5f;
-                }
+                newCenterX = SnapCenter(newCenterX);
+                newCenterY = SnapCenter(newCenterY);
             }
 
             _parent.SetNormalizedCenter(newCenterX, newCenterY);
+        }
+
+        private static float SnapCenter(float newCenterX)
+        {
+            if (newCenterX < 0.25f)
+            {
+                newCenterX = 0f;
+            }
+            else if (newCenterX > 0.75f)
+            {
+                newCenterX = 1.0f;
+            }
+            else
+            {
+                newCenterX = 0.5f;
+            }
+
+            return newCenterX;
         }
 
         private void DragEntireRect(float dragDX, float dragDY, Rect2D initOffsets)
@@ -290,6 +298,14 @@ namespace RenderingEngine.VisualTests.UIEditor
                 CTX.SetDrawColor(0, 0, 0, 0.5f);
                 DrawOffsetInfoY(r, pR, rtf);
             }
+
+            CTX.SetDrawColor(0, 0, 0, 0.5f);
+            CTX.DrawText(
+                $"({_parent.RectTransform.NormalizedCenter.X.ToString("0.000")}, " +
+                $"{_parent.RectTransform.NormalizedCenter.Y.ToString("0.000")})",
+                _parent.AbsCenterX + 5,
+                _parent.AbsCenterY + 5
+            );
         }
 
         private void DrawCenterHandle()

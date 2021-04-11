@@ -65,7 +65,7 @@ namespace RenderingEngine.Rendering
 
         public static void Clear()
         {
-            GL.StencilMask(~0);
+            GL.StencilMask(1);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
         }
 
@@ -209,17 +209,17 @@ namespace RenderingEngine.Rendering
             _solidShader.UpdateModel();
         }
 
-        public static void StartStencillingWhileDrawing()
+        public static void StartStencillingWhileDrawing(bool inverseStencil = false)
         {
-            StartStencilling(true);
+            StartStencilling(true, inverseStencil);
         }
 
-        public static void StartStencillingWithoutDrawing()
+        public static void StartStencillingWithoutDrawing(bool inverseStencil = false)
         {
-            StartStencilling(false);
+            StartStencilling(false, inverseStencil);
         }
 
-        private static void StartStencilling(bool canDraw)
+        private static void StartStencilling(bool canDraw, bool inverseStencil)
         {
             Flush();
 
@@ -228,10 +228,29 @@ namespace RenderingEngine.Rendering
                 GL.ColorMask(false, false, false, false);
             }
 
+            if (inverseStencil)
+            {
+                GL.ClearStencil(1);
+            }
+            else
+            {
+                GL.ClearStencil(0);
+            }
+
+            GL.StencilMask(1);
+            GL.Clear(ClearBufferMask.StencilBufferBit);
+
             GL.Enable(EnableCap.StencilTest);
             GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
-            GL.StencilFunc(StencilFunction.Always, 1, ~0);
-            GL.StencilMask(~0);
+
+            if (inverseStencil)
+            {
+                GL.StencilFunc(StencilFunction.Always, 0, 0);
+            }
+            else
+            {
+                GL.StencilFunc(StencilFunction.Always, 1, 1);
+            }
         }
 
         public static void StartUsingStencil()
@@ -239,7 +258,7 @@ namespace RenderingEngine.Rendering
             Flush();
 
             GL.ColorMask(true,true,true,true);
-            GL.StencilFunc(StencilFunction.Notequal, 1, ~0);
+            GL.StencilFunc(StencilFunction.Notequal, 1, 1);
             GL.StencilMask(0);
         }
 
@@ -248,8 +267,6 @@ namespace RenderingEngine.Rendering
             Flush();
 
             GL.Disable(EnableCap.StencilTest);
-            GL.StencilMask(~0);
-            GL.Clear(ClearBufferMask.StencilBufferBit);
         }
 
         #region _textDrawer Wrappers 

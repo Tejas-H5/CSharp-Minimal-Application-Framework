@@ -13,7 +13,10 @@ namespace RenderingEngine.UI.Core
             _parent = parent;
         }
 
+        public virtual void BeforeUpdate(double deltaTime) { }
         public virtual void Update(double deltaTime) { }
+        public virtual void AfterUpdate(double deltaTime) { }
+
         public virtual void Draw(double deltaTime) { }
         public virtual bool ProcessEvents() { return false; }
 

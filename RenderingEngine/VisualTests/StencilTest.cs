@@ -27,7 +27,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-            CTX.StartStencillingWithoutDrawing();
+            CTX.StartStencillingWithoutDrawing(true);
 
             float barSize = MathF.Abs((Window.Height/2 - 5) * MathF.Sin(_time / 4f));
             CTX.DrawRect(0, Window.Height, Window.Width, Window.Height - barSize);

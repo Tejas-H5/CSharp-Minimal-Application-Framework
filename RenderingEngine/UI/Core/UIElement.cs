@@ -76,10 +76,16 @@ namespace RenderingEngine.UI.Core
 
         public UIElement AddChild(UIElement element)
         {
+            AddChildVirtual(element);
+            
+            return this;
+        }
+
+        protected virtual void AddChildVirtual(UIElement element)
+        {
             _children.Add(element);
             element.Parent = this;
             element.Resize();
-            return this;
         }
 
         public void RemoveChild(UIElement element)
@@ -281,7 +287,7 @@ namespace RenderingEngine.UI.Core
             return this;
         }
 
-        public virtual void Update(double deltaTime)
+        public void Update(double deltaTime)
         {
             if (_dirty)
             {
@@ -293,7 +299,17 @@ namespace RenderingEngine.UI.Core
 
             for (int i = 0; i < _components.Count; i++)
             {
+                _components[i].BeforeUpdate(deltaTime);
+            }
+
+            for (int i = 0; i < _components.Count; i++)
+            {
                 _components[i].Update(deltaTime);
+            }
+
+            for (int i = 0; i < _components.Count; i++)
+            {
+                _components[i].AfterUpdate(deltaTime);
             }
 
             if (_parent == null)
@@ -389,7 +405,7 @@ namespace RenderingEngine.UI.Core
             return res;
         }
 
-        public virtual void Resize()
+        public void Resize()
         {
             _rectTransform.UpdateRect(GetParentRect());
 
@@ -397,7 +413,10 @@ namespace RenderingEngine.UI.Core
             {
                 _components[i].OnResize();
             }
+        }
 
+        public virtual void ResizeChildren()
+        {
             for (int i = 0; i < _children.Count; i++)
             {
                 _children[i].Resize();

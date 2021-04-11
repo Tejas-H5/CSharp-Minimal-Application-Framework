@@ -16,6 +16,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         UIZStack _root;
         UIElement _mainWorkspace;
         UIElement _domView;
+        UIElement _propertiesView;
         UIElement _uiView;
 
         UIElement _domRoot;
@@ -44,23 +45,30 @@ namespace RenderingEngine.VisualTests.UIEditor
             _domRoot = UIDraggableRect.CreateDraggableRect(_selectedState);
 
             _root = new UIZStack();
-            
+
             _root
             .AddComponent(new UIRectHitbox())
             .AddComponent(new UIMouseListener())
             .AddChildren(
                 _mainWorkspace = UICreator.CreateUIElement()
                 .AddChildren(
-                  _uiView = UICreator.CreateUIElement()
-                  .SetNormalizedAnchoring(new Rect2D(0, 0, 0.66f, 1f))
-                  .SetAbsoluteOffset(10)
-                  .AddChildren(
-                      _domRoot
+                    _uiView = UICreator.CreateUIElement()
+                    .SetNormalizedAnchoring(new Rect2D(0, 0, 0.66f, 1f))
+                    .SetAbsoluteOffset(10)
+                    .AddChildren(
+                        _domRoot
                     )
-                  ,
-                  _domView = UICreator.CreateUIElement()
-                  .SetNormalizedAnchoring(new Rect2D(0.66f, 0, 1f, 1f))
-                  .SetAbsoluteOffset(10)
+                    ,
+                    _domView = UICreator.CreateUIElement()
+                    .SetNormalizedAnchoring(new Rect2D(0.66f, 0.5f, 1f, 1f))
+                    .SetAbsoluteOffset(10)
+                    ,
+                    _propertiesView = new UILinearArrangement(vertical:true, reverse:false, padding:0.5f)
+                    .SetNormalizedAnchoring(new Rect2D(0.66f, 0.0f, 1f, 0.5f))
+                    .SetAbsoluteOffset(10)
+                    .AddChildren(
+                        UICreator.CreateButton("Bruh")
+                    )
                 )
             );
 

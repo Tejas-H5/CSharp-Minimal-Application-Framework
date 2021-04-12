@@ -10,7 +10,6 @@ using System.Text;
 
 namespace RenderingEngine.VisualTests.UIEditor
 {
-
     public class UIEditor : EntryPoint
     {
         UIZStack _root;
@@ -60,7 +59,7 @@ namespace RenderingEngine.VisualTests.UIEditor
                 .AddChildren(
                     _uiView = UICreator.CreateUIElement(
                         new UIInverseStencil()
-                        )
+                    )
                     .SetNormalizedAnchoring(new Rect2D(0, 0, 0.66f, 1f))
                     .SetAbsoluteOffset(10)
                     .AddChildren(
@@ -71,14 +70,14 @@ namespace RenderingEngine.VisualTests.UIEditor
                     .SetNormalizedAnchoring(new Rect2D(0.66f, 0.5f, 1f, 1f))
                     .SetAbsoluteOffset(10)
                     ,
-                    _propertiesView = new UILinearArrangement(vertical:true, reverse:false, padding:10f)
+                    _propertiesView = new UILinearArrangement(vertical: true, reverse: false, padding: 10f)
                     .SetNormalizedAnchoring(new Rect2D(0.66f, 0.0f, 1f, 0.5f))
                     .SetAbsoluteOffset(10)
                     .AddChildren(
                         createButton = UICreator.CreateButton("Create new rect inside selection"),
                         deleteButton = UICreator.CreateButton("Delete selected rect"),
                         togglePosSizeXButton = UICreator.CreateButton("Toggle horizontal (X) anchoring mode"),
-                        togglePosSizeYButton = UICreator.CreateButton("Toggle horizontal (Y) anchoring mode")
+                        togglePosSizeYButton = UICreator.CreateButton("Toggle vertical (Y) anchoring mode")
                     )
                 )
             );
@@ -95,15 +94,14 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             if (_selectedState.SelectedRect == null)
                 return;
-            //only the highest quality code here bois
-            _selectedState.SelectedRect.Parent.RectTransform.PositionSizeX = !_selectedState.SelectedRect.Parent.RectTransform.PositionSizeX;
+            _selectedState.SelectedRect.ToggleXAnchoring();
         }
 
         private void OnTogglePosSizeYButtonClicked()
         {
             if (_selectedState.SelectedRect == null)
                 return;
-            _selectedState.SelectedRect.Parent.RectTransform.PositionSizeY = !_selectedState.SelectedRect.Parent.RectTransform.PositionSizeY;
+            _selectedState.SelectedRect.ToggleYAnchoring();
         }
 
 

@@ -38,19 +38,24 @@ namespace RenderingEngine.Logic
         public static bool[] MouseButtonStates { get { return _mouseInputManager.MouseButtonStates; } }
         public static bool[] PrevMouseButtonStates { get { return _mouseInputManager.PrevMouseButtonStates; } }
 
-        public static bool MouseClicked(MouseButton b)
+        public static bool IsMouseClicked(MouseButton b)
         {
-            return _mouseInputManager.MouseClicked(b);
+            return _mouseInputManager.IsMouseClicked(b);
         }
 
-        public static bool MouseReleased(MouseButton b)
+        public static bool IsMouseReleased(MouseButton b)
         {
-            return _mouseInputManager.MouseReleased(b);
+            return _mouseInputManager.IsMouseReleased(b);
         }
 
-        public static bool MouseHeld(MouseButton b)
+        public static bool IsMouseDown(MouseButton b)
         {
-            return _mouseInputManager.MouseHeld(b);
+            return _mouseInputManager.IsMouseDown(b);
+        }
+
+        public static bool IsMouseHeld(MouseButton b)
+        {
+            return _mouseInputManager.IsMouseHeld(b);
         }
 
         public static void StartMouseDrag(float x, float y)
@@ -58,10 +63,10 @@ namespace RenderingEngine.Logic
             _mouseInputManager.StartDrag(x, y);
         }
 
-        public static bool MouseClickedAny { get { return _mouseInputManager.MouseClickedAny; } }
-        public static bool MouseReleasedAny { get { return _mouseInputManager.MouseReleasedAny; } }
-        public static bool MouseHeldAny { get { return _mouseInputManager.MouseDownAny; } }
-        public static bool MouseStartedDragging { get { return _mouseInputManager.StartedDragging; } }
+        public static bool IsMouseClickedAny { get { return _mouseInputManager.IsMouseClickedAny; } }
+        public static bool IsMouseReleasedAny { get { return _mouseInputManager.IsMouseReleasedAny; } }
+        public static bool IsMouseDownAny { get { return _mouseInputManager.IsMouseDownAny; } }
+        public static bool HasMouseStartedDragging { get { return _mouseInputManager.StartedDragging; } }
         public static bool IsMouseDragging { get { return _mouseInputManager.IsDragging; } }
         public static bool WasMouseDragging { get { return _mouseInputManager.WasDragging; } }
         public static float DragStartX { get { return _mouseInputManager.DragStartX; } }

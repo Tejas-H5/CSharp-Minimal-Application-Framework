@@ -331,6 +331,9 @@ namespace RenderingEngine.Rendering
 
         }
 
+        /// <summary>
+        /// This overload can be used to draw regular polygons
+        /// </summary>
         public static void DrawCircle(float x0, float y0, float r, int edges)
         {
             StopUsingTextTexture();

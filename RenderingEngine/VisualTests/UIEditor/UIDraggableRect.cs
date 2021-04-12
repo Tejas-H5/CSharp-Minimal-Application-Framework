@@ -36,21 +36,30 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             return _topEdge || _bottomEdge || _leftEdge || _rightEdge;
         }
+        private bool IsAnchorHeld()
+        {
+            return _lowerAnchor || _upperAnchor;
+        }
 
         bool _topEdge = false;
         bool _bottomEdge = false;
         bool _leftEdge = false;
         bool _rightEdge = false;
 
+        bool _lowerAnchor = false;
+        bool _upperAnchor = false;
+
         bool _centerHeld = false;
 
         Rect2D _initRectOffset;
+        Rect2D _initAnchoring;
         PointF _initCenter;
 
         private void StartDrag()
         {
             _initRectOffset = _parent.RectTransform.AbsoluteOffset;
             _initCenter = _parent.RectTransform.NormalizedCenter;
+            _initAnchoring = _parent.RectTransform.NormalizedAnchoring;
         }
 
         private static float Snap(float x, float snapVal)
@@ -91,6 +100,10 @@ namespace RenderingEngine.VisualTests.UIEditor
             {
                 DragEdgeOffsets(rtf, initOffsets, dragDX, dragDY);
             }
+            else if (IsAnchorHeld())
+            {
+                DragAnchorOffsets(rtf, pR, initOffsets, _initAnchoring, dragDX, dragDY, shouldSnap);
+            }
             else
             {
                 DragEntireRect(dragDX, dragDY, initOffsets);
@@ -99,6 +112,65 @@ namespace RenderingEngine.VisualTests.UIEditor
             //_parent.SetRectAndRecalcAnchoring(r);
             _parent.SetDirty();
             _parent.Resize();
+        }
+
+        private void DragAnchorOffsets(UIRectTransform rtf, Rect2D pR, Rect2D initOffsets, Rect2D initAnchors, float dragDX, float dragDY, bool shouldSnap)
+        {
+            if (_lowerAnchor)
+            {
+                float newAnchorX0 = initAnchors.X0 + dragDX / pR.Width;
+                float newAnchorY0 = initAnchors.Y0 + dragDY / pR.Height;
+
+                if (shouldSnap)
+                {
+                    newAnchorX0 = SnapCenter(newAnchorX0);
+                    newAnchorY0 = SnapCenter(newAnchorY0);
+                }
+
+                if (rtf.PositionSizeX)
+                {
+                    _parent.SetNormalizedPositionCenterX(newAnchorX0, _initCenter.X);
+                }
+                else
+                {
+                    _parent.SetNormalizedAnchoringX(newAnchorX0, _initAnchoring.X1);
+                }
+
+                if (rtf.PositionSizeY)
+                {
+                    _parent.SetNormalizedPositionCenterY(newAnchorY0, _initCenter.Y);
+                }
+                else
+                {
+                    _parent.SetNormalizedAnchoringY(newAnchorY0, _initAnchoring.Y1);
+                }
+            }
+            else if (_upperAnchor)
+            {
+                float newAnchorX1 = initAnchors.X1 + dragDX / pR.Width;
+                float newAnchorY1 = initAnchors.Y1 + dragDY / pR.Height;
+                newAnchorX1 = MathF.Min(1, MathF.Max(0, newAnchorX1));
+                newAnchorY1 = MathF.Min(1, MathF.Max(0, newAnchorY1));
+
+                dragDX = (newAnchorX1 - initAnchors.X0) * pR.Width;
+                dragDY = (newAnchorY1 - initAnchors.Y0) * pR.Height;
+
+                if (shouldSnap)
+                {
+                    newAnchorX1 = SnapCenter(newAnchorX1);
+                    newAnchorY1 = SnapCenter(newAnchorY1);
+                }
+
+                if (!rtf.PositionSizeX)
+                {
+                    _parent.SetNormalizedAnchoringX(_initAnchoring.X0, newAnchorX1);
+                }
+                
+                if (!rtf.PositionSizeY)
+                {
+                    _parent.SetNormalizedAnchoringY(_initAnchoring.Y0, newAnchorY1);
+                }
+            }
         }
 
         private void DragCenter(UIRectTransform rtf, float dragDX, float dragDY, bool shouldSnap)
@@ -168,19 +240,23 @@ namespace RenderingEngine.VisualTests.UIEditor
 
         private void DragEdgeOffsets(UIRectTransform rtf, Rect2D initOffsets, float dragDX, float dragDY)
         {
+            DragEdgeOffsets(rtf, initOffsets, dragDX, dragDY, _topEdge, _bottomEdge, _leftEdge, _rightEdge);
+        }
 
+        private void DragEdgeOffsets(UIRectTransform rtf, Rect2D initOffsets, float dragDX, float dragDY, bool topEdge, bool bottomEdge, bool leftEdge, bool rightEdge)
+        {
             if (rtf.PositionSizeY)
             {
                 float newY = initOffsets.Y0;
                 float newHeight = initOffsets.Y1;
                 //float newCenterY = _initCenter.Y;
 
-                if (_topEdge)
+                if (topEdge)
                 {
                     newHeight = initOffsets.Y1 + dragDY;
                     newY = initOffsets.Y0 + dragDY * (_initCenter.Y);
                 }
-                else if (_bottomEdge)
+                else if (bottomEdge)
                 {
                     newHeight = initOffsets.Y1 - dragDY;
                     newY = initOffsets.Y0 + dragDY * (1.0f - _initCenter.Y);
@@ -193,12 +269,12 @@ namespace RenderingEngine.VisualTests.UIEditor
                 float bottom = initOffsets.Y0;
                 float top = initOffsets.Y1;
 
-                if (_topEdge)
+                if (topEdge)
                 {
                     //r.Y1 = mouseY;
                     top = initOffsets.Y1 - dragDY;
                 }
-                else if (_bottomEdge)
+                else if (bottomEdge)
                 {
                     //r.Y0 = mouseY;
                     bottom = initOffsets.Y0 + dragDY;
@@ -213,12 +289,12 @@ namespace RenderingEngine.VisualTests.UIEditor
                 float newWidth = initOffsets.X1;
                 //float newCenterX = _initCenter.X;
 
-                if (_rightEdge)
+                if (rightEdge)
                 {
                     newWidth = initOffsets.X1 + dragDX;
                     newX = initOffsets.X0 + dragDX * (_initCenter.X);
                 }
-                else if (_leftEdge)
+                else if (leftEdge)
                 {
                     newWidth = initOffsets.X1 - dragDX;
                     newX = initOffsets.X0 + dragDX * (1.0f - _initCenter.X);
@@ -231,12 +307,12 @@ namespace RenderingEngine.VisualTests.UIEditor
                 float left = initOffsets.X0;
                 float right = initOffsets.X1;
 
-                if (_rightEdge)
+                if (rightEdge)
                 {
                     //r.X1 = mouseX;
                     right = initOffsets.X1 - dragDX;
                 }
-                else if (_leftEdge)
+                else if (leftEdge)
                 {
                     //r.X0 = mouseX;
                     left = initOffsets.X0 + dragDX;
@@ -252,24 +328,84 @@ namespace RenderingEngine.VisualTests.UIEditor
 
         public override bool ProcessEvents()
         {
-            if (Input.IsMouseDragging)
+            if (_state.SelectedRect != this)
+                return false;
+
+            if (Input.IsMouseHeld(MouseButton.Left) && Input.IsMouseDragging)
                 return true;
 
             _centerHeld = Intersections.IsInsideCircle(Input.MouseX, Input.MouseY, _parent.AbsCenterX, _parent.AbsCenterY, HANDLESIZE);
 
-            _topEdge = Intersections.IsInside(Input.MouseX, Input.MouseY,
-                GetEdgeRect(_parent.Rect.X0, _parent.Rect.Y1, _parent.Rect.X1, _parent.Rect.Y1));
-            _bottomEdge = Intersections.IsInside(Input.MouseX, Input.MouseY,
-                GetEdgeRect(_parent.Rect.X0, _parent.Rect.Y0, _parent.Rect.X1, _parent.Rect.Y0));
+            float x = Input.MouseX;
+            float y = Input.MouseY;
+            UIRectTransform rtf = _parent.RectTransform;
+            Rect2D pR = _parent.GetParentRect();
 
-            _leftEdge = Intersections.IsInside(Input.MouseX, Input.MouseY,
-                GetEdgeRect(_parent.Rect.X0, _parent.Rect.Y0, _parent.Rect.X0, _parent.Rect.Y1));
-            _rightEdge = Intersections.IsInside(Input.MouseX, Input.MouseY,
-                GetEdgeRect(_parent.Rect.X1, _parent.Rect.Y0, _parent.Rect.X1, _parent.Rect.Y1));
+            CheckEdgeGrab(x, y);
 
-            return IsEdgeHeld() || _centerHeld;
+            CheckAnchorGrab(x, y, rtf, pR);
+
+            return IsEdgeHeld() || IsAnchorHeld() || _centerHeld;
         }
 
+        private void CheckAnchorGrab(float x, float y, UIRectTransform rtf, Rect2D pR)
+        {
+            float leftAnchor;
+            float rightAnchor;
+            float topAnchor;
+            float bottomAnchor;
+            GetAnchors(rtf, pR, out leftAnchor, out rightAnchor, out topAnchor, out bottomAnchor);
+
+            _lowerAnchor = Intersections.IsInsideCircle(
+                x, y,
+                leftAnchor,
+                bottomAnchor,
+                HANDLESIZE
+            );
+
+            _upperAnchor = Intersections.IsInsideCircle(
+                x, y,
+                rightAnchor,
+                topAnchor,
+                HANDLESIZE
+            );
+        }
+
+        private static void GetAnchors(UIRectTransform rtf, Rect2D pR, out float leftAnchor, out float rightAnchor, out float topAnchor, out float bottomAnchor)
+        {
+            if (rtf.PositionSizeX)
+            {
+                leftAnchor = rightAnchor = pR.X0 + rtf.NormalizedAnchoring.X0 * pR.Width;
+            }
+            else
+            {
+                leftAnchor = pR.X0 + rtf.NormalizedAnchoring.X0 * pR.Width;
+                rightAnchor = pR.X0 + rtf.NormalizedAnchoring.X1 * pR.Width;
+            }
+
+            if (rtf.PositionSizeY)
+            {
+                bottomAnchor = topAnchor = pR.Y0 + rtf.NormalizedAnchoring.Y0 * pR.Height;
+            }
+            else
+            {
+                bottomAnchor = pR.Y0 + rtf.NormalizedAnchoring.Y0 * pR.Height;
+                topAnchor = pR.Y0 + rtf.NormalizedAnchoring.Y1 * pR.Height;
+            }
+        }
+
+        private void CheckEdgeGrab(float x, float y)
+        {
+            _topEdge = Intersections.IsInside(x, y,
+                GetEdgeRect(_parent.Rect.X0, _parent.Rect.Y1, _parent.Rect.X1, _parent.Rect.Y1));
+            _bottomEdge = Intersections.IsInside(x, y,
+                GetEdgeRect(_parent.Rect.X0, _parent.Rect.Y0, _parent.Rect.X1, _parent.Rect.Y0));
+
+            _leftEdge = Intersections.IsInside(x, y,
+                GetEdgeRect(_parent.Rect.X0, _parent.Rect.Y0, _parent.Rect.X0, _parent.Rect.Y1));
+            _rightEdge = Intersections.IsInside(x, y,
+                GetEdgeRect(_parent.Rect.X1, _parent.Rect.Y0, _parent.Rect.X1, _parent.Rect.Y1));
+        }
 
         private void OnClicked()
         {
@@ -317,67 +453,107 @@ namespace RenderingEngine.VisualTests.UIEditor
 
         private void DrawSelectionInfo()
         {
-            DrawEdgeHandles();
-            DrawCenterHandle();
-
-            if (_parent.Rect.IsInverted())
-                return;
-
             Rect2D r = _parent.Rect;
             Rect2D pR = _parent.GetParentRect();
             UIRectTransform rtf = _parent.RectTransform;
 
+            DrawEdgeHandles(r);
+            DrawCenterHandle();
+            DrawAnchorHandles(r, pR, rtf);
 
+            float leftAnchor, rightAnchor, topAnchor, bottomAnchor;
+            GetAnchors(rtf, pR, out leftAnchor, out rightAnchor, out topAnchor, out bottomAnchor);
+            DrawAnchorLines(pR, leftAnchor, rightAnchor, topAnchor, bottomAnchor);
+
+            if (_parent.Rect.IsInverted())
+                return;
+
+            DrawDimensionLines(r, pR, rtf);
+
+            DrawCenterCoords();
+        }
+
+        private static void DrawAnchorLines(Rect2D pR, float leftAnchor, float rightAnchor, float topAnchor, float bottomAnchor)
+        {
+            CTX.SetDrawColor(0, 0, 0, 0.2f);
+            CTX.DrawLine(pR.Left, bottomAnchor, pR.Right, bottomAnchor, 2, CapType.None);
+            CTX.DrawLine(pR.Left, topAnchor, pR.Right, topAnchor, 2, CapType.None);
+            CTX.DrawLine(leftAnchor, pR.Top, leftAnchor, pR.Bottom, 2, CapType.None);
+            CTX.DrawLine(rightAnchor, pR.Top, rightAnchor, pR.Bottom, 2, CapType.None);
+        }
+
+        private void DrawAnchorHandles(Rect2D r, Rect2D pR, UIRectTransform rtf)
+        {
+            float leftAnchor, rightAnchor, topAnchor, bottomAnchor;
+            GetAnchors(rtf, pR, out leftAnchor, out rightAnchor, out topAnchor, out bottomAnchor);
+
+            if(_lowerAnchor)
+                CTX.SetDrawColor(new Color4(1.0f, 0,0, 0.5f));
+            else
+                CTX.SetDrawColor(new Color4(0.0f, 0, 0, 0.5f));
+
+            CTX.DrawCircle(leftAnchor, bottomAnchor, HANDLESIZE, 4);
+
+            if (_upperAnchor)
+                CTX.SetDrawColor(new Color4(1.0f, 0, 0, 0.5f));
+            else
+                CTX.SetDrawColor(new Color4(0.0f, 0, 0, 0.5f));
+
+            CTX.DrawCircle(rightAnchor, topAnchor, HANDLESIZE, 4);
+        }
+
+        private void DrawCenterCoords()
+        {
             CTX.SetDrawColor(0, 0, 0, 0.5f);
+            CTX.DrawText(
+                $"center:({_parent.RectTransform.NormalizedCenter.X.ToString("0.000")}, " +
+                $"{_parent.RectTransform.NormalizedCenter.Y.ToString("0.000")})",
+                _parent.AbsCenterX + 5,
+                _parent.AbsCenterY - 30
+            );
+        }
+
+        private void DrawDimensionLines(Rect2D r, Rect2D pR, UIRectTransform rtf)
+        {
+            CTX.SetDrawColor(0, 0, 0, 0.5f);
+            float leftAnchor, rightAnchor, topAnchor, bottomAnchor;
+            GetAnchors(rtf, pR, out leftAnchor, out rightAnchor, out topAnchor, out bottomAnchor);
+
             if (_parent.RectTransform.PositionSizeX)
             {
-                DrawPosSizeInfoX(r, pR, rtf);
+                DrawPosSizeInfoX(r, pR, rtf, leftAnchor);
             }
             else
             {
-                DrawOffsetInfoX(r, pR, rtf);
+                DrawOffsetInfoX(r, pR, rtf, leftAnchor, rightAnchor);
             }
 
             if (_parent.RectTransform.PositionSizeY)
             {
-                DrawPosSizeInfoY(r, pR, rtf);
+                DrawPosSizeInfoY(r, pR, rtf, bottomAnchor);
             }
             else
             {
-                DrawOffsetInfoY(r, pR, rtf);
+                DrawOffsetInfoY(r, pR, rtf, bottomAnchor, topAnchor);
             }
-
-            CTX.SetDrawColor(0, 0, 0, 0.5f);
-            CTX.DrawText(
-                $"({_parent.RectTransform.NormalizedCenter.X.ToString("0.000")}, " +
-                $"{_parent.RectTransform.NormalizedCenter.Y.ToString("0.000")})",
-                _parent.AbsCenterX + 5,
-                _parent.AbsCenterY + 5
-            );
         }
 
-        private void DrawPosSizeInfoY(Rect2D r, Rect2D pR, UIRectTransform rtf)
+        private void DrawPosSizeInfoY(Rect2D r, Rect2D pR, UIRectTransform rtf, float bottomAnchor)
         {
-            float anchor = pR.Y0 + rtf.NormalizedAnchoring.Y0 * pR.Height;
-            CTX.DrawLine(r.CenterX, _parent.AbsCenterY, r.CenterX, anchor, 2, CapType.None);
-            CTX.DrawText($"{rtf.AbsoluteOffset.Y0}px", r.CenterX, (_parent.AbsCenterY + anchor) / 2f);
+            CTX.DrawLine(_parent.AbsCenterX, _parent.AbsCenterY, _parent.AbsCenterX, bottomAnchor, 2, CapType.None);
+            CTX.DrawText($"{rtf.AbsoluteOffset.Y0}px", _parent.AbsCenterX, (_parent.AbsCenterY + bottomAnchor) / 2f);
 
-            CTX.DrawLine(r.CenterX - 10, _parent.AbsCenterY, r.CenterX + 10, _parent.AbsCenterY, 5, CapType.None);
-
-            CTX.DrawLine(r.CenterX, r.Bottom, r.CenterX, r.Top, 2, CapType.None);
-            CTX.DrawText($"{rtf.Rect.Height}px", r.CenterX, (r.Bottom + r.Top) / 2f);
+            CTX.DrawLine(_parent.AbsCenterX, r.Bottom, _parent.AbsCenterX, r.Top, 2, CapType.None);
+            CTX.DrawText($"{rtf.Rect.Height}px", _parent.AbsCenterX, 20 + (r.Bottom + r.Top) / 2f);
         }
 
-        private void DrawPosSizeInfoX(Rect2D r, Rect2D pR, UIRectTransform rtf)
+        private void DrawPosSizeInfoX(Rect2D r, Rect2D pR, UIRectTransform rtf, float leftAnchor)
         {
-            float anchor = pR.X0 + rtf.NormalizedAnchoring.X0 * pR.Height;
-            CTX.DrawLine(_parent.AbsCenterX, r.CenterY, anchor, r.CenterY, 2, CapType.None);
-            CTX.DrawText($"{rtf.AbsoluteOffset.Y0}px", (_parent.AbsCenterY + anchor) / 2f, r.CenterY);
+            CTX.DrawLine(_parent.AbsCenterX, _parent.AbsCenterY, leftAnchor, _parent.AbsCenterY, 2, CapType.None);
+            CTX.DrawText($"{rtf.AbsoluteOffset.X0}px", (_parent.AbsCenterX + leftAnchor) / 2f, _parent.AbsCenterY);
 
-            CTX.DrawLine(_parent.AbsCenterX, r.CenterY - 10, _parent.AbsCenterX, r.CenterY + 10, 5, CapType.None);
-
-            CTX.DrawLine(r.Left, r.CenterY, r.Right, r.CenterY, 2, CapType.None);
-            CTX.DrawText($"{rtf.Rect.Height}px", (r.Bottom + r.Top) / 2f, r.CenterY);
+            CTX.DrawLine(r.Left, _parent.AbsCenterY, r.Right, _parent.AbsCenterY, 2, CapType.None);
+            CTX.DrawText($"{rtf.Rect.Width}px", 50 + (r.Left + r.Right) / 2f, _parent.AbsCenterY);
         }
 
         private void DrawCenterHandle()
@@ -386,37 +562,81 @@ namespace RenderingEngine.VisualTests.UIEditor
             CTX.DrawCircle(_parent.AbsCenterX, _parent.AbsCenterY, HANDLESIZE);
         }
 
-        private static void DrawOffsetInfoX(Rect2D r, Rect2D pR, UIRectTransform rtf)
+        private static void DrawOffsetInfoX(Rect2D r, Rect2D pR, UIRectTransform rtf, float leftAnchor, float rightAnchor)
         {
-            CTX.DrawLine(r.X0, r.CenterY, pR.X0, r.CenterY, 2, CapType.None);
+            CTX.DrawLine(r.X0, r.CenterY, leftAnchor, r.CenterY, 2, CapType.None);
             CTX.DrawText($"{rtf.AbsoluteOffset.X0}px", r.X0 + 10, r.CenterY);
 
-            CTX.DrawLine(r.X1, r.CenterY, pR.X1, r.CenterY, 2, CapType.None);
+            CTX.DrawLine(r.X1, r.CenterY, rightAnchor, r.CenterY, 2, CapType.None);
             CTX.DrawText($"{rtf.AbsoluteOffset.X1}px", r.X1 - 50, r.CenterY);
         }
 
-        private static void DrawOffsetInfoY(Rect2D r, Rect2D pR, UIRectTransform rtf)
+        private static void DrawOffsetInfoY(Rect2D r, Rect2D pR, UIRectTransform rtf, float bottomAnchor, float topAnchor)
         {
-            CTX.DrawLine(r.CenterX, r.Y1, r.CenterX, pR.Y1, 2, CapType.None);
+            CTX.DrawLine(r.CenterX, r.Y1, r.CenterX, topAnchor, 2, CapType.None);
+            CTX.DrawLine(r.CenterX, r.Y1, r.CenterX, topAnchor, 2, CapType.None);
             CTX.DrawText($"{rtf.AbsoluteOffset.Y1}px", r.CenterX, r.Y1 - 20);
 
-            CTX.DrawLine(r.CenterX, r.Y0, r.CenterX, pR.Y0, 2, CapType.None);
+            CTX.DrawLine(r.CenterX, r.Y0, r.CenterX, bottomAnchor, 2, CapType.None);
             CTX.DrawText($"{rtf.AbsoluteOffset.Y0}px", r.CenterX, r.Y0 + 20);
         }
 
-        private void DrawEdgeHandles()
+        private void DrawEdgeHandles(Rect2D r)
         {
             CTX.SetDrawColor(0, 0, 1, 0.25f);
-            float x0 = _parent.Rect.X0;
-            float y0 = _parent.Rect.Y0;
-            float x1 = _parent.Rect.X1;
-            float y1 = _parent.Rect.Y1;
+            float x0 = r.X0;
+            float y0 = r.Y0;
+            float x1 = r.X1;
+            float y1 = r.Y1;
 
             DrawEdgeHandle(x0, y0, x1, y0);
             DrawEdgeHandle(x0, y1, x1, y1);
             DrawEdgeHandle(x0, y0, x0, y1);
             DrawEdgeHandle(x1, y0, x1, y1);
         }
+
+        public void ToggleXAnchoring()
+        {
+            _parent.RectTransform.PositionSizeX = !_parent.RectTransform.PositionSizeX;
+            Rect2D pR = _parent.GetParentRect();
+            Rect2D r = _parent.Rect;
+
+            float leftAnchor, rightAnchor, topAnchor, bottomAnchor;
+            GetAnchors(_parent.RectTransform, pR, out leftAnchor, out rightAnchor, out topAnchor, out bottomAnchor);
+
+            if (_parent.RectTransform.PositionSizeX)
+            {
+                _parent.SetAbsPositionSizeX(_parent.AbsCenterX - leftAnchor, r.Width);
+            }
+            else
+            {
+                _parent.SetAbsOffsetsX(r.X0-leftAnchor, rightAnchor - r.X1);
+            }
+
+            _parent.Resize();
+        }
+
+        public void ToggleYAnchoring()
+        {
+            _parent.RectTransform.PositionSizeY = !_parent.RectTransform.PositionSizeY;
+            Rect2D pR = _parent.GetParentRect();
+            Rect2D r = _parent.Rect;
+
+            float leftAnchor, rightAnchor, topAnchor, bottomAnchor;
+            GetAnchors(_parent.RectTransform, pR, out leftAnchor, out rightAnchor, out topAnchor, out bottomAnchor);
+
+            if (_parent.RectTransform.PositionSizeY)
+            {
+                _parent.SetAbsPositionSizeY(_parent.AbsCenterY - bottomAnchor, r.Height);
+            }
+            else
+            {
+                _parent.SetAbsOffsetsY(r.Y0 - bottomAnchor, topAnchor - r.Y1);
+            }
+
+            _parent.Resize();
+        }
+
 
         public override void Update(double deltaTime)
         {
@@ -425,25 +645,23 @@ namespace RenderingEngine.VisualTests.UIEditor
             if (!isSelected)
                 return;
 
-            if (Input.MouseStartedDragging)
+            if (Input.IsMouseDown(MouseButton.Left))
             {
-                StartDrag();
-            }
-            else if (Input.IsMouseDragging)
-            {
-                Drag(Input.DragDeltaX, Input.DragDeltaY, Input.IsShiftDown);
-
-                if (Input.IsKeyPressed(KeyCode.Escape))
+                if (Input.HasMouseStartedDragging)
                 {
-                    Drag(0, 0, false);
-                    Input.CancelDrag();
+                    StartDrag();
+                }
+                else if (Input.IsMouseDragging)
+                {
+                    Drag(Input.DragDeltaX, Input.DragDeltaY, Input.IsShiftDown);
+
+                    if (Input.IsKeyPressed(KeyCode.Escape))
+                    {
+                        Drag(0, 0, false);
+                        Input.CancelDrag();
+                    }
                 }
             }
-
-        }
-
-        public void Select()
-        {
         }
     }
 }

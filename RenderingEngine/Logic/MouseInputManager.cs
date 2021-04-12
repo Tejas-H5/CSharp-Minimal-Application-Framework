@@ -38,9 +38,9 @@ namespace RenderingEngine.Logic
         bool _anyClicked = false;
         bool _anyReleased = false;
 
-        public bool MouseDownAny { get { return _anyDown; } }
-        public bool MouseClickedAny { get { return _anyClicked; } }
-        public bool MouseReleasedAny { get { return _anyReleased; } }
+        public bool IsMouseDownAny { get { return _anyDown; } }
+        public bool IsMouseClickedAny { get { return _anyClicked; } }
+        public bool IsMouseReleasedAny { get { return _anyReleased; } }
 
         public bool IsDragging {
             get {
@@ -72,24 +72,30 @@ namespace RenderingEngine.Logic
         float _displacementStartY = 0;
         float _dragDisplacement = 0;
 
-        public bool MouseClicked(MouseButton b)
+        public bool IsMouseClicked(MouseButton b)
         {
             return (!_prevMouseButtonStates[(int)b]) && _mouseButtonStates[(int)b];
         }
 
-        public bool MouseReleased(MouseButton b)
+        public bool IsMouseReleased(MouseButton b)
         {
             return _prevMouseButtonStates[(int)b] && (!_mouseButtonStates[(int)b]);
+        }
+
+        public bool IsMouseDown(MouseButton b)
+        {
+            return _mouseButtonStates[(int)b];
+        }
+
+        public bool IsMouseHeld(MouseButton b)
+        {
+            return _prevMouseButtonStates[(int)b] && _mouseButtonStates[(int)b];
         }
 
         public void CancelDrag()
         {
             _dragCancelled = true;
-        }
-
-        public bool MouseHeld(MouseButton b)
-        {
-            return _prevMouseButtonStates[(int)b] && _mouseButtonStates[(int)b];
+            SetDragDeltas(_dragStartX, _dragStartY);
         }
 
         private void SetDragDeltas(float x, float y)
@@ -162,7 +168,6 @@ namespace RenderingEngine.Logic
             {
                 CalculateDragDeltas(MouseX, MouseY);
             }
-
         }
     }
 }

@@ -33,7 +33,7 @@ namespace RenderingEngine.UI
 
         public static bool IsInsideCircle(float x, float y, float circleX, float circleY, float radius)
         {
-            return ((x - circleX) * (x - circleX) + (y - circleY) * (y - circleY)) < radius * radius;
+            return ((x - circleX) * (x - circleX) + (y - circleY) * (y - circleY)) < (radius * radius);
         }
     }
 }

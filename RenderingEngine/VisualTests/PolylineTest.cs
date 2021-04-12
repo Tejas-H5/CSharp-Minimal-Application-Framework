@@ -25,7 +25,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Update(double deltaTime)
         {
-            if (Input.MouseClicked(MouseButton.Left))
+            if (Input.IsMouseClicked(MouseButton.Left))
             {
                 _points.Add(new PointF(Input.MouseX, Input.MouseY));
             }

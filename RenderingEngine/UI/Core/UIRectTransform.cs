@@ -24,7 +24,7 @@ namespace RenderingEngine.UI.Core
 
         public Rect2D Rect {
             get { return _rect; }
-            set { 
+            set {
                 _rect = value;
             }
         }
@@ -48,7 +48,7 @@ namespace RenderingEngine.UI.Core
                 float anchorRight = parentRect.Left + _normalizedAnchoring.X1 * parentRect.Width;
 
                 float leftOffset = _rect.X0 - anchorLeft;
-                float rightOffset =  anchorRight - _rect.X1;
+                float rightOffset = anchorRight - _rect.X1;
 
                 SetAbsOffsetsX(leftOffset, rightOffset);
             }
@@ -74,7 +74,16 @@ namespace RenderingEngine.UI.Core
             //*/
         }
 
-        public Rect2D NormalizedAnchoring { get { return _normalizedAnchoring; } set { _normalizedAnchoring = value; } }
+        public Rect2D NormalizedAnchoring { 
+            get { return _normalizedAnchoring; } 
+            set { 
+                _normalizedAnchoring = value;
+                _normalizedAnchoring.X0 = MathF.Min(1, MathF.Max(_normalizedAnchoring.X0, 0));
+                _normalizedAnchoring.X1 = MathF.Min(1, MathF.Max(_normalizedAnchoring.X1, 0));
+                _normalizedAnchoring.Y0 = MathF.Min(1, MathF.Max(_normalizedAnchoring.Y0, 0));
+                _normalizedAnchoring.Y1 = MathF.Min(1, MathF.Max(_normalizedAnchoring.Y1, 0));
+            } 
+        }
         public Rect2D AbsoluteOffset { get { return _absoluteOffset; } set { _absoluteOffset = value; } }
 
 
@@ -139,13 +148,15 @@ namespace RenderingEngine.UI.Core
             PositionSizeY = false;
             _normalizedAnchoring.Y0 = bottom;
             _normalizedAnchoring.Y1 = top;
+
+            NormalizedAnchoring = _normalizedAnchoring;
         }
 
         public void SetNormalizedAnchoring(Rect2D anchor)
         {
             PositionSizeX = false;
             PositionSizeY = false;
-            _normalizedAnchoring = anchor;
+            NormalizedAnchoring = anchor;
         }
 
         public void SetNormalizedPositionCenterX(float x, float centerX = 0.5f)
@@ -153,6 +164,8 @@ namespace RenderingEngine.UI.Core
             PositionSizeX = true;
             _normalizedAnchoring.X0 = x;
             _normalizedCenter.X = centerX;
+
+            NormalizedAnchoring = _normalizedAnchoring;
         }
 
         public void SetNormalizedPositionCenterY(float y, float centreY = 0.5f)
@@ -160,13 +173,15 @@ namespace RenderingEngine.UI.Core
             PositionSizeY = true;
             _normalizedAnchoring.Y0 = y;
             _normalizedCenter.Y = centreY;
+
+            NormalizedAnchoring = _normalizedAnchoring;
         }
 
         public void SetNormalizedPositionCenter(float x, float y, float centerX = 0.5f, float centerY = 0.5f)
         {
             PositionSizeX = true;
             PositionSizeY = true;
-            _normalizedAnchoring = new Rect2D(x, y, 0,0);
+            NormalizedAnchoring = new Rect2D(x, y, 0, 0);
             _normalizedCenter = new PointF(centerX, centerY);
         }
 

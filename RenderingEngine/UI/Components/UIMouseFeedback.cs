@@ -37,7 +37,7 @@ namespace RenderingEngine.UI.Components
 
         private void _mouseListner_OnMouseOver()
         {
-            if (Input.MouseHeld(MouseButton.Left))
+            if (Input.IsMouseHeld(MouseButton.Left))
             {
                 _bgRect.Color = ClickedColor;
             }

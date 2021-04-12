@@ -79,17 +79,17 @@ namespace RenderingEngine.UI.Components
                     OnMouseEnter?.Invoke();
                 }
 
-                if (Input.MouseClickedAny)
+                if (Input.IsMouseClickedAny)
                 {
                     OnMousePressed?.Invoke();
                 }
 
-                if (Input.MouseHeldAny)
+                if (Input.IsMouseDownAny)
                 {
                     OnMouseHeld?.Invoke();
                 }
 
-                if (Input.MouseReleasedAny)
+                if (Input.IsMouseReleasedAny)
                 {
                     OnMouseReleased?.Invoke();
                 }

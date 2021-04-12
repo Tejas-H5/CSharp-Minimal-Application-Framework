@@ -21,8 +21,6 @@ namespace RenderingEngine.UI.Core
         protected override void AddChildVirtual(UIElement element)
         {
             base.AddChildVirtual(element);
-            element.RectTransform.PositionSizeX = true;
-            element.RectTransform.PositionSizeY = true;
 
             if (_vertical)
             {

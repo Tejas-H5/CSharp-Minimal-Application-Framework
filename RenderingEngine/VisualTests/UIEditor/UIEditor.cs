@@ -107,14 +107,16 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             if (_selectedState.SelectedRect == null)
                 return;
-            _selectedState.SelectedRect.ToggleXAnchoring();
+
+            Console.WriteLine("This method is useless now, hopefully");
         }
 
         private void OnTogglePosSizeYButtonClicked()
         {
             if (_selectedState.SelectedRect == null)
                 return;
-            _selectedState.SelectedRect.ToggleYAnchoring();
+
+            Console.WriteLine("This method is useless now, hopefully");
         }
 
 
@@ -177,7 +179,7 @@ namespace RenderingEngine.VisualTests.UIEditor
                 }
                 else
                 {
-                    _rightclickMenu.IsVisible = false;
+                    _rightclickMenu.IsVisibleNextFrame = false;
                 }
             }
 
@@ -193,6 +195,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             }
 
             _rightclickMenu.Update(deltaTime);
+
             _root.Update(deltaTime);
         }
 

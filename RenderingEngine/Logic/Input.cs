@@ -15,10 +15,8 @@ namespace RenderingEngine.Logic
 
     public static class Input
     {
-        private static WindowInstance _window;
         internal static void Init(WindowInstance window)
         {
-            _window = window;
             _mouseInputManager = new MouseInputManager(window);
             _keyboardManager = new KeyboardInputManager(window);
         }

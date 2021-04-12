@@ -106,5 +106,10 @@ namespace RenderingEngine.Util
         {
             return Matrix4.CreateScale(x, y, z);
         }
+
+        public static float Clamp01(float value)
+        {
+            return MathF.Min(1, MathF.Max(value, 0));
+        }
     }
 }

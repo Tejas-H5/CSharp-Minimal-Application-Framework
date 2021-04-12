@@ -13,8 +13,9 @@ namespace RenderingEngine
         {
             EntryPoint[] tests =
             {
+                new UITest(),
                 new UIEditor(),
-               /* new UITest(),
+               /* 
                 new StencilTest(),
                 new TextureTest(),
                 new KeyboardTest(),

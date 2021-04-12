@@ -35,7 +35,7 @@ namespace RenderingEngine.UI
         {
             return CreateUIElement(
                 new UIRect(color),
-                new UIRectHitbox(),
+                new UIRectHitbox(false),
                 new UIMouseListener(),
                 new UIMouseFeedback(hoverColor, clickColor),
                 new UIText(buttontext, textColor)
@@ -58,7 +58,7 @@ namespace RenderingEngine.UI
         {
             return CreateUIElement(
                 new UIRect(color),
-                new UIRectHitbox(),
+                new UIRectHitbox(false),
                 new UIMouseListener(),
                 new UIMouseFeedback(hoverColor, clickedColor)
                 );

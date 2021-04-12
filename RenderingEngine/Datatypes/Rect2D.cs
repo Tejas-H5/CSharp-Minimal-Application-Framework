@@ -66,5 +66,29 @@ namespace RenderingEngine.Datatypes
         {
             return (X0 > X1 || Y0 > Y1);
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Rect2D d &&
+                   X0 == d.X0 &&
+                   Y0 == d.Y0 &&
+                   X1 == d.X1 &&
+                   Y1 == d.Y1;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X0, Y0, X1, Y1);
+        }
+
+        public static bool operator ==(Rect2D left, Rect2D right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Rect2D left, Rect2D right)
+        {
+            return !(left == right);
+        }
     }
 }

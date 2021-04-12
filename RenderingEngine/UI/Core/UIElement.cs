@@ -40,11 +40,6 @@ namespace RenderingEngine.UI.Core
             }
         }
 
-        public void SetRectAndRecalcAnchoring(Rect2D value)
-        {
-            _rectTransform.SetRectAndRecalcAnchoring(value, GetParentRect());
-        }
-
         public Rect2D RectOffset {
             get { return _rectTransform.AbsoluteOffset; }
         }
@@ -178,9 +173,16 @@ namespace RenderingEngine.UI.Core
             }
         }
 
-        protected bool _isVisible = true;
-        public bool IsVisible { get => _isVisible; set => _isVisible = value; }
+		private bool _isVisible = true;
+        public bool IsVisible {
+			get{ return _isVisible; }
+			set{
+				_isVisible = value;
+				IsVisibleNextFrame = value;
+			}
+		}
 
+        public bool IsVisibleNextFrame = true;
 
         protected bool _dirty = true;
 
@@ -298,6 +300,13 @@ namespace RenderingEngine.UI.Core
 
         public void Update(double deltaTime)
         {
+            if (!IsVisible)
+            {
+                return;
+            }
+			
+			IsVisible = IsVisibleNextFrame;
+
             if (_dirty)
             {
                 _dirty = false;
@@ -332,12 +341,8 @@ namespace RenderingEngine.UI.Core
 
         public void DrawIfVisible(double deltaTime)
         {
-            if (!_isVisible)
+            if (!IsVisible)
             {
-#if DEBUG
-                CTX.SetDrawColor(Color4.FromRGBA(255, 0, 255, 10));
-                CTX.DrawRectOutline(2, Rect);
-#endif
                 return;
             }
 

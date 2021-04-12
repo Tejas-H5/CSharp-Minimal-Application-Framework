@@ -8,7 +8,7 @@ namespace RenderingEngine.Logic
 {
     class KeyboardInputManager
     {
-        WindowInstance _window;
+        readonly WindowInstance _window;
 
         bool[] _prevKeyStates = new bool[(int)KeyCode.LastKey];
         bool[] _keyStates = new bool[(int)KeyCode.LastKey];

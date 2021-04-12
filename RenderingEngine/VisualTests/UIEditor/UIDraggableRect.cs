@@ -5,6 +5,7 @@ using RenderingEngine.Rendering.ImmediateMode;
 using RenderingEngine.UI;
 using RenderingEngine.UI.Components;
 using RenderingEngine.UI.Core;
+using RenderingEngine.Util;
 using System;
 using System.Drawing;
 
@@ -15,7 +16,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         public static UIElement CreateDraggableRect(DraggableRectSelectedState selectionState)
         {
             return UICreator.CreateUIElement(
-                    new UIRectHitbox(),
+                    new UIRectHitbox(false),
                     new UIRect(new Color4(0, 0, 0, 0)),
                     new UIMouseListener(),
                     new UIDraggableRect(selectionState),
@@ -120,6 +121,8 @@ namespace RenderingEngine.VisualTests.UIEditor
             {
                 float newAnchorX0 = initAnchors.X0 + dragDX / pR.Width;
                 float newAnchorY0 = initAnchors.Y0 + dragDY / pR.Height;
+                newAnchorX0 = MathUtil.Clamp01(newAnchorX0);
+                newAnchorY0 = MathUtil.Clamp01(newAnchorY0);
 
                 if (shouldSnap)
                 {
@@ -127,33 +130,16 @@ namespace RenderingEngine.VisualTests.UIEditor
                     newAnchorY0 = SnapCenter(newAnchorY0);
                 }
 
-                if (rtf.PositionSizeX)
-                {
-                    _parent.SetNormalizedPositionCenterX(newAnchorX0, _initCenter.X);
-                }
-                else
-                {
-                    _parent.SetNormalizedAnchoringX(newAnchorX0, _initAnchoring.X1);
-                }
-
-                if (rtf.PositionSizeY)
-                {
-                    _parent.SetNormalizedPositionCenterY(newAnchorY0, _initCenter.Y);
-                }
-                else
-                {
-                    _parent.SetNormalizedAnchoringY(newAnchorY0, _initAnchoring.Y1);
-                }
+                _parent.SetNormalizedAnchoring(new Rect2D(newAnchorX0, newAnchorY0, _initAnchoring.X1, _initAnchoring.Y1));
             }
             else if (_upperAnchor)
             {
                 float newAnchorX1 = initAnchors.X1 + dragDX / pR.Width;
                 float newAnchorY1 = initAnchors.Y1 + dragDY / pR.Height;
-                newAnchorX1 = MathF.Min(1, MathF.Max(0, newAnchorX1));
-                newAnchorY1 = MathF.Min(1, MathF.Max(0, newAnchorY1));
-
-                dragDX = (newAnchorX1 - initAnchors.X0) * pR.Width;
-                dragDY = (newAnchorY1 - initAnchors.Y0) * pR.Height;
+                //newAnchorX1 = MathUtil.Clamp01(newAnchorX1);
+                //newAnchorY1 = MathUtil.Clamp01(newAnchorY1);
+                //dragDX = (newAnchorX1 - initAnchors.X1) * pR.Width;
+                //dragDY = (newAnchorY1 - initAnchors.Y1) * pR.Height;
 
                 if (shouldSnap)
                 {
@@ -161,15 +147,7 @@ namespace RenderingEngine.VisualTests.UIEditor
                     newAnchorY1 = SnapCenter(newAnchorY1);
                 }
 
-                if (!rtf.PositionSizeX)
-                {
-                    _parent.SetNormalizedAnchoringX(_initAnchoring.X0, newAnchorX1);
-                }
-                
-                if (!rtf.PositionSizeY)
-                {
-                    _parent.SetNormalizedAnchoringY(_initAnchoring.Y0, newAnchorY1);
-                }
+                _parent.SetNormalizedAnchoring(new Rect2D(_initAnchoring.X0, _initAnchoring.Y0, newAnchorX1, newAnchorY1));
             }
         }
 
@@ -187,16 +165,6 @@ namespace RenderingEngine.VisualTests.UIEditor
             }
 
             _parent.SetNormalizedCenter(newCenterX, newCenterY);
-
-            if (rtf.PositionSizeX)
-            {
-                _parent.SetAbsPositionSizeX(_initRectOffset.X0 + dragDX, rtf.Rect.Width);
-            }
-
-            if (rtf.PositionSizeY)
-            {
-                _parent.SetAbsPositionSizeY(_initRectOffset.Y0 + dragDY, rtf.Rect.Height);
-            }
         }
 
         private static float SnapCenter(float newCenterX)
@@ -219,23 +187,12 @@ namespace RenderingEngine.VisualTests.UIEditor
 
         private void DragEntireRect(float dragDX, float dragDY, Rect2D initOffsets)
         {
-            if (_parent.RectTransform.PositionSizeX)
-            {
-                _parent.SetAbsPositionSizeX(initOffsets.X0 + dragDX, _parent.Rect.Width);
-            }
-            else
-            {
-                _parent.SetAbsOffsetsX(initOffsets.X0 + dragDX, initOffsets.X1 - dragDX);
-            }
-
-            if (_parent.RectTransform.PositionSizeY)
-            {
-                _parent.SetAbsPositionSizeY(initOffsets.Y0 + dragDY, _parent.Rect.Height);
-            }
-            else
-            {
-                _parent.SetAbsOffsetsY(initOffsets.Y0 + dragDY, initOffsets.Y1 - dragDY);
-            }
+            _parent.SetAbsoluteOffset(new Rect2D(
+                initOffsets.X0 + dragDX, 
+                initOffsets.Y0 + dragDY, 
+                initOffsets.X1 - dragDX, 
+                initOffsets.Y1 - dragDY
+            ));
         }
 
         private void DragEdgeOffsets(UIRectTransform rtf, Rect2D initOffsets, float dragDX, float dragDY)
@@ -245,80 +202,34 @@ namespace RenderingEngine.VisualTests.UIEditor
 
         private void DragEdgeOffsets(UIRectTransform rtf, Rect2D initOffsets, float dragDX, float dragDY, bool topEdge, bool bottomEdge, bool leftEdge, bool rightEdge)
         {
-            if (rtf.PositionSizeY)
+            float left = initOffsets.X0;
+            float right = initOffsets.X1;
+            float bottom = initOffsets.Y0;
+            float top = initOffsets.Y1;
+
+            if (topEdge)
             {
-                float newY = initOffsets.Y0;
-                float newHeight = initOffsets.Y1;
-                //float newCenterY = _initCenter.Y;
-
-                if (topEdge)
-                {
-                    newHeight = initOffsets.Y1 + dragDY;
-                    newY = initOffsets.Y0 + dragDY * (_initCenter.Y);
-                }
-                else if (bottomEdge)
-                {
-                    newHeight = initOffsets.Y1 - dragDY;
-                    newY = initOffsets.Y0 + dragDY * (1.0f - _initCenter.Y);
-                }
-
-                _parent.SetAbsPositionSizeY(newY, newHeight);
+                //r.Y1 = mouseY;
+                top = initOffsets.Y1 - dragDY;
             }
-            else
+            else if (bottomEdge)
             {
-                float bottom = initOffsets.Y0;
-                float top = initOffsets.Y1;
-
-                if (topEdge)
-                {
-                    //r.Y1 = mouseY;
-                    top = initOffsets.Y1 - dragDY;
-                }
-                else if (bottomEdge)
-                {
-                    //r.Y0 = mouseY;
-                    bottom = initOffsets.Y0 + dragDY;
-                }
-
-                _parent.SetAbsOffsetsY(bottom, top);
+                //r.Y0 = mouseY;
+                bottom = initOffsets.Y0 + dragDY;
             }
 
-            if (rtf.PositionSizeX)
+            if (rightEdge)
             {
-                float newX = initOffsets.X0;
-                float newWidth = initOffsets.X1;
-                //float newCenterX = _initCenter.X;
-
-                if (rightEdge)
-                {
-                    newWidth = initOffsets.X1 + dragDX;
-                    newX = initOffsets.X0 + dragDX * (_initCenter.X);
-                }
-                else if (leftEdge)
-                {
-                    newWidth = initOffsets.X1 - dragDX;
-                    newX = initOffsets.X0 + dragDX * (1.0f - _initCenter.X);
-                }
-
-                _parent.SetAbsPositionSizeX(newX, newWidth);
+                //r.X1 = mouseX;
+                right = initOffsets.X1 - dragDX;
             }
-            else
+            else if (leftEdge)
             {
-                float left = initOffsets.X0;
-                float right = initOffsets.X1;
-
-                if (rightEdge)
-                {
-                    //r.X1 = mouseX;
-                    right = initOffsets.X1 - dragDX;
-                }
-                else if (leftEdge)
-                {
-                    //r.X0 = mouseX;
-                    left = initOffsets.X0 + dragDX;
-                }
-                _parent.SetAbsOffsetsX(left, right);
+                //r.X0 = mouseX;
+                left = initOffsets.X0 + dragDX;
             }
+
+            _parent.SetAbsoluteOffset(new Rect2D(left, bottom, right, top));
         }
 
         Rect2D GetEdgeRect(float x0, float y0, float x1, float y1)
@@ -373,25 +284,10 @@ namespace RenderingEngine.VisualTests.UIEditor
 
         private static void GetAnchors(UIRectTransform rtf, Rect2D pR, out float leftAnchor, out float rightAnchor, out float topAnchor, out float bottomAnchor)
         {
-            if (rtf.PositionSizeX)
-            {
-                leftAnchor = rightAnchor = pR.X0 + rtf.NormalizedAnchoring.X0 * pR.Width;
-            }
-            else
-            {
-                leftAnchor = pR.X0 + rtf.NormalizedAnchoring.X0 * pR.Width;
-                rightAnchor = pR.X0 + rtf.NormalizedAnchoring.X1 * pR.Width;
-            }
-
-            if (rtf.PositionSizeY)
-            {
-                bottomAnchor = topAnchor = pR.Y0 + rtf.NormalizedAnchoring.Y0 * pR.Height;
-            }
-            else
-            {
-                bottomAnchor = pR.Y0 + rtf.NormalizedAnchoring.Y0 * pR.Height;
-                topAnchor = pR.Y0 + rtf.NormalizedAnchoring.Y1 * pR.Height;
-            }
+            leftAnchor = pR.X0 + rtf.NormalizedAnchoring.X0 * pR.Width;
+            rightAnchor = pR.X0 + rtf.NormalizedAnchoring.X1 * pR.Width;
+            bottomAnchor = pR.Y0 + rtf.NormalizedAnchoring.Y0 * pR.Height;
+            topAnchor = pR.Y0 + rtf.NormalizedAnchoring.Y1 * pR.Height;
         }
 
         private void CheckEdgeGrab(float x, float y)
@@ -519,7 +415,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             float leftAnchor, rightAnchor, topAnchor, bottomAnchor;
             GetAnchors(rtf, pR, out leftAnchor, out rightAnchor, out topAnchor, out bottomAnchor);
 
-            if (_parent.RectTransform.PositionSizeX)
+            if (MathF.Abs(leftAnchor - rightAnchor) < 0.01f)
             {
                 DrawPosSizeInfoX(r, pR, rtf, leftAnchor);
             }
@@ -528,7 +424,7 @@ namespace RenderingEngine.VisualTests.UIEditor
                 DrawOffsetInfoX(r, pR, rtf, leftAnchor, rightAnchor);
             }
 
-            if (_parent.RectTransform.PositionSizeY)
+            if (MathF.Abs(topAnchor - bottomAnchor) < 0.01f)
             {
                 DrawPosSizeInfoY(r, pR, rtf, bottomAnchor);
             }
@@ -594,49 +490,6 @@ namespace RenderingEngine.VisualTests.UIEditor
             DrawEdgeHandle(x0, y0, x0, y1);
             DrawEdgeHandle(x1, y0, x1, y1);
         }
-
-        public void ToggleXAnchoring()
-        {
-            _parent.RectTransform.PositionSizeX = !_parent.RectTransform.PositionSizeX;
-            Rect2D pR = _parent.GetParentRect();
-            Rect2D r = _parent.Rect;
-
-            float leftAnchor, rightAnchor, topAnchor, bottomAnchor;
-            GetAnchors(_parent.RectTransform, pR, out leftAnchor, out rightAnchor, out topAnchor, out bottomAnchor);
-
-            if (_parent.RectTransform.PositionSizeX)
-            {
-                _parent.SetAbsPositionSizeX(_parent.AbsCenterX - leftAnchor, r.Width);
-            }
-            else
-            {
-                _parent.SetAbsOffsetsX(r.X0-leftAnchor, rightAnchor - r.X1);
-            }
-
-            _parent.Resize();
-        }
-
-        public void ToggleYAnchoring()
-        {
-            _parent.RectTransform.PositionSizeY = !_parent.RectTransform.PositionSizeY;
-            Rect2D pR = _parent.GetParentRect();
-            Rect2D r = _parent.Rect;
-
-            float leftAnchor, rightAnchor, topAnchor, bottomAnchor;
-            GetAnchors(_parent.RectTransform, pR, out leftAnchor, out rightAnchor, out topAnchor, out bottomAnchor);
-
-            if (_parent.RectTransform.PositionSizeY)
-            {
-                _parent.SetAbsPositionSizeY(_parent.AbsCenterY - bottomAnchor, r.Height);
-            }
-            else
-            {
-                _parent.SetAbsOffsetsY(r.Y0 - bottomAnchor, topAnchor - r.Y1);
-            }
-
-            _parent.Resize();
-        }
-
 
         public override void Update(double deltaTime)
         {

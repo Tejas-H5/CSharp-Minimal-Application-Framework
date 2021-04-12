@@ -39,7 +39,7 @@ namespace RenderingEngine.VisualTests
 
         UIElement _modal;
 
-
+        
         private void InitUI()
         {
             _zStack = new UIZStack();
@@ -51,18 +51,20 @@ namespace RenderingEngine.VisualTests
             UIElement bruhButton;
             UIElement closeButton;
 
+            button = UICreator.CreateButton("")
+                .SetNormalizedPositionCenter(0, 0, 1, 1)
+                .SetAbsPositionSize(200, 200, 50, 50);
+
             _zStack.AddChildren(
                 _uiRoot = GeneratePanel().AddChildren(
                     top = GeneratePanel()
                         .SetNormalizedAnchoring(new Rect2D(0, 0.5f, 1, 1))
                         .AddChildren(
-                            button = UICreator.CreateButton("")
-                                .SetNormalizedPositionCenter(0, 0, 1, 1)
-                                .SetAbsPositionSize(200, 200, 50, 50)
+                            button
                             ,
                             GeneratePanel()
                                 .SetNormalizedAnchoringX(0, 1)
-                                .SetAbsOffsetsX(5, 220)
+                                .SetAbsOffsetsX(10, 220)
                                 .SetNormalizedPositionCenterY(1,1)
                                 .SetAbsPositionSizeY(-10, 100)
                             ,

@@ -1,8 +1,4 @@
-﻿using RenderingEngine.Rendering;
-using RenderingEngine.Rendering.ImmediateMode;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace RenderingEngine.Rendering.ImmediateMode
 {
@@ -89,7 +85,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
             if (edgeCount < 0)
                 return;
 
-            radius += thickness / 2  - 0.1f;
+            radius += thickness / 2 - 0.1f;
 
             float deltaAngle = (endAngle - startAngle) / edgeCount;
 

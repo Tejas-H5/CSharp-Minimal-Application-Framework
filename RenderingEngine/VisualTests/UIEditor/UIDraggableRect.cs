@@ -188,9 +188,9 @@ namespace RenderingEngine.VisualTests.UIEditor
         private void DragEntireRect(float dragDX, float dragDY, Rect2D initOffsets)
         {
             _parent.SetAbsoluteOffset(new Rect2D(
-                initOffsets.X0 + dragDX, 
-                initOffsets.Y0 + dragDY, 
-                initOffsets.X1 - dragDX, 
+                initOffsets.X0 + dragDX,
+                initOffsets.Y0 + dragDY,
+                initOffsets.X1 - dragDX,
                 initOffsets.Y1 - dragDY
             ));
         }
@@ -383,8 +383,8 @@ namespace RenderingEngine.VisualTests.UIEditor
             float leftAnchor, rightAnchor, topAnchor, bottomAnchor;
             GetAnchors(rtf, pR, out leftAnchor, out rightAnchor, out topAnchor, out bottomAnchor);
 
-            if(_lowerAnchor)
-                CTX.SetDrawColor(new Color4(1.0f, 0,0, 0.5f));
+            if (_lowerAnchor)
+                CTX.SetDrawColor(new Color4(1.0f, 0, 0, 0.5f));
             else
                 CTX.SetDrawColor(new Color4(0.0f, 0, 0, 0.5f));
 

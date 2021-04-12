@@ -1,9 +1,6 @@
 ﻿using RenderingEngine.Datatypes;
 using RenderingEngine.Logic;
 using RenderingEngine.UI.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.UI.Components
 {

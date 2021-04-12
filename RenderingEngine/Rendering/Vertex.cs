@@ -1,8 +1,5 @@
 ﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace RenderingEngine.Rendering
 {
@@ -20,7 +17,8 @@ namespace RenderingEngine.Rendering
             Uv = uv;
         }
 
-        public static int SizeOf() {
+        public static int SizeOf()
+        {
             return 5 * sizeof(float);
         }
 

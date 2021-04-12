@@ -1,6 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
-using RenderingEngine.Logic;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,9 +14,9 @@ namespace RenderingEngine.VisualTests
 
         public override void Start()
         {
-            
-            Window.Size=(800, 600);
-            Window.Title=("Text and geometry test");
+
+            Window.Size = (800, 600);
+            Window.Title = ("Text and geometry test");
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
@@ -91,8 +90,8 @@ namespace RenderingEngine.VisualTests
                 CTX.DrawText(rain[i], 0, Window.Height - CTX.GetCharHeight() * i);
             }
 
-            
-            CTX.DrawArc(Window.Width / 2, Window.Height / 2, MathF.Min(Window.Height / 2f,Window.Width / 2f), a, MathF.PI*2 + a, 6);
+
+            CTX.DrawArc(Window.Width / 2, Window.Height / 2, MathF.Min(Window.Height / 2f, Window.Width / 2f), a, MathF.PI * 2 + a, 6);
 
             CTX.SetTexture(_tex);
             //RenderingContext.DrawFilledArc(window.Width / 2, window.Height / 2, MathF.Min(window.Height / 2f, window.Width / 2f)/2f, a/2f, MathF.PI * 2 + a/2f, 6);

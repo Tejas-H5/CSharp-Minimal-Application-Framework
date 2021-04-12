@@ -1,7 +1,4 @@
 ﻿using RenderingEngine.Datatypes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.UI.Core
 {

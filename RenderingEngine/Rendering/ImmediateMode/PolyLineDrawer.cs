@@ -1,7 +1,4 @@
-﻿using RenderingEngine.Rendering.ImmediateMode;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace RenderingEngine.Rendering.ImmediateMode
 {
@@ -54,9 +51,10 @@ namespace RenderingEngine.Rendering.ImmediateMode
             _count = 1;
             _geometryOutput.FlushIfRequired(4, 6);
         }
-        
 
-        public void AppendToPolyLine(float x, float y, bool useAv = true) {
+
+        public void AppendToPolyLine(float x, float y, bool useAv = true)
+        {
             float dirX = x - _lastX;
             float dirY = y - _lastY;
             float mag = MathF.Sqrt(dirX * dirX + dirY * dirY);
@@ -147,7 +145,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
             float dirY = y - _lastY;
 
             AppendToPolyLine(x, y);
-            AppendToPolyLine(x + dirX, y+dirY, false);
+            AppendToPolyLine(x + dirX, y + dirY, false);
 
             _lastX = x;
             _lastY = y;

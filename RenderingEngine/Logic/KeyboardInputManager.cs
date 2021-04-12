@@ -1,7 +1,4 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
-using RenderingEngine.Util;
-using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace RenderingEngine.Logic
@@ -157,7 +154,7 @@ namespace RenderingEngine.Logic
 
 
                 _anyKeyPressed = _anyKeyPressed || pressed;
-                _anyKeyReleased = _anyKeyReleased || released; 
+                _anyKeyReleased = _anyKeyReleased || released;
             }
 
             _charactersPressed = _charactersPressedSB.ToString();

@@ -1,9 +1,7 @@
-﻿using RenderingEngine.Rendering.ImmediateMode;
-using RenderingEngine.Logic;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
+using RenderingEngine.Rendering.ImmediateMode;
+using System;
 
 namespace RenderingEngine.VisualTests
 {
@@ -12,13 +10,13 @@ namespace RenderingEngine.VisualTests
     {
         public override void Start()
         {
-			
+
             Window.Size = (800, 600);
             Window.Title = "Triangle";
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            CTX.SetClearColor(1, 1,1,1);
+            CTX.SetClearColor(1, 1, 1, 1);
         }
 
 
@@ -29,7 +27,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-           
+
 
             CTX.SetDrawColor(1, 0, 0, 0.5f);
 
@@ -44,7 +42,7 @@ namespace RenderingEngine.VisualTests
 
 
             int lineSize = 100;
-            CTX.DrawLine(lineSize, lineSize, Window.Width - lineSize, Window.Height - lineSize, lineSize/2, CapType.Circle);
+            CTX.DrawLine(lineSize, lineSize, Window.Width - lineSize, Window.Height - lineSize, lineSize / 2, CapType.Circle);
 
 
             CTX.SetDrawColor(0, 0, 1, 1f);
@@ -60,7 +58,7 @@ namespace RenderingEngine.VisualTests
 
             CTX.DrawLineOutline(10, lineSize, lineSize, Window.Width - lineSize, Window.Height - lineSize, lineSize / 2, CapType.Circle);
 
-            
+
         }
     }
 }

@@ -1,8 +1,5 @@
-﻿using OpenTK.Windowing.GraphicsLibraryFramework;
-using RenderingEngine.Util;
+﻿using RenderingEngine.Util;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.Logic
 {

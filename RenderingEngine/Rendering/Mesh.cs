@@ -1,8 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using RenderingEngine.Rendering;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.Rendering
 {

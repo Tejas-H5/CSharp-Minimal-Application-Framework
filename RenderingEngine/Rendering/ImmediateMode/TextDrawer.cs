@@ -1,12 +1,8 @@
-﻿using RenderingEngine.Rendering.Text;
+﻿using RenderingEngine.Datatypes;
+using RenderingEngine.Rendering.Text;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Text;
-using System.IO;
-using System.Text;
-using RenderingEngine.Datatypes;
 
 namespace RenderingEngine.Rendering.ImmediateMode
 {
@@ -159,7 +155,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
                 {
                     x += GetCharWidth(c);
 
-                    if(c == '\n')
+                    if (c == '\n')
                     {
                         x = startX;
                         y -= _activeFont.FontAtlas.CharHeight + 2;
@@ -170,7 +166,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         public void Dispose()
         {
-            foreach(var item in _allLoadedFonts)
+            foreach (var item in _allLoadedFonts)
             {
                 item.Value.FontTexture.Dispose();
             }
@@ -183,7 +179,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
             for (int i = 0; i < s.Length; i++)
             {
                 if (s[i] == '\n')
-                    numNewLines++; 
+                    numNewLines++;
             }
 
             return 2 + numNewLines * (GetCharHeight('|') + 2);

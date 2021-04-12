@@ -1,9 +1,7 @@
-﻿using RenderingEngine.Rendering.ImmediateMode;
-using RenderingEngine.Logic;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
+using RenderingEngine.Rendering.ImmediateMode;
+using System;
 
 namespace RenderingEngine.VisualTests
 {
@@ -18,9 +16,9 @@ namespace RenderingEngine.VisualTests
 
         public override void Start()
         {
-			
-            Window.Size=(800, 600);
-            Window.Title=("Rendering Engine Line benchmark");
+
+            Window.Size = (800, 600);
+            Window.Title = ("Rendering Engine Line benchmark");
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
@@ -43,7 +41,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-           
+
 
             CTX.SetDrawColor(1, 0, 0, 0.1f);
 
@@ -61,7 +59,7 @@ namespace RenderingEngine.VisualTests
 
             double FPS = frames / time;
             CTX.SetDrawColor(0, 0, 0, 1f);
-            CTX.DrawText($"FPS: {FPS.ToString("0.000")}", 10, Window.Height-50);
+            CTX.DrawText($"FPS: {FPS.ToString("0.000")}", 10, Window.Height - 50);
             CTX.DrawText($"Lines drawn: {amount}", 10, Window.Height - 100);
 
             time += deltaTime;
@@ -98,7 +96,7 @@ namespace RenderingEngine.VisualTests
             //RenderingContext.DrawLine(-size, -size, size, size, 0.02f, CapType.Circle);
 
             //RenderingContext.DrawFilledArc(window.Width/2, window.Height/2, size, 0, MathF.PI * 2);
-            
+
         }
 
 

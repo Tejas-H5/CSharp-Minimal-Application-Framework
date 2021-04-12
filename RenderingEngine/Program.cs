@@ -1,8 +1,5 @@
-﻿using OpenTK.Mathematics;
-using OpenTK.Windowing.Desktop;
+﻿using RenderingEngine.Logic;
 using RenderingEngine.VisualTests;
-using RenderingEngine.Logic;
-using System;
 using RenderingEngine.VisualTests.UIEditor;
 
 namespace RenderingEngine
@@ -28,7 +25,7 @@ namespace RenderingEngine
             };
 
 
-            foreach(EntryPoint entryPoint in tests)
+            foreach (EntryPoint entryPoint in tests)
             {
                 Window.RunProgram(entryPoint);
             }

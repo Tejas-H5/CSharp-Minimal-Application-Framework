@@ -1,9 +1,7 @@
 ﻿using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace RenderingEngine.VisualTests
 {
@@ -33,10 +31,10 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-           
+
             CTX.SetDrawColor(0, 0, 1, 0.5f);
 
-            if(_points.Count > 0)
+            if (_points.Count > 0)
             {
                 CTX.BeginPolyLine(_points[0].X, _points[0].Y, 10, Rendering.ImmediateMode.CapType.None);
 
@@ -49,7 +47,7 @@ namespace RenderingEngine.VisualTests
             }
 
 
-            
+
         }
     }
 }

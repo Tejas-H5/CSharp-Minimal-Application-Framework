@@ -1,9 +1,4 @@
-﻿using OpenTK.Windowing.GraphicsLibraryFramework;
-using RenderingEngine.Logic;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace RenderingEngine.Logic
+﻿namespace RenderingEngine.Logic
 {
     public static class CharKeyMapping
     {

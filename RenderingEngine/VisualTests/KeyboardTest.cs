@@ -1,7 +1,6 @@
 ﻿using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace RenderingEngine.VisualTests
@@ -20,7 +19,7 @@ namespace RenderingEngine.VisualTests
         string KeysToString(string s)
         {
             StringBuilder sb = new StringBuilder();
-            for(int i = 0; i < s.Length; i++)
+            for (int i = 0; i < s.Length; i++)
             {
                 char c = s[i];
                 if (Input.IsShiftDown)
@@ -35,7 +34,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-           
+
 
             CTX.SetDrawColor(1, 1, 1, 1);
 
@@ -44,7 +43,7 @@ namespace RenderingEngine.VisualTests
             CTX.DrawText(KeysToString(Input.CharactersDown), Window.Width / 2, Window.Height / 2);
 
 
-            
+
         }
 
         public override void Update(double deltaTime)

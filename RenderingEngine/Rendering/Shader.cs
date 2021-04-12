@@ -3,7 +3,6 @@ using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Color4 = RenderingEngine.Datatypes.Color4;
 
 namespace RenderingEngine.Rendering
@@ -219,7 +218,7 @@ namespace RenderingEngine.Rendering
         public void SetVector4(int location, Color4 data)
         {
             GL.UseProgram(Handle);
-            GL.Uniform4(location, new Vector4(data.R,data.G,data.B,data.A));
+            GL.Uniform4(location, new Vector4(data.R, data.G, data.B, data.A));
         }
 
 

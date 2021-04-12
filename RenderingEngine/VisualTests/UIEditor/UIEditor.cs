@@ -5,8 +5,6 @@ using RenderingEngine.UI;
 using RenderingEngine.UI.Components;
 using RenderingEngine.UI.Core;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.VisualTests.UIEditor
 {
@@ -89,7 +87,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             _rightclickMenu = new UILinearArrangement(true, false, 10)
                 .SetNormalizedPositionCenter(0, 0, 0, 0)
-                .SetAbsPositionSize(0, 0, 100, 10 + (14+10)*4)
+                .SetAbsPositionSize(0, 0, 100, 10 + (14 + 10) * 4)
                 .AddChildren(
                     createButton = UICreator.CreateButton("Add"),
                     deleteButton = UICreator.CreateButton("Delete"),

@@ -1,7 +1,4 @@
 ﻿using RenderingEngine.UI.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.UI.Components
 {

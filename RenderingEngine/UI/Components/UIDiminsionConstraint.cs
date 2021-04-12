@@ -1,8 +1,5 @@
 ﻿using RenderingEngine.Datatypes;
 using RenderingEngine.UI.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.UI.Components.Uncompleted
 {
@@ -10,7 +7,7 @@ namespace RenderingEngine.UI.Components.Uncompleted
     {
         public UIDiminsionConstraint(float minWidth, float minHeight, float maxWidth, float maxHeight)
             : this(new Rect2D(minWidth, minHeight, maxWidth, maxHeight))
-                  { }
+        { }
 
         Rect2D _boundsRect;
 
@@ -31,10 +28,10 @@ namespace RenderingEngine.UI.Components.Uncompleted
 
             if (minWidth > 0 && width < minWidth)
             {
-                wantedRect.X1 = wantedRect.X0 + (1f-centerX) * minWidth;
+                wantedRect.X1 = wantedRect.X0 + (1f - centerX) * minWidth;
                 wantedRect.X0 = wantedRect.X1 - (centerX) * minWidth;
             }
-            else if(maxWidth > 0 && width > maxWidth)
+            else if (maxWidth > 0 && width > maxWidth)
             {
                 wantedRect.X1 = wantedRect.X0 + (1f - centerX) * maxWidth;
                 wantedRect.X0 = wantedRect.X1 - (centerX) * maxWidth;

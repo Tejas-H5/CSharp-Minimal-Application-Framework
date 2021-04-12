@@ -1,11 +1,10 @@
-﻿using RenderingEngine.Logic;
+﻿using RenderingEngine.Datatypes;
+using RenderingEngine.Logic;
+using RenderingEngine.Rendering;
+using RenderingEngine.UI.Components;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using RenderingEngine.Datatypes;
-using RenderingEngine.Rendering;
 using System.Drawing;
-using RenderingEngine.UI.Components;
 
 namespace RenderingEngine.UI.Core
 {
@@ -72,7 +71,7 @@ namespace RenderingEngine.UI.Core
         public UIElement AddChild(UIElement element)
         {
             AddChildVirtual(element);
-            
+
             return this;
         }
 
@@ -104,7 +103,7 @@ namespace RenderingEngine.UI.Core
 
         public void RemoveAllChildren()
         {
-            for(int i = 0; i < _children.Count; i++)
+            for (int i = 0; i < _children.Count; i++)
             {
                 _children[i].Parent = null;
             }
@@ -173,14 +172,14 @@ namespace RenderingEngine.UI.Core
             }
         }
 
-		private bool _isVisible = true;
+        private bool _isVisible = true;
         public bool IsVisible {
-			get{ return _isVisible; }
-			set{
-				_isVisible = value;
-				IsVisibleNextFrame = value;
-			}
-		}
+            get { return _isVisible; }
+            set {
+                _isVisible = value;
+                IsVisibleNextFrame = value;
+            }
+        }
 
         public bool IsVisibleNextFrame = true;
 
@@ -304,8 +303,8 @@ namespace RenderingEngine.UI.Core
             {
                 return;
             }
-			
-			IsVisible = IsVisibleNextFrame;
+
+            IsVisible = IsVisibleNextFrame;
 
             if (_dirty)
             {

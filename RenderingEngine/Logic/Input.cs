@@ -1,10 +1,4 @@
-﻿using OpenTK.Windowing.GraphicsLibraryFramework;
-using RenderingEngine.Datatypes;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RenderingEngine.Logic
+﻿namespace RenderingEngine.Logic
 {
     public enum MouseButton
     {
@@ -115,8 +109,8 @@ namespace RenderingEngine.Logic
         public static bool IsCtrlReleased { get { return _keyboardManager.IsCtrlReleased; } }
         public static bool IsAltReleased { get { return _keyboardManager.IsAltReleased; } }
 
-        public static bool IsAnyKeyDown { get { return  _keyboardManager.IsAnyDown; } }
-        public static bool IsAnyKeyPressed { get { return  _keyboardManager.IsAnyPressed; } }
+        public static bool IsAnyKeyDown { get { return _keyboardManager.IsAnyDown; } }
+        public static bool IsAnyKeyPressed { get { return _keyboardManager.IsAnyPressed; } }
         public static bool IsAnyKeyReleased { get { return _keyboardManager.IsAnyReleased; } }
     }
 }

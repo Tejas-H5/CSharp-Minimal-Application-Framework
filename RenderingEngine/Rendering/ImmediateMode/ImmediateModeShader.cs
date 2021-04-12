@@ -1,7 +1,5 @@
 ﻿using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Color4 = RenderingEngine.Datatypes.Color4;
 
 
@@ -96,7 +94,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
         }
 
         #region IDisposable Support
-         ~ImmediateModeShader()
+        ~ImmediateModeShader()
         {
             _shader.Dispose(false);
         }

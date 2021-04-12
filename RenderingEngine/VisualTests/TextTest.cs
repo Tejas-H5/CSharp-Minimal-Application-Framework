@@ -1,9 +1,8 @@
-﻿using OpenTK.Mathematics;
-using RenderingEngine.Logic;
+﻿using RenderingEngine.Logic;
+using RenderingEngine.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using RenderingEngine.Rendering;
 
 namespace RenderingEngine.VisualTests
 {
@@ -14,13 +13,13 @@ namespace RenderingEngine.VisualTests
 
         public override void Start()
         {
-			
-            Window.Size=(800, 600);
-            Window.Title=("Texture loading test");
+
+            Window.Size = (800, 600);
+            Window.Title = ("Texture loading test");
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
-            CTX.SetClearColor(0,0,0,0);
+            CTX.SetClearColor(0, 0, 0, 0);
 
             CTX.SetCurrentFont("Consolas", 24);
 
@@ -36,7 +35,7 @@ namespace RenderingEngine.VisualTests
             sb.Clear();
 
             float totalLength = 0;
-            while(totalLength < Window.Width)
+            while (totalLength < Window.Width)
             {
                 int character = rand.Next(0, 512);
                 char c = (char)character;
@@ -49,7 +48,7 @@ namespace RenderingEngine.VisualTests
             }
 
             rain.Insert(0, sb.ToString());
-            if((rain.Count-2) * CTX.GetCharHeight() > Window.Height)
+            if ((rain.Count - 2) * CTX.GetCharHeight() > Window.Height)
             {
                 rain.RemoveAt(rain.Count - 1);
             }
@@ -78,18 +77,18 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-           
+
 
             CTX.SetDrawColor(0, 1, 0, 0.8f);
 
-            for(int i = 0; i < rain.Count; i++)
+            for (int i = 0; i < rain.Count; i++)
             {
                 CTX.DrawText(rain[i], 0, Window.Height - CTX.GetCharHeight() * i);
             }
 
             CTX.SetDrawColor(1, 0, 0, 1);
 
-            
+
         }
 
 

@@ -1,8 +1,5 @@
 ﻿using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.Templates
 {
@@ -18,11 +15,11 @@ namespace RenderingEngine.Templates
 
         public override void Render(double deltaTime)
         {
-           
+
 
             //Rendering code goes here
 
-            
+
         }
 
         public override void Update(double deltaTime)

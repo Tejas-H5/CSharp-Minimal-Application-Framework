@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace RenderingEngine.Rendering
 {
@@ -30,7 +28,7 @@ namespace RenderingEngine.Rendering
         //TODO: implement this if it is ever needed
         public static void UnloadTextures()
         {
-            foreach(var item in _textureMap)
+            foreach (var item in _textureMap)
             {
                 item.Value.Dispose();
             }

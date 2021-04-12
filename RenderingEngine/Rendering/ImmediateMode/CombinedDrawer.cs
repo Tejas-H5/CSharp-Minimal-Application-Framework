@@ -1,9 +1,4 @@
-﻿using OpenTK.Mathematics;
-using RenderingEngine.Datatypes;
-using RenderingEngine.Rendering.ImmediateMode;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RenderingEngine.Datatypes;
 
 namespace RenderingEngine.Rendering.ImmediateMode
 {

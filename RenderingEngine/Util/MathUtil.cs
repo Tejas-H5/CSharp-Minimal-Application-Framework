@@ -1,8 +1,6 @@
 ﻿using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace RenderingEngine.Util
 {
@@ -76,8 +74,8 @@ namespace RenderingEngine.Util
             float cos = MathF.Cos(angle);
             float sin = MathF.Sin(angle);
 
-            float xR =  x * cos - y * sin;
-            float yR =  y *cos + x * sin;
+            float xR = x * cos - y * sin;
+            float yR = y * cos + x * sin;
 
             return new PointF(center.X + xR, center.Y + yR);
         }

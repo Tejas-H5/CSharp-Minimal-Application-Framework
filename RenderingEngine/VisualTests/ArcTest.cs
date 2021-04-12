@@ -1,9 +1,7 @@
-﻿using RenderingEngine.Rendering.ImmediateMode;
-using RenderingEngine.Logic;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
+using RenderingEngine.Rendering.ImmediateMode;
+using System;
 
 namespace RenderingEngine.VisualTests
 {
@@ -12,10 +10,10 @@ namespace RenderingEngine.VisualTests
     {
         public override void Start()
         {
-            
 
-            Window.Size=(800, 600);
-            Window.Title=("Arc Test");
+
+            Window.Size = (800, 600);
+            Window.Title = ("Arc Test");
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
@@ -33,7 +31,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-           
+
 
             CTX.SetDrawColor(1, 0, 0, 0.5f);
 
@@ -48,13 +46,13 @@ namespace RenderingEngine.VisualTests
             DrawHand(x0, y0, r, b);
 
             CTX.SetDrawColor(0, 0, 0, 1);
-            CTX.DrawText($"Angle a: {a}", 0, Window.Height-30);
-            CTX.DrawText($"Angle b: {b}", 0, Window.Height-50);
+            CTX.DrawText($"Angle a: {a}", 0, Window.Height - 30);
+            CTX.DrawText($"Angle b: {b}", 0, Window.Height - 50);
 
             a += (float)deltaTime;
             b += (float)deltaTime * 2;
 
-            
+
         }
 
         private void DrawHand(float x0, float y0, float r, float angle)

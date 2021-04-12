@@ -1,14 +1,12 @@
 ﻿using OpenTK.Mathematics;
-using RenderingEngine.Logic;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using RenderingEngine.Datatypes;
+using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
-using Color4 = RenderingEngine.Datatypes.Color4;
-using RenderingEngine.UI.Core;
-using RenderingEngine.UI.Components;
 using RenderingEngine.UI;
+using RenderingEngine.UI.Components;
+using RenderingEngine.UI.Core;
+using System;
+using Color4 = RenderingEngine.Datatypes.Color4;
 
 namespace RenderingEngine.VisualTests
 {
@@ -39,7 +37,7 @@ namespace RenderingEngine.VisualTests
 
         UIElement _modal;
 
-        
+
         private void InitUI()
         {
             _zStack = new UIZStack();
@@ -65,7 +63,7 @@ namespace RenderingEngine.VisualTests
                             GeneratePanel()
                                 .SetNormalizedAnchoringX(0, 1)
                                 .SetAbsOffsetsX(10, 220)
-                                .SetNormalizedPositionCenterY(1,1)
+                                .SetNormalizedPositionCenterY(1, 1)
                                 .SetAbsPositionSizeY(-10, 100)
                             ,
                             GeneratePanel()
@@ -203,14 +201,14 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-           
+
 
             _zStack.DrawIfVisible(deltaTime);
 
             CTX.SetDrawColor(0, 0, 0, 1);
             CTX.DrawCircle(Input.MouseX, Input.MouseY, 10);
 
-            
+
         }
 
         public override void Resize()

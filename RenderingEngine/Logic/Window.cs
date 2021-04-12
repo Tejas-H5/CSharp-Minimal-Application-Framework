@@ -1,10 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 using RenderingEngine.Datatypes;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.Logic
 {
@@ -60,6 +57,5 @@ namespace RenderingEngine.Logic
                 }
             }
         }
-
     }
 }

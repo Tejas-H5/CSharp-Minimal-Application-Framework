@@ -1,8 +1,5 @@
 ﻿using RenderingEngine.Rendering;
 using RenderingEngine.UI.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.UI.Components
 {
@@ -20,11 +17,11 @@ namespace RenderingEngine.UI.Components
             CTX.StartStencillingWithoutDrawing(inverseStencil: true);
 
             CTX.SetTexture(null);
-            CTX.SetDrawColor(0,0,0,1);
+            CTX.SetDrawColor(0, 0, 0, 1);
             CTX.DrawRect(_parent.Rect);
 
             CTX.StartUsingStencil();
-            
+
         }
 
         public override void AfterDraw(double deltaTime)

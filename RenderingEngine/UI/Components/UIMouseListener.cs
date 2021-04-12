@@ -1,9 +1,6 @@
 ﻿using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
 using RenderingEngine.UI.Core;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.UI.Components
 {
@@ -35,7 +32,7 @@ namespace RenderingEngine.UI.Components
 
         public override void Update(double deltaTime)
         {
-            if(_wasProcessingEvents && !_isProcessingEvents)
+            if (_wasProcessingEvents && !_isProcessingEvents)
             {
                 _isMouseOver = false;
                 _wasMouseOver = false;

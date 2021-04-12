@@ -1,6 +1,4 @@
-﻿using RenderingEngine.UI.Core;
-
-namespace RenderingEngine.VisualTests.UIEditor
+﻿namespace RenderingEngine.VisualTests.UIEditor
 {
     class DraggableRectSelectedState
     {

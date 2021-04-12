@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Windowing.Desktop;
-using OpenTK.Mathematics;
+﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-using RenderingEngine.UI;
-using System.ComponentModel;
+using OpenTK.Windowing.Desktop;
 using RenderingEngine.Datatypes;
-using System.Drawing;
 using RenderingEngine.Rendering;
+using System;
+using System.ComponentModel;
 
 namespace RenderingEngine.Logic
 {
@@ -34,8 +26,8 @@ namespace RenderingEngine.Logic
             : base(new GameWindowSettings
             {
                 IsMultiThreaded = false
-            }, 
-            new NativeWindowSettings 
+            },
+            new NativeWindowSettings
             {
                 StartVisible = false
             })

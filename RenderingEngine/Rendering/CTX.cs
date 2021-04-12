@@ -1,14 +1,9 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
-using RenderingEngine.Logic;
-using RenderingEngine.Rendering.Text;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 using RenderingEngine.Datatypes;
 using RenderingEngine.Rendering.ImmediateMode;
+using System.Collections.Generic;
 using Color4 = RenderingEngine.Datatypes.Color4;
 
 namespace RenderingEngine.Rendering
@@ -41,7 +36,8 @@ namespace RenderingEngine.Rendering
 
         private static List<Matrix4> _modelMatrices = new List<Matrix4>();
 
-        internal static void Init(IGLFWGraphicsContext context){
+        internal static void Init(IGLFWGraphicsContext context)
+        {
             int bufferSize = 4096;
             _meshOutputStream = new MeshOutputStream(bufferSize, 4 * bufferSize);
 
@@ -55,7 +51,7 @@ namespace RenderingEngine.Rendering
 
             _glContext = context;
             _disposed = false;
-		}
+        }
 
         public static void SetClearColor(float r, float g, float b, float a)
         {
@@ -114,7 +110,7 @@ namespace RenderingEngine.Rendering
             GL.Enable(EnableCap.StencilTest);
             GL.StencilFunc(StencilFunction.Equal, 0, 0xFF);
 
-            
+
             GL.Enable(EnableCap.DepthTest);
             //TODO: change this for viewport3D
             GL.DepthFunc(DepthFunction.Always);
@@ -194,7 +190,7 @@ namespace RenderingEngine.Rendering
 
             if (_modelMatrices.Count > 0)
             {
-                _modelMatrices.RemoveAt(_modelMatrices.Count-1);
+                _modelMatrices.RemoveAt(_modelMatrices.Count - 1);
             }
 
             if (_modelMatrices.Count == 0)
@@ -257,7 +253,7 @@ namespace RenderingEngine.Rendering
         {
             Flush();
 
-            GL.ColorMask(true,true,true,true);
+            GL.ColorMask(true, true, true, true);
             GL.StencilFunc(StencilFunction.Notequal, 1, 1);
             GL.StencilMask(0);
         }

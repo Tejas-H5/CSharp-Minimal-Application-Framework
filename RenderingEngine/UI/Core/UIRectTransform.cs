@@ -1,9 +1,7 @@
 ﻿using RenderingEngine.Datatypes;
 using RenderingEngine.Util;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace RenderingEngine.UI.Core
 {
@@ -39,9 +37,9 @@ namespace RenderingEngine.UI.Core
         }
 
 
-        public Rect2D NormalizedAnchoring { 
-            get { return _normalizedAnchoring; } 
-            set { 
+        public Rect2D NormalizedAnchoring {
+            get { return _normalizedAnchoring; }
+            set {
                 _normalizedAnchoring = value;
                 _normalizedAnchoring.X0 = MathUtil.Clamp01(_normalizedAnchoring.X0);
                 _normalizedAnchoring.X1 = MathUtil.Clamp01(_normalizedAnchoring.X1);
@@ -50,7 +48,7 @@ namespace RenderingEngine.UI.Core
 
                 _normalizedAnchoring.X1 = MathF.Max(_normalizedAnchoring.X0, _normalizedAnchoring.X1);
                 _normalizedAnchoring.Y1 = MathF.Max(_normalizedAnchoring.Y0, _normalizedAnchoring.Y1);
-            } 
+            }
         }
 
         public Rect2D AbsoluteOffset { get { return _absoluteOffset; } set { _absoluteOffset = value; } }
@@ -123,7 +121,7 @@ namespace RenderingEngine.UI.Core
             _normalizedAnchoring.X1 = x;
 
             _normalizedCenter.X = centerX;
-            
+
             NormalizedAnchoring = _normalizedAnchoring;
         }
 

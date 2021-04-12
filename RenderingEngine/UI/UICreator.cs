@@ -1,9 +1,6 @@
 ﻿using RenderingEngine.Datatypes;
 using RenderingEngine.UI.Components;
 using RenderingEngine.UI.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.UI
 {
@@ -18,7 +15,7 @@ namespace RenderingEngine.UI
         {
             UIElement root = new UIElement();
 
-            for(int i = 0; i < components.Length; i++)
+            for (int i = 0; i < components.Length; i++)
             {
                 root.AddComponent(components[i]);
             }

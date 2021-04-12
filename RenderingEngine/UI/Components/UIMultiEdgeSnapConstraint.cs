@@ -1,7 +1,4 @@
 ﻿using RenderingEngine.UI.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenderingEngine.UI.Components
 {
@@ -24,7 +21,7 @@ namespace RenderingEngine.UI.Components
 
         public override void OnResize()
         {
-            for(int i = 0; i < _edgeSnapConstraints.Length; i++)
+            for (int i = 0; i < _edgeSnapConstraints.Length; i++)
             {
                 _edgeSnapConstraints[i].OnResize();
             }

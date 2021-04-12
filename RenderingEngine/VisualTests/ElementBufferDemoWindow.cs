@@ -1,11 +1,8 @@
-﻿using OpenTK.Windowing.Desktop;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Windowing.Common;
-using System;
-using RenderingEngine.Rendering;
-using OpenTK.Mathematics;
-using RenderingEngine.Rendering.ImmediateMode;
+﻿using OpenTK.Graphics.OpenGL;
 using RenderingEngine.Logic;
+using RenderingEngine.Rendering;
+using RenderingEngine.Rendering.ImmediateMode;
+using System;
 
 namespace RenderingEngine.VisualTests
 {
@@ -55,9 +52,9 @@ namespace RenderingEngine.VisualTests
 
         public override void Start()
         {
-			
-            Window.Size=(800, 600);
-            Window.Title=("Element buffer demo");
+
+            Window.Size = (800, 600);
+            Window.Title = ("Element buffer demo");
 
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -92,12 +89,12 @@ namespace RenderingEngine.VisualTests
 
         public override void Update(double deltaTime)
         {
-			
+
         }
 
         public override void Render(double deltaTime)
         {
-           
+
             // Because ElementArrayObject is a property of the currently bound VAO
             // the buffer you will find in the ElementArrayBuffer will change with the currently bound VAO.
             GL.BindVertexArray(_vertexArrayObject);
@@ -110,7 +107,7 @@ namespace RenderingEngine.VisualTests
             //   Offset in the EBO. Set this to 0 because we want to draw the whole thing.
             GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, (IntPtr)0);
 
-            
+
         }
 
         public override void Resize()

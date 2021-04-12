@@ -1,10 +1,5 @@
 ﻿using OpenTK.Mathematics;
 using RenderingEngine.Datatypes;
-using RenderingEngine.Util;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 
 namespace RenderingEngine.Rendering.ImmediateMode
 {
@@ -76,7 +71,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
             DrawRect(x0, y1, x1 + thickness, y1 + thickness);
 
             DrawRect(x0 - thickness, y0, x0, y1 + thickness);
-            DrawRect(x1, y0 - thickness, x1+thickness, y1);
+            DrawRect(x1, y0 - thickness, x1 + thickness, y1);
         }
     }
 }

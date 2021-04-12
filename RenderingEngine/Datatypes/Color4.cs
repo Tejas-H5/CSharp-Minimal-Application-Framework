@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RenderingEngine.Datatypes
+﻿namespace RenderingEngine.Datatypes
 {
     public struct Color4
     {

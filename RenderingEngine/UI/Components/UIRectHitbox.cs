@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RenderingEngine.UI.Components
+﻿namespace RenderingEngine.UI.Components
 {
     public class UIRectHitbox : UIHitbox
     {

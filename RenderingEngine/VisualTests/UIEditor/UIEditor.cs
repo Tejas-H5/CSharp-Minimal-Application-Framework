@@ -18,6 +18,9 @@ namespace RenderingEngine.VisualTests.UIEditor
         UIElement _propertiesView;
         UIElement _uiView;
 
+        UIElement _rightclickMenu;
+
+
         UIElement _domRoot;
         UIDraggableRect _domRootRect;
         DraggableRectSelectedState _selectedState;
@@ -36,7 +39,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             Window.RenderFrequency = 120.0f;
 
             CTX.SetClearColor(1, 1, 1, 1);
-            CTX.SetCurrentFont("Consolas", 16);
+            CTX.SetCurrentFont("Consolas", 12);
 
             UICreator.Debug = true;
             _selectedState = new DraggableRectSelectedState();
@@ -50,8 +53,13 @@ namespace RenderingEngine.VisualTests.UIEditor
             _domRoot = UIDraggableRect.CreateDraggableRect(_selectedState);
             _domRootRect = _domRoot.GetComponentOfType<UIDraggableRect>();
 
-            _root = new UIZStack();
+            InitRightclickMenu(out createButton, out deleteButton, out togglePosSizeXButton, out togglePosSizeYButton);
+            InitRootUI();
+        }
 
+        private void InitRootUI()
+        {
+            _root = new UIZStack();
             _root.AddComponent(new UIRectHitbox())
             .AddComponent(new UIMouseListener())
             .AddChildren(
@@ -71,24 +79,29 @@ namespace RenderingEngine.VisualTests.UIEditor
                     .SetAbsoluteOffset(10)
                     ,
                     _propertiesView = new UILinearArrangement(vertical: true, reverse: false, padding: 10f)
-                    .SetNormalizedAnchoring(new Rect2D(0.66f, 0.0f, 1f, 0.5f))
-                    .SetAbsoluteOffset(10)
-                    .AddChildren(
-                        createButton = UICreator.CreateButton("Create new rect inside selection"),
-                        deleteButton = UICreator.CreateButton("Delete selected rect"),
-                        togglePosSizeXButton = UICreator.CreateButton("Toggle horizontal (X) anchoring mode"),
-                        togglePosSizeYButton = UICreator.CreateButton("Toggle vertical (Y) anchoring mode")
-                    )
                 )
             );
 
             _root.GetComponentOfType<UIMouseListener>().OnMousePressed += OnWindowClicked;
+        }
+
+        private void InitRightclickMenu(out UIElement createButton, out UIElement deleteButton, out UIElement togglePosSizeXButton, out UIElement togglePosSizeYButton)
+        {
+            _rightclickMenu = new UILinearArrangement(true, false, 10)
+                .SetNormalizedPositionCenter(0, 0, 0, 0)
+                .SetAbsPositionSize(0, 0, 100, 10 + (14+10)*4)
+                .AddChildren(
+                    createButton = UICreator.CreateButton("Add"),
+                    deleteButton = UICreator.CreateButton("Delete"),
+                    togglePosSizeXButton = UICreator.CreateButton("toggle xAnchor"),
+                    togglePosSizeYButton = UICreator.CreateButton("toggle yAnchors")
+                );
+            _rightclickMenu.IsVisible = false;
             createButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnNewButtonClicked;
             deleteButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnDeleteButtonClicked;
             togglePosSizeXButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnTogglePosSizeXButtonClicked;
             togglePosSizeYButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnTogglePosSizeYButtonClicked;
         }
-
 
         private void OnTogglePosSizeXButtonClicked()
         {
@@ -145,11 +158,41 @@ namespace RenderingEngine.VisualTests.UIEditor
         public override void Render(double deltaTime)
         {
             _root.DrawIfVisible(deltaTime);
+            _rightclickMenu.DrawIfVisible(deltaTime);
         }
 
 
         public override void Update(double deltaTime)
         {
+            if (Input.IsMouseClickedAny)
+            {
+                if (Input.IsMouseClicked(MouseButton.Right))
+                {
+                    if (_selectedState.SelectedRect == null)
+                        return;
+
+
+                    _rightclickMenu.IsVisible = true;
+                    _rightclickMenu.SetAbsPositionSize(Input.MouseX, Input.MouseY, _rightclickMenu.Rect.Width, _rightclickMenu.Rect.Height);
+                }
+                else
+                {
+                    _rightclickMenu.IsVisible = false;
+                }
+            }
+
+            if (Input.IsKeyPressed(KeyCode.N))
+            {
+                if (Input.IsCtrlDown)
+                {
+                    _uiView.RemoveAllChildren();
+                    _uiView.AddChild(
+                        _domRoot = UIDraggableRect.CreateDraggableRect(_selectedState)
+                    );
+                }
+            }
+
+            _rightclickMenu.Update(deltaTime);
             _root.Update(deltaTime);
         }
 
@@ -157,6 +200,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             base.Resize();
 
+            _rightclickMenu.Resize();
             _root.Resize();
         }
     }

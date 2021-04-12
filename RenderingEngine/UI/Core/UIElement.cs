@@ -107,6 +107,15 @@ namespace RenderingEngine.UI.Core
             }
         }
 
+        public void RemoveAllChildren()
+        {
+            for(int i = 0; i < _children.Count; i++)
+            {
+                _children[i].Parent = null;
+            }
+            _children.Clear();
+        }
+
 
         private int ComponentOfTypeIndex(Type t)
         {
@@ -229,7 +238,6 @@ namespace RenderingEngine.UI.Core
             _dirty = true;
             return this;
         }
-
 
         public UIElement SetAbsPositionSize(float x, float y, float width, float height)
         {

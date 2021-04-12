@@ -178,15 +178,15 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         public float GetStringHeight(string s)
         {
-            float height = 0;
+            int numNewLines = 1;
 
             for (int i = 0; i < s.Length; i++)
             {
                 if (s[i] == '\n')
-                    height += GetCharHeight('|') + 2;
+                    numNewLines++; 
             }
 
-            return height;
+            return 2 + numNewLines * (GetCharHeight('|') + 2);
         }
 
         public float GetStringWidth(string s)

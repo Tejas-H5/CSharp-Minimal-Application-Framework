@@ -129,16 +129,21 @@ namespace RenderingEngine.Rendering.ImmediateMode
         }
 
 
+        public PointF DrawText(string text, float startX, float startY, float scale = 1.0f)
+        {
+            return DrawText(text, 0, text.Length, startX, startY, scale);
+        }
+
         //TODO: IMPLEMENT tabs and newlines
         //And vertical/horizontal aiignment features
-        public PointF DrawText(string text, float startX, float startY, float scale = 1.0f)
+        public PointF DrawText(string text, int start, int end, float startX, float startY, float scale = 1.0f)
         {
             CTX.SetTexture(_activeFont.FontTexture);
 
             float x = startX;
             float y = startY;
 
-            for (int i = 0; i < text.Length; i++)
+            for (int i = start; i < end; i++)
             {
                 char c = text[i];
 
@@ -179,9 +184,14 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         public float GetStringHeight(string s)
         {
+            return GetStringHeight(s, 0, s.Length);
+        }
+
+        public float GetStringHeight(string s, int start, int end)
+        {
             int numNewLines = 1;
 
-            for (int i = 0; i < s.Length; i++)
+            for (int i = start; i < end; i++)
             {
                 if (s[i] == '\n')
                     numNewLines++;
@@ -190,17 +200,26 @@ namespace RenderingEngine.Rendering.ImmediateMode
             return 2 + numNewLines * (GetCharHeight('|') + 2);
         }
 
+
         public float GetStringWidth(string s)
+        {
+            return GetStringWidth(s, 0, s.Length);
+        }
+
+        public float GetStringWidth(string s, int start, int end)
         {
             float maxWidth = 0;
             float width = 0;
 
-            for (int i = 0; i < s.Length; i++)
+            for (int i = start; i < end; i++)
             {
-                width += GetCharWidth(s[i]);
-
                 if (s[i] == '\n')
+                {
                     width = 0;
+                    continue;
+                }
+
+                width += GetCharWidth(s[i]);
 
                 maxWidth = MathF.Max(width, maxWidth);
             }

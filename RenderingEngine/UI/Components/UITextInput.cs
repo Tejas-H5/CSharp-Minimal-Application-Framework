@@ -26,7 +26,7 @@ namespace RenderingEngine.UI.Components
             base.SetParent(parent);
 
             _mouseListner = _parent.GetComponentOfType<UIMouseListener>();
-            _textComponent = _parent.GetComponentOfType<UIText>();
+            _textComponent = _parent.GetComponentInChildrenOfType<UIText>();
             _hitbox = _parent.GetComponentOfType<UIHitbox>();
                 
             _mouseListner.OnMouseOver += OnMouseOver;

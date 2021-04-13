@@ -126,7 +126,12 @@ namespace RenderingEngine.UI.Core
             return index;
         }
 
-
+        /// <summary>
+        /// Gets a component of class T or a subclass of T from the component list. 
+        /// </summary>
+        /// <typeparam name="T">The type of class that is wanted. 
+        /// must derive from RenderingEngine.UI.Core.UIComponent.</typeparam>
+        /// <returns></returns>
         public T GetComponentOfType<T>() where T : UIComponent
         {
             int i = ComponentOfTypeIndex(typeof(T));
@@ -137,6 +142,36 @@ namespace RenderingEngine.UI.Core
             return default;
         }
 
+        /// <summary>
+        /// same as GetComponentOfType but does a depth first search in all children
+        /// </summary>
+        public T GetComponentInChildrenOfType<T>() where T : UIComponent
+        {
+            T res = GetComponentOfType<T>();
+            if (res != null)
+                return res;
+
+            for(int i = 0; i < _children.Count; i++)
+            {
+                res = _children[i].GetComponentInChildrenOfType<T>();
+                if (res != null)
+                    return res;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Adds a component to the list of components.
+        /// Generic, because two components of the same type T may not be added to the list.
+        /// This is to ensure the correct behaviour of GetComponent.
+        /// Most of the time, you don't need multiple of the same component anyway,
+        /// and a 'mulit-component' (i.e a component that manages multiple of some component
+        /// in a List or similar) can be created if you do.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="comp"></param>
+        /// <returns></returns>
         public UIElement AddComponent<T>(T comp) where T : UIComponent
         {
             int i = ComponentOfTypeIndex(comp.GetType());

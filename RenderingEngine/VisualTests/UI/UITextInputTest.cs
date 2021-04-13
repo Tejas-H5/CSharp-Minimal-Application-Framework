@@ -24,20 +24,28 @@ namespace RenderingEngine.VisualTests.UI
 
             _root = UICreator.CreatePanel(new Color4(1));
 
-            _root.SetNormalizedAnchoring(new Rect2D(0,0,1,1))
-            .SetAbsoluteOffset(new Rect2D(0,0,0,0))
-            .AddChildren(
-                _textInputElement = UICreator.CreateUIElement(
-                    new UIRect(new Color4(1), new Color4(0), 1),
-                    new UIRectHitbox(false),
-                    new UIMouseListener(),
-                    new UIText("", new Color4(0)),
-                    new UIMouseFeedback(new Color4(0.7f), new Color4(0.5f)),
-                    new UITextInput()
-                )
-                .SetNormalizedPositionCenter(0.5f, 0.5f, 0.5f, 0.5f)
-                .SetAbsPositionSize(0, 0, 400, 300)
-            );
+            _root.SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
+            .SetAbsoluteOffset(new Rect2D(0, 0, 0, 0));
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    float size = 300;
+                    _root.AddChildren(
+                        _textInputElement = UICreator.CreateUIElement(
+                            new UIRect(new Color4(1), new Color4(0), 1),
+                            new UIRectHitbox(false),
+                            new UIMouseListener(),
+                            new UIText("", new Color4(0), (VerticalAlignment)i, (HorizontalAlignment)j),
+                            new UIMouseFeedback(new Color4(0.7f), new Color4(0.5f)),
+                            new UITextInput()
+                        )
+                        .SetNormalizedPositionCenter(0.5f, 0.5f, 0.5f, 0.5f)
+                        .SetAbsPositionSize((i - 1) * size, (j - 1) * size, size-10, size-10)
+                    );
+                }
+            }
         }
 
         public override void Render(double deltaTime)

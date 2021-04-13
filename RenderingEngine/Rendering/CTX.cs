@@ -287,6 +287,12 @@ namespace RenderingEngine.Rendering
             return _textDrawer.DrawText(text, x, y, scale);
         }
 
+        public static PointF DrawText(string text, int start, int end, float x, float y, float scale)
+        {
+            _drawingText = true;
+            return _textDrawer.DrawText(text, start, end, x, y, scale);
+        }
+
         public static float GetCharHeight()
         {
             return _textDrawer.CharHeight;
@@ -312,10 +318,20 @@ namespace RenderingEngine.Rendering
             return _textDrawer.GetStringWidth(s);
         }
 
+        public static float GetStringWidth(string s, int start, int end)
+        {
+            return _textDrawer.GetStringWidth(s, start, end);
+        }
+
         public static float GetStringHeight(string text)
         {
             return _textDrawer.GetStringHeight(text);
         }
+        public static float GetStringHeight(string text, int start, int end)
+        {
+            return _textDrawer.GetStringHeight(text, start, end);
+        }
+
         #endregion
 
         #region _geometryDrawer Wrappers

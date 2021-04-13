@@ -2,6 +2,12 @@
 
 namespace RenderingEngine.Logic
 {
+    /// <summary>
+    /// Currently implemented with the OpenTK.Keys enum with some minor name changes,
+    /// so OpenTK.Keys may be cast into a KeyCode.
+    /// 
+    /// This is mainly to seperate the keycodes used here from OpenTK itself.
+    /// </summary>
     public enum KeyCode
     {
         Unknown = Keys.Unknown,

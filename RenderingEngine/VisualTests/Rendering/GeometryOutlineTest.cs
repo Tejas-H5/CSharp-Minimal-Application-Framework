@@ -3,7 +3,7 @@ using RenderingEngine.Rendering;
 using RenderingEngine.Rendering.ImmediateMode;
 using System;
 
-namespace RenderingEngine.VisualTests
+namespace RenderingEngine.VisualTests.Rendering
 {
     //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
     class GeometryOutlineTest : EntryPoint

@@ -12,8 +12,7 @@ namespace RenderingEngine.VisualTests.UIEditor
     {
         UIZStack _root;
         UIElement _mainWorkspace;
-        UIElement _domView;
-        UIElement _propertiesView;
+        UIElement _propertiesPanel;
         UIElement _uiView;
 
         UIElement _rightclickMenu;
@@ -41,22 +40,28 @@ namespace RenderingEngine.VisualTests.UIEditor
 
             UICreator.Debug = true;
             _selectedState = new DraggableRectSelectedState();
-
-
-            UIElement createButton;
-            UIElement deleteButton;
-            UIElement togglePosSizeXButton;
-            UIElement togglePosSizeYButton;
+            _selectedState.OnSelectionChanged += OnSelectionChanged;
 
             _domRoot = UIDraggableRect.CreateDraggableRect(_selectedState);
             _domRootRect = _domRoot.GetComponentOfType<UIDraggableRect>();
 
-            InitRightclickMenu(out createButton, out deleteButton, out togglePosSizeXButton, out togglePosSizeYButton);
+            InitRightclickMenu();
             InitRootUI();
+        }
+
+        private void OnSelectionChanged(UIDraggableRect obj)
+        {
+            //Update the text fields and whatnot we will have later
+
+
         }
 
         private void InitRootUI()
         {
+            UIElement copyCodeButton;
+            UIElement saveLayoutButton;
+            UIElement loadLayoutButton;
+
             _root = new UIZStack();
             _root.AddComponent(new UIRectHitbox())
             .AddComponent(new UIMouseListener())
@@ -64,41 +69,78 @@ namespace RenderingEngine.VisualTests.UIEditor
                 _mainWorkspace = UICreator.CreateUIElement()
                 .AddChildren(
                     _uiView = UICreator.CreateUIElement(
+                        new UIRect(new Color4(0,0,0,0)),
                         new UIInverseStencil()
                     )
-                    .SetNormalizedAnchoring(new Rect2D(0, 0, 0.66f, 1f))
+                    .SetNormalizedAnchoring(new Rect2D(0, 0, 0.75f, 1f))
                     .SetAbsoluteOffset(10)
                     .AddChildren(
                         _domRoot
                     )
                     ,
-                    _domView = UICreator.CreateUIElement()
-                    .SetNormalizedAnchoring(new Rect2D(0.66f, 0.5f, 1f, 1f))
+                    UICreator.CreateUIElement()
+                    .SetNormalizedAnchoring(new Rect2D(0.75f, 0.0f, 1f, 1f))
                     .SetAbsoluteOffset(10)
-                    ,
-                    _propertiesView = new UILinearArrangement(vertical: true, reverse: false, padding: 10f)
+                    .AddChildren(
+                        copyCodeButton = UICreator.CreateButton("Copy Code")
+                        .SetAbsOffsetsX(10, 10)
+                        .SetNormalizedAnchoringX(0,1)
+                        .SetNormalizedPositionCenterY(0,0)
+                        .SetAbsPositionSizeY(10, 50)
+                        ,
+                        saveLayoutButton = UICreator.CreateButton("Save Layout")
+                        .SetAbsOffsetsX(10, 10)
+                        .SetNormalizedAnchoringX(0, 1)
+                        .SetNormalizedPositionCenterY(0, 0)
+                        .SetAbsPositionSizeY(70, 50)
+                        ,
+                        loadLayoutButton = UICreator.CreateButton("Load Layout")
+                        .SetAbsOffsetsX(10, 10)
+                        .SetNormalizedAnchoringX(0, 1)
+                        .SetNormalizedPositionCenterY(0, 0)
+                        .SetAbsPositionSizeY(130, 50)
+                        ,
+                        _propertiesPanel = UICreator.CreatePanel(new Color4(1))
+                        .SetAbsoluteOffset(10)
+                        .AddComponent(
+                            new UIEdgeSnapConstraint(loadLayoutButton, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Top)
+                        )
+                        .AddChildren(
+                            UICreator.CreateUIElement(
+                                new UIText("Properties", new Color4(0))
+                            )
+                            .SetAbsOffsetsX(10,10)
+                            .SetNormalizedAnchoringX(0,1)
+                            .SetNormalizedPositionCenterY(1,1)
+                            .SetAbsPositionSizeY(-10, 50)
+                        )
+                    )
+                    //_propertiesView = new UILinearArrangement(vertical: true, reverse: false, padding: 10f)
                 )
             );
 
             _root.GetComponentOfType<UIMouseListener>().OnMousePressed += OnWindowClicked;
         }
 
-        private void InitRightclickMenu(out UIElement createButton, out UIElement deleteButton, out UIElement togglePosSizeXButton, out UIElement togglePosSizeYButton)
+        private void InitRightclickMenu()
         {
-            _rightclickMenu = new UILinearArrangement(true, false, 10)
-                .SetNormalizedPositionCenter(0, 0, 0, 0)
-                .SetAbsPositionSize(0, 0, 100, 10 + (14 + 10) * 4)
-                .AddChildren(
-                    createButton = UICreator.CreateButton("Add"),
-                    deleteButton = UICreator.CreateButton("Delete"),
-                    togglePosSizeXButton = UICreator.CreateButton("toggle xAnchor"),
-                    togglePosSizeYButton = UICreator.CreateButton("toggle yAnchors")
-                );
+            UIElement createButton;
+            UIElement deleteButton;
+
+            _rightclickMenu = UICreator.CreateUIElement(
+                new UILinearArrangement(true, false, 10)
+            )
+            .SetNormalizedPositionCenter(0, 0, 0, 0)
+            .SetAbsPositionSize(0, 0, 200, 10 + (16 + 10) * 2)
+            .AddChildren(
+                createButton = UICreator.CreateButton("Add"),
+                deleteButton = UICreator.CreateButton("Delete")
+            );
+
             _rightclickMenu.IsVisible = false;
+
             createButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnNewButtonClicked;
             deleteButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnDeleteButtonClicked;
-            togglePosSizeXButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnTogglePosSizeXButtonClicked;
-            togglePosSizeYButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnTogglePosSizeYButtonClicked;
         }
 
         private void OnTogglePosSizeXButtonClicked()

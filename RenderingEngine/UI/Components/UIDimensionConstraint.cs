@@ -3,15 +3,15 @@ using RenderingEngine.UI.Core;
 
 namespace RenderingEngine.UI.Components.Uncompleted
 {
-    public class UIDiminsionConstraint : UIComponent
+    public class UIDimensionConstraint : UIComponent
     {
-        public UIDiminsionConstraint(float minWidth, float minHeight, float maxWidth, float maxHeight)
+        public UIDimensionConstraint(float minWidth, float minHeight, float maxWidth, float maxHeight)
             : this(new Rect2D(minWidth, minHeight, maxWidth, maxHeight))
         { }
 
         Rect2D _boundsRect;
 
-        public UIDiminsionConstraint(Rect2D boundsRect)
+        public UIDimensionConstraint(Rect2D boundsRect)
         {
             _boundsRect = boundsRect;
         }

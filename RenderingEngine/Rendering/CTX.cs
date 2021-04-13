@@ -4,6 +4,7 @@ using OpenTK.Windowing.Desktop;
 using RenderingEngine.Datatypes;
 using RenderingEngine.Rendering.ImmediateMode;
 using System.Collections.Generic;
+using System.Drawing;
 using Color4 = RenderingEngine.Datatypes.Color4;
 
 namespace RenderingEngine.Rendering
@@ -274,16 +275,16 @@ namespace RenderingEngine.Rendering
             _textureManager.SetTexture(_textureManager.CurrentTexture());
         }
 
-        public static void DrawText(string text, float x, float y)
+        public static PointF DrawText(string text, float x, float y)
         {
             _drawingText = true;
-            _textDrawer.DrawText(text, x, y);
+            return _textDrawer.DrawText(text, x, y);
         }
 
-        public static void DrawText(string text, float x, float y, float scale)
+        public static PointF DrawText(string text, float x, float y, float scale)
         {
             _drawingText = true;
-            _textDrawer.DrawText(text, x, y, scale);
+            return _textDrawer.DrawText(text, x, y, scale);
         }
 
         public static float GetCharHeight()

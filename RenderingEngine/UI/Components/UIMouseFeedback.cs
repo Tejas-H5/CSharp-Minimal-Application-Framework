@@ -21,11 +21,19 @@ namespace RenderingEngine.UI.Components
 
         public override void SetParent(UIElement parent)
         {
+            if(_mouseListner != null)
+            {
+                _mouseListner.OnMouseEnter -= _mouseListner_OnMouseOver;
+                _mouseListner.OnMouseOver -= _mouseListner_OnMouseOver;
+                _mouseListner.OnMouseLeave -= _mouseListner_OnMouseLeave;
+            }
+
             base.SetParent(parent);
 
             _hitbox = _parent.GetComponentOfType<UIRectHitbox>();
             _mouseListner = _parent.GetComponentOfType<UIMouseListener>();
             _bgRect = _parent.GetComponentOfType<UIRect>();
+
 
             _mouseListner.OnMouseEnter += _mouseListner_OnMouseOver;
             _mouseListner.OnMouseOver += _mouseListner_OnMouseOver;

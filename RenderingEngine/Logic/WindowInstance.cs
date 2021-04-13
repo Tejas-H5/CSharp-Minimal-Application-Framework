@@ -1,6 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using RenderingEngine.Datatypes;
 using RenderingEngine.Rendering;
 using System;
@@ -22,7 +23,7 @@ namespace RenderingEngine.Logic
         public Rect2D Rect { get { return new Rect2D(0, 0, Width, Height); } }
         public float CurrentFPS { get { return _fps; } }
 
-        public WindowInstance(EntryPoint program)
+        public unsafe WindowInstance(EntryPoint program)
             : base(new GameWindowSettings
             {
                 IsMultiThreaded = false
@@ -34,9 +35,32 @@ namespace RenderingEngine.Logic
         {
             _program = program;
 
+            GLFW.SetKeyCallback(WindowPtr, ProcessPhysicalKeyPress);
+            GLFW.SetCharCallback(WindowPtr, ProcessCharTextInputs);
+
             CTX.Init(Context);
             Input.Init(this);
         }
+
+        private unsafe void ProcessCharTextInputs(OpenTK.Windowing.GraphicsLibraryFramework.Window* window, uint codepoint)
+        {
+            UnicodeTextInputEvent?.Invoke(Convert.ToChar(codepoint));
+        }
+
+        private unsafe void ProcessPhysicalKeyPress(OpenTK.Windowing.GraphicsLibraryFramework.Window* window, Keys key, int scanCode, InputAction action, KeyModifiers mods)
+        {
+            KeyCode keyCode = (KeyCode)key;
+
+            if ((keyCode == KeyCode.Backspace)
+                || (keyCode == KeyCode.Enter)
+                || (keyCode == KeyCode.NumpadEnter)
+                || (keyCode == KeyCode.Tab))
+            {
+                UnicodeTextInputEvent?.Invoke(CharKeyMapping.KeyCodeToChar((KeyCode)key));
+            }
+        }
+
+        public event Action<uint> UnicodeTextInputEvent;
 
         bool _init = false;
 
@@ -112,11 +136,16 @@ namespace RenderingEngine.Logic
         }
 
         //TODO: Find out why OnUnload() wasn't working
-        protected override void OnClosing(CancelEventArgs e)
+        protected unsafe override void OnClosing(CancelEventArgs e)
         {
-            _program.Cleanup();
-            e.Cancel = false;
             base.OnClosing(e);
+
+            _program.Cleanup();
+
+            GLFW.SetCharCallback(WindowPtr, null);
+            GLFW.SetKeyCallback(WindowPtr, null);
+
+            e.Cancel = false;
         }
 
         public void Maximize()

@@ -6,9 +6,36 @@ namespace RenderingEngine.Logic
     class MouseInputManager
     {
         WindowInstance _window;
-        public MouseInputManager(WindowInstance window)
+
+        private void OnWindowMouseWheel(OpenTK.Windowing.Common.MouseWheelEventArgs obj)
+        {
+            if (obj.OffsetY < 0)
+            {
+                _incomingWheelNotches -= 1;
+            }
+            else if (obj.OffsetY > 0)
+            {
+                _incomingWheelNotches += 1;
+            }
+        }
+
+        internal void Hook(WindowInstance window)
         {
             _window = window;
+            _window.MouseWheel += OnWindowMouseWheel;
+        }
+
+        internal void Unhook()
+        {
+            if(_window != null)
+                _window.MouseWheel -= OnWindowMouseWheel;
+        }
+
+        int _incomingWheelNotches = 0;
+        int _wheelNotches = 0;
+
+        public int WheelNotches {
+            get { return _wheelNotches; }
         }
 
         bool[] _prevMouseButtonStates = new bool[3];
@@ -131,6 +158,10 @@ namespace RenderingEngine.Logic
         public void Update()
         {
             SwapInputBuffers();
+
+            _incomingWheelNotches = 0;
+            _wheelNotches = _incomingWheelNotches;
+
             _wasDragging = IsDragging;
             _wasAnyHeld = _isAnyHeld;
             _wasAnyDown = _anyDown;

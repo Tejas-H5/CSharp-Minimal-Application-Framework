@@ -21,7 +21,6 @@ namespace RenderingEngine.UI.Components
             CTX.DrawRect(_parent.Rect);
 
             CTX.StartUsingStencil();
-
         }
 
         public override void AfterDraw(double deltaTime)

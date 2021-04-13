@@ -4,18 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.VisualTests
+namespace RenderingEngine.VisualTests.Rendering
 {
     //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
-    class TextTest : EntryPoint
+    class GeometryAndTextTest : EntryPoint
     {
-        List<string> rain;
+        List<string> rain = new List<string>();
+        Texture _tex;
 
         public override void Start()
         {
 
             Window.Size = (800, 600);
-            Window.Title = ("Texture loading test");
+            Window.Title = "Text and geometry test";
             //window.RenderFrequency = 60;
             //window.UpdateFrequency = 120;
 
@@ -23,9 +24,17 @@ namespace RenderingEngine.VisualTests
 
             CTX.SetCurrentFont("Consolas", 24);
 
-            Window.MouseWheel += MousewheelScroll;
+            Init();
+        }
 
-            rain = new List<string>();
+        public void Init()
+        {
+            TextureMap.RegisterTexture("placeholder", "settings_icon.png", new TextureImportSettings
+            {
+                Filtering = FilteringType.NearestNeighbour
+            });
+
+            _tex = TextureMap.GetTexture("placeholder");
         }
 
         StringBuilder sb = new StringBuilder();
@@ -54,17 +63,13 @@ namespace RenderingEngine.VisualTests
             }
         }
 
-        private void MousewheelScroll(OpenTK.Windowing.Common.MouseWheelEventArgs obj)
-        {
-            pos += 50 * obj.OffsetY;
-        }
-
 
         double timer = 0;
         public override void Update(double deltaTime)
         {
             //*
             timer += deltaTime;
+            a += (float)deltaTime;
             if (timer < 0.05)
                 return;
             //*/
@@ -73,25 +78,34 @@ namespace RenderingEngine.VisualTests
             PushGibberish();
         }
 
-        float pos = 0;
+        float a = 0;
 
         public override void Render(double deltaTime)
         {
-
-
             CTX.SetDrawColor(0, 1, 0, 0.8f);
+            CTX.SetTexture(null);
 
             for (int i = 0; i < rain.Count; i++)
             {
                 CTX.DrawText(rain[i], 0, Window.Height - CTX.GetCharHeight() * i);
             }
 
-            CTX.SetDrawColor(1, 0, 0, 1);
 
+            CTX.DrawArc(Window.Width / 2, Window.Height / 2, MathF.Min(Window.Height / 2f, Window.Width / 2f), a, MathF.PI * 2 + a, 6);
 
+            CTX.SetTexture(_tex);
+            //RenderingContext.DrawFilledArc(window.Width / 2, window.Height / 2, MathF.Min(window.Height / 2f, window.Width / 2f)/2f, a/2f, MathF.PI * 2 + a/2f, 6);
+
+            CTX.DrawRect(Window.Width / 2 - 50, Window.Height / 2 - 50, Window.Width / 2 + 50, Window.Height / 2 + 50);
+
+            //RenderingContext.DrawRect(100,100,window.Width-100, window.Height-100);
         }
 
 
+        public override void Cleanup()
+        {
+            base.Cleanup();
 
+        }
     }
 }

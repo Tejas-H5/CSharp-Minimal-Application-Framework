@@ -273,6 +273,8 @@
                     { return '\t'; }
                 case KeyCode.Enter:
                     { return '\n'; }
+                case KeyCode.NumpadEnter:
+                    { return '\n'; }
                 case KeyCode.Backspace:
                     { return '\b'; }
             }

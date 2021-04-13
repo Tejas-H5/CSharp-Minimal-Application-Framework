@@ -1,9 +1,10 @@
 ﻿using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
+using RenderingEngine.Rendering.ImmediateMode;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace RenderingEngine.VisualTests
+namespace RenderingEngine.VisualTests.Rendering
 {
     public class PolylineTest : EntryPoint
     {
@@ -36,7 +37,7 @@ namespace RenderingEngine.VisualTests
 
             if (_points.Count > 0)
             {
-                CTX.BeginPolyLine(_points[0].X, _points[0].Y, 10, Rendering.ImmediateMode.CapType.None);
+                CTX.BeginPolyLine(_points[0].X, _points[0].Y, 10, CapType.None);
 
                 for (int i = 1; i < _points.Count - 1; i++)
                 {

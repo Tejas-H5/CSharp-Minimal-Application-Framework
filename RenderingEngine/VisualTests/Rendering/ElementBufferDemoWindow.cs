@@ -4,7 +4,7 @@ using RenderingEngine.Rendering;
 using RenderingEngine.Rendering.ImmediateMode;
 using System;
 
-namespace RenderingEngine.VisualTests
+namespace RenderingEngine.VisualTests.Rendering
 {
     class ElementBufferDemoWindow : EntryPoint
     {
@@ -54,7 +54,7 @@ namespace RenderingEngine.VisualTests
         {
 
             Window.Size = (800, 600);
-            Window.Title = ("Element buffer demo");
+            Window.Title = "Element buffer demo";
 
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 

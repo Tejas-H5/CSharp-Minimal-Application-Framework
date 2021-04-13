@@ -1,18 +1,32 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
+using System;
 using System.Text;
 
 namespace RenderingEngine.Logic
 {
     class KeyboardInputManager
     {
-        readonly WindowInstance _window;
+        WindowInstance _window;
 
         bool[] _prevKeyStates = new bool[(int)KeyCode.LastKey];
         bool[] _keyStates = new bool[(int)KeyCode.LastKey];
 
-        public KeyboardInputManager(WindowInstance window)
+
+        private void OnWindowTextInput(uint c)
+        {
+            _charactersTypedSB.Append((char)c);
+        }
+
+        internal void Hook(WindowInstance window)
         {
             _window = window;
+            _window.UnicodeTextInputEvent += OnWindowTextInput;
+        }
+
+        internal void Unhook()
+        {
+			if(_window != null)
+            	_window.UnicodeTextInputEvent -= OnWindowTextInput;
         }
 
         public bool IsKeyDown(KeyCode key)
@@ -90,15 +104,19 @@ namespace RenderingEngine.Logic
             }
         }
 
+        StringBuilder _charactersTypedSB = new StringBuilder();
+
         StringBuilder _charactersPressedSB = new StringBuilder();
         StringBuilder _charactersReleasedSB = new StringBuilder();
         StringBuilder _charactersDownSB = new StringBuilder();
 
         string _charactersPressed = "";
+        string _charactersTyped = "";
         string _charactersDown = "";
         string _charactersReleased = "";
 
         public string CharactersPressed { get { return _charactersPressed; } }
+		public string CharactersTyped { get { return _charactersTyped; } }
         public string CharactersReleased { get { return _charactersReleased; } }
         public string CharactersDown { get { return _charactersDown; } }
 
@@ -123,6 +141,9 @@ namespace RenderingEngine.Logic
             _charactersDownSB.Clear();
             _charactersReleasedSB.Clear();
 
+            _charactersTyped = _charactersTypedSB.ToString();
+            _charactersTypedSB.Clear(); 
+
             bool[] temp = _prevKeyStates;
             _prevKeyStates = _keyStates;
             _keyStates = temp;
@@ -130,7 +151,12 @@ namespace RenderingEngine.Logic
             for (int i = 0; i < _keyStates.Length - 1; i++)
             {
                 KeyCode key = (KeyCode)i;
+
+
+                //This is where we use openTK
                 _keyStates[i] = _window.KeyboardState.IsKeyDown((Keys)key);
+
+
                 _anyKeyDown = _anyKeyDown || _keyStates[i];
 
                 bool pressed = (!_prevKeyStates[i] && _keyStates[i]);

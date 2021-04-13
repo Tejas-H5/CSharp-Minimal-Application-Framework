@@ -131,7 +131,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         //TODO: IMPLEMENT tabs and newlines
         //And vertical/horizontal aiignment features
-        public void DrawText(string text, float startX, float startY, float scale = 1.0f)
+        public PointF DrawText(string text, float startX, float startY, float scale = 1.0f)
         {
             CTX.SetTexture(_activeFont.FontTexture);
 
@@ -144,24 +144,29 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
                 if (_activeFont.FontAtlas.IsValidCharacter(c))
                 {
-                    SizeF size = GetCharSize(c);
-                    Rect2D uv = _activeFont.FontAtlas.GetCharacterUV(c);
-
-                    _quadDrawer.DrawRect(new Rect2D(x, y, x + size.Width * scale, y + size.Height * scale), uv);
-
-                    x += size.Width * scale;
+                    DrawCharacter(scale, x, y, c);
                 }
                 else
                 {
-                    x += GetCharWidth(c);
-
                     if (c == '\n')
                     {
                         x = startX;
                         y -= _activeFont.FontAtlas.CharHeight + 2;
                     }
                 }
+
+                x += GetCharWidth(c);
             }
+
+            return new PointF(x, y);
+        }
+
+        private void DrawCharacter(float scale, float x, float y, char c)
+        {
+            SizeF size = GetCharSize(c);
+            Rect2D uv = _activeFont.FontAtlas.GetCharacterUV(c);
+
+            _quadDrawer.DrawRect(new Rect2D(x, y, x + size.Width * scale, y + size.Height * scale), uv);
         }
 
         public void Dispose()

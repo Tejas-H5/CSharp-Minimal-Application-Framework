@@ -16,11 +16,8 @@
         }
 
         public Color4(float f, float a = 1.0f)
+            : this(f,f,f,a)
         {
-            R = f;
-            G = f;
-            B = f;
-            A = a;
         }
 
         public static Color4 FromRGBA(int r, int g, int b, int a)

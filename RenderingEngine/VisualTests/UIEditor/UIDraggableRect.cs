@@ -13,6 +13,32 @@ namespace RenderingEngine.VisualTests.UIEditor
 {
     class UIDraggableRect : UIComponent
     {
+        const float HANDLESIZE = 10;
+
+        bool _topEdge = false;
+        bool _bottomEdge = false;
+        bool _leftEdge = false;
+        bool _rightEdge = false;
+
+        bool _lowerAnchor = false;
+        bool _upperAnchor = false;
+
+        bool _centerHeld = false;
+
+        Rect2D _initRectOffset;
+        Rect2D _initAnchoring;
+        PointF _initCenter;
+
+        DraggableRectSelectedState _state;
+        private string name;
+        private string text;
+        private Color4 color;
+
+        public string Name { get => name; set { name = value; _state.SelectionChanged = true; } }
+        public string Text { get => text; set { text = value; _state.SelectionChanged = true; } }
+        public Color4 Color { get => color; set { color = value; _state.SelectionChanged = true; } }
+
+
         public static UIElement CreateDraggableRect(DraggableRectSelectedState selectionState)
         {
             return UICreator.CreateUIElement(
@@ -24,7 +50,6 @@ namespace RenderingEngine.VisualTests.UIEditor
                 );
         }
 
-        DraggableRectSelectedState _state;
 
         public override void SetParent(UIElement parent)
         {
@@ -41,20 +66,6 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             return _lowerAnchor || _upperAnchor;
         }
-
-        bool _topEdge = false;
-        bool _bottomEdge = false;
-        bool _leftEdge = false;
-        bool _rightEdge = false;
-
-        bool _lowerAnchor = false;
-        bool _upperAnchor = false;
-
-        bool _centerHeld = false;
-
-        Rect2D _initRectOffset;
-        Rect2D _initAnchoring;
-        PointF _initCenter;
 
         private void StartDrag()
         {
@@ -136,10 +147,6 @@ namespace RenderingEngine.VisualTests.UIEditor
             {
                 float newAnchorX1 = initAnchors.X1 + dragDX / pR.Width;
                 float newAnchorY1 = initAnchors.Y1 + dragDY / pR.Height;
-                //newAnchorX1 = MathUtil.Clamp01(newAnchorX1);
-                //newAnchorY1 = MathUtil.Clamp01(newAnchorY1);
-                //dragDX = (newAnchorX1 - initAnchors.X1) * pR.Width;
-                //dragDY = (newAnchorY1 - initAnchors.Y1) * pR.Height;
 
                 if (shouldSnap)
                 {
@@ -209,23 +216,19 @@ namespace RenderingEngine.VisualTests.UIEditor
 
             if (topEdge)
             {
-                //r.Y1 = mouseY;
                 top = initOffsets.Y1 - dragDY;
             }
             else if (bottomEdge)
             {
-                //r.Y0 = mouseY;
                 bottom = initOffsets.Y0 + dragDY;
             }
 
             if (rightEdge)
             {
-                //r.X1 = mouseX;
                 right = initOffsets.X1 - dragDX;
             }
             else if (leftEdge)
             {
-                //r.X0 = mouseX;
                 left = initOffsets.X0 + dragDX;
             }
 
@@ -245,18 +248,23 @@ namespace RenderingEngine.VisualTests.UIEditor
             if (Input.IsMouseHeld(MouseButton.Left) && Input.IsMouseDragging)
                 return true;
 
-            _centerHeld = Intersections.IsInsideCircle(Input.MouseX, Input.MouseY, _parent.AbsCenterX, _parent.AbsCenterY, HANDLESIZE);
-
             float x = Input.MouseX;
             float y = Input.MouseY;
             UIRectTransform rtf = _parent.RectTransform;
             Rect2D pR = _parent.GetParentRect();
+
+            CheckCenterGrab();
 
             CheckEdgeGrab(x, y);
 
             CheckAnchorGrab(x, y, rtf, pR);
 
             return IsEdgeHeld() || IsAnchorHeld() || _centerHeld;
+        }
+
+        private void CheckCenterGrab()
+        {
+            _centerHeld = Intersections.IsInsideCircle(Input.MouseX, Input.MouseY, _parent.AbsCenterX, _parent.AbsCenterY, HANDLESIZE);
         }
 
         private void CheckAnchorGrab(float x, float y, UIRectTransform rtf, Rect2D pR)
@@ -313,7 +321,6 @@ namespace RenderingEngine.VisualTests.UIEditor
             _state = state;
         }
 
-        const float HANDLESIZE = 10;
 
         void DrawEdgeHandle(float x0, float y0, float x1, float y1)
         {
@@ -515,6 +522,14 @@ namespace RenderingEngine.VisualTests.UIEditor
                     }
                 }
             }
+        }
+
+        public override void OnResize()
+        {
+            if (_state.SelectedRect != this)
+                return;
+
+            _state.SelectionChanged = true;
         }
     }
 }

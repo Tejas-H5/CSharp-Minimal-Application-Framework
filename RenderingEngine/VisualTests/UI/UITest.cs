@@ -8,7 +8,7 @@ using RenderingEngine.UI.Core;
 using System;
 using Color4 = RenderingEngine.Datatypes.Color4;
 
-namespace RenderingEngine.VisualTests
+namespace RenderingEngine.VisualTests.UI
 {
     public class UITest : EntryPoint
     {
@@ -213,7 +213,7 @@ namespace RenderingEngine.VisualTests
 
         public override void Resize()
         {
-            CTX.Viewport2D(Window.Width, Window.Height);
+            base.Resize();
 
             _zStack.Resize();
         }

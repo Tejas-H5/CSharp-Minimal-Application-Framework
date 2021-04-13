@@ -9,10 +9,19 @@
 
     public static class Input
     {
+        static Input()
+        {
+            _mouseInputManager = new MouseInputManager();
+            _keyboardManager = new KeyboardInputManager();
+        }
+
         internal static void Init(WindowInstance window)
         {
-            _mouseInputManager = new MouseInputManager(window);
-            _keyboardManager = new KeyboardInputManager(window);
+            _mouseInputManager.Unhook();
+            _keyboardManager.Unhook();
+
+            _mouseInputManager.Hook(window);
+            _keyboardManager.Hook(window);
         }
 
         internal static void Update()
@@ -20,6 +29,7 @@
             _mouseInputManager.Update();
             _keyboardManager.Update();
         }
+
 
         public static float MouseX { get { return _mouseInputManager.MouseX; } }
         public static float MouseY { get { return _mouseInputManager.MouseY; } }
@@ -54,6 +64,8 @@
         {
             _mouseInputManager.StartDrag(x, y);
         }
+
+        public static int MouseWheelNotches { get { return _mouseInputManager.WheelNotches; } }
 
         public static bool IsMouseClickedAny { get { return _mouseInputManager.IsMouseClickedAny; } }
         public static bool IsMouseReleasedAny { get { return _mouseInputManager.IsMouseReleasedAny; } }
@@ -91,6 +103,7 @@
         }
 
         public static string CharactersPressed { get { return _keyboardManager.CharactersPressed; } }
+		public static string CharactersTyped { get { return _keyboardManager.CharactersTyped; } }
         public static string CharactersReleased { get { return _keyboardManager.CharactersReleased; } }
         public static string CharactersDown { get { return _keyboardManager.CharactersDown; } }
 

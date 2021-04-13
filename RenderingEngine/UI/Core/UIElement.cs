@@ -370,8 +370,8 @@ namespace RenderingEngine.UI.Core
 #if DEBUG
         void DrawDebug()
         {
-            CTX.SetDrawColor(0, 0, 0, 0.5f);
-            CTX.DrawRectOutline(1, Rect);
+            //CTX.SetDrawColor(0, 0, 0, 0.5f);
+            //CTX.DrawRectOutline(1, Rect);
 
             if (_mouseListenComponent != null)
             {
@@ -414,8 +414,8 @@ namespace RenderingEngine.UI.Core
             for (int i = 0; i < _children.Count; i++)
             {
                 // Fun fact:
-                // if I write this as hasProcessed || _children[i].ProcessChildEvent(), then the second
-                // half of the or statement won't execute if hasProcessed is true
+                // if I write this as hasProcessed || _children[i].ProcessChildEvents(), then 
+                // ProcessChildEvents() half of the or statement won't execute if hasProcessed is true
 
                 bool hasChildProcessed = _children[i].ProcessChildEvents();
                 hasProcessed = hasProcessed || hasChildProcessed;

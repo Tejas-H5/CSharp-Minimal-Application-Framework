@@ -13,11 +13,6 @@ namespace RenderingEngine.UI.Core
         Rect2D _normalizedAnchoring;
         PointF _normalizedCenter;
 
-        public PointF NormalizedCenter {
-            get { return _normalizedCenter; }
-            set { _normalizedCenter = value; }
-        }
-
         public Rect2D Rect {
             get { return _rect; }
             set {
@@ -25,14 +20,17 @@ namespace RenderingEngine.UI.Core
             }
         }
 
-        public float Width {
-            get {
-                return _rect.Width;
+        public PointF NormalizedCenter {
+            get { return _normalizedCenter; }
+            set { 
+                _normalizedCenter = value;
             }
         }
-        public float Height {
-            get {
-                return _rect.Height;
+
+        public Rect2D AbsoluteOffset {
+            get { return _absoluteOffset; }
+            set {
+                _absoluteOffset = value;
             }
         }
 
@@ -51,7 +49,17 @@ namespace RenderingEngine.UI.Core
             }
         }
 
-        public Rect2D AbsoluteOffset { get { return _absoluteOffset; } set { _absoluteOffset = value; } }
+        public float Width {
+            get {
+                return _rect.Width;
+            }
+        }
+        public float Height {
+            get {
+                return _rect.Height;
+            }
+        }
+
 
         public void SetAbsOffsetsX(float left, float right)
         {
@@ -72,7 +80,7 @@ namespace RenderingEngine.UI.Core
 
         public void SetAbsoluteOffset(Rect2D rectOffset)
         {
-            _absoluteOffset = rectOffset;
+            AbsoluteOffset = rectOffset;
         }
 
         public void SetAbsPositionSizeX(float x, float width)

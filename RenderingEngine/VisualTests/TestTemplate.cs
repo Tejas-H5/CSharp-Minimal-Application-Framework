@@ -1,7 +1,7 @@
 ﻿using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
 
-namespace RenderingEngine.Templates
+namespace RenderingEngine.VisualTests
 {
     public class TemplateForEntrypointProgram : EntryPoint
     {
@@ -27,6 +27,12 @@ namespace RenderingEngine.Templates
 
             //UI Events / input / other non-rendering update code goes here
 
+        }
+
+        public override void Resize()
+        {
+            //Don't delete base.Resize()
+            base.Resize();
         }
     }
 }

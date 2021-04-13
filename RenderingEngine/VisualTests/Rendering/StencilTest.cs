@@ -2,7 +2,7 @@
 using RenderingEngine.Rendering;
 using System;
 
-namespace RenderingEngine.VisualTests
+namespace RenderingEngine.VisualTests.Rendering
 {
     //TODO: Get this working at some point, because it is currently not working
     public class StencilTest : EntryPoint

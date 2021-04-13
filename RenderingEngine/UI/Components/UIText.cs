@@ -11,6 +11,9 @@ namespace RenderingEngine.UI.Components
         public Color4 TextColor { get; set; }
         public string Text { get; internal set; }
 
+        public string Font { get; set; } = "";
+        public int FontSize { get; set; } = -1;
+
         public VerticalAlignment VerticalAlignment { get; set; }
         public HorizontalAlignment HorizontalAlignment { get; set; }
 
@@ -18,17 +21,25 @@ namespace RenderingEngine.UI.Components
         private PointF _caratPos = new PointF();
 
         public UIText(string text, Color4 textColor)
-            : this(text, textColor, VerticalAlignment.Bottom, HorizontalAlignment.Left)
+            : this(text, textColor, "", -1, VerticalAlignment.Bottom, HorizontalAlignment.Left)
         {
 
         }
 
         public UIText(string text, Color4 textColor, VerticalAlignment vAlign, HorizontalAlignment hAlign)
+            : this(text, textColor, "", -1, vAlign, hAlign)
+        {
+
+        }
+
+        public UIText(string text, Color4 textColor, string fontName, int fontSize, VerticalAlignment vAlign, HorizontalAlignment hAlign)
         {
             TextColor = textColor;
             Text = text;
             VerticalAlignment = vAlign;
             HorizontalAlignment = hAlign;
+            Font = fontName;
+            FontSize = fontSize;
         }
 
         public override void Draw(double deltaTime)
@@ -57,6 +68,9 @@ namespace RenderingEngine.UI.Components
 
             _caratPos = new PointF(0, startY);
 
+            CTX.SetCurrentFont(Font, FontSize);
+            CTX.SetDrawColor(TextColor);
+
             while (lineEnd < Text.Length)
             {
                 lineEnd = Text.IndexOf('\n', lineStart);
@@ -80,7 +94,6 @@ namespace RenderingEngine.UI.Components
                         break;
                 }
 
-                CTX.SetDrawColor(TextColor);
                 _caratPos = CTX.DrawText(Text, lineStart, lineEnd, _caratPos.X, _caratPos.Y, scale);
 
                 lineStart = lineEnd; 

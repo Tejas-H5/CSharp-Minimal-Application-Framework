@@ -6,94 +6,55 @@ using System.Drawing;
 
 namespace RenderingEngine.Rendering.ImmediateMode
 {
-    class FontAtlasTexture
-    {
-
-        FontAtlas _fontAtlas;
-        Texture _fontTexture;
-
-        public FontAtlasTexture(FontAtlas fontAtlas, Texture fontTexture)
-        {
-            _fontAtlas = fontAtlas;
-            _fontTexture = fontTexture;
-        }
-
-        public FontAtlas FontAtlas { get { return _fontAtlas; } }
-        public Texture FontTexture { get { return _fontTexture; } }
-    }
-
     class TextDrawer : IDisposable
     {
         QuadDrawer _quadDrawer;
 
-        FontAtlasTexture _activeFont;
-        Dictionary<string, FontAtlasTexture> _allLoadedFonts;
+        FontManager _fontManager;
+        internal FontAtlasTexture ActiveFont {
+            get { return _fontManager.ActiveFont; }
+        }
+
 
         public TextDrawer(QuadDrawer quadDrawer)
         {
-            _allLoadedFonts = new Dictionary<string, FontAtlasTexture>();
             _quadDrawer = quadDrawer;
 
+            _fontManager = new FontManager();
             SetCurrentFont("", -1);
         }
 
 
-        private static string GenerateKey(string fontName, int fontSize)
+        public void SetCurrentFont(string name, int size)
         {
-            return fontName + fontSize.ToString();
-        }
+            if (size < 0)
+                size = 12;
 
-        public void SetCurrentFont(string fontName, int fontSize)
-        {
-            if (string.IsNullOrEmpty(fontName))
-            {
-                fontName = "Consolas";
-            }
-
-            if (fontSize <= 0)
-            {
-                fontSize = 12;
-            }
-
-            string key = GenerateKey(fontName, fontSize);
-            if (!_allLoadedFonts.ContainsKey(key))
-            {
-                FontAtlas atlas = new FontAtlas(
-                        new FontImportSettings
-                        {
-                            FontName = fontName,
-                            FontSize = fontSize
-                        }
-                    );
-                Texture texture = new Texture(atlas.Image, new TextureImportSettings { Filtering = FilteringType.NearestNeighbour });
-                _allLoadedFonts[key] = new FontAtlasTexture(atlas, texture);
-            }
-
-            _activeFont = _allLoadedFonts[key];
+            _fontManager.SetCurrentFont(name, size);
         }
 
 
         public float CharWidth {
             get {
-                return _activeFont.FontAtlas.CharWidth;
+                return ActiveFont.FontAtlas.CharWidth;
             }
         }
 
         public float CharHeight {
             get {
-                return _activeFont.FontAtlas.CharHeight;
+                return ActiveFont.FontAtlas.CharHeight;
             }
         }
 
         public float GetCharWidth(char c)
         {
-            if (_activeFont.FontAtlas.IsValidCharacter(c))
+            if (ActiveFont.FontAtlas.IsValidCharacter(c))
             {
-                return _activeFont.FontAtlas.GetCharacterSize(c).Width;
+                return ActiveFont.FontAtlas.GetCharacterSize(c).Width;
             }
 
 
-            float spaceWidth = _activeFont.FontAtlas.GetCharacterSize('|').Width;
+            float spaceWidth = ActiveFont.FontAtlas.GetCharacterSize('|').Width;
 
             switch (c)
             {
@@ -108,20 +69,21 @@ namespace RenderingEngine.Rendering.ImmediateMode
 
         public float GetCharHeight(char c)
         {
-            return _activeFont.FontAtlas.GetCharacterSize(c).Height;
+            return ActiveFont.FontAtlas.GetCharacterSize(c).Height;
         }
 
         public SizeF GetCharSize(char c)
         {
-            return _activeFont.FontAtlas.GetCharacterSize(c);
+            return ActiveFont.FontAtlas.GetCharacterSize(c);
         }
 
 
         public Texture UnderlyingFontAtlas {
             get {
-                return _activeFont.FontTexture;
+                return ActiveFont.FontTexture;
             }
         }
+
 
         private Rect2D GetAtlasRect(char c)
         {
@@ -138,7 +100,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
         //And vertical/horizontal aiignment features
         public PointF DrawText(string text, int start, int end, float startX, float startY, float scale = 1.0f)
         {
-            CTX.SetTexture(_activeFont.FontTexture);
+            CTX.SetTexture(ActiveFont.FontTexture);
 
             float x = startX;
             float y = startY;
@@ -147,7 +109,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
             {
                 char c = text[i];
 
-                if (_activeFont.FontAtlas.IsValidCharacter(c))
+                if (ActiveFont.FontAtlas.IsValidCharacter(c))
                 {
                     DrawCharacter(scale, x, y, c);
                 }
@@ -156,7 +118,7 @@ namespace RenderingEngine.Rendering.ImmediateMode
                     if (c == '\n')
                     {
                         x = startX;
-                        y -= _activeFont.FontAtlas.CharHeight + 2;
+                        y -= ActiveFont.FontAtlas.CharHeight + 2;
                     }
                 }
 
@@ -169,17 +131,14 @@ namespace RenderingEngine.Rendering.ImmediateMode
         private void DrawCharacter(float scale, float x, float y, char c)
         {
             SizeF size = GetCharSize(c);
-            Rect2D uv = _activeFont.FontAtlas.GetCharacterUV(c);
+            Rect2D uv = ActiveFont.FontAtlas.GetCharacterUV(c);
 
             _quadDrawer.DrawRect(new Rect2D(x, y, x + size.Width * scale, y + size.Height * scale), uv);
         }
 
         public void Dispose()
         {
-            foreach (var item in _allLoadedFonts)
-            {
-                item.Value.FontTexture.Dispose();
-            }
+            _fontManager.Dispose();
         }
 
         public float GetStringHeight(string s)

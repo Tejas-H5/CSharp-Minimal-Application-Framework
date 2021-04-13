@@ -36,19 +36,22 @@ namespace RenderingEngine.Rendering.Text
         public float CharWidth { get; internal set; }
         public float CharHeight { get; internal set; }
 
-        public FontAtlas(FontImportSettings importSettings)
-            : this(importSettings, DefaultCharacters)
+        public static FontAtlas CreateFontAtlas(FontImportSettings importSettings, string characters = DefaultCharacters)
         {
+            Font systemFont = TryGenerateSystemFontObject(importSettings);
+            if (systemFont == null)
+                return null;
 
+            return new FontAtlas(importSettings, systemFont, characters);
         }
 
-        public FontAtlas(FontImportSettings importSettings, string characters)
+        private FontAtlas(FontImportSettings importSettings, Font systemFont, string characters)
         {
             //Used to handle the error of invalid characters being looked up
             if (!characters.Contains('?'))
                 characters += '?';
 
-            _systemFont = GenerateSystemFontObject(importSettings);
+            _systemFont = systemFont;
 
             int padding = importSettings.Padding;
 
@@ -83,7 +86,7 @@ namespace RenderingEngine.Rendering.Text
             return _characterQuadCoords.ContainsKey(c);
         }
 
-        private static Font GenerateSystemFontObject(FontImportSettings fontSettings)
+        private static Font TryGenerateSystemFontObject(FontImportSettings fontSettings)
         {
             Font font;
 
@@ -96,7 +99,14 @@ namespace RenderingEngine.Rendering.Text
             }
             else
             {
-                font = new Font(new FontFamily(fontSettings.FontName), fontSettings.FontSize);
+                try
+                {
+                    font = new Font(new FontFamily(fontSettings.FontName), fontSettings.FontSize);
+                }
+                catch(ArgumentException e)
+                {
+                    return null;
+                }
             }
 
             return font;

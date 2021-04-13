@@ -12,6 +12,9 @@ namespace RenderingEngine.VisualTests.UI
         UIElement _root;
         UIElement _textInputElement;
 
+
+
+
         public override void Start()
         {
             Window.Size = (800, 600);
@@ -37,7 +40,7 @@ namespace RenderingEngine.VisualTests.UI
                             new UIRect(new Color4(1), new Color4(0), 1),
                             new UIRectHitbox(false),
                             new UIMouseListener(),
-                            new UIText("", new Color4(0), (VerticalAlignment)i, (HorizontalAlignment)j),
+                            new UIText("", new Color4(0), "Comic Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
                             new UIMouseFeedback(new Color4(0.7f), new Color4(0.5f)),
                             new UITextInput()
                         )

@@ -3,10 +3,8 @@
 namespace RenderingEngine.Logic
 {
     /// <summary>
-    /// Currently implemented with the OpenTK.Keys enum with some minor name changes,
+    /// Currently implemented with the same values as OpenTK.Keys under the hood,
     /// so OpenTK.Keys may be cast into a KeyCode.
-    /// 
-    /// This is mainly to seperate the keycodes used here from OpenTK itself.
     /// </summary>
     public enum KeyCode
     {

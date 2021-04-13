@@ -23,7 +23,7 @@ namespace RenderingEngine.Logic
         public Rect2D Rect { get { return new Rect2D(0, 0, Width, Height); } }
         public float CurrentFPS { get { return _fps; } }
 
-        public unsafe WindowInstance(EntryPoint program)
+        public WindowInstance(EntryPoint program)
             : base(new GameWindowSettings
             {
                 IsMultiThreaded = false
@@ -34,45 +34,51 @@ namespace RenderingEngine.Logic
             })
         {
             _program = program;
-
-            GLFW.SetKeyCallback(WindowPtr, ProcessPhysicalKeyPress);
-            GLFW.SetCharCallback(WindowPtr, ProcessCharTextInputs);
-
-            CTX.Init(Context);
-            Input.Init(this);
         }
 
-        private unsafe void ProcessCharTextInputs(OpenTK.Windowing.GraphicsLibraryFramework.Window* window, uint codepoint)
-        {
-            UnicodeTextInputEvent?.Invoke(Convert.ToChar(codepoint));
-        }
-
-        private unsafe void ProcessPhysicalKeyPress(OpenTK.Windowing.GraphicsLibraryFramework.Window* window, Keys key, int scanCode, InputAction action, KeyModifiers mods)
-        {
-            KeyCode keyCode = (KeyCode)key;
-
-            if ((keyCode == KeyCode.Backspace)
-                || (keyCode == KeyCode.Enter)
-                || (keyCode == KeyCode.NumpadEnter)
-                || (keyCode == KeyCode.Tab))
-            {
-                UnicodeTextInputEvent?.Invoke(CharKeyMapping.KeyCodeToChar((KeyCode)key));
-            }
-        }
-
-        public event Action<uint> UnicodeTextInputEvent;
+        public event Action<uint> TextInputEvent;
 
         bool _init = false;
 
-        protected override void OnLoad()
+        protected unsafe override void OnLoad()
         {
             base.OnLoad();
+
+            KeyDown += ProcessPhysicalKeyPress;
+            TextInput += ProcessCharTextInputs;
+
+            CTX.Init(Context);
+            Input.Init(this);
+
             _program.Start();
 
             _init = true;
             _program.Resize();
 
             IsVisible = true;
+        }
+
+        private void ProcessCharTextInputs(TextInputEventArgs obj)
+        {
+            Console.WriteLine("char input");
+            for(int i = 0; i < obj.AsString.Length; i++)
+            {
+                TextInputEvent?.Invoke(obj.AsString[i]);
+            }
+        }
+
+        private void ProcessPhysicalKeyPress(KeyboardKeyEventArgs obj)
+        {
+            KeyCode keyCode = (KeyCode)obj.Key;
+
+            if ((keyCode == KeyCode.Backspace)
+                || (keyCode == KeyCode.Enter)
+                || (keyCode == KeyCode.NumpadEnter)
+                || (keyCode == KeyCode.Tab))
+            {
+                Console.WriteLine("non-char input");
+                TextInputEvent?.Invoke(CharKeyMapping.KeyCodeToChar(keyCode));
+            }
         }
 
         protected override void OnUpdateFrame(FrameEventArgs args)
@@ -141,9 +147,6 @@ namespace RenderingEngine.Logic
             base.OnClosing(e);
 
             _program.Cleanup();
-
-            GLFW.SetCharCallback(WindowPtr, null);
-            GLFW.SetKeyCallback(WindowPtr, null);
 
             e.Cancel = false;
         }

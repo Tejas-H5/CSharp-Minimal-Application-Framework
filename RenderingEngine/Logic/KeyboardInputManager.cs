@@ -20,13 +20,13 @@ namespace RenderingEngine.Logic
         internal void Hook(WindowInstance window)
         {
             _window = window;
-            _window.UnicodeTextInputEvent += OnWindowTextInput;
+            _window.TextInputEvent += OnWindowTextInput;
         }
 
         internal void Unhook()
         {
 			if(_window != null)
-            	_window.UnicodeTextInputEvent -= OnWindowTextInput;
+            	_window.TextInputEvent -= OnWindowTextInput;
         }
 
         public bool IsKeyDown(KeyCode key)

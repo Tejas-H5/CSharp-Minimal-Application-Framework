@@ -1,5 +1,6 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using RenderingEngine.Datatypes;
 using System;
 
@@ -11,14 +12,6 @@ namespace RenderingEngine.Logic
 
         public static void RunProgram(EntryPoint program)
         {
-            /*
-            GLFW.WindowHint(WindowHintInt.GreenBits, 8);
-            GLFW.WindowHint(WindowHintInt.BlueBits, 8);
-            GLFW.WindowHint(WindowHintInt.AlphaBits, 8);
-            GLFW.WindowHint(WindowHintInt.DepthBits, 24);
-            GLFW.WindowHint(WindowHintInt.StencilBits, 8);
-            //*/
-
             using (_instance = new WindowInstance(program))
             {
                 _instance.Run();
@@ -27,6 +20,10 @@ namespace RenderingEngine.Logic
             _instance = null;
         }
 
+        private static void GLFWError(ErrorCode error, string description)
+        {
+            
+        }
 
         public static Vector2i Size { get { return _instance.Size; } set { _instance.Size = value; } }
         public static void Maximize() { _instance.Maximize(); }

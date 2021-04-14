@@ -103,7 +103,7 @@ namespace RenderingEngine.Rendering.Text
                 {
                     font = new Font(new FontFamily(fontSettings.FontName), fontSettings.FontSize);
                 }
-                catch(ArgumentException e)
+                catch
                 {
                     return null;
                 }

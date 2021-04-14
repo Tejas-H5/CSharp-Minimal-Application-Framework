@@ -6,10 +6,17 @@ namespace RenderingEngine.Datatypes
 {
     public class ObservableData
     {
-        public event Action OnDataChanged;
+        public event Action OnDataChanged {
+            add {
+                _onDataChanged.Event += value;
+            }
+            remove {
+                _onDataChanged.Event-= value;
+            }
+        }
 
-        bool _invoking = false;
         bool _locked = false;
+        private NonRecursiveEvent _onDataChanged = new NonRecursiveEvent();
 
         public void Lock()
         {
@@ -25,12 +32,10 @@ namespace RenderingEngine.Datatypes
         protected void DataChanged()
         {
             //Prevent circular invocation
-            if (_invoking || _locked)
+            if (_locked)
                 return;
 
-            _invoking = true;
-            OnDataChanged?.Invoke();
-            _invoking = false;
+            _onDataChanged?.Invoke();
         }
     }
 }

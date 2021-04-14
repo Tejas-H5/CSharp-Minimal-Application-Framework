@@ -74,11 +74,6 @@ namespace RenderingEngine.VisualTests.UIEditor
             _initAnchoring = _parent.RectTransform.NormalizedAnchoring;
         }
 
-        private static float Snap(float x, float snapVal)
-        {
-            return MathF.Floor(x / snapVal) * snapVal;
-        }
-
         private void Drag(float dragDeltaX, float dragDeltaY, bool shouldSnap)
         {
             Rect2D r = _parent.Rect;
@@ -94,13 +89,13 @@ namespace RenderingEngine.VisualTests.UIEditor
 
             if (shouldSnap)
             {
-                dragDX = Snap(dragDX, _state.DimensionSnap);
-                dragDY = Snap(dragDY, _state.DimensionSnap);
+                dragDX = MathUtil.Snap(dragDX, _state.DimensionSnap);
+                dragDY = MathUtil.Snap(dragDY, _state.DimensionSnap);
 
-                initOffsets.X0 = Snap(initOffsets.X0, _state.DimensionSnap);
-                initOffsets.X1 = Snap(initOffsets.X1, _state.DimensionSnap);
-                initOffsets.Y0 = Snap(initOffsets.Y0, _state.DimensionSnap);
-                initOffsets.Y1 = Snap(initOffsets.Y1, _state.DimensionSnap);
+                initOffsets.X0 = MathUtil.Snap(initOffsets.X0, _state.DimensionSnap);
+                initOffsets.X1 = MathUtil.Snap(initOffsets.X1, _state.DimensionSnap);
+                initOffsets.Y0 = MathUtil.Snap(initOffsets.Y0, _state.DimensionSnap);
+                initOffsets.Y1 = MathUtil.Snap(initOffsets.Y1, _state.DimensionSnap);
             }
 
 

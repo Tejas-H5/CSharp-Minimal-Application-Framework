@@ -1,4 +1,5 @@
-﻿using RenderingEngine.Logic;
+﻿using RenderingEngine.Datatypes;
+using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
 using RenderingEngine.UI.Core;
 using System;
@@ -10,11 +11,33 @@ namespace RenderingEngine.UI.Components
 {
     public class UITextInput : UIComponent
     {
-        private UIMouseListener _mouseListner;
-        private UIText _textComponent;
-        private UIHitbox _hitbox;
+        protected UIMouseListener _mouseListner;
+        protected UIText _textComponent;
+        protected UIHitbox _hitbox;
 
         bool _isTyping;
+
+        public event Action OnTextChanged {
+            add { _onTextChanged.Event += value; }
+            remove { _onTextChanged.Event -= value; }
+        }
+
+        public event Action OnTextFinalized {
+            add { _onTextFinalized.Event += value; }
+            remove { _onTextFinalized.Event -= value; }
+        }
+
+        NonRecursiveEvent _onTextChanged = new NonRecursiveEvent();
+        NonRecursiveEvent _onTextFinalized = new NonRecursiveEvent();
+
+        protected void EndTyping()
+        {
+            if (_isTyping)
+            {
+                _isTyping = false;
+                _onTextFinalized.Invoke();
+            }
+        }
 
         public override void SetParent(UIElement parent)
         {
@@ -40,32 +63,22 @@ namespace RenderingEngine.UI.Components
             }
         }
 
-        public event Action OnTextChanged;
-        private bool _isInvokingOnTextChanged = false;
-
-        private void FireTextChangedEvent()
-        {
-            if (_isInvokingOnTextChanged)
-                return;
-
-            _isInvokingOnTextChanged = true;
-            OnTextChanged?.Invoke();
-            _isInvokingOnTextChanged = false;
-        }
-
         public override bool ProcessEvents()
         {
-            if (_isTyping && Input.IsMouseClicked(MouseButton.Left))
+            if (_isTyping)
             {
-                if(!_hitbox.PointIsInside(Input.MouseX, Input.MouseY))
+                if (_isTyping && Input.IsMouseClicked(MouseButton.Left))
                 {
-                    _isTyping = false;
+                    if(!_hitbox.PointIsInside(Input.MouseX, Input.MouseY))
+                    {
+                        EndTyping();
+                    }
                 }
-            }
 
-            if (Input.IsKeyPressed(KeyCode.Escape))
-            {
-                _isTyping = false;
+                if (Input.IsKeyPressed(KeyCode.Escape))
+                {
+                    EndTyping();
+                }
             }
 
             if (_isTyping)
@@ -111,7 +124,7 @@ namespace RenderingEngine.UI.Components
 
             if (changed)
             {
-                FireTextChangedEvent();
+                _onTextChanged.Invoke();
             }
         }
     }

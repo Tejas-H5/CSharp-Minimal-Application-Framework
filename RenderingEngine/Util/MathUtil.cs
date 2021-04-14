@@ -7,6 +7,16 @@ namespace RenderingEngine.Util
 
     public static class MathUtil
     {
+        public static float Snap(float x, float snapVal)
+        {
+            return MathF.Floor(x / snapVal) * snapVal;
+        }
+
+        public static double Snap(double x, double snapVal)
+        {
+            return Math.Floor(x / snapVal) * snapVal;
+        }
+
         public static float Lerp(float a, float b, float t)
         {
             return a + (b - a) * t;

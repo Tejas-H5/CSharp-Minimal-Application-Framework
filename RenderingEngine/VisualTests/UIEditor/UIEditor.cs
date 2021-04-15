@@ -11,6 +11,7 @@ using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
 using RenderingEngine.UI.Properties;
 using System;
+using System.Text;
 
 namespace RenderingEngine.VisualTests.UIEditor
 {
@@ -281,6 +282,17 @@ namespace RenderingEngine.VisualTests.UIEditor
             );
 
             _root.GetComponentOfType<UIMouseListener>().OnMousePressed += OnWindowClicked;
+
+            copyCodeButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnCopyCodeButtonPressed;
+        }
+
+        private void OnCopyCodeButtonPressed()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            Window.ClipboardString = "Bruh";
+            
+            sb.ToString();
         }
 
         private void InitRightclickMenu()

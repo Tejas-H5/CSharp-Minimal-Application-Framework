@@ -91,7 +91,7 @@ namespace RenderingEngine.Logic
 
             TrackFPS(args);
 
-            updateFrames++;
+            updateFrames++;            
         }
 
         private void TrackFPS(FrameEventArgs args)

@@ -39,6 +39,8 @@ namespace RenderingEngine.Logic
         public static double UpdateFrequency { get { return _instance.UpdateFrequency; } set { _instance.UpdateFrequency = value; } }
         public static double RenderFrequency { get { return _instance.RenderFrequency; } set { _instance.RenderFrequency = value; } }
 
+        public static string ClipboardString { get { return _instance.ClipboardString; } set { _instance.ClipboardString = value; } }
+
 
         public static event Action<MouseWheelEventArgs> MouseWheel {
             add {

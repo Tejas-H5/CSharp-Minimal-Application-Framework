@@ -39,17 +39,22 @@ namespace RenderingEngine.UI.Core
             }
         }
 
-        public PointF AnchoredPosition {
+        public PointF AnchoredPositionAbs {
             get {
-                return _rectTransform.AnchoredPosition;
+                return _rectTransform.AnchoredPositionAbs;
             }
         }
 
-        public Rect2D RectOffset {
+        public PointF NormalizedCenter {
+            get { return _rectTransform.NormalizedCenter; }
+            set { _rectTransform.NormalizedCenter = value; }
+        }
+
+        public Rect2D AbsoluteOffset {
             get { return _rectTransform.AbsoluteOffset; }
         }
 
-        public Rect2D Anchoring {
+        public Rect2D NormalizedAnchoring {
             get { return _rectTransform.NormalizedAnchoring; }
         }
 

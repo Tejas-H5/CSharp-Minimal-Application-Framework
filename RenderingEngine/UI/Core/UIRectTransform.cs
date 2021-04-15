@@ -34,7 +34,7 @@ namespace RenderingEngine.UI.Core
             }
         }
 
-        public PointF AnchoredPosition {
+        public PointF AnchoredPositionAbs {
             get {
                 return new PointF(_absoluteOffset.X0 + _normalizedCenter.X * _rect.Width, _absoluteOffset.Y0 + _normalizedCenter.Y * _rect.Height);
             }
@@ -65,6 +65,19 @@ namespace RenderingEngine.UI.Core
             }
         }
 
+        //Not used in the updating process
+        public bool PositionSizeX {
+            get {
+                return MathF.Abs(_normalizedAnchoring.X0 - _normalizedAnchoring.X1) < 0.00001f;
+            }
+        }
+
+        //Not used in the updating process
+        public bool PositionSizeY {
+            get {
+                return MathF.Abs(_normalizedAnchoring.Y0 - _normalizedAnchoring.Y1) < 0.00001f;
+            }
+        }
 
         public void SetAbsOffsetsX(float left, float right)
         {

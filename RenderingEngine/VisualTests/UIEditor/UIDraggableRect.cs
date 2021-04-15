@@ -198,12 +198,16 @@ namespace RenderingEngine.VisualTests.UIEditor
 
         private void DragEntireRect(float dragDX, float dragDY, Rect2D initOffsets)
         {
+            //I kept dragging the entire rect by accident when I wanted to just drag an edge, so I have disabled 
+            //this feature for now
+            /*
             _parent.SetAbsoluteOffset(new Rect2D(
                 initOffsets.X0 + dragDX,
                 initOffsets.Y0 + dragDY,
                 initOffsets.X1 - dragDX,
                 initOffsets.Y1 - dragDY
             ));
+            */
         }
 
         private void DragEdgeOffsets(UIRectTransform rtf, Rect2D initOffsets, float dragDX, float dragDY)
@@ -426,7 +430,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             float leftAnchor, rightAnchor, topAnchor, bottomAnchor;
             GetAnchors(rtf, pR, out leftAnchor, out rightAnchor, out topAnchor, out bottomAnchor);
 
-            if (MathF.Abs(leftAnchor - rightAnchor) < 0.01f)
+            if (rtf.PositionSizeX)
             {
                 DrawPosSizeInfoX(r, pR, rtf, leftAnchor);
             }
@@ -435,7 +439,7 @@ namespace RenderingEngine.VisualTests.UIEditor
                 DrawOffsetInfoX(r, pR, rtf, leftAnchor, rightAnchor);
             }
 
-            if (MathF.Abs(topAnchor - bottomAnchor) < 0.01f)
+            if (rtf.PositionSizeY)
             {
                 DrawPosSizeInfoY(r, pR, rtf, bottomAnchor);
             }

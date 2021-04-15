@@ -39,7 +39,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
             float endSize = _padding + (_spacing + _padding) * _parent.Count;
             if (_vertical)
             {
-                _parent.SetAbsPositionSizeY(_parent.AnchoredPosition.Y, endSize);
+                _parent.SetAbsPositionSizeY(_parent.AnchoredPositionAbs.Y, endSize);
             }
 
             if (_vertical)

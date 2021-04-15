@@ -122,9 +122,9 @@ namespace RenderingEngine.VisualTests.UI
             }
 
             UIText buttonText = button.GetComponentOfType<UIText>();
-            buttonText.Text = $"Absolute positioning x={button.RectOffset.X0},y={button.RectOffset.Y0}, " +
-                $"\n width={button.RectOffset.X1} and height = {button.RectOffset.Y1}, " +
-                $"\n center = {button.Anchoring.X1},{button.Anchoring.Y1}, ";
+            buttonText.Text = $"Absolute positioning x={button.AbsoluteOffset.X0},y={button.AbsoluteOffset.Y0}, " +
+                $"\n width={button.AbsoluteOffset.X1} and height = {button.AbsoluteOffset.Y1}, " +
+                $"\n center = {button.NormalizedAnchoring.X1},{button.NormalizedAnchoring.Y1}, ";
 
             button.GetComponentOfType<UIMouseListener>().OnMouseReleased += Button_OnClicked;
 

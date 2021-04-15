@@ -1,4 +1,4 @@
-﻿using RenderingEngine.Datatypes;
+﻿using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Util;
 using System;
 using System.Drawing;
@@ -34,6 +34,11 @@ namespace RenderingEngine.UI.Core
             }
         }
 
+        public PointF AnchoredPosition {
+            get {
+                return new PointF(_absoluteOffset.X0 + _normalizedCenter.X * _rect.Width, _absoluteOffset.Y0 + _normalizedCenter.Y * _rect.Height);
+            }
+        }
 
         public Rect2D NormalizedAnchoring {
             get { return _normalizedAnchoring; }

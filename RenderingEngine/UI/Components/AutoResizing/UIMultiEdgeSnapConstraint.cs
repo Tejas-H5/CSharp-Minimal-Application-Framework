@@ -1,6 +1,6 @@
 ﻿using RenderingEngine.UI.Core;
 
-namespace RenderingEngine.UI.Components
+namespace RenderingEngine.UI.Components.AutoResizing
 {
     public class UIMultiEdgeSnapConstraint : UIComponent
     {

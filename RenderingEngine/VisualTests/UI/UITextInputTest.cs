@@ -1,9 +1,14 @@
 ﻿using RenderingEngine.Datatypes;
+using RenderingEngine.Datatypes.Geometric;
+using RenderingEngine.Datatypes.UI;
 using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
 using RenderingEngine.UI;
-using RenderingEngine.UI.Components;
+using RenderingEngine.UI.Components.DataInput;
+using RenderingEngine.UI.Components.MouseInput;
+using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
+using RenderingEngine.UI.Properties;
 
 namespace RenderingEngine.VisualTests.UI
 {
@@ -11,8 +16,6 @@ namespace RenderingEngine.VisualTests.UI
     {
         UIElement _root;
         UIElement _textInputElement;
-
-
 
 
         public override void Start()
@@ -42,7 +45,7 @@ namespace RenderingEngine.VisualTests.UI
                             new UIMouseListener(),
                             new UIText("", new Color4(0), "Comic Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
                             new UIMouseFeedback(new Color4(0.7f), new Color4(0.5f)),
-                            new UITextInput()
+                            new UITextStringInput(new StringProperty(""), "enter text", true, false)
                         )
                         .SetNormalizedPositionCenter(0.5f, 0.5f, 0.5f, 0.5f)
                         .SetAbsPositionSize((i - 1) * size, (j - 1) * size, size-10, size-10)

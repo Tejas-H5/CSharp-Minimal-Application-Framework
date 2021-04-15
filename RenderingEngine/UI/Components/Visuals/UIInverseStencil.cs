@@ -1,7 +1,7 @@
 ﻿using RenderingEngine.Rendering;
 using RenderingEngine.UI.Core;
 
-namespace RenderingEngine.UI.Components
+namespace RenderingEngine.UI.Components.Visuals
 {
     //TODO: The problem with the current implementation is that
     //only UIElements that don't have any parents that use this component can use this component

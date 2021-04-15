@@ -1,4 +1,4 @@
-﻿using RenderingEngine.Datatypes;
+﻿using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Rendering.Text;
 using System;
 using System.Collections.Generic;

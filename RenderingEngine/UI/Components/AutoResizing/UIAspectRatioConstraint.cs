@@ -1,7 +1,7 @@
-﻿using RenderingEngine.Datatypes;
+﻿using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.UI.Core;
 
-namespace RenderingEngine.UI.Components
+namespace RenderingEngine.UI.Components.AutoResizing
 {
     public class UIAspectRatioConstraint : UIComponent
     {
@@ -20,22 +20,22 @@ namespace RenderingEngine.UI.Components
             if (_widthToHeight * parentRect.Height < parentRect.Width)
             {
                 //The height is fine, the width needs to be changed
-                float wantedWidth = (parentRect.Height) * _widthToHeight;
+                float wantedWidth = parentRect.Height * _widthToHeight;
                 float centerX = _parent.RectTransform.NormalizedCenter.X;
 
                 float deltaW = parentRect.Width - wantedWidth;
-                wantedRect.X0 += deltaW * (centerX);
+                wantedRect.X0 += deltaW * centerX;
                 wantedRect.X1 -= deltaW * (1.0f - centerX);
             }
             else
             {
                 //The width is fine, the height needs to be changed
-                float wantedHeight = (parentRect.Width) * (1.0f / _widthToHeight);
+                float wantedHeight = parentRect.Width * (1.0f / _widthToHeight);
                 float centerY = _parent.RectTransform.NormalizedCenter.Y;
 
                 float deltaH = parentRect.Height - wantedHeight;
 
-                wantedRect.Y0 += deltaH * (centerY);
+                wantedRect.Y0 += deltaH * centerY;
                 wantedRect.Y1 -= deltaH * (1.0f - centerY);
             }
 

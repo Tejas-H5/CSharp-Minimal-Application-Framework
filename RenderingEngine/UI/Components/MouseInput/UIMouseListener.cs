@@ -2,7 +2,7 @@
 using RenderingEngine.UI.Core;
 using System;
 
-namespace RenderingEngine.UI.Components
+namespace RenderingEngine.UI.Components.MouseInput
 {
     public class UIMouseListener : UIComponent
     {

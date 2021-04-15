@@ -1,8 +1,9 @@
 ﻿using RenderingEngine.Datatypes;
 using RenderingEngine.Logic;
+using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
 
-namespace RenderingEngine.UI.Components
+namespace RenderingEngine.UI.Components.MouseInput
 {
     public class UIMouseFeedback : UIComponent
     {
@@ -21,7 +22,7 @@ namespace RenderingEngine.UI.Components
 
         public override void SetParent(UIElement parent)
         {
-            if(_mouseListner != null)
+            if (_mouseListner != null)
             {
                 _mouseListner.OnMouseEnter -= _mouseListner_OnMouseOver;
                 _mouseListner.OnMouseOver -= _mouseListner_OnMouseOver;

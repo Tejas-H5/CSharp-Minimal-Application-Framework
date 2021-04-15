@@ -1,5 +1,5 @@
 ﻿using OpenTK.Mathematics;
-using RenderingEngine.Datatypes;
+using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
 using System;

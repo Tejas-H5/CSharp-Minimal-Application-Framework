@@ -11,11 +11,11 @@ namespace RenderingEngine
         {
             EntryPoint[] tests =
             {
+                new UIEditor(),
+               /* 
                 new UITextNumberInputTest(),
                 new UITextInputTest(),
                 new UITest(),
-                new UIEditor(),
-               /* 
                 new StencilTest(),
                 new TextureTest(),
                 new KeyboardTest(),

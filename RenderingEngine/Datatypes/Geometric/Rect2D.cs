@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RenderingEngine.Datatypes
+namespace RenderingEngine.Datatypes.Geometric
 {
     public struct Rect2D
     {
@@ -62,7 +62,7 @@ namespace RenderingEngine.Datatypes
 
         internal bool IsInverted()
         {
-            return (X0 > X1 || Y0 > Y1);
+            return X0 > X1 || Y0 > Y1;
         }
 
         public override bool Equals(object obj)

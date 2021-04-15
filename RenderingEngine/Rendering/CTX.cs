@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
-using RenderingEngine.Datatypes;
+using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Rendering.ImmediateMode;
 using System.Collections.Generic;
 using System.Drawing;

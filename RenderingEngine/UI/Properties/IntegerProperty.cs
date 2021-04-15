@@ -2,16 +2,14 @@
 
 namespace RenderingEngine.UI.Properties
 {
-    public class IntegerProperty : ObservableData
+    public class IntegerProperty : Property<long>
     {
         long _lower, _upper, _snap;
-        private long _value;
-        public long Value { get => _value; set => SetValue(value); }
         public long Lower {
             get { return _lower; }
             set {
                 _lower = value;
-                SetValue(_value);
+                Value = _value;
             }
         }
 
@@ -19,7 +17,7 @@ namespace RenderingEngine.UI.Properties
             get { return _upper; }
             set {
                 _upper = value;
-                SetValue(_value);
+                Value = _value;
             }
         }
 
@@ -27,11 +25,11 @@ namespace RenderingEngine.UI.Properties
             get { return _snap; }
             set {
                 _snap = value;
-                SetValue(_value);
+                Value = _value;
             }
         }
 
-        public void SetValue(long num)
+        protected override void SetValue(long num)
         {
             if (num < _lower)
                 num = _lower;
@@ -45,8 +43,6 @@ namespace RenderingEngine.UI.Properties
             {
                 _value = _lower + ((_value - _lower) / _snap) * _snap;
             }
-
-            DataChanged();
         }
 
         public IntegerProperty()
@@ -55,6 +51,7 @@ namespace RenderingEngine.UI.Properties
         }
 
         public IntegerProperty(long lower, long upper, long snap, long value)
+            : base(value)
         {
             _lower = lower;
             _upper = upper;

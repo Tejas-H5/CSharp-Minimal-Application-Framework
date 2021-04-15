@@ -1,21 +1,38 @@
-﻿using RenderingEngine.Datatypes;
+﻿using RenderingEngine.Datatypes.ObserverPattern;
 using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
+using RenderingEngine.UI.Components.MouseInput;
+using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
-namespace RenderingEngine.UI.Components
+namespace RenderingEngine.UI.Components.DataInput
 {
-    public class UITextInput : UIComponent
+    //TODO: Esc to cancel out of an input
+    //might have to use another string rather than the string inside the TextComponent
+    public abstract class UITextInput : UIComponent
     {
         protected UIMouseListener _mouseListner;
         protected UIText _textComponent;
         protected UIHitbox _hitbox;
 
         bool _isTyping;
+        bool _shouldClear;
+        bool _acceptsNewLine = false;
+
+        public string Placeholder { get; set; }
+
+
+        public UITextInput(string placeholder, bool acceptsNewLines, bool shouldClear)
+        {
+            _shouldClear = shouldClear;
+            _acceptsNewLine = acceptsNewLines;
+            Placeholder = placeholder;
+        }
+
 
         public event Action OnTextChanged {
             add { _onTextChanged.Event += value; }
@@ -41,7 +58,7 @@ namespace RenderingEngine.UI.Components
 
         public override void SetParent(UIElement parent)
         {
-            if(_mouseListner != null)
+            if (_mouseListner != null)
             {
                 _mouseListner.OnMouseOver -= OnMouseOver;
             }
@@ -51,8 +68,24 @@ namespace RenderingEngine.UI.Components
             _mouseListner = _parent.GetComponentOfType<UIMouseListener>();
             _textComponent = _parent.GetComponentInChildrenOfType<UIText>();
             _hitbox = _parent.GetComponentOfType<UIHitbox>();
-                
+
             _mouseListner.OnMouseOver += OnMouseOver;
+
+            OnTextChanged += OnTextChangedEvent;
+        }
+
+        private void OnTextChangedEvent()
+        {
+            string s = _textComponent.Text;
+
+            if (s.Length > 0 && s[s.Length - 1] == '\n')
+            {
+                if (_acceptsNewLine)
+                    return;
+
+                _textComponent.Text = s.Substring(0, s.Length - 1);
+                EndTyping();
+            }
         }
 
         private void OnMouseOver()
@@ -60,6 +93,9 @@ namespace RenderingEngine.UI.Components
             if (Input.IsMouseClicked(MouseButton.Left))
             {
                 _isTyping = true;
+
+                if (_shouldClear)
+                    _textComponent.Text = "";
             }
         }
 
@@ -69,15 +105,17 @@ namespace RenderingEngine.UI.Components
             {
                 if (_isTyping && Input.IsMouseClicked(MouseButton.Left))
                 {
-                    if(!_hitbox.PointIsInside(Input.MouseX, Input.MouseY))
+                    if (!_hitbox.PointIsInside(Input.MouseX, Input.MouseY))
                     {
                         EndTyping();
+                        return true;
                     }
                 }
 
                 if (Input.IsKeyPressed(KeyCode.Escape))
                 {
                     EndTyping();
+                    return true;
                 }
             }
 
@@ -105,11 +143,11 @@ namespace RenderingEngine.UI.Components
         private void TypeKeystrokes()
         {
             bool changed = false;
-            for(int i = 0; i < Input.CharactersTyped.Length; i++)
+            for (int i = 0; i < Input.CharactersTyped.Length; i++)
             {
                 if (Input.CharactersTyped[i] == '\b')
                 {
-                    if(_textComponent.Text.Length > 0)
+                    if (_textComponent.Text.Length > 0)
                     {
                         _textComponent.Text = _textComponent.Text.Substring(0, _textComponent.Text.Length - 1);
                     }

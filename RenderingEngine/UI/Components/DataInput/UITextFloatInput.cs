@@ -5,36 +5,34 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Components
+namespace RenderingEngine.UI.Components.DataInput
 {
     public class UITextFloatInput : UITextInput
     {
-        public readonly FloatProperty FloatProperty = new FloatProperty();
+        public FloatProperty FloatProperty = null;
 
         readonly double _initValue;
 
-
-        public UITextFloatInput(double value) 
+        public UITextFloatInput(FloatProperty property)
+            : base("", false, true)
         {
-            FloatProperty.Value = _initValue = value;
-        }
-
-        public UITextFloatInput(double value, double lower, double upper, double snap)
-        {
-            FloatProperty.Lock();
-            FloatProperty.Lower = lower;
-            FloatProperty.Upper = upper;
-            FloatProperty.Snap = snap;
-            FloatProperty.Value = _initValue = value;
-            FloatProperty.Unlock();
+            FloatProperty = property;
         }
 
         public override void SetParent(UIElement parent)
         {
             base.SetParent(parent);
 
-            base.OnTextFinalized += UITextNumberInput_OnTextChanged;
-            base.OnTextChanged += UITextFloatInput_OnTextChanged;
+            OnTextFinalized += UITextNumberInput_OnTextChanged;
+            OnTextChanged += UITextFloatInput_OnTextChanged;
+
+            _textComponent.Text = FloatProperty.Value.ToString();
+            FloatProperty.OnDataChanged += FloatProperty_OnDataChanged;
+        }
+
+        private void FloatProperty_OnDataChanged(double val)
+        {
+            _textComponent.Text = val.ToString();
         }
 
         private void UITextFloatInput_OnTextChanged()
@@ -52,9 +50,7 @@ namespace RenderingEngine.UI.Components
             double num = _initValue;
             double.TryParse(_textComponent.Text, out num);
 
-            _textComponent.Text = num.ToString();
             FloatProperty.Value = num;
         }
-
     }
 }

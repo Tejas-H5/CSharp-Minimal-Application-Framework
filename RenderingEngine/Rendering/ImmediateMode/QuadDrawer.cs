@@ -1,5 +1,5 @@
 ﻿using OpenTK.Mathematics;
-using RenderingEngine.Datatypes;
+using RenderingEngine.Datatypes.Geometric;
 
 namespace RenderingEngine.Rendering.ImmediateMode
 {

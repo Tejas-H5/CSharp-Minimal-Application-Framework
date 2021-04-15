@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using RenderingEngine.Datatypes;
+using RenderingEngine.Datatypes.Geometric;
 using System;
 
 namespace RenderingEngine.Logic

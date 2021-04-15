@@ -1,9 +1,10 @@
 ﻿using OpenTK.Mathematics;
-using RenderingEngine.Datatypes;
+using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
 using RenderingEngine.UI;
-using RenderingEngine.UI.Components;
+using RenderingEngine.UI.Components.MouseInput;
+using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
 using System;
 using Color4 = RenderingEngine.Datatypes.Color4;
@@ -37,6 +38,12 @@ namespace RenderingEngine.VisualTests.UI
 
         UIElement _modal;
 
+        UIElement CreateButton(string s)
+        {
+            return UICreator.CreateButton(
+                s, "Consolas", 12, new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
+            );
+        }
 
         private void InitUI()
         {
@@ -81,33 +88,23 @@ namespace RenderingEngine.VisualTests.UI
                     new UIRect(new Color4(0, 0, 0, 0.2f))
                     )
                     .AddChildren(
-                        bruhButton = UICreator.CreateButton(
-                            "Bruh XD", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
-                            )
+                        bruhButton = CreateButton("Bruh XD")
                             .SetNormalizedPositionCenter(0.5f, 0.5f)
                             .SetAbsPositionSize(0, 0, 400, 200)
                         ,
-                        closeButton = UICreator.CreateButton(
-                            "X", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
-                            )
+                        closeButton = CreateButton("X")
                             .SetNormalizedPositionCenter(1, 1, 1, 1)
                             .SetAbsPositionSize(-10, -10, 40, 40)
                         ,
-                        UICreator.CreateButton(
-                            "someText", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
-                            )
+                        CreateButton("some text")
                             .SetNormalizedPositionCenter(1, 1, 1, 1)
                             .SetAbsPositionSize(-10, -50, 100, 40)
                         ,
-                        UICreator.CreateButton(
-                            "some more textaoiuoawhiaohwifa", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
-                            )
+                        CreateButton("some more textaoiuoawhiaohwifa")
                             .SetNormalizedPositionCenter(1, 1, 1, 1)
                             .SetAbsPositionSize(-10, -100, 100, 40)
                         ,
-                        UICreator.CreateButton(
-                            "some more textaoiuoawhiaohwifaa asd foifsd iasfhpdihs pasdhfosh paihsd foafopha d \na weoifo awiefoaewhfoi", new Color4(0, 0, 0, 1f), new Color4(0.7f, 1f), new Color4(0.5f, 1f), new Color4(1f)
-                            )
+                        CreateButton("some more textaoiuoawhiaohwifaa asd foifsd iasfhpdihs pasdhfosh paihsd foafopha d \na weoifo awiefoaewhfoi")
                             .SetNormalizedPositionCenter(1, 1, 1, 1)
                             .SetAbsPositionSize(-10, -150, 100, 40)
                     )

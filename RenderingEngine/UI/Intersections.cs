@@ -1,4 +1,4 @@
-﻿using RenderingEngine.Datatypes;
+﻿using RenderingEngine.Datatypes.Geometric;
 using System.Drawing;
 
 namespace RenderingEngine.UI

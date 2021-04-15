@@ -17,6 +17,16 @@ namespace RenderingEngine.Util
             return Math.Floor(x / snapVal) * snapVal;
         }
 
+        public static float SnapRounded(float x, float snapVal)
+        {
+            return MathF.Round(x / snapVal) * snapVal;
+        }
+
+        public static double SnapRounded(double x, double snapVal)
+        {
+            return Math.Round(x / snapVal) * snapVal;
+        }
+
         public static float Lerp(float a, float b, float t)
         {
             return a + (b - a) * t;

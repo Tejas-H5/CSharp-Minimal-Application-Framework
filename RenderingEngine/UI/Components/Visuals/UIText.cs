@@ -1,15 +1,16 @@
 ﻿using RenderingEngine.Datatypes;
+using RenderingEngine.Datatypes.UI;
 using RenderingEngine.Rendering;
 using RenderingEngine.UI.Core;
 using System;
 using System.Drawing;
 
-namespace RenderingEngine.UI.Components
+namespace RenderingEngine.UI.Components.Visuals
 {
     public class UIText : UIComponent
     {
         public Color4 TextColor { get; set; }
-        public string Text { get; internal set; }
+        public string Text { get; internal set; } 
 
         public string Font { get; set; } = "";
         public int FontSize { get; set; } = -1;
@@ -29,7 +30,6 @@ namespace RenderingEngine.UI.Components
         public UIText(string text, Color4 textColor, VerticalAlignment vAlign, HorizontalAlignment hAlign)
             : this(text, textColor, "", -1, vAlign, hAlign)
         {
-
         }
 
         public UIText(string text, Color4 textColor, string fontName, int fontSize, VerticalAlignment vAlign, HorizontalAlignment hAlign)
@@ -80,14 +80,14 @@ namespace RenderingEngine.UI.Components
                     lineEnd++;
 
                 float lineWidth = scale * CTX.GetStringWidth(Text, lineStart, lineEnd);
-                
+
                 switch (HorizontalAlignment)
                 {
                     case HorizontalAlignment.Left:
                         _caratPos.X = _parent.Rect.Left;
                         break;
                     case HorizontalAlignment.Center:
-                        _caratPos.X = _parent.Rect.CenterX - lineWidth/2f;
+                        _caratPos.X = _parent.Rect.CenterX - lineWidth / 2f;
                         break;
                     case HorizontalAlignment.Right:
                         _caratPos.X = _parent.Rect.Right - lineWidth;
@@ -96,7 +96,7 @@ namespace RenderingEngine.UI.Components
 
                 _caratPos = CTX.DrawText(Text, lineStart, lineEnd, _caratPos.X, _caratPos.Y, scale);
 
-                lineStart = lineEnd; 
+                lineStart = lineEnd;
             }
         }
 

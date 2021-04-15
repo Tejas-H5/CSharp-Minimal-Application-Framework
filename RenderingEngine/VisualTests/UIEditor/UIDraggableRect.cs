@@ -1,9 +1,11 @@
 ﻿using RenderingEngine.Datatypes;
+using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
 using RenderingEngine.Rendering.ImmediateMode;
 using RenderingEngine.UI;
-using RenderingEngine.UI.Components;
+using RenderingEngine.UI.Components.MouseInput;
+using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
 using RenderingEngine.Util;
 using System;
@@ -34,9 +36,9 @@ namespace RenderingEngine.VisualTests.UIEditor
         private string text;
         private Color4 color;
 
-        public string Name { get => name; set { name = value; _state.SelectionChanged = true; } }
-        public string Text { get => text; set { text = value; _state.SelectionChanged = true; } }
-        public Color4 Color { get => color; set { color = value; _state.SelectionChanged = true; } }
+        public string Name { get => name; set { name = value; _state.InvokeChangeEvent(); } }
+        public string Text { get => text; set { text = value; _state.InvokeChangeEvent(); } }
+        public Color4 Color { get => color; set { color = value; _state.InvokeChangeEvent(); } }
 
 
         public static UIElement CreateDraggableRect(DraggableRectSelectedState selectionState)
@@ -132,21 +134,28 @@ namespace RenderingEngine.VisualTests.UIEditor
 
                 if (shouldSnap)
                 {
-                    newAnchorX0 = SnapCenter(newAnchorX0);
-                    newAnchorY0 = SnapCenter(newAnchorY0);
+                    newAnchorX0 = MathUtil.SnapRounded(newAnchorX0, _state.AnchorSnap);
+                    newAnchorY0 = MathUtil.SnapRounded(newAnchorY0, _state.AnchorSnap);
                 }
 
                 _parent.SetNormalizedAnchoring(new Rect2D(newAnchorX0, newAnchorY0, _initAnchoring.X1, _initAnchoring.Y1));
             }
             else if (_upperAnchor)
             {
-                float newAnchorX1 = initAnchors.X1 + dragDX / pR.Width;
-                float newAnchorY1 = initAnchors.Y1 + dragDY / pR.Height;
+                float newAnchorX1, newAnchorY1;
 
                 if (shouldSnap)
                 {
-                    newAnchorX1 = SnapCenter(newAnchorX1);
-                    newAnchorY1 = SnapCenter(newAnchorY1);
+                    //the 1f - snap(1f - x) is to make sure that the upper anchor's coordinate system starts in 1,1
+                    //This way, with an anchor snap of 0.33, there isn't a gap between the top corner and the anchor
+                    //as there normally would be if we used a coordinate system starting at the usual 0,0 rather than 1,1
+                    newAnchorX1 = 1f-MathUtil.SnapRounded(1f - (initAnchors.X1 + dragDX / pR.Width), _state.AnchorSnap);
+                    newAnchorY1 = 1f-MathUtil.SnapRounded(1f - (initAnchors.Y1 + dragDY / pR.Height), _state.AnchorSnap);
+                }
+                else
+                {
+                    newAnchorX1 = initAnchors.X1 + dragDX / pR.Width;
+                    newAnchorY1 = initAnchors.Y1 + dragDY / pR.Height;
                 }
 
                 _parent.SetNormalizedAnchoring(new Rect2D(_initAnchoring.X0, _initAnchoring.Y0, newAnchorX1, newAnchorY1));
@@ -523,8 +532,6 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             if (_state.SelectedRect != this)
                 return;
-
-            _state.SelectionChanged = true;
         }
     }
 }

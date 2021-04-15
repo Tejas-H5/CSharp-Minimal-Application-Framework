@@ -10,21 +10,23 @@ namespace RenderingEngine.VisualTests.UIEditor
             get {
                 return _selRect;
             }
-
             set {
-                _selRect = value;
-                selectionChanged = true;
+                if(value != _selRect)
+                {
+                    _selRect = value;
+                    InvokeChangeEvent();
+                }
             }
         }
 
         bool _isInvoking = false;
 
-        void InvokeChangeEvent()
+        public void InvokeChangeEvent()
         {
             if (_isInvoking)
                 return;
             
-            if (selectionChanged && _selRect != null)
+            if (_selRect != null)
             {
                 _isInvoking = true;
                 OnSelectionChanged?.Invoke(_selRect);
@@ -32,20 +34,10 @@ namespace RenderingEngine.VisualTests.UIEditor
             }
         }
 
-        public bool SelectionChanged {
-            get {
-                return selectionChanged;
-            }
-
-            set {
-                selectionChanged = value;
-                InvokeChangeEvent();
-            }
-        }
 
         UIDraggableRect _selRect;
 
-        public bool selectionChanged = false;
         public float DimensionSnap = 5f;
+        public float AnchorSnap = 0.5f;
     }
 }

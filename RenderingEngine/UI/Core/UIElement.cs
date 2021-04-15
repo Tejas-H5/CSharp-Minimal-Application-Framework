@@ -1,7 +1,7 @@
-﻿using RenderingEngine.Datatypes;
+﻿using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
-using RenderingEngine.UI.Components;
+using RenderingEngine.UI.Components.MouseInput;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -36,6 +36,12 @@ namespace RenderingEngine.UI.Core
         public float AbsCenterY {
             get {
                 return Rect.Y0 + _rectTransform.NormalizedCenter.Y * Rect.Height;
+            }
+        }
+
+        public PointF AnchoredPosition {
+            get {
+                return _rectTransform.AnchoredPosition;
             }
         }
 

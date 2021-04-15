@@ -1,7 +1,7 @@
-﻿using RenderingEngine.Datatypes;
+﻿using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.UI.Core;
 
-namespace RenderingEngine.UI.Components.Uncompleted
+namespace RenderingEngine.UI.Components.AutoResizing.Uncompleted
 {
     public class UIDimensionConstraint : UIComponent
     {
@@ -29,12 +29,12 @@ namespace RenderingEngine.UI.Components.Uncompleted
             if (minWidth > 0 && width < minWidth)
             {
                 wantedRect.X1 = wantedRect.X0 + (1f - centerX) * minWidth;
-                wantedRect.X0 = wantedRect.X1 - (centerX) * minWidth;
+                wantedRect.X0 = wantedRect.X1 - centerX * minWidth;
             }
             else if (maxWidth > 0 && width > maxWidth)
             {
                 wantedRect.X1 = wantedRect.X0 + (1f - centerX) * maxWidth;
-                wantedRect.X0 = wantedRect.X1 - (centerX) * maxWidth;
+                wantedRect.X0 = wantedRect.X1 - centerX * maxWidth;
             }
 
             float height = wantedRect.Y1 - wantedRect.Y0;
@@ -45,12 +45,12 @@ namespace RenderingEngine.UI.Components.Uncompleted
             if (minHeight > 0 && height < minHeight)
             {
                 wantedRect.Y1 = wantedRect.Y0 + (1f - centerY) * minHeight;
-                wantedRect.Y0 = wantedRect.Y1 - (centerY) * minHeight;
+                wantedRect.Y0 = wantedRect.Y1 - centerY * minHeight;
             }
             else if (maxHeight > 0 && height > maxHeight)
             {
                 wantedRect.Y1 = wantedRect.Y0 + (1f - centerY) * maxHeight;
-                wantedRect.Y0 = wantedRect.Y1 - (centerY) * maxHeight;
+                wantedRect.Y0 = wantedRect.Y1 - centerY * maxHeight;
             }
 
             _parent.RectTransform.Rect = wantedRect;

@@ -4,18 +4,16 @@ using System;
 
 namespace RenderingEngine.UI.Properties
 {
-    public class FloatProperty : ObservableData
+    public class FloatProperty : Property<double>
     {
         double _lower, _upper, _snap;
-        private double _value;
-        public double Value { get => _value; set => SetValue(value); }
 
         public double Lower {
             get { return _lower; }
             set {
                 _lower = value;
 
-                SetValue(_value);
+                Value = _value;
             }
         }
 
@@ -24,7 +22,7 @@ namespace RenderingEngine.UI.Properties
             set {
                 _upper = value;
 
-                SetValue(_value);
+                Value = _value;
             }
         }
 
@@ -32,13 +30,12 @@ namespace RenderingEngine.UI.Properties
             get { return _snap; }
             set {
                 _snap = value;
-                SetValue(_value);
+                Value = _value;
             }
         }
 
-        private void SetValue(double num)
+        protected override void SetValue(double num)
         {
-
             if (num < _lower)
                 num = _lower;
 
@@ -58,9 +55,7 @@ namespace RenderingEngine.UI.Properties
                 num = _upper;
 
             _value = num;
-            DataChanged();
         }
-
 
         public FloatProperty()
             : this(double.MinValue, double.MaxValue, -1, 0)
@@ -68,6 +63,7 @@ namespace RenderingEngine.UI.Properties
         }
 
         public FloatProperty(double lower, double upper, double snap, double value)
+            : base(value)
         {
             _lower = lower;
             _upper = upper;

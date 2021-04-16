@@ -53,7 +53,6 @@ namespace RenderingEngine.Datatypes.Geometric
             }
         }
 
-
         public float Height {
             get {
                 return Top - Bottom;

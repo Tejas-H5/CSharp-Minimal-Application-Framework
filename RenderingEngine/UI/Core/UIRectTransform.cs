@@ -36,7 +36,10 @@ namespace RenderingEngine.UI.Core
 
         public PointF AnchoredPositionAbs {
             get {
-                return new PointF(_absoluteOffset.X0 + _normalizedCenter.X * _rect.Width, _absoluteOffset.Y0 + _normalizedCenter.Y * _rect.Height);
+                return new PointF(
+                    _absoluteOffset.X0 + _normalizedCenter.X * _rect.Width,
+                    _absoluteOffset.Y0 + _normalizedCenter.Y * _rect.Height
+                );
             }
         }
 
@@ -119,6 +122,10 @@ namespace RenderingEngine.UI.Core
             SetAbsPositionSizeY(y, height);
         }
 
+        internal void SetNormalizedPositionCenteY(float v1, float v2)
+        {
+            throw new NotImplementedException();
+        }
 
         public void SetNormalizedAnchoringX(float left, float right)
         {

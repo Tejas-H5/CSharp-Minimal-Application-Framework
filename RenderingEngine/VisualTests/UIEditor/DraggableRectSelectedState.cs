@@ -2,7 +2,7 @@
 
 namespace RenderingEngine.VisualTests.UIEditor
 {
-    class DraggableRectSelectedState
+    public class DraggableRectSelectedState
     {
         public event Action<UIDraggableRect> OnSelectionChanged;
 

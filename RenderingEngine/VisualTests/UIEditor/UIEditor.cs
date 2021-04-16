@@ -199,8 +199,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         private void InitRootUI()
         {
             UIElement copyCodeButton;
-            UIElement saveLayoutButton;
-            UIElement loadLayoutButton;
+            UIElement pasteLayoutButton;
 
             _unitSnapProperty = CreateNamePropPair("Unit Snap", CreateFloatPropertyElement(
                 CreateFloatProperty(OnUnitSnapChanged)
@@ -209,11 +208,11 @@ namespace RenderingEngine.VisualTests.UIEditor
                 CreateFloatProperty(OnAnchoredSnapChanged)
             ));
 
-            _rectNameProperty = CreateNamePropPair("Name(?)", CreateStringPropertyElement(
+            _rectNameProperty = CreateNamePropPair("Name", CreateStringPropertyElement(
                 CreateStringProperty(OnSelectionNameEdited)
             ));
 
-            _rectTextProperty = CreateNamePropPair("Name(?)", CreateStringPropertyElement(
+            _rectTextProperty = CreateNamePropPair("Text", CreateStringPropertyElement(
                 CreateStringProperty(OnSelectionTextEdited)
             ));
 
@@ -247,9 +246,7 @@ namespace RenderingEngine.VisualTests.UIEditor
                             ,
                             copyCodeButton = CreateButton("Copy Code")
                             ,
-                            saveLayoutButton = CreateButton("Save Layout")
-                            ,
-                            loadLayoutButton = CreateButton("Load Layout")
+                            pasteLayoutButton = CreateButton("Paste Code")
                         )
                         ,
                         _propertiesPanel = UICreator.CreatePanel(new Color4(1))
@@ -257,7 +254,7 @@ namespace RenderingEngine.VisualTests.UIEditor
                         .AddComponent(
                             new UIMultiEdgeSnapConstraint(
                                 new UIEdgeSnapConstraint(_uiView, UIRectEdgeSnapEdge.Top, UIRectEdgeSnapEdge.Top),
-                                new UIEdgeSnapConstraint(loadLayoutButton, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Top)
+                                new UIEdgeSnapConstraint(pasteLayoutButton, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Top)
                             )
                         )
                         .AddChildren(
@@ -285,124 +282,23 @@ namespace RenderingEngine.VisualTests.UIEditor
             _root.GetComponentOfType<UIMouseListener>().OnMousePressed += OnWindowClicked;
 
             copyCodeButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnCopyCodeButtonPressed;
+            pasteLayoutButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnPasteCodeButtonPressed;
         }
 
-        void AppendTabs(StringBuilder sb, int num)
+        private void OnPasteCodeButtonPressed()
         {
-            for(int i = 0; i < num; i++)
-            {
-                sb.Append("\t");
-            }
+            _uiView.RemoveAllChildren();
+            _uiView.AddChild(
+                _domRoot = codeParser.CreateDraggableRectsFromString(Window.ClipboardString, _selectedState)
+            );
         }
 
-        void AppendText(StringBuilder sb, int tabs, string s)
-        {
-            AppendTabs(sb, tabs);
-            sb.Append(s);
-        }
-
-        void TraverseUITree(UIElement root, StringBuilder acc, List<string> variableNames, int indent)
-        {
-            UIDraggableRect draggableRect = root.GetComponentOfType<UIDraggableRect>();
-
-            string optionalVariableName = "";
-            if (!string.IsNullOrEmpty(draggableRect.Name))
-            {
-                optionalVariableName = $"{draggableRect.Name} = ";
-                variableNames.Add(draggableRect.Name);
-            }
-
-            string optionalTextComponent = "";
-            if (!string.IsNullOrEmpty(draggableRect.Text))
-            {
-                optionalTextComponent = $"new UIText(\"{draggableRect.Text}\", _textColor_)";
-            }
-
-            AppendText(acc, indent, $"{optionalVariableName}new UICreator.CreateUIElement({optionalTextComponent})\n");
-
-            if(root.RectTransform.PositionSizeX ^ root.RectTransform.PositionSizeY)
-            {
-                if (root.RectTransform.PositionSizeX)
-                {
-                    AppendText(acc, indent, $".SetAbsPositionSizeX({root.AnchoredPositionAbs.X}, {root.Rect.Width})\n");
-                    AppendText(acc, indent, $".SetNormalizedPositionCenterX({root.NormalizedAnchoring.X0}, {root.NormalizedCenter.X})\n");
-
-                    AppendText(acc, indent, $".SetAbsOffsetsY({root.AbsoluteOffset.Y0}, {root.AbsoluteOffset.Y1})\n");
-                    AppendText(acc, indent, $".SetNormalizedAnchoringY({root.NormalizedAnchoring.Y0}, {root.NormalizedAnchoring.Y1})\n");
-                }
-                else
-                {
-                    AppendText(acc, indent, $".SetAbsOffsetsX({root.AbsoluteOffset.X0}, {root.AbsoluteOffset.X1})\n");
-                    AppendText(acc, indent, $".SetNormalizedAnchoringX({root.NormalizedAnchoring.X0}, {root.NormalizedAnchoring.X1})\n");
-
-                    AppendText(acc, indent, $".SetAbsPositionSizeY({root.AnchoredPositionAbs.Y}, {root.Rect.Height})\n");
-                    AppendText(acc, indent, $".SetNormalizedPositionCenterY({root.NormalizedAnchoring.Y0}, {root.NormalizedCenter.Y})\n");
-                }
-            }
-            else if(root.RectTransform.PositionSizeX && root.RectTransform.PositionSizeY)
-            {
-                AppendText(acc, indent, $".SetAbsPositionSize({root.AnchoredPositionAbs.X}," +
-                    $"{root.AnchoredPositionAbs.Y}, {root.Rect.Width}, {root.Rect.Height})\n");
-                AppendText(acc, indent, $".SetNormalizedPositionCenter({root.NormalizedAnchoring.X0}," +
-                    $"{root.NormalizedAnchoring.Y0}, {root.NormalizedCenter.X}, {root.NormalizedCenter.Y})\n");
-            }
-            else
-            {
-                AppendText(acc, indent, $".SetAbsoluteOffset({root.AbsoluteOffset.X0}," +
-                    $"{root.AbsoluteOffset.Y0}, {root.AbsoluteOffset.X1}, {root.AbsoluteOffset.Y1})\n");
-                AppendText(acc, indent, $".SetNormalizedAnchoring({root.NormalizedAnchoring.X0}," +
-                    $"{root.NormalizedAnchoring.Y0}, {root.NormalizedAnchoring.X1}, {root.NormalizedAnchoring.Y1})\n");
-            }
-
-            AppendText(acc, indent, ".AddChildren(\n");
-            indent++;
-            for (int i = 0; i < root.Count; i++)
-            {
-                TraverseUITree(root[i], acc, variableNames, indent);
-
-                if(i != root.Count - 1)
-                {
-                    AppendText(acc, indent, "\n");
-                    AppendText(acc, indent, ",");
-                }
-                AppendText(acc, indent, "\n");
-            }
-            indent--;
-            AppendText(acc, indent, ")");
-        }
-
-        void TraverseUITree(UIElement root, StringBuilder acc, List<string> names)
-        {
-            TraverseUITree(root, acc, names, 0);
-            acc.Append(";");
-        }
-
+        UIDraggableRectTreeCodeGenerator codeGenerator = new UIDraggableRectTreeCodeGenerator();
+        UIDraggableRectTreeParser codeParser = new UIDraggableRectTreeParser();
 
         private void OnCopyCodeButtonPressed()
         {
-            StringBuilder overallBuilder = new StringBuilder();
-            StringBuilder treeAccumulator = new StringBuilder();
-
-            List<string> varNames = new List<string>();
-            TraverseUITree(_domRoot, treeAccumulator, varNames);
-
-            overallBuilder.Append("UIElement ");
-            for(int i = 0; i < varNames.Count; i++)
-            {
-                overallBuilder.Append(
-                    $"{varNames[i]}"
-                );
-
-                if(i != varNames.Count - 1)
-                {
-                    overallBuilder.Append(",");
-                }
-            }
-            overallBuilder.Append(";\n\n");
-
-            overallBuilder.Append(treeAccumulator.ToString());
-
-            Window.ClipboardString = overallBuilder.ToString();
+            Window.ClipboardString = codeGenerator.GenerateCode(_domRoot.GetComponentOfType<UIDraggableRect>());
         }
 
         private void InitRightclickMenu()

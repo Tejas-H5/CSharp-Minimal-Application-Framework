@@ -13,7 +13,7 @@ using System.Drawing;
 
 namespace RenderingEngine.VisualTests.UIEditor
 {
-    class UIDraggableRect : UIComponent
+    public class UIDraggableRect : UIComponent
     {
         const float HANDLESIZE = 10;
 
@@ -38,6 +38,7 @@ namespace RenderingEngine.VisualTests.UIEditor
 
         public string Name { get => name; set { name = value; _state.InvokeChangeEvent(); } }
         public string Text { get => text; set { text = value; _state.InvokeChangeEvent(); } }
+        public string OtherComponents { get; set; }
         public Color4 Color { get => color; set { color = value; _state.InvokeChangeEvent(); } }
 
 
@@ -115,7 +116,8 @@ namespace RenderingEngine.VisualTests.UIEditor
             }
             else
             {
-                DragEntireRect(dragDX, dragDY, initOffsets);
+                if(Input.IsAltDown)
+                    DragEntireRect(dragDX, dragDY, initOffsets);
             }
 
             //_parent.SetRectAndRecalcAnchoring(r);
@@ -200,14 +202,13 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             //I kept dragging the entire rect by accident when I wanted to just drag an edge, so I have disabled 
             //this feature for now
-            /*
+            
             _parent.SetAbsoluteOffset(new Rect2D(
                 initOffsets.X0 + dragDX,
                 initOffsets.Y0 + dragDY,
                 initOffsets.X1 - dragDX,
                 initOffsets.Y1 - dragDY
             ));
-            */
         }
 
         private void DragEdgeOffsets(UIRectTransform rtf, Rect2D initOffsets, float dragDX, float dragDY)
@@ -452,7 +453,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         private void DrawPosSizeInfoY(Rect2D r, Rect2D pR, UIRectTransform rtf, float bottomAnchor)
         {
             CTX.DrawLine(_parent.AbsCenterX, _parent.AbsCenterY, _parent.AbsCenterX, bottomAnchor, 2, CapType.None);
-            CTX.DrawText($"{rtf.AbsoluteOffset.Y0}px", _parent.AbsCenterX, (_parent.AbsCenterY + bottomAnchor) / 2f);
+            CTX.DrawText($"{rtf.AnchoredPositionAbs.Y}px", _parent.AbsCenterX, (_parent.AbsCenterY + bottomAnchor) / 2f);
 
             CTX.DrawLine(_parent.AbsCenterX, r.Bottom, _parent.AbsCenterX, r.Top, 2, CapType.None);
             CTX.DrawText($"{rtf.Rect.Height}px", _parent.AbsCenterX, 20 + (r.Bottom + r.Top) / 2f);
@@ -461,7 +462,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         private void DrawPosSizeInfoX(Rect2D r, Rect2D pR, UIRectTransform rtf, float leftAnchor)
         {
             CTX.DrawLine(_parent.AbsCenterX, _parent.AbsCenterY, leftAnchor, _parent.AbsCenterY, 2, CapType.None);
-            CTX.DrawText($"{rtf.AbsoluteOffset.X0}px", (_parent.AbsCenterX + leftAnchor) / 2f, _parent.AbsCenterY);
+            CTX.DrawText($"{rtf.AnchoredPositionAbs.X}px", (_parent.AbsCenterX + leftAnchor) / 2f, _parent.AbsCenterY);
 
             CTX.DrawLine(r.Left, _parent.AbsCenterY, r.Right, _parent.AbsCenterY, 2, CapType.None);
             CTX.DrawText($"{rtf.Rect.Width}px", 50 + (r.Left + r.Right) / 2f, _parent.AbsCenterY);

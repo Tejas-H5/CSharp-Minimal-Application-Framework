@@ -27,10 +27,12 @@ All of the windowing, input and OpenGL rendering has been implemented with OpenT
 - Entity Component System support
 
 
-Also the reason why I am contemplateing adding my own physics engine is because I am frustrated with Unity's own physics engine.
+The reason why I am contemplateing adding my own physics engine is because I am frustrated with Unity's.
 If I wanted to make a platformer game where every block is a square tile, then the edge where two tiles perfectly touch
 will generate collisions with any character that goes overtop it. The same thing applies in 3D, if someone wanted to make
-a Trackmania-like game with a level editor for example.
+a Trackmania-like game with a level editor for example. The way to 'fix' it is by reduceing some parameter, I forget which, to some really 
+low value like 0.0001, which results in strange physics behaviour as well as not actually fully fixing the issue.
+
 And it would be leveraging the ECS design, as I have heard that it is significantly faster than the traditional scene-graph due
 to all of the data being held contiguously.
 The only thing I can't seem to figure out about the entity component system is how to enforce object heirchies like in the scene-graph model 
@@ -39,5 +41,3 @@ There should definaltey be a way though.
 
 Although I doubt I can call this a minimalist rendering framework anymore after I add those.
 If I find that ECS can be added through an external nuget package or the like, I will do that instead.
-
-All of these features may be optionally added through 3rd party packages.

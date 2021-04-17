@@ -1,6 +1,7 @@
 ﻿using RenderingEngine.Logic;
 using RenderingEngine.VisualTests;
-using RenderingEngine.VisualTests.Rendering;
+using RenderingEngine.VisualTests.UI;
+using RenderingEngine.VisualTests.UIEditor;
 
 namespace RenderingEngine
 {
@@ -10,6 +11,11 @@ namespace RenderingEngine
         {
             EntryPoint[] tests =
             {
+                new UIEditor(),
+               /* 
+                new UITextNumberInputTest(),
+                new UITextInputTest(),
+                new UITest(),
                 new StencilTest(),
                 new TextureTest(),
                 new KeyboardTest(),
@@ -18,7 +24,7 @@ namespace RenderingEngine
                 new GeometryOutlineTest(),
                 new GeometryAndTextTest(),
                 new ArcTest(),
-                new TextTest(),
+                new TextTest(),*/
             };
 
 

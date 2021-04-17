@@ -20,12 +20,10 @@ namespace RenderingEngine.Logic
             _instance = null;
         }
 
-        private static void GLFWError(ErrorCode error, string description)
-        {
-            
+        public static Vector2i Size { 
+            get { return new Vector2i(_instance.Size.X, _instance.Size.Y); } 
+            set { _instance.Size = new OpenTK.Mathematics.Vector2i(value.X, value.Y); } 
         }
-
-        public static Vector2i Size { get { return _instance.Size; } set { _instance.Size = value; } }
         public static void Maximize() { _instance.Maximize(); }
         public static void Fullscreen() { _instance.Fullscreen(); }
         public static void Unmaximize() { _instance.Unmaximize(); }
@@ -42,17 +40,17 @@ namespace RenderingEngine.Logic
         public static string ClipboardString { get { return _instance.ClipboardString; } set { _instance.ClipboardString = value; } }
 
 
-        public static event Action<MouseWheelEventArgs> MouseWheel {
+        public static event Action<float> MouseWheel {
             add {
                 lock (_instance)
                 {
-                    _instance.MouseWheel += value;
+                    _instance.MouseWheelVertical += value;
                 }
             }
             remove {
                 lock (_instance)
                 {
-                    _instance.MouseWheel -= value;
+                    _instance.MouseWheelVertical -= value;
                 }
             }
         }

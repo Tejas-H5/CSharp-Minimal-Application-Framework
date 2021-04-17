@@ -8,15 +8,14 @@ using RenderingEngine.UI.Components.DataInput;
 using RenderingEngine.UI.Components.MouseInput;
 using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
-using RenderingEngine.UI.Properties;
+using RenderingEngine.UI.Property;
 
 namespace RenderingEngine.VisualTests.UI
 {
-    public class UITextInputTest : EntryPoint
+    public class UITextNumberInputTest : EntryPoint
     {
         UIElement _root;
         UIElement _textInputElement;
-
 
         public override void Start()
         {
@@ -45,10 +44,10 @@ namespace RenderingEngine.VisualTests.UI
                             new UIMouseListener(),
                             new UIText("", new Color4(0), "Comic Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
                             new UIMouseFeedback(new Color4(0.7f), new Color4(0.5f)),
-                            new UITextStringInput(new StringProperty(""), "enter text", true, false)
+                            new UITextFloatInput(new FloatProperty(10, -30,29.9f, 0.5f), false)
                         )
                         .SetNormalizedPositionCenter(0.5f, 0.5f, 0.5f, 0.5f)
-                        .SetAbsPositionSize((i - 1) * size, (j - 1) * size, size-10, size-10)
+                        .SetAbsPositionSize((i - 1) * size, (j - 1) * size, size - 10, size - 10)
                     );
                 }
             }

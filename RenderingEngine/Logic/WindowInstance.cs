@@ -38,6 +38,8 @@ namespace RenderingEngine.Logic
 
         public event Action<uint> TextInputEvent;
 
+        public event Action<float> MouseWheelVertical;
+
         bool _init = false;
 
         protected unsafe override void OnLoad()
@@ -46,6 +48,7 @@ namespace RenderingEngine.Logic
 
             KeyDown += ProcessPhysicalKeyPress;
             TextInput += ProcessCharTextInputs;
+            MouseWheel += WindowInstance_MouseWheel;
 
             CTX.Init(Context);
             Input.Init(this);
@@ -56,6 +59,11 @@ namespace RenderingEngine.Logic
             _program.Resize();
 
             IsVisible = true;
+        }
+
+        private void WindowInstance_MouseWheel(MouseWheelEventArgs obj)
+        {
+            MouseWheelVertical?.Invoke(obj.OffsetY);
         }
 
         private void ProcessCharTextInputs(TextInputEventArgs obj)

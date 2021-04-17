@@ -1,5 +1,5 @@
 ﻿using RenderingEngine.UI.Core;
-using RenderingEngine.UI.Properties;
+using RenderingEngine.UI.Property;
 using System;
 using System.Collections.Generic;
 using System.Text;

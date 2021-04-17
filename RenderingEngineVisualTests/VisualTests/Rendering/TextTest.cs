@@ -54,9 +54,9 @@ namespace RenderingEngine.VisualTests.Rendering
             }
         }
 
-        private void MousewheelScroll(OpenTK.Windowing.Common.MouseWheelEventArgs obj)
+        private void MousewheelScroll(float amount)
         {
-            pos += 50 * obj.OffsetY;
+            pos += 50 * amount;
         }
 
 

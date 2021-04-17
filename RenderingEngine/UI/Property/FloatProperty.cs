@@ -1,27 +1,32 @@
 ﻿using RenderingEngine.Datatypes;
+using RenderingEngine.Util;
+using System;
 
-namespace RenderingEngine.UI.Properties
+namespace RenderingEngine.UI.Property
 {
-    public class IntegerProperty : Property<long>
+    public class FloatProperty : Property<double>
     {
-        long _lower, _upper, _snap;
-        public long Lower {
+        double _lower, _upper, _snap;
+
+        public double Lower {
             get { return _lower; }
             set {
                 _lower = value;
+
                 Value = _value;
             }
         }
 
-        public long Upper {
+        public double Upper {
             get { return _upper; }
             set {
                 _upper = value;
+
                 Value = _value;
             }
         }
 
-        public long Snap {
+        public double Snap {
             get { return _snap; }
             set {
                 _snap = value;
@@ -29,7 +34,7 @@ namespace RenderingEngine.UI.Properties
             }
         }
 
-        protected override void SetValue(long num)
+        protected override void SetValue(double num)
         {
             if (num < _lower)
                 num = _lower;
@@ -37,20 +42,27 @@ namespace RenderingEngine.UI.Properties
             if (num > _upper)
                 num = _upper;
 
-            _value = num;
 
-            if (_snap > 1)
+            if (_snap > 0.0)
             {
-                _value = _lower + ((_value - _lower) / _snap) * _snap;
+                num = _lower + Math.Round((num - _lower) / _snap) * _snap;
             }
+
+            //if (num < _lower)
+            //                num = _lower;
+
+            if (num > _upper)
+                num = _upper;
+
+            _value = num;
         }
 
-        public IntegerProperty()
-            : this(long.MinValue, long.MaxValue, 0, 0)
+        public FloatProperty()
+            : this(0, double.MinValue, double.MaxValue, -1)
         {
         }
 
-        public IntegerProperty(long lower, long upper, long snap, long value)
+        public FloatProperty(double value, double lower, double upper, double snap)
             : base(value)
         {
             _lower = lower;

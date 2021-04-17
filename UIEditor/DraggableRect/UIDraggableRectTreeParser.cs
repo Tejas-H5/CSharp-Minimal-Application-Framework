@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.VisualTests.UIEditor
+namespace UICodeGenerator.DraggableRect
 {
     public class UIDraggableRectTreeParser
     {
@@ -16,7 +16,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             int pos = 0;
             MoveCursorToCreationPart(s, ref pos);
 
-            return ParseElement(s, state, ref pos);        
+            return ParseElement(s, state, ref pos);
         }
 
         private UIElement ParseElement(string s, DraggableRectSelectedState state, ref int pos)
@@ -31,7 +31,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             rect.Name = name;
             rect.OtherComponents = components;
 
-            if(textComponent != null)
+            if (textComponent != null)
             {
                 rect.Text = textComponent.Text;
                 rect.FontName = textComponent.Font;
@@ -61,15 +61,15 @@ namespace RenderingEngine.VisualTests.UIEditor
             string[] args = components.Substring(componentArgsStart, componentArgsEnd - componentArgsStart).Split(",");
 
             var textComponent = new UIText(
-                ParseString(args[0]), 
-                new Color4(0,1),//int.Parse(args[1]), 
-                ParseString(args[2]), 
+                ParseString(args[0]),
+                new Color4(0, 1),//int.Parse(args[1]), 
+                ParseString(args[2]),
                 int.Parse(args[3]),
-                ParseVAlign(args[4]), 
+                ParseVAlign(args[4]),
                 ParseHAlign(args[5])
             );
 
-            int componentEnd = components.IndexOf(',', componentArgsEnd)+1;
+            int componentEnd = components.IndexOf(',', componentArgsEnd) + 1;
             string componentsBeforeText = components.Substring(0, componentStart);
             string componentsAfterText = components.Substring(componentEnd);
             components = componentsBeforeText + componentsAfterText;
@@ -88,7 +88,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             if (v.Contains('C'))
                 return HorizontalAlignment.Center;
-            else if(v.Contains('R'))
+            else if (v.Contains('R'))
                 return HorizontalAlignment.Right;
 
             return HorizontalAlignment.Left;
@@ -115,7 +115,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         int MatchingBrace(string s, int pos)
         {
             int stack = 1;
-            for(int i = pos+1; i < s.Length; i++)
+            for (int i = pos + 1; i < s.Length; i++)
             {
                 if (s[i] == '(')
                 {
@@ -146,14 +146,14 @@ namespace RenderingEngine.VisualTests.UIEditor
                 //but it should tho
                 int dotPos = s.IndexOf('.', pos);
                 int endBracePos = s.IndexOf(')', pos);
-                if(dotPos == -1 || dotPos > endBracePos)
+                if (dotPos == -1 || dotPos > endBracePos)
                 {
                     break;
                 }
 
-                pos = dotPos+1;
+                pos = dotPos + 1;
                 int startBracePos = s.IndexOf('(', pos);
-            
+
                 string functionName = s.Substring(pos, startBracePos - pos);
 
                 pos = startBracePos + 1;
@@ -231,7 +231,7 @@ namespace RenderingEngine.VisualTests.UIEditor
                 return;
             }
 
-            while(pos < matchingBrace)
+            while (pos < matchingBrace)
             {
                 UIElement e = ParseElement(s, state, ref pos);
 
@@ -249,7 +249,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             string debugSlice;
             //DEBUG, remove later
             try
-            { 
+            {
                 debugSlice = s.Substring(pos, 10);
             }
             catch
@@ -264,7 +264,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             if (s[pos] == '(')
                 pos++;
 
-            for(int i = 0; i < args.Length; i++)
+            for (int i = 0; i < args.Length; i++)
             {
                 char[] stuff = ",)".ToCharArray();
                 int end = s.IndexOfAny(stuff, pos);
@@ -274,10 +274,10 @@ namespace RenderingEngine.VisualTests.UIEditor
 
                 string substr = s.Substring(pos, end - pos);
                 args[i] = float.Parse(substr);
-                pos = end+1;
+                pos = end + 1;
             }
 
-            pos = endPoint+1;
+            pos = endPoint + 1;
             return args;
         }
 
@@ -285,7 +285,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             pos = s.IndexOf('(', pos);
             float[] args = ParseFloatArgs(s, ref pos, 4);
-            pos = s.IndexOf(')', pos)+1;
+            pos = s.IndexOf(')', pos) + 1;
             return new Rect2D(args[0], args[1], args[2], args[3]);
         }
 
@@ -369,7 +369,7 @@ namespace RenderingEngine.VisualTests.UIEditor
 
             string components = s.Substring(pos, end - pos);
 
-            pos = end+1;
+            pos = end + 1;
             return components;
         }
 
@@ -395,7 +395,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             if (name == "new")
                 return "";
 
-            pos = s.IndexOf('=', end+1)+1;
+            pos = s.IndexOf('=', end + 1) + 1;
 
             return name;
         }

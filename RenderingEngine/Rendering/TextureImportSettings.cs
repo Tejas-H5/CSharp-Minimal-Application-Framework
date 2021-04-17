@@ -1,4 +1,6 @@
-﻿namespace RenderingEngine.Rendering
+﻿using OpenTK.Graphics.OpenGL;
+
+namespace RenderingEngine.Rendering
 {
     public enum FilteringType
     {
@@ -6,9 +8,16 @@
         Bilinear
     }
 
+    public enum ClampingType
+    {
+        Repeat = TextureWrapMode.Repeat,
+        ClampToEdge = TextureWrapMode.ClampToEdge
+    }
+
 
     public class TextureImportSettings
     {
         public FilteringType Filtering = FilteringType.Bilinear;
+        public ClampingType Clamping = ClampingType.Repeat;
     }
 }

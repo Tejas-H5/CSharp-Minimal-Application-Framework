@@ -2,11 +2,11 @@
 using RenderingEngine.Util;
 using System;
 
-namespace RenderingEngine.UI.Properties
+namespace RenderingEngine.UI.Property
 {
     public class StringProperty : Property<string>
     {
-        public StringProperty(string value) 
+        public StringProperty(string value)
             : base(value)
         {
         }

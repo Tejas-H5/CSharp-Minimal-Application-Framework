@@ -39,8 +39,6 @@ namespace RenderingEngine.VisualTests.Rendering
 
         public override void Render(double deltaTime)
         {
-
-
             CTX.SetDrawColor(1, 1, 1, 1);
 
             CTX.SetTexture(_tex);
@@ -56,11 +54,6 @@ namespace RenderingEngine.VisualTests.Rendering
             CTX.DrawRect(new Rect2D(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2), new Rect2D(0, 1, 1, 0));
 
             CTX.PopMatrix();
-
-
         }
-
-
-
     }
 }

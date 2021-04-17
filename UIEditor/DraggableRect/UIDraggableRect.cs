@@ -1,4 +1,5 @@
 ﻿using RenderingEngine.Datatypes;
+using RenderingEngine.Datatypes.UI;
 using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
@@ -11,7 +12,7 @@ using RenderingEngine.Util;
 using System;
 using System.Drawing;
 
-namespace RenderingEngine.VisualTests.UIEditor
+namespace UICodeGenerator.DraggableRect
 {
     public class UIDraggableRect : UIComponent
     {
@@ -37,13 +38,13 @@ namespace RenderingEngine.VisualTests.UIEditor
         private Color4 color;
 
         public string Name { get => name; set { name = value; _state.InvokeChangeEvent(); } }
-        public string Text { 
-            get => _text; 
-            set { 
+        public string Text {
+            get => _text;
+            set {
                 _text = value;
                 _textComponent.Text = value;
-                _state.InvokeChangeEvent(); 
-            } 
+                _state.InvokeChangeEvent();
+            }
         }
         public int TextSize {
             get => _textSize;
@@ -53,8 +54,8 @@ namespace RenderingEngine.VisualTests.UIEditor
             }
         }
 
-        public string FontName { 
-            get => _fontName; 
+        public string FontName {
+            get => _fontName;
             set {
                 _fontName = value;
                 _textComponent.Font = value;
@@ -94,8 +95,8 @@ namespace RenderingEngine.VisualTests.UIEditor
             _textComponent = parent.GetComponentOfType<UIText>();
             _textComponent.Text = Text;
             _textComponent.FontSize = TextSize;
-            _textComponent.VerticalAlignment = Datatypes.UI.VerticalAlignment.Center;
-            _textComponent.HorizontalAlignment = Datatypes.UI.HorizontalAlignment.Center;
+            _textComponent.VerticalAlignment = VerticalAlignment.Center;
+            _textComponent.HorizontalAlignment = HorizontalAlignment.Center;
 
             parent.GetComponentOfType<UIMouseListener>().OnMousePressed += OnClicked;
         }
@@ -141,7 +142,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             }
 
 
-            if(Input.IsAltDown)
+            if (Input.IsAltDown)
             {
                 DragEntireRect(dragDX, dragDY, initOffsets);
             }

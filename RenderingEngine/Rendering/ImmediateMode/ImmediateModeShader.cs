@@ -5,7 +5,7 @@ using Color4 = RenderingEngine.Datatypes.Color4;
 
 namespace RenderingEngine.Rendering.ImmediateMode
 {
-    class ImmediateModeShader : IDisposable
+    public class ImmediateModeShader : IDisposable
     {
         Shader _shader;
         public Shader Shader { get { return _shader; } }

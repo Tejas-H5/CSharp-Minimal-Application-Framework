@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Properties
+namespace RenderingEngine.UI.Property
 {
     public abstract class Property<T> : ObservableData<T>
     {
         protected T _value;
-        public T Value { 
-            get => _value; 
+        public T Value {
+            get => _value;
             set {
                 SetValue(value);
                 DataChanged(_value);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RenderingEngine.VisualTests.UIEditor
+namespace UICodeGenerator.DraggableRect
 {
     public class DraggableRectSelectedState
     {
@@ -11,7 +11,7 @@ namespace RenderingEngine.VisualTests.UIEditor
                 return _selRect;
             }
             set {
-                if(value != _selRect)
+                if (value != _selRect)
                 {
                     _selRect = value;
                     InvokeChangeEvent();
@@ -25,7 +25,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             if (_isInvoking)
                 return;
-            
+
             if (_selRect != null)
             {
                 _isInvoking = true;

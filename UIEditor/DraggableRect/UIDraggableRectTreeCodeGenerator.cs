@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.VisualTests.UIEditor
+namespace UICodeGenerator.DraggableRect
 {
     public class UIDraggableRectTreeCodeGenerator
     {

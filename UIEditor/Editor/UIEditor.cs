@@ -9,12 +9,13 @@ using RenderingEngine.UI.Components.DataInput;
 using RenderingEngine.UI.Components.MouseInput;
 using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
-using RenderingEngine.UI.Properties;
+using RenderingEngine.UI.Property;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UICodeGenerator.DraggableRect;
 
-namespace RenderingEngine.VisualTests.UIEditor
+namespace UICodeGenerator.Editor
 {
     class NamePropertyPairUI<T>
     {
@@ -42,6 +43,8 @@ namespace RenderingEngine.VisualTests.UIEditor
         UIDraggableRect _domRootRect;
         DraggableRectSelectedState _selectedState;
 
+
+        public UIEditor() { }
 
         UIElement CreatePanel()
         {
@@ -143,7 +146,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             return new NamePropertyPairUI<string>(root, stringInputComponent.StringProperty);
         }
 
-        
+
         private NamePropertyPairUI<double> CreateFloatPropertyElement(FloatProperty prop)
         {
             var floatInputComponent = new UITextFloatInput(prop, true);
@@ -164,9 +167,9 @@ namespace RenderingEngine.VisualTests.UIEditor
                 .SetAbsoluteOffset(10)
                 .AddChildren(
                     left = UICreator.CreateUIElement(
-                        
+
                     )
-                    .SetNormalizedAnchoring(new Rect2D(0,0,0.5f,1f))
+                    .SetNormalizedAnchoring(new Rect2D(0, 0, 0.5f, 1f))
                     .SetAbsoluteOffset(10)
                     .AddChild(
                         UICreator.CreateUIElement(
@@ -214,7 +217,7 @@ namespace RenderingEngine.VisualTests.UIEditor
 
         private void OnSelectionNameEdited(string name)
         {
-            if(_selectedState.SelectedRect != null)
+            if (_selectedState.SelectedRect != null)
                 _selectedState.SelectedRect.Name = name;
         }
 
@@ -227,7 +230,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         private void OnSelectionFontSize(long newSize)
         {
             if (_selectedState.SelectedRect != null)
-                _selectedState.SelectedRect.TextSize = (int) newSize;
+                _selectedState.SelectedRect.TextSize = (int)newSize;
         }
 
         NamePropertyPairUI<double> _unitSnapProperty;
@@ -270,7 +273,7 @@ namespace RenderingEngine.VisualTests.UIEditor
                 _mainWorkspace = UICreator.CreateUIElement()
                 .AddChildren(
                     _uiView = UICreator.CreateUIElement(
-                        new UIRect(new Color4(0,0,0,0)),
+                        new UIRect(new Color4(0, 0, 0, 0)),
                         new UIInverseStencil()
                     )
                     .SetNormalizedAnchoring(new Rect2D(0, 0, 0.75f, 1f))
@@ -361,7 +364,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             UIElement deleteButton;
 
             _rightclickMenu = UICreator.CreateUIElement(
-                new UILinearArrangement(true, false, 20,10)
+                new UILinearArrangement(true, false, 20, 10)
             )
             .SetNormalizedPositionCenter(0, 0, 0, 0)
             .AddChildren(
@@ -481,7 +484,7 @@ namespace RenderingEngine.VisualTests.UIEditor
             if (_selectedState.SelectedRect == null || _selectedState.SelectedRect == _domRootRect)
                 return;
 
-            UIElement duplicate = UIDraggableRect.DeepCopy(_selectedState.SelectedRect, offset:10);
+            UIElement duplicate = UIDraggableRect.DeepCopy(_selectedState.SelectedRect, offset: 10);
 
             _selectedState.SelectedRect.Parent.Parent.AddChild(duplicate);
         }

@@ -59,7 +59,7 @@ namespace RenderingEngine.Datatypes.Geometric
             }
         }
 
-        internal bool IsInverted()
+        public bool IsInverted()
         {
             return X0 > X1 || Y0 > Y1;
         }

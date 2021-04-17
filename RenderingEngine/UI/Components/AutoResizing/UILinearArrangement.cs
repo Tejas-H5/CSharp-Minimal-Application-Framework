@@ -3,7 +3,7 @@ using RenderingEngine.UI.Core;
 
 namespace RenderingEngine.UI.Components.AutoResizing
 {
-    class UILinearArrangement : UIComponent
+    public class UILinearArrangement : UIComponent
     {
         private bool _vertical;
         private bool _reverse;

@@ -1,5 +1,5 @@
 ﻿using RenderingEngine.UI.Core;
-using RenderingEngine.UI.Properties;
+using RenderingEngine.UI.Property;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -36,8 +36,9 @@ namespace RenderingEngine.UI.Components.DataInput
 
         private void UITextNumberInput_OnTextFinalized()
         {
-            long num = _initValue;
-            long.TryParse(_textComponent.Text, out num);
+            long num;
+            if(!long.TryParse(_textComponent.Text, out num))
+                num = _initValue;
 
             IntProperty.Value = num;
         }

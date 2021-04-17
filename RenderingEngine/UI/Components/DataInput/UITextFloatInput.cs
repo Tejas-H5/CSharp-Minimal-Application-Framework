@@ -1,5 +1,5 @@
 ﻿using RenderingEngine.UI.Core;
-using RenderingEngine.UI.Properties;
+using RenderingEngine.UI.Property;
 using RenderingEngine.Util;
 using System;
 using System.Collections.Generic;
@@ -47,8 +47,9 @@ namespace RenderingEngine.UI.Components.DataInput
 
         private void UITextNumberInput_OnTextChanged()
         {
-            double num = _initValue;
-            double.TryParse(_textComponent.Text, out num);
+            double num;
+            if (!double.TryParse(_textComponent.Text, out num))
+                num = _initValue;
 
             FloatProperty.Value = num;
         }

@@ -10,7 +10,7 @@ namespace RenderingEngine.UI.Components.Visuals
     public class UIText : UIComponent
     {
         public Color4 TextColor { get; set; }
-        public string Text { get; internal set; } 
+        public string Text { get; internal set; } = "";
 
         public string Font { get; set; } = "";
         public int FontSize { get; set; } = -1;

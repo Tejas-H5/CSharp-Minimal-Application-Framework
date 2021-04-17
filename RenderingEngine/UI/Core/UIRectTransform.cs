@@ -122,11 +122,6 @@ namespace RenderingEngine.UI.Core
             SetAbsPositionSizeY(y, height);
         }
 
-        internal void SetNormalizedPositionCenteY(float v1, float v2)
-        {
-            throw new NotImplementedException();
-        }
-
         public void SetNormalizedAnchoringX(float left, float right)
         {
             _normalizedAnchoring.X0 = left;

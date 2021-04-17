@@ -33,30 +33,69 @@ namespace RenderingEngine.VisualTests.UIEditor
 
         DraggableRectSelectedState _state;
         private string name;
-        private string text;
+        private string _text = "";
         private Color4 color;
 
         public string Name { get => name; set { name = value; _state.InvokeChangeEvent(); } }
-        public string Text { get => text; set { text = value; _state.InvokeChangeEvent(); } }
+        public string Text { 
+            get => _text; 
+            set { 
+                _text = value;
+                _textComponent.Text = value;
+                _state.InvokeChangeEvent(); 
+            } 
+        }
+        public int TextSize {
+            get => _textSize;
+            set {
+                _textSize = value;
+                _textComponent.FontSize = value;
+            }
+        }
+
+        public string FontName { 
+            get => _fontName; 
+            set {
+                _fontName = value;
+                _textComponent.Font = value;
+            }
+        }
+
         public string OtherComponents { get; set; }
         public Color4 Color { get => color; set { color = value; _state.InvokeChangeEvent(); } }
 
 
         public static UIElement CreateDraggableRect(DraggableRectSelectedState selectionState)
         {
-            return UICreator.CreateUIElement(
-                    new UIRectHitbox(false),
-                    new UIRect(new Color4(0, 0, 0, 0)),
-                    new UIMouseListener(),
-                    new UIDraggableRect(selectionState),
-                    new UIMouseFeedback(Color4.FromRGBA(0, 0, 0, 20), Color4.FromRGBA(0, 0, 1, 20))
-                );
+            return CreateDraggableRect(new UIDraggableRect(selectionState));
         }
 
+        public static UIElement CreateDraggableRect(UIDraggableRect component)
+        {
+            return UICreator.CreateUIElement(
+                new UIRectHitbox(false),
+                new UIRect(new Color4(0, 0, 0, 0)),
+                new UIMouseListener(),
+                new UIText("", new Color4(0, 1)),
+                component,
+                new UIMouseFeedback(Color4.FromRGBA(0, 0, 0, 20), Color4.FromRGBA(0, 0, 1, 20))
+            );
+        }
+
+
+        UIText _textComponent;
+        private int _textSize = -1;
+        private string _fontName = "";
 
         public override void SetParent(UIElement parent)
         {
             base.SetParent(parent);
+
+            _textComponent = parent.GetComponentOfType<UIText>();
+            _textComponent.Text = Text;
+            _textComponent.FontSize = TextSize;
+            _textComponent.VerticalAlignment = Datatypes.UI.VerticalAlignment.Center;
+            _textComponent.HorizontalAlignment = Datatypes.UI.HorizontalAlignment.Center;
 
             parent.GetComponentOfType<UIMouseListener>().OnMousePressed += OnClicked;
         }
@@ -102,22 +141,21 @@ namespace RenderingEngine.VisualTests.UIEditor
             }
 
 
-            if (_centerHeld)
+            if(Input.IsAltDown)
+            {
+                DragEntireRect(dragDX, dragDY, initOffsets);
+            }
+            else if (_centerHeld)
             {
                 DragCenter(rtf, dragDX, dragDY, shouldSnap);
-            }
-            else if (IsEdgeHeld())
-            {
-                DragEdgeOffsets(rtf, initOffsets, dragDX, dragDY);
             }
             else if (IsAnchorHeld())
             {
                 DragAnchorOffsets(rtf, pR, initOffsets, _initAnchoring, dragDX, dragDY, shouldSnap);
             }
-            else
+            else if (IsEdgeHeld())
             {
-                if(Input.IsAltDown)
-                    DragEntireRect(dragDX, dragDY, initOffsets);
+                DragEdgeOffsets(rtf, initOffsets, dragDX, dragDY);
             }
 
             //_parent.SetRectAndRecalcAnchoring(r);
@@ -151,8 +189,8 @@ namespace RenderingEngine.VisualTests.UIEditor
                     //the 1f - snap(1f - x) is to make sure that the upper anchor's coordinate system starts in 1,1
                     //This way, with an anchor snap of 0.33, there isn't a gap between the top corner and the anchor
                     //as there normally would be if we used a coordinate system starting at the usual 0,0 rather than 1,1
-                    newAnchorX1 = 1f-MathUtil.SnapRounded(1f - (initAnchors.X1 + dragDX / pR.Width), _state.AnchorSnap);
-                    newAnchorY1 = 1f-MathUtil.SnapRounded(1f - (initAnchors.Y1 + dragDY / pR.Height), _state.AnchorSnap);
+                    newAnchorX1 = 1f - MathUtil.SnapRounded(1f - (initAnchors.X1 + dragDX / pR.Width), _state.AnchorSnap);
+                    newAnchorY1 = 1f - MathUtil.SnapRounded(1f - (initAnchors.Y1 + dragDY / pR.Height), _state.AnchorSnap);
                 }
                 else
                 {
@@ -202,7 +240,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             //I kept dragging the entire rect by accident when I wanted to just drag an edge, so I have disabled 
             //this feature for now
-            
+
             _parent.SetAbsoluteOffset(new Rect2D(
                 initOffsets.X0 + dragDX,
                 initOffsets.Y0 + dragDY,
@@ -369,6 +407,8 @@ namespace RenderingEngine.VisualTests.UIEditor
             Rect2D pR = _parent.GetParentRect();
             UIRectTransform rtf = _parent.RectTransform;
 
+            CTX.SetCurrentFont("Consolas", 16);
+
             DrawEdgeHandles(r);
             DrawCenterHandle();
             DrawAnchorHandles(r, pR, rtf);
@@ -448,6 +488,32 @@ namespace RenderingEngine.VisualTests.UIEditor
             {
                 DrawOffsetInfoY(r, pR, rtf, bottomAnchor, topAnchor);
             }
+        }
+
+        public static UIElement DeepCopy(UIDraggableRect rect, int offset)
+        {
+            UIElement duplicate = CopyRect1LevelDeep(rect);
+
+            for (int i = 0; i < rect.Parent.Count; i++)
+            {
+                duplicate.AddChild(DeepCopy(rect.Parent[i].GetComponentOfType<UIDraggableRect>(), 0));
+            }
+
+            return duplicate;
+        }
+
+        private static UIElement CopyRect1LevelDeep(UIDraggableRect rect)
+        {
+            var duplicateComponent = new UIDraggableRect(rect._state);
+            UIElement duplicate = CreateDraggableRect(duplicateComponent);
+
+            duplicateComponent.TextSize = rect.TextSize;
+            duplicateComponent.FontName = rect.FontName;
+
+            duplicate.Rect = rect.Parent.Rect;
+            duplicate.RectTransform.AbsoluteOffset = rect.Parent.AbsoluteOffset;
+            duplicate.RectTransform.NormalizedAnchoring = rect.Parent.NormalizedAnchoring;
+            return duplicate;
         }
 
         private void DrawPosSizeInfoY(Rect2D r, Rect2D pR, UIRectTransform rtf, float bottomAnchor)

@@ -44,7 +44,7 @@ namespace RenderingEngine.VisualTests.UI
                             new UIMouseListener(),
                             new UIText("", new Color4(0), "Comic Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
                             new UIMouseFeedback(new Color4(0.7f), new Color4(0.5f)),
-                            new UITextFloatInput(new FloatProperty(10, -30,29.9f, 0.5f))
+                            new UITextFloatInput(new FloatProperty(10, -30,29.9f, 0.5f), false)
                         )
                         .SetNormalizedPositionCenter(0.5f, 0.5f, 0.5f, 0.5f)
                         .SetAbsPositionSize((i - 1) * size, (j - 1) * size, size - 10, size - 10)

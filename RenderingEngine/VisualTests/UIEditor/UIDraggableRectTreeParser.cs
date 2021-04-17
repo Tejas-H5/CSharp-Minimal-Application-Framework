@@ -1,4 +1,7 @@
-﻿using RenderingEngine.Datatypes.Geometric;
+﻿using RenderingEngine.Datatypes;
+using RenderingEngine.Datatypes.Geometric;
+using RenderingEngine.Datatypes.UI;
+using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
 using System;
 using System.Collections.Generic;
@@ -21,10 +24,20 @@ namespace RenderingEngine.VisualTests.UIEditor
             string name = ParseName(s, ref pos);
             string components = ParseComponents(s, ref pos);
 
+            UIText textComponent = ExtractTextComponent(ref components);
+
             UIElement rectElement = UIDraggableRect.CreateDraggableRect(state);
             var rect = rectElement.GetComponentOfType<UIDraggableRect>();
             rect.Name = name;
             rect.OtherComponents = components;
+
+            if(textComponent != null)
+            {
+                rect.Text = textComponent.Text;
+                rect.FontName = textComponent.Font;
+                rect.TextSize = textComponent.FontSize;
+            }
+
 
             //DEBUG
             string window = s.Substring(pos, 10);
@@ -34,10 +47,69 @@ namespace RenderingEngine.VisualTests.UIEditor
             return rectElement;
         }
 
+        private UIText ExtractTextComponent(ref string components)
+        {
+            int componentStart = components.IndexOf("new UIText");
+            if (componentStart == -1)
+                return null;
+
+
+            int componentArgsStart = components.IndexOf('(', componentStart);
+            int componentArgsEnd = MatchingBrace(components, componentArgsStart);
+            componentArgsStart++;
+
+            string[] args = components.Substring(componentArgsStart, componentArgsEnd - componentArgsStart).Split(",");
+
+            var textComponent = new UIText(
+                ParseString(args[0]), 
+                new Color4(0,1),//int.Parse(args[1]), 
+                ParseString(args[2]), 
+                int.Parse(args[3]),
+                ParseVAlign(args[4]), 
+                ParseHAlign(args[5])
+            );
+
+            int componentEnd = components.IndexOf(',', componentArgsEnd)+1;
+            string componentsBeforeText = components.Substring(0, componentStart);
+            string componentsAfterText = components.Substring(componentEnd);
+            components = componentsBeforeText + componentsAfterText;
+
+            return textComponent;
+        }
+
+        private string ParseString(string v)
+        {
+            v = v.Trim();
+            var res = v.Substring(1, v.Length - 2);
+            return res;
+        }
+
+        private HorizontalAlignment ParseHAlign(string v)
+        {
+            if (v.Contains('C'))
+                return HorizontalAlignment.Center;
+            else if(v.Contains('R'))
+                return HorizontalAlignment.Right;
+
+            return HorizontalAlignment.Left;
+        }
+
+        private VerticalAlignment ParseVAlign(string v)
+        {
+            if (v.Contains('T'))
+                return VerticalAlignment.Top;
+            else if (v.Contains('C'))
+                return VerticalAlignment.Center;
+
+            return VerticalAlignment.Bottom;
+        }
+
         private void MoveCursorToCreationPart(string s, ref int pos)
         {
             pos = s.IndexOf("new");
             pos = s.LastIndexOf('\n', pos);
+            if (pos == -1)
+                pos = 0;
         }
 
         int MatchingBrace(string s, int pos)
@@ -220,7 +292,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         private void ParseNormalizedPositionCenterY(string s, ref int pos, UIRectTransform rtf)
         {
             float[] args = ParseFloatArgs(s, ref pos, 2);
-            rtf.SetNormalizedPositionCenteY(args[0], args[1]);
+            rtf.SetNormalizedPositionCenterY(args[0], args[1]);
         }
 
         private void ParseNormalizedPositionCenterX(string s, ref int pos, UIRectTransform rtf)
@@ -238,7 +310,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         private void ParseAbsPositionSizeX(string s, ref int pos, UIRectTransform rtf)
         {
             float[] args = ParseFloatArgs(s, ref pos, 2);
-            rtf.SetNormalizedPositionCenteY(args[0], args[1]);
+            rtf.SetNormalizedPositionCenterY(args[0], args[1]);
         }
 
         private void ParseNormalizedAnchoringY(string s, ref int pos, UIRectTransform rtf)
@@ -291,8 +363,9 @@ namespace RenderingEngine.VisualTests.UIEditor
 
         private string ParseComponents(string s, ref int pos)
         {
-            pos = s.IndexOf('(', pos)+1;
-            int end = s.IndexOf(')', pos);
+            pos = s.IndexOf('(', pos);
+            int end = MatchingBrace(s, pos);
+            pos++;
 
             string components = s.Substring(pos, end - pos);
 

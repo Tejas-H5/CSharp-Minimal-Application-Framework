@@ -64,7 +64,10 @@ namespace RenderingEngine.VisualTests.UIEditor
 
             CTX.SetClearColor(1, 1, 1, 1);
 
+#if DEBUG
             UICreator.Debug = true;
+#endif
+
             _selectedState = new DraggableRectSelectedState();
             _selectedState.OnSelectionChanged += OnSelectionChanged;
 
@@ -96,6 +99,15 @@ namespace RenderingEngine.VisualTests.UIEditor
             );
         }
 
+        public IntegerProperty CreateIntProperty(Action<long> callback, int lower, int upper)
+        {
+            var prop = new IntegerProperty();
+            prop.Lower = lower;
+            prop.Upper = upper;
+            prop.OnDataChanged += callback;
+            return prop;
+        }
+
         public FloatProperty CreateFloatProperty(Action<double> callback)
         {
             var prop = new FloatProperty();
@@ -111,6 +123,16 @@ namespace RenderingEngine.VisualTests.UIEditor
         }
 
 
+        private NamePropertyPairUI<long> CreateIntPropertyElement(IntegerProperty prop)
+        {
+            var intInputComponent = new UITextNumberInput(prop, false);
+
+            UIElement root = CreateEmptyPropertyElement()
+                .AddComponent(intInputComponent);
+
+            return new NamePropertyPairUI<long>(root, intInputComponent.IntProperty);
+        }
+
         private NamePropertyPairUI<string> CreateStringPropertyElement(StringProperty prop)
         {
             var stringInputComponent = new UITextStringInput(prop, "Enter text", false, false);
@@ -124,7 +146,7 @@ namespace RenderingEngine.VisualTests.UIEditor
         
         private NamePropertyPairUI<double> CreateFloatPropertyElement(FloatProperty prop)
         {
-            var floatInputComponent = new UITextFloatInput(prop);
+            var floatInputComponent = new UITextFloatInput(prop, true);
             UIElement root = CreateEmptyPropertyElement()
                 .AddComponent(floatInputComponent);
 
@@ -176,10 +198,13 @@ namespace RenderingEngine.VisualTests.UIEditor
             Console.WriteLine("Selection changed");
             _rectNameProperty.Property.Value = obj.Name;
             _rectTextProperty.Property.Value = obj.Text;
+            _rectFontProperty.Property.Value = obj.FontName;
         }
 
         NamePropertyPairUI<string> _rectNameProperty;
         NamePropertyPairUI<string> _rectTextProperty;
+        NamePropertyPairUI<string> _rectFontProperty;
+        NamePropertyPairUI<long> _rectTextSizeProperty;
 
         private void OnSelectionTextEdited(string text)
         {
@@ -191,6 +216,18 @@ namespace RenderingEngine.VisualTests.UIEditor
         {
             if(_selectedState.SelectedRect != null)
                 _selectedState.SelectedRect.Name = name;
+        }
+
+        private void OnSelectionFontEdited(string font)
+        {
+            if (_selectedState.SelectedRect != null)
+                _selectedState.SelectedRect.FontName = font;
+        }
+
+        private void OnSelectionFontSize(long newSize)
+        {
+            if (_selectedState.SelectedRect != null)
+                _selectedState.SelectedRect.TextSize = (int) newSize;
         }
 
         NamePropertyPairUI<double> _unitSnapProperty;
@@ -208,12 +245,22 @@ namespace RenderingEngine.VisualTests.UIEditor
                 CreateFloatProperty(OnAnchoredSnapChanged)
             ));
 
+
+
             _rectNameProperty = CreateNamePropPair("Name", CreateStringPropertyElement(
                 CreateStringProperty(OnSelectionNameEdited)
             ));
 
             _rectTextProperty = CreateNamePropPair("Text", CreateStringPropertyElement(
                 CreateStringProperty(OnSelectionTextEdited)
+            ));
+
+            _rectTextSizeProperty = CreateNamePropPair("Text Size", CreateIntPropertyElement(
+                CreateIntProperty(OnSelectionFontSize, 0, 120)
+            ));
+
+            _rectFontProperty = CreateNamePropPair("Font", CreateStringPropertyElement(
+                CreateStringProperty(OnSelectionFontEdited)
             ));
 
             _root = new UIZStack();
@@ -270,8 +317,10 @@ namespace RenderingEngine.VisualTests.UIEditor
                                     new UIText("Properties", new Color4(0), "Consolas", 16, VerticalAlignment.Center, HorizontalAlignment.Center)
                                 ),
                                 _rectNameProperty.Root,
-                                _rectTextProperty.Root
-                                //CreateColorPropPair("Text(?)", CreateColorPropertyElement(OnSelectionColorEdited))
+                                _rectTextProperty.Root,
+                                _rectTextSizeProperty.Root,
+                                _rectFontProperty.Root
+                            //CreateColorPropPair("Text(?)", CreateColorPropertyElement(OnSelectionColorEdited))
                             )
                         )
                     )
@@ -283,6 +332,11 @@ namespace RenderingEngine.VisualTests.UIEditor
 
             copyCodeButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnCopyCodeButtonPressed;
             pasteLayoutButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnPasteCodeButtonPressed;
+        }
+
+        private void OnSelectionTextSizeEdited(long size)
+        {
+            _selectedState.SelectedRect.TextSize = (int)size;
         }
 
         private void OnPasteCodeButtonPressed()
@@ -401,20 +455,43 @@ namespace RenderingEngine.VisualTests.UIEditor
                 }
             }
 
-            if (Input.IsKeyPressed(KeyCode.N))
+            if (Input.IsCtrlDown)
             {
-                if (Input.IsCtrlDown)
+                if (Input.IsKeyPressed(KeyCode.N))
                 {
-                    _uiView.RemoveAllChildren();
-                    _uiView.AddChild(
-                        _domRoot = UIDraggableRect.CreateDraggableRect(_selectedState)
-                    );
+                    ResetRootElement();
+                }
+            }
+
+            if (Input.IsShiftDown)
+            {
+                if (Input.IsKeyPressed(KeyCode.D))
+                {
+                    DuplicateSelected();
                 }
             }
 
             _rightclickMenu.Update(deltaTime);
 
             _root.Update(deltaTime);
+        }
+
+        private void DuplicateSelected()
+        {
+            if (_selectedState.SelectedRect == null || _selectedState.SelectedRect == _domRootRect)
+                return;
+
+            UIElement duplicate = UIDraggableRect.DeepCopy(_selectedState.SelectedRect, offset:10);
+
+            _selectedState.SelectedRect.Parent.Parent.AddChild(duplicate);
+        }
+
+        private void ResetRootElement()
+        {
+            _uiView.RemoveAllChildren();
+            _uiView.AddChild(
+                _domRoot = UIDraggableRect.CreateDraggableRect(_selectedState)
+            );
         }
 
         public override void Resize()

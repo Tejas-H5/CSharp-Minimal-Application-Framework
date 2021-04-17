@@ -13,8 +13,8 @@ namespace RenderingEngine.UI.Components.DataInput
 
         readonly double _initValue;
 
-        public UITextFloatInput(FloatProperty property)
-            : base("", false, true)
+        public UITextFloatInput(FloatProperty property, bool shouldClear)
+            : base("", false, shouldClear)
         {
             FloatProperty = property;
         }

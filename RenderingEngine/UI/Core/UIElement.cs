@@ -195,10 +195,10 @@ namespace RenderingEngine.UI.Core
                 _components.Add(comp);
                 comp.SetParent(this);
 
-                if (UICreator.Debug)
-                {
-                    SetParentDebug();
-                }
+
+#if DEBUG
+                SetParentDebug();
+#endif
 
                 return this;
             }

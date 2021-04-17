@@ -1,4 +1,5 @@
-﻿using RenderingEngine.UI.Core;
+﻿using RenderingEngine.UI.Components.Visuals;
+using RenderingEngine.UI.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,7 +36,17 @@ namespace RenderingEngine.VisualTests.UIEditor
             string optionalTextComponent = "";
             if (!string.IsNullOrEmpty(draggableRect.Text))
             {
-                optionalTextComponent = $"new UIText(\"{draggableRect.Text}\", _textColor_)";
+                string fontName = draggableRect.FontName;
+
+                //TODO in distant future: _textColor can be linked to a string that maps to a colour
+                optionalTextComponent = $"new UIText(" +
+                    $"\"{draggableRect.Text}\", " +
+                    $"_textColor_, " +
+                    $"\"{fontName}\", " +
+                    $"{draggableRect.TextSize}," +
+                    $"VerticalAlignment.Center," +
+                    $"HorizontalAlignment.Center" +
+                    $")";
             }
 
             AppendText(acc, indent, $"{optionalVariableName}new UICreator.CreateUIElement({optionalTextComponent})\n");
@@ -44,8 +55,9 @@ namespace RenderingEngine.VisualTests.UIEditor
             {
                 if (root.RectTransform.PositionSizeX)
                 {
-                    AppendText(acc, indent, $".SetAbsPositionSizeX({root.AnchoredPositionAbs.X}, {root.Rect.Width})\n");
+                    //SetNormalizedPositionCenter must be called before AbsPositionSize
                     AppendText(acc, indent, $".SetNormalizedPositionCenterX({root.NormalizedAnchoring.X0}, {root.NormalizedCenter.X})\n");
+                    AppendText(acc, indent, $".SetAbsPositionSizeX({root.AnchoredPositionAbs.X}, {root.Rect.Width})\n");
 
                     AppendText(acc, indent, $".SetAbsOffsetsY({root.AbsoluteOffset.Y0}, {root.AbsoluteOffset.Y1})\n");
                     AppendText(acc, indent, $".SetNormalizedAnchoringY({root.NormalizedAnchoring.Y0}, {root.NormalizedAnchoring.Y1})\n");
@@ -55,8 +67,9 @@ namespace RenderingEngine.VisualTests.UIEditor
                     AppendText(acc, indent, $".SetAbsOffsetsX({root.AbsoluteOffset.X0}, {root.AbsoluteOffset.X1})\n");
                     AppendText(acc, indent, $".SetNormalizedAnchoringX({root.NormalizedAnchoring.X0}, {root.NormalizedAnchoring.X1})\n");
 
-                    AppendText(acc, indent, $".SetAbsPositionSizeY({root.AnchoredPositionAbs.Y}, {root.Rect.Height})\n");
+                    //SetNormalizedPositionCenter must be called before AbsPositionSize
                     AppendText(acc, indent, $".SetNormalizedPositionCenterY({root.NormalizedAnchoring.Y0}, {root.NormalizedCenter.Y})\n");
+                    AppendText(acc, indent, $".SetAbsPositionSizeY({root.AnchoredPositionAbs.Y}, {root.Rect.Height})\n");
                 }
             }
             else if (root.RectTransform.PositionSizeX && root.RectTransform.PositionSizeY)

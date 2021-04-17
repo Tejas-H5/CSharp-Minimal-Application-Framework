@@ -12,8 +12,8 @@ namespace RenderingEngine.UI.Components.DataInput
 
         readonly long _initValue;
 
-        public UITextNumberInput(IntegerProperty property)
-            : base("", false, true)
+        public UITextNumberInput(IntegerProperty property, bool shouldClear)
+            : base("", false, shouldClear)
         {
             IntProperty = property;
         }

@@ -106,10 +106,12 @@ namespace UICodeGenerator.DraggableRect
 
         private void MoveCursorToCreationPart(string s, ref int pos)
         {
-            pos = s.IndexOf("new");
+            pos = s.IndexOf("UICreator.CreateUIElement");
             pos = s.LastIndexOf('\n', pos);
             if (pos == -1)
                 pos = 0;
+
+            string debugSlice = s.Substring(pos, 10);
         }
 
         int MatchingBrace(string s, int pos)
@@ -272,7 +274,12 @@ namespace UICodeGenerator.DraggableRect
                 if (end > endPoint)
                     throw new Exception("There aren't as many arguments here as there should be");
 
-                string substr = s.Substring(pos, end - pos);
+                string substr = s.Substring(pos, end - pos).Trim();
+                if(substr[substr.Length - 1] == 'f')
+                {
+                    substr = substr.Substring(0, substr.Length - 1);
+                }
+
                 args[i] = float.Parse(substr);
                 pos = end + 1;
             }
@@ -388,11 +395,11 @@ namespace UICodeGenerator.DraggableRect
         private string ParseName(string s, ref int pos)
         {
             pos = IndexOfNextChar(s, pos);
-            int end = s.IndexOf(' ', pos);
+            int end = s.IndexOfAny(" (".ToCharArray(), pos);
 
             string name = s.Substring(pos, end - pos);
 
-            if (name == "new")
+            if (name.StartsWith("UICreator."))
                 return "";
 
             pos = s.IndexOf('=', end + 1) + 1;

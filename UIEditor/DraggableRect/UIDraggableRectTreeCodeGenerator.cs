@@ -34,7 +34,7 @@ namespace UICodeGenerator.DraggableRect
             }
 
             string optionalTextComponent = "";
-            if (!string.IsNullOrEmpty(draggableRect.Text))
+            if (!string.IsNullOrWhiteSpace(draggableRect.Text))
             {
                 string fontName = draggableRect.FontName;
 
@@ -49,43 +49,43 @@ namespace UICodeGenerator.DraggableRect
                     $")";
             }
 
-            AppendText(acc, indent, $"{optionalVariableName}new UICreator.CreateUIElement({optionalTextComponent})\n");
+            AppendText(acc, indent, $"{optionalVariableName}UICreator.CreateUIElement({optionalTextComponent})\n");
 
             if (root.RectTransform.PositionSizeX ^ root.RectTransform.PositionSizeY)
             {
                 if (root.RectTransform.PositionSizeX)
                 {
                     //SetNormalizedPositionCenter must be called before AbsPositionSize
-                    AppendText(acc, indent, $".SetNormalizedPositionCenterX({root.NormalizedAnchoring.X0}, {root.NormalizedCenter.X})\n");
-                    AppendText(acc, indent, $".SetAbsPositionSizeX({root.AnchoredPositionAbs.X}, {root.Rect.Width})\n");
+                    AppendText(acc, indent, $".SetNormalizedPositionCenterX({root.NormalizedAnchoring.X0}f, {root.NormalizedCenter.X}f)\n");
+                    AppendText(acc, indent, $".SetAbsPositionSizeX({root.AnchoredPositionAbs.X}f, {root.Rect.Width}f)\n");
 
-                    AppendText(acc, indent, $".SetAbsOffsetsY({root.AbsoluteOffset.Y0}, {root.AbsoluteOffset.Y1})\n");
-                    AppendText(acc, indent, $".SetNormalizedAnchoringY({root.NormalizedAnchoring.Y0}, {root.NormalizedAnchoring.Y1})\n");
+                    AppendText(acc, indent, $".SetAbsOffsetsY({root.AbsoluteOffset.Y0}f, {root.AbsoluteOffset.Y1}f)\n");
+                    AppendText(acc, indent, $".SetNormalizedAnchoringY({root.NormalizedAnchoring.Y0}f, {root.NormalizedAnchoring.Y1}f)\n");
                 }
                 else
                 {
-                    AppendText(acc, indent, $".SetAbsOffsetsX({root.AbsoluteOffset.X0}, {root.AbsoluteOffset.X1})\n");
-                    AppendText(acc, indent, $".SetNormalizedAnchoringX({root.NormalizedAnchoring.X0}, {root.NormalizedAnchoring.X1})\n");
+                    AppendText(acc, indent, $".SetAbsOffsetsX({root.AbsoluteOffset.X0}f, {root.AbsoluteOffset.X1}f)\n");
+                    AppendText(acc, indent, $".SetNormalizedAnchoringX({root.NormalizedAnchoring.X0}f, {root.NormalizedAnchoring.X1}f)\n");
 
                     //SetNormalizedPositionCenter must be called before AbsPositionSize
-                    AppendText(acc, indent, $".SetNormalizedPositionCenterY({root.NormalizedAnchoring.Y0}, {root.NormalizedCenter.Y})\n");
-                    AppendText(acc, indent, $".SetAbsPositionSizeY({root.AnchoredPositionAbs.Y}, {root.Rect.Height})\n");
+                    AppendText(acc, indent, $".SetNormalizedPositionCenterY({root.NormalizedAnchoring.Y0}f, {root.NormalizedCenter.Y}f)\n");
+                    AppendText(acc, indent, $".SetAbsPositionSizeY({root.AnchoredPositionAbs.Y}f, {root.Rect.Height}f)\n");
                 }
             }
             else if (root.RectTransform.PositionSizeX && root.RectTransform.PositionSizeY)
             {
                 //SetNormalizedPositionCenter must be called before AbsPositionSize
-                AppendText(acc, indent, $".SetNormalizedPositionCenter({root.NormalizedAnchoring.X0}," +
-                    $"{root.NormalizedAnchoring.Y0}, {root.NormalizedCenter.X}, {root.NormalizedCenter.Y})\n");
-                AppendText(acc, indent, $".SetAbsPositionSize({root.AnchoredPositionAbs.X}," +
-                    $"{root.AnchoredPositionAbs.Y}, {root.Rect.Width}, {root.Rect.Height})\n");
+                AppendText(acc, indent, $".SetNormalizedPositionCenter({root.NormalizedAnchoring.X0}f," +
+                    $"{root.NormalizedAnchoring.Y0}f, {root.NormalizedCenter.X}f, {root.NormalizedCenter.Y}f)\n");
+                AppendText(acc, indent, $".SetAbsPositionSize({root.AnchoredPositionAbs.X}f," +
+                    $"{root.AnchoredPositionAbs.Y}f, {root.Rect.Width}f, {root.Rect.Height}f)\n");
             }
             else
             {
-                AppendText(acc, indent, $".SetAbsoluteOffset(new Rect2D({root.AbsoluteOffset.X0}," +
-                    $"{root.AbsoluteOffset.Y0}, {root.AbsoluteOffset.X1}, {root.AbsoluteOffset.Y1}))\n");
-                AppendText(acc, indent, $".SetNormalizedAnchoring(new Rect2D({root.NormalizedAnchoring.X0}," +
-                    $"{root.NormalizedAnchoring.Y0}, {root.NormalizedAnchoring.X1}, {root.NormalizedAnchoring.Y1}))\n");
+                AppendText(acc, indent, $".SetAbsoluteOffset(new Rect2D({root.AbsoluteOffset.X0}f," +
+                    $"{root.AbsoluteOffset.Y0}f, {root.AbsoluteOffset.X1}f, {root.AbsoluteOffset.Y1}f))\n");
+                AppendText(acc, indent, $".SetNormalizedAnchoring(new Rect2D({root.NormalizedAnchoring.X0}f," +
+                    $"{root.NormalizedAnchoring.Y0}f, {root.NormalizedAnchoring.X1}f, {root.NormalizedAnchoring.Y1}f))\n");
             }
 
             AppendText(acc, indent, ".AddChildren(\n");
@@ -131,7 +131,7 @@ namespace UICodeGenerator.DraggableRect
 
                 if (i != varNames.Count - 1)
                 {
-                    overallBuilder.Append(",");
+                    overallBuilder.Append(", ");
                 }
                 else
                 {

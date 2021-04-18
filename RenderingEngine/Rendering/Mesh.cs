@@ -3,7 +3,6 @@ using System;
 
 namespace RenderingEngine.Rendering
 {
-
     public class Mesh : IDisposable
     {
         Vertex[] _data;

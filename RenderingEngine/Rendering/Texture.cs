@@ -57,31 +57,52 @@ namespace RenderingEngine.Rendering
             return new Texture(image, settings);
         }
 
+
+        public Texture(int width, int height, TextureImportSettings settings)
+        {
+            Init(width, height, (IntPtr)null, settings);
+        }
+
+
+        internal void Resize(int width, int height)
+        {
+
+        }
+
+
         public Texture(Bitmap image, TextureImportSettings settings)
         {
-            _width = image.Width;
-            _height = image.Height;
+            var data = image.LockBits(
+                new Rectangle(0, 0, image.Width, image.Height),
+                ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb
+            );
+
+            Init(image.Width, image.Height, data.Scan0, settings);
+
+            image.UnlockBits(data);
+        }
+
+        private void Init(int width, int height, IntPtr data, TextureImportSettings settings)
+        {
+            _width = width;
+            _height = height;
+
 
             _handle = GL.GenTexture();
 
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, _handle);
 
-            var data = image.LockBits(
-                new Rectangle(0, 0, image.Width, image.Height),
-                ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-
             GL.TexImage2D(TextureTarget.Texture2D,
                 0,
-                PixelInternalFormat.Rgba,
-                image.Width,
-                image.Height,
+                settings.InternalFormat,
+                width,
+                height,
                 0,
-                PixelFormat.Bgra,
+                settings.PixelFormatType,
                 PixelType.UnsignedByte,
-                data.Scan0);
+                data);
 
 
             TextureMinFilter minFilter;

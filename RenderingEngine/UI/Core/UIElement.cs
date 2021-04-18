@@ -20,6 +20,12 @@ namespace RenderingEngine.UI.Core
         /// </summary>
         public UIRectTransform RectTransform { get { return _rectTransform; } }
 
+        public UIElement()
+        {
+            SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1));
+            SetAbsoluteOffset(new Rect2D(0, 0, 0, 0));
+        }
+
         public Rect2D Rect {
             get { return _rectTransform.Rect; }
             set {
@@ -238,13 +244,6 @@ namespace RenderingEngine.UI.Core
             _mouseListenComponent = GetComponentOfType<UIMouseListener>();
         }
 #endif
-
-        public UIElement()
-        {
-            SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1));
-            SetAbsoluteOffset(new Rect2D(0, 0, 0, 0));
-        }
-
 
         public UIElement SetAbsOffsetsX(float left, float right)
         {

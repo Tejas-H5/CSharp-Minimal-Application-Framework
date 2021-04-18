@@ -19,5 +19,8 @@ namespace RenderingEngine.Rendering
     {
         public FilteringType Filtering = FilteringType.Bilinear;
         public ClampingType Clamping = ClampingType.Repeat;
+
+        internal PixelInternalFormat InternalFormat = PixelInternalFormat.Rgba;
+        internal PixelFormat PixelFormatType = PixelFormat.Bgra;
     }
 }

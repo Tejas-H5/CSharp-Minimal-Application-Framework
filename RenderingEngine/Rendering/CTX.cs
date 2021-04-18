@@ -206,11 +206,21 @@ namespace RenderingEngine.Rendering
             _solidShader.UpdateModel();
         }
 
+        /// <summary>
+        /// Clears and enables the stencil buffer, doesn't disable colour writes.
+        /// </summary>
+        /// <param name="inverseStencil">If this parameter is set to true, the buffer will be cleared to 1s and
+        /// we will be drawing 0s to the stencil buffer, and vice versa.</param>
         public static void StartStencillingWhileDrawing(bool inverseStencil = false)
         {
             StartStencilling(true, inverseStencil);
         }
 
+        /// <summary>
+        /// Clears and enables the stencil buffer, and then disables colour writes
+        /// </summary>
+        /// <param name="inverseStencil">If this parameter is set to true, the buffer will be cleared to 1s and
+        /// we will be drawing 0s to the stencil buffer, and vice versa.</param>
         public static void StartStencillingWithoutDrawing(bool inverseStencil = false)
         {
             StartStencilling(false, inverseStencil);
@@ -250,6 +260,12 @@ namespace RenderingEngine.Rendering
             }
         }
 
+
+        /// <summary>
+        /// Disables writing to the stencil buffer, enables writing to the color buffer.
+        /// 
+        /// Pixels in the stencil buffer that were set to 1 will not be drawn to.
+        /// </summary>
         public static void StartUsingStencil()
         {
             Flush();

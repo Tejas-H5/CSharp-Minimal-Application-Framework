@@ -87,5 +87,15 @@ namespace RenderingEngine.Datatypes.Geometric
         {
             return !(left == right);
         }
+
+        public Rect2D Intersect(Rect2D other)
+        {
+            return new Rect2D(
+                MathF.Max(Left, other.Left),
+                MathF.Max(Bottom, other.Bottom),
+                MathF.Min(Right, other.Right),
+                MathF.Min(Top, other.Top)
+            );
+        }
     }
 }

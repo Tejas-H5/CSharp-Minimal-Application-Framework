@@ -79,7 +79,8 @@ namespace UICodeGenerator.DraggableRect
                 new UIMouseListener(),
                 new UIText("", new Color4(0, 1)),
                 component,
-                new UIMouseFeedback(Color4.FromRGBA(0, 0, 0, 20), Color4.FromRGBA(0, 0, 1, 20))
+                new UIMouseFeedback(Color4.FromRGBA(0, 0, 0, 20), Color4.FromRGBA(0, 0, 1, 20)),
+                new UIInverseStencil()
             );
         }
 

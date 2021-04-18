@@ -2,9 +2,9 @@
 {
     public class UIRectHitbox : UIHitbox
     {
-        private bool _intersectWithParent = false;
+        private bool _intersectWithParent;
 
-        public UIRectHitbox(bool intersectWithParent = false)
+        public UIRectHitbox(bool intersectWithParent = true)
         {
             _intersectWithParent = intersectWithParent;
         }

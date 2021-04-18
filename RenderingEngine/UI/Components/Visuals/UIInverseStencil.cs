@@ -14,18 +14,12 @@ namespace RenderingEngine.UI.Components.Visuals
     {
         public override void BeforeDraw(double deltaTime)
         {
-            CTX.StartStencillingWithoutDrawing(inverseStencil: true);
-
-            CTX.SetTexture(null);
-            CTX.SetDrawColor(0, 0, 0, 1);
-            CTX.DrawRect(_parent.Rect);
-
-            CTX.StartUsingStencil();
+            UIStateObject.PushScreenRectStencil(_parent.Rect);
         }
 
         public override void AfterDraw(double deltaTime)
         {
-            CTX.LiftStencil();
+            UIStateObject.PopScreenRectStencil();
         }
     }
 }

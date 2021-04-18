@@ -6,39 +6,24 @@ using System.Text;
 
 namespace RenderingEngine.UI.Components.DataInput
 {
-    public class UITextStringInput : UITextInput
+    public class UITextStringInput : UITextInput<string>
     {
-        public readonly StringProperty StringProperty = null;
-
-        public UITextStringInput(StringProperty stringProperty, string placeholder, bool newLines, bool shouldClear)
-            : base(placeholder, newLines, shouldClear)
+        public UITextStringInput(StringProperty stringProperty, bool newLines, bool shouldClear)
+            : base(stringProperty.Value, newLines, shouldClear)
 
         {
-            StringProperty = stringProperty;
+            _property = stringProperty;
         }
 
-        public override void SetParent(UIElement parent)
+        protected override void OnPropertyChanged(string obj)
         {
-            base.SetParent(parent);
-
-            OnTextFinalized += OnTextFinalizedEvent;
-
-            _textComponent.Text = StringProperty.Value.ToString();
-
-            StringProperty.OnDataChanged += StringProperty_OnDataChanged;
+            OnTextFinalizedSelf();
         }
 
-        private void StringProperty_OnDataChanged(string text)
+        protected override bool TryParseText(string s, out string val)
         {
-            if(text != null)
-                _textComponent.Text = text;
-            else
-                _textComponent.Text = "";
-        }
-
-        private void OnTextFinalizedEvent()
-        {
-            StringProperty.Value = _textComponent.Text;
+            val = s;
+            return true;
         }
     }
 }

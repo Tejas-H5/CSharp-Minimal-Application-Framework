@@ -17,19 +17,7 @@ using UICodeGenerator.DraggableRect;
 
 namespace UICodeGenerator.Editor
 {
-    class NamePropertyPairUI<T>
-    {
-        public UIElement Root;
-        public readonly Property<T> Property;
-
-        public NamePropertyPairUI(UIElement root, Property<T> property)
-        {
-            Root = root;
-            Property = property;
-        }
-    }
-
-    public class UIEditor : EntryPoint
+    public class EditorUI : EntryPoint
     {
         UIZStack _root;
         UIElement _mainWorkspace;
@@ -44,7 +32,7 @@ namespace UICodeGenerator.Editor
         DraggableRectSelectedState _selectedState;
 
 
-        public UIEditor() { }
+        public EditorUI() { }
 
         UIElement CreatePanel()
         {
@@ -81,109 +69,14 @@ namespace UICodeGenerator.Editor
             InitRootUI();
         }
 
-        private UIElement CreateButton(string s)
+        public static UIElement CreateButton(string s)
         {
             return UICreator.CreateButton(s, "Consolas", 14, new Color4(0, 1), new Color4(1, 0), new Color4(0.5f), new Color4(0.75f));
         }
 
-        private UIElement CreateEmptyPropertyElement()
-        {
-            return UICreator.CreateUIElement(
-                new UIRect(new Color4(0, 0), new Color4(0, 1), 1),
-                new UIRectHitbox(),
-                new UIMouseListener(),
-                new UIMouseFeedback(new Color4(0.5f), new Color4(0.75f))
-            )
-            .AddChild(
-                UICreator.CreateUIElement(
-                    new UIText("", new Color4(0f), "Consolas", 14, VerticalAlignment.Center, HorizontalAlignment.Right)
-                )
-                .SetAbsoluteOffset(10)
-            );
-        }
-
-        public IntegerProperty CreateIntProperty(Action<long> callback, int lower, int upper)
-        {
-            var prop = new IntegerProperty();
-            prop.Lower = lower;
-            prop.Upper = upper;
-            prop.OnDataChanged += callback;
-            return prop;
-        }
-
-        public FloatProperty CreateFloatProperty(Action<double> callback)
-        {
-            var prop = new FloatProperty();
-            prop.OnDataChanged += callback;
-            return prop;
-        }
-
-        public StringProperty CreateStringProperty(Action<string> callback)
-        {
-            var prop = new StringProperty("");
-            prop.OnDataChanged += callback;
-            return prop;
-        }
 
 
-        private NamePropertyPairUI<long> CreateIntPropertyElement(IntegerProperty prop)
-        {
-            var intInputComponent = new UITextNumberInput(prop, false);
 
-            UIElement root = CreateEmptyPropertyElement()
-                .AddComponent(intInputComponent);
-
-            return new NamePropertyPairUI<long>(root, intInputComponent.IntProperty);
-        }
-
-        private NamePropertyPairUI<string> CreateStringPropertyElement(StringProperty prop)
-        {
-            var stringInputComponent = new UITextStringInput(prop, "Enter text", false, false);
-
-            UIElement root = CreateEmptyPropertyElement()
-                .AddComponent(stringInputComponent);
-
-            return new NamePropertyPairUI<string>(root, stringInputComponent.StringProperty);
-        }
-
-
-        private NamePropertyPairUI<double> CreateFloatPropertyElement(FloatProperty prop)
-        {
-            var floatInputComponent = new UITextFloatInput(prop, true);
-            UIElement root = CreateEmptyPropertyElement()
-                .AddComponent(floatInputComponent);
-
-            return new NamePropertyPairUI<double>(root, floatInputComponent.FloatProperty);
-        }
-
-        private NamePropertyPairUI<T> CreateNamePropPair<T>(string name, NamePropertyPairUI<T> propertyElement)
-        {
-            UIElement left, right;
-
-            UIElement newRoot = UICreator.CreateUIElement(
-                new UIRect(new Color4(0, 0), new Color4(0, 1), 1)
-                )
-                .SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
-                .SetAbsoluteOffset(10)
-                .AddChildren(
-                    left = UICreator.CreateUIElement(
-
-                    )
-                    .SetNormalizedAnchoring(new Rect2D(0, 0, 0.5f, 1f))
-                    .SetAbsoluteOffset(10)
-                    .AddChild(
-                        UICreator.CreateUIElement(
-                            new UIText(name, new Color4(0, 1), "Consolas", 12, VerticalAlignment.Center, HorizontalAlignment.Left)
-                        )
-                    )
-                    ,
-                    right = propertyElement.Root
-                    .SetNormalizedAnchoring(new Rect2D(0.5f, 0, 1f, 1f))
-                );
-
-            propertyElement.Root = newRoot;
-            return propertyElement;
-        }
 
         void OnUnitSnapChanged(double value)
         {

@@ -6,41 +6,21 @@ using System.Text;
 
 namespace RenderingEngine.UI.Components.DataInput
 {
-    public class UITextNumberInput : UITextInput
+    public class UITextNumberInput : UITextInput<long>
     {
-        public IntegerProperty IntProperty = null;
-
-        readonly long _initValue;
-
         public UITextNumberInput(IntegerProperty property, bool shouldClear)
-            : base("", false, shouldClear)
+            : base(property.Value, false, shouldClear)
         {
-            IntProperty = property;
+            _property = property;
         }
 
-        public override void SetParent(UIElement parent)
+        protected override void OnPropertyChanged(long obj)
         {
-            base.SetParent(parent);
-
-            OnTextFinalized += UITextNumberInput_OnTextFinalized;
-
-            IntProperty.OnDataChanged += IntProperty_OnDataChanged;
-
-            _textComponent.Text = IntProperty.Value.ToString();
         }
 
-        private void IntProperty_OnDataChanged(long num)
+        protected override bool TryParseText(string s, out long val)
         {
-            _textComponent.Text = num.ToString();
-        }
-
-        private void UITextNumberInput_OnTextFinalized()
-        {
-            long num;
-            if(!long.TryParse(_textComponent.Text, out num))
-                num = _initValue;
-
-            IntProperty.Value = num;
+            return long.TryParse(s, out val);
         }
     }
 }

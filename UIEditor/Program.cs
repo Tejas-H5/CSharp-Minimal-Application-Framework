@@ -8,7 +8,7 @@ namespace UICodeGenerator
     {
         static void Main(string[] args)
         {
-            EntryPoint e = new UIEditor();
+            EntryPoint e = new EditorUI();
             Window.RunProgram(e);
         }
     }

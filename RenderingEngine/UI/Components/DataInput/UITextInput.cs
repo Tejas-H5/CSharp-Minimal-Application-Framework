@@ -4,6 +4,7 @@ using RenderingEngine.Rendering;
 using RenderingEngine.UI.Components.MouseInput;
 using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
+using RenderingEngine.UI.Property;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,24 +14,25 @@ namespace RenderingEngine.UI.Components.DataInput
 {
     //TODO: Esc to cancel out of an input
     //might have to use another string rather than the string inside the TextComponent
-    public abstract class UITextInput : UIComponent
+    public abstract class UITextInput<T> : UIComponent
     {
         protected UIMouseListener _mouseListner;
         protected UIText _textComponent;
         protected UIHitbox _hitbox;
 
+        protected Property<T> _property;
+        public Property<T> Property { get { return _property; } }
+        T _initValue;
+
         bool _isTyping;
         bool _shouldClear;
         bool _acceptsNewLine = false;
 
-        public string Placeholder { get; set; }
-
-
-        public UITextInput(string placeholder, bool acceptsNewLines, bool shouldClear)
+        public UITextInput(T initValue, bool acceptsNewLines, bool shouldClear)
         {
             _shouldClear = shouldClear;
             _acceptsNewLine = acceptsNewLines;
-            Placeholder = placeholder;
+            _initValue = initValue;
         }
 
 
@@ -70,9 +72,33 @@ namespace RenderingEngine.UI.Components.DataInput
             _hitbox = _parent.GetComponentOfType<UIHitbox>();
 
             _mouseListner.OnMouseOver += OnMouseOver;
+            _property.OnDataChanged += OnPropertyChanged;
 
             OnTextChanged += OnTextChangedEvent;
+            _textComponent.Text = Property.Value.ToString();
+
+            OnTextFinalized += OnTextFinalizedSelf;
         }
+
+        /// <summary>
+        /// What happens when you accept the input that you entered.
+        /// The defocusing will not happen here
+        /// </summary>
+        protected void OnTextFinalizedSelf()
+        {
+            T val;
+            if(!TryParseText(_textComponent.Text, out val))
+            {
+                val = _initValue;
+            }
+
+            _property.Value = val;
+            _textComponent.Text = _property.Value.ToString();
+        }
+
+        protected abstract bool TryParseText(string s, out T val);
+
+        protected abstract void OnPropertyChanged(T obj);
 
         private void OnTextChangedEvent()
         {

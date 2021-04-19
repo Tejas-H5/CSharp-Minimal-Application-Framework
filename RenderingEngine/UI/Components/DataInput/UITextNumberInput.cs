@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RenderingEngine.UI.Components.DataInput
 {
-    public class UITextNumberInput : UITextInput<long>
+    public class UITextNumberInput : UITextInput<int>
     {
         public UITextNumberInput(IntegerProperty property, bool shouldClear)
             : base(property.Value, false, shouldClear)
@@ -14,13 +14,13 @@ namespace RenderingEngine.UI.Components.DataInput
             _property = property;
         }
 
-        protected override void OnPropertyChanged(long obj)
+        protected override void OnPropertyChanged(int obj)
         {
         }
 
-        protected override bool TryParseText(string s, out long val)
+        protected override bool TryParseText(string s, out int val)
         {
-            return long.TryParse(s, out val);
+            return int.TryParse(s, out val);
         }
     }
 }

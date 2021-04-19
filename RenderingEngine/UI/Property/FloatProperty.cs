@@ -4,11 +4,11 @@ using System;
 
 namespace RenderingEngine.UI.Property
 {
-    public class FloatProperty : Property<double>
+    public class FloatProperty : Property<float>
     {
-        double _lower, _upper, _snap;
+        float _lower, _upper, _snap;
 
-        public double Lower {
+        public float Lower {
             get { return _lower; }
             set {
                 _lower = value;
@@ -17,7 +17,7 @@ namespace RenderingEngine.UI.Property
             }
         }
 
-        public double Upper {
+        public float Upper {
             get { return _upper; }
             set {
                 _upper = value;
@@ -26,7 +26,7 @@ namespace RenderingEngine.UI.Property
             }
         }
 
-        public double Snap {
+        public float Snap {
             get { return _snap; }
             set {
                 _snap = value;
@@ -34,7 +34,7 @@ namespace RenderingEngine.UI.Property
             }
         }
 
-        protected override void SetValue(double num)
+        protected override void SetValue(float num)
         {
             if (num < _lower)
                 num = _lower;
@@ -45,7 +45,7 @@ namespace RenderingEngine.UI.Property
 
             if (_snap > 0.0)
             {
-                num = _lower + Math.Round((num - _lower) / _snap) * _snap;
+                num = _lower + MathF.Round((num - _lower) / _snap) * _snap;
             }
 
             //if (num < _lower)
@@ -58,11 +58,11 @@ namespace RenderingEngine.UI.Property
         }
 
         public FloatProperty()
-            : this(0, double.MinValue, double.MaxValue, -1)
+            : this(0, float.MinValue, float.MaxValue, -1)
         {
         }
 
-        public FloatProperty(double value, double lower, double upper, double snap)
+        public FloatProperty(float value, float lower, float upper, float snap)
             : base(value)
         {
             _lower = lower;

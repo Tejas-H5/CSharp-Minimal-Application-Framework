@@ -13,6 +13,7 @@ using RenderingEngine.UI.Property;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UICodeGenerator.ComponentEditors;
 using UICodeGenerator.DraggableRect;
 
 namespace UICodeGenerator.Editor
@@ -20,9 +21,12 @@ namespace UICodeGenerator.Editor
     public class EditorUI : EntryPoint
     {
         UIZStack _root;
+        UIEditorComponent _editorComponent;
+
         UIElement _mainWorkspace;
         UIElement _propertiesPanel;
         UIElement _uiView;
+        UIElement _propertiesContainer;
 
         UIElement _rightclickMenu;
 
@@ -75,9 +79,6 @@ namespace UICodeGenerator.Editor
         }
 
 
-
-
-
         void OnUnitSnapChanged(double value)
         {
             _selectedState.DimensionSnap = (float)value;
@@ -92,15 +93,8 @@ namespace UICodeGenerator.Editor
         private void OnSelectionChanged(UIDraggableRect obj)
         {
             Console.WriteLine("Selection changed");
-            _rectNameProperty.Property.Value = obj.Name;
-            _rectTextProperty.Property.Value = obj.Text;
-            _rectFontProperty.Property.Value = obj.FontName;
         }
 
-        NamePropertyPairUI<string> _rectNameProperty;
-        NamePropertyPairUI<string> _rectTextProperty;
-        NamePropertyPairUI<string> _rectFontProperty;
-        NamePropertyPairUI<long> _rectTextSizeProperty;
 
         private void OnSelectionTextEdited(string text)
         {
@@ -126,38 +120,31 @@ namespace UICodeGenerator.Editor
                 _selectedState.SelectedRect.TextSize = (int)newSize;
         }
 
-        NamePropertyPairUI<double> _unitSnapProperty;
-        NamePropertyPairUI<double> _normalizedSnapProperty;
+        UIElementPropertyPair _unitSnapProperty;
+        UIElementPropertyPair _normalizedSnapProperty;
 
         private void InitRootUI()
         {
             UIElement copyCodeButton;
-            UIElement pasteLayoutButton;
+            UIElement pasteCodeButton;
 
-            _unitSnapProperty = CreateNamePropPair("Unit Snap", CreateFloatPropertyElement(
-                CreateFloatProperty(OnUnitSnapChanged)
-            ));
-            _normalizedSnapProperty = CreateNamePropPair("Anchor Snap", CreateFloatPropertyElement(
-                CreateFloatProperty(OnAnchoredSnapChanged)
-            ));
+            UIElement copyPasteButtons = UICreator.CreateUIElement(
+                new UILinearArrangement(vertical: true, reverse: true, 40, 10)
+            )
+            .SetNormalizedAnchoringX(0,1)
+            .SetAbsOffsetsX(10,10)
+            .SetNormalizedPositionCenterY(0,0)
+            .SetAbsPositionSizeY(10, 10)
+            .AddChildren(
+                copyCodeButton = CreateButton("Copy Code")
+                ,
+                pasteCodeButton = CreateButton("Paste Code")
+            );
 
-
-
-            _rectNameProperty = CreateNamePropPair("Name", CreateStringPropertyElement(
-                CreateStringProperty(OnSelectionNameEdited)
-            ));
-
-            _rectTextProperty = CreateNamePropPair("Text", CreateStringPropertyElement(
-                CreateStringProperty(OnSelectionTextEdited)
-            ));
-
-            _rectTextSizeProperty = CreateNamePropPair("Text Size", CreateIntPropertyElement(
-                CreateIntProperty(OnSelectionFontSize, 0, 120)
-            ));
-
-            _rectFontProperty = CreateNamePropPair("Font", CreateStringPropertyElement(
-                CreateStringProperty(OnSelectionFontEdited)
-            ));
+            _editorComponent = new UIEditorComponent(_selectedState);
+            ComponentEditorUI<UIEditorComponent> uiEditorComponetUIEditor = new ComponentEditorUI<UIEditorComponent>(_editorComponent);
+            UIElement editorComponentUI = uiEditorComponetUIEditor.Root;
+            editorComponentUI.GetComponentOfType<UIRect>().InitialColor = new Color4(1, 0, 0, 0.5f);
 
             _root = new UIZStack();
             _root.AddComponent(new UIRectHitbox())
@@ -177,57 +164,51 @@ namespace UICodeGenerator.Editor
                     ,
                     UICreator.CreateUIElement()
                     .SetNormalizedAnchoring(new Rect2D(0.75f, 0.0f, 1f, 1f))
-                    .SetAbsoluteOffset(10)
+                    .SetAbsoluteOffset(0)
                     .AddChildren(
-                        UICreator.CreateUIElement(
-                            new UILinearArrangement(true, true, 40, 10)
-                        )
-                        .AddChildren(
-                            _unitSnapProperty.Root
-                            ,
-                            _normalizedSnapProperty.Root
-                            ,
-                            copyCodeButton = CreateButton("Copy Code")
-                            ,
-                            pasteLayoutButton = CreateButton("Paste Code")
-                        )
-                        ,
                         _propertiesPanel = UICreator.CreatePanel(new Color4(1))
                         .SetAbsoluteOffset(10)
                         .AddComponent(
                             new UIMultiEdgeSnapConstraint(
                                 new UIEdgeSnapConstraint(_uiView, UIRectEdgeSnapEdge.Top, UIRectEdgeSnapEdge.Top),
-                                new UIEdgeSnapConstraint(pasteLayoutButton, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Top)
+                                new UIEdgeSnapConstraint(editorComponentUI, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Top)
                             )
                         )
                         .AddChildren(
                             UICreator.CreateUIElement(
-                                new UILinearArrangement(true, false, 30, 10)
+                                new UIText("Properties", new Color4(0), "Consolas", 16, VerticalAlignment.Center, HorizontalAlignment.Center)
                             )
                             .SetAbsOffsetsX(10, 10)
                             .SetNormalizedAnchoringX(0, 1)
                             .SetNormalizedPositionCenterY(1, 1)
                             .SetAbsPositionSizeY(-10, 50)
+                            ,
+                            _propertiesContainer = UICreator.CreateUIElement(
+                                new UILinearArrangement(true, false, 30, 10)
+                            )
+                            .SetAbsOffsetsX(10, 10)
+                            .SetNormalizedAnchoringX(0, 1)
+                            .SetNormalizedPositionCenterY(1, 1)
+                            .SetAbsPositionSizeY(-70, 50)
                             .AddChildren(
-                                UICreator.CreateUIElement(
-                                    new UIText("Properties", new Color4(0), "Consolas", 16, VerticalAlignment.Center, HorizontalAlignment.Center)
-                                ),
-                                _rectNameProperty.Root,
-                                _rectTextProperty.Root,
-                                _rectTextSizeProperty.Root,
-                                _rectFontProperty.Root
                             //CreateColorPropPair("Text(?)", CreateColorPropertyElement(OnSelectionColorEdited))
                             )
                         )
+                        ,
+                        editorComponentUI
+                        .AddComponent(
+                            new UIEdgeSnapConstraint(copyPasteButtons, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Top)
+                        )
+                        ,
+                        copyPasteButtons
                     )
-                //_propertiesView = new UILinearArrangement(vertical: true, reverse: false, padding: 10f)
                 )
             );
 
             _root.GetComponentOfType<UIMouseListener>().OnMousePressed += OnWindowClicked;
 
             copyCodeButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnCopyCodeButtonPressed;
-            pasteLayoutButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnPasteCodeButtonPressed;
+            pasteCodeButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnPasteCodeButtonPressed;
         }
 
         private void OnSelectionTextSizeEdited(long size)

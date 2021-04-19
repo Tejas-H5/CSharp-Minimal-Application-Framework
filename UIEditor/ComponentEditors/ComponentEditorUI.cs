@@ -9,74 +9,219 @@ using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
 using RenderingEngine.UI.Property;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
 namespace UICodeGenerator.ComponentEditors
 {
-	public abstract class ComponentEditorUI<T> where T : UIComponent
+	public class UIElementPropertyPair
+	{
+		public UIElement UIRoot;
+		public IProperty Property;
+
+		public UIElementPropertyPair(UIElement uIRoot, IProperty property)
+		{
+			UIRoot = uIRoot;
+			Property = property;
+		}
+	}
+
+	public class ComponentEditorUI<T> where T : UIComponent
     {
-        protected UIElement _root;
-		protected UIElement _componentNameElement, _editingUIRoot, _contexMenuButton;
+        UIElement _root;
+		UIElement _componentNameElement, _editingUIRoot, _contexMenuButton;
 
 		public UIElement Root { get { return _root; } }
 
-        protected T _boundInstace;
+        T _boundInstace;
+		PropertyInfo[] _properties;
+
+		Dictionary<string, IProperty> _namePropertyEventMap = new Dictionary<string, IProperty>();
 
         public virtual void Bind(T instance)
         {
             _boundInstace = instance;
-        }
+
+			for(int i = 0; i < _properties.Length; i++)
+			{
+				if (!_namePropertyEventMap.ContainsKey(_properties[i].Name))
+					continue;
+
+				IProperty iProp = _namePropertyEventMap[_properties[i].Name];
+
+				if (iProp.PropertyType == typeof(string))
+				{
+					StringProperty p = (StringProperty)(iProp);
+					p.Value = (string)_properties[i].GetValue(_boundInstace);
+				}
+				else if (iProp.PropertyType == typeof(int))
+				{
+					IntegerProperty p = (IntegerProperty)(iProp);
+					p.Value = (int)_properties[i].GetValue(_boundInstace);
+				}
+				else if (iProp.PropertyType == typeof(float))
+				{
+					FloatProperty p = (FloatProperty)(iProp);
+					p.Value = (float)_properties[i].GetValue(_boundInstace);
+				}
+			}
+		}
 
 		Color4 _textColor_ = new Color4(0, 1);
 
 		UIElement CreatePanelRect()
 		{
 			return UICreator.CreateUIElement(
-				new UIRect(new Color4(0,0), new Color4(0,1), 1)
+				new UIRect(new Color4(0,1,0,0.5f), new Color4(0,1), 5)
 			);
 		}
 
-		public ComponentEditorUI()
+		public ComponentEditorUI(T instance)
+		{
+			InitUIRoot();
+
+			InitProperties();
+
+			Bind(instance);
+		}
+
+		private void InitProperties()
+		{
+			_properties = typeof(T).GetProperties();
+
+			for (int i = 0; i < _properties.Length; i++)
+			{
+				UIElementPropertyPair editorProperty = CreatePropertyEditor(_properties[i]);
+
+				if (editorProperty == null)
+					continue;
+
+				string name = _properties[i].Name;
+
+				UIElement nameElement = CreatePropertyName(_properties[i]);
+				UIElement namePropertyEditorPair = CreateNamePropPair(nameElement, editorProperty.UIRoot);
+
+				_namePropertyEventMap[name] = editorProperty.Property;
+				SetupProperty(i);
+
+				_editingUIRoot.AddChild(namePropertyEditorPair);
+			}
+		}
+
+		private void SetupProperty(int propNum)
+		{
+			string name = _properties[propNum].Name;
+
+			IProperty iProp = _namePropertyEventMap[name];
+
+			if(iProp.PropertyType == typeof(string))
+			{
+				StringProperty p = (StringProperty)(iProp);
+				AddCallback(propNum, p);
+			}
+			else if(iProp.PropertyType == typeof(long))
+			{
+				IntegerProperty p = (IntegerProperty)(iProp);
+				AddCallback(propNum, p);
+			}
+			else if(iProp.PropertyType == typeof(double))
+			{
+				FloatProperty p = (FloatProperty)(iProp);
+				AddCallback(propNum, p);
+			}
+		}
+
+
+		private void AddCallback<T1>(int propNum, Property<T1> p)
+		{
+			p.OnDataChanged += (T1 val) => {
+				_properties[propNum].SetValue(_boundInstace, val);
+			};
+		}
+
+		private void InitUIRoot()
 		{
 			_root = CreatePanelRect()
-			.SetAbsoluteOffset(new Rect2D(0f, 0f, 0f, 0f))
-			.SetNormalizedAnchoring(new Rect2D(0f, 0f, 1f, 1f))
+			.AddComponent(new UIFitChildren(horizontal:false, vertical:true))
+			.SetAbsOffsetsX(10,10)
+			.SetNormalizedAnchoringX(0, 1)
+			.SetNormalizedPositionCenterY(1, 1)
+			.SetAbsPositionSizeY(-20, 300)
 			.AddChildren(
 				_componentNameElement = CreatePanelRect()
-				.AddComponent(new UIText("Component name", _textColor_, "Consolas", 16, VerticalAlignment.Center, HorizontalAlignment.Center))
+				.AddComponent(new UIText(typeof(T).Name, _textColor_, "Consolas", 16, VerticalAlignment.Center, HorizontalAlignment.Center))
 				.SetAbsOffsetsX(10f, 120f)
 				.SetNormalizedAnchoringX(0f, 1f)
 				.SetNormalizedPositionCenterY(1f, 1f)
-				.SetAbsPositionSizeY(-10f, 70f)
-				.AddChildren(
-				)
-				,
-				_editingUIRoot = CreatePanelRect()
-				.AddComponent(new UILinearArrangement(true, false, 30, 10))
-				.SetAbsoluteOffset(new Rect2D(10f, 10f, 10f, 90f))
-				.SetNormalizedAnchoring(new Rect2D(0f, 0f, 1f, 1f))
+				.SetAbsPositionSizeY(-10f, 30f)
 				.AddChildren(
 				)
 				,
 				_contexMenuButton = UICreator.CreateButton("...")
 				.SetNormalizedPositionCenter(1f, 1f, 1f, 1f)
-				.SetAbsPositionSize(-10f, -10f, 100f, 70f)
+				.SetAbsPositionSize(-10f, -10f, 100f, 30f)
+				.AddChildren(
+				)
+				,
+				_editingUIRoot = CreatePanelRect()
+				.AddComponent(new UILinearArrangement(true, false, 30, 10))
+				.SetNormalizedAnchoringX(0,1)
+				.SetAbsOffsetsX(10,10)
+				.SetNormalizedPositionCenterY(1,1)
+				.SetAbsPositionSizeY(-50, 100)
 				.AddChildren(
 				)
 			);
-
-
-			PropertyInfo[] properties = typeof(UIText).GetProperties(BindingFlags.Public);
-
-			for (int i = 0; i < properties.Length; i++)
-			{
-				UIElement propertyEditor = CreatePropertyEditor(properties[i]);
-				_editingUIRoot.AddChild(propertyEditor);
-			}
 		}
 
+		private UIElementPropertyPair CreatePropertyEditor(PropertyInfo propertyInfo)
+		{
+			string name = propertyInfo.Name;
+			UIElementPropertyPair editor = null;
+
+			if(propertyInfo.PropertyType == typeof(string))
+			{
+				editor = CreateStringEditor();
+			}
+
+			if (propertyInfo.PropertyType == typeof(long))
+			{
+				editor = CreateIntEditor();
+			}
+
+			if (propertyInfo.PropertyType == typeof(double))
+			{
+				editor = CreateFloatEditor();
+			}
+
+			if (propertyInfo.PropertyType == typeof(float))
+			{
+				editor = CreateFloatEditor();
+			}
+
+
+			/*
+
+			if (propertyInfo.PropertyType == typeof(HorizontalAlignment))
+			{
+				editor =  CreateHAlignEditor();
+			}
+
+			if (propertyInfo.PropertyType == typeof(VerticalAlignment))
+			{
+				editor =  CreateVAlignEditor();
+			}
+
+			if(propertyInfo.PropertyType == typeof(Color4))
+			{
+				editor =  CreateColorEditorButton();
+			}
+			*/
+
+			return editor;
+		}
 
 		private UIElement CreateEmptyPropertyElement()
 		{
@@ -94,95 +239,64 @@ namespace UICodeGenerator.ComponentEditors
 			);
 		}
 
-		private UIElement CreatePropertyEditor(PropertyInfo propertyInfo)
-		{
-			string name = propertyInfo.Name;
-
-			UIElement pair = CreateNamePropPair(name, )
-		}
-
-
-		public IntegerProperty CreateIntProperty(Action<long> callback, int lower, int upper)
-		{
-			var prop = new IntegerProperty();
-			prop.Lower = lower;
-			prop.Upper = upper;
-			prop.OnDataChanged += callback;
-			return prop;
-		}
-
-		public FloatProperty CreateFloatProperty(Action<double> callback)
+		private UIElementPropertyPair CreateFloatEditor()
 		{
 			var prop = new FloatProperty();
-			prop.OnDataChanged += callback;
-			return prop;
+			var intInputComponent = new UITextFloatInput(prop, false);
+			return CreatePropertyElementText(prop, intInputComponent);
 		}
 
-		public StringProperty CreateStringProperty(Action<string> callback)
+		private UIElementPropertyPair CreateIntEditor()
+		{
+			var prop = new IntegerProperty();
+			var intInputComponent = new UITextNumberInput(prop, false);
+			return CreatePropertyElementText(prop, intInputComponent);
+		}
+
+		private UIElementPropertyPair CreateStringEditor()
 		{
 			var prop = new StringProperty("");
-			prop.OnDataChanged += callback;
-			return prop;
+			var intInputComponent = new UITextStringInput(prop, false, false);
+			return CreatePropertyElementText(prop, intInputComponent);
 		}
 
-
-		private NamePropertyPairUI CreateIntPropertyElement<T1>(Property<T1> prop)
+		private UIElementPropertyPair CreatePropertyElementText<T1>(Property<T1> prop, UITextInput<T1> textInputComponent)
 		{
-			var intInputComponent = new UITextNumberInput(prop, false);
-
 			UIElement root = CreateEmptyPropertyElement()
-				.AddComponent(intInputComponent);
+				.AddComponent(textInputComponent);
 
-			return new NamePropertyPairUI<long>(root, prop);
+			return new UIElementPropertyPair(root, prop);
 		}
 
-		private NamePropertyPairUI<string> CreateStringPropertyElement(StringProperty prop)
+		private UIElement CreateNamePropPair(UIElement name, UIElement editor)
 		{
-			var stringInputComponent = new UITextStringInput(prop, "Enter text", false, false);
-
-			UIElement root = CreateEmptyPropertyElement()
-				.AddComponent(stringInputComponent);
-
-			return new NamePropertyPairUI<string>(root, stringInputComponent.StringProperty);
-		}
-
-
-		private NamePropertyPairUI<double> CreateFloatPropertyElement(FloatProperty prop)
-		{
-			var floatInputComponent = new UITextFloatInput(prop, true);
-			UIElement root = CreateEmptyPropertyElement()
-				.AddComponent(floatInputComponent);
-
-			return new NamePropertyPairUI<double>(root, floatInputComponent.FloatProperty);
-		}
-
-		private NamePropertyPairUI<T> CreateNamePropPair<T>(string name, NamePropertyPairUI<T> propertyElement)
-		{
-			UIElement left, right;
-
-			UIElement newRoot = UICreator.CreateUIElement(
+			UIElement root = UICreator.CreateUIElement(
 				new UIRect(new Color4(0, 0), new Color4(0, 1), 1)
 				)
 				.SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
 				.SetAbsoluteOffset(10)
 				.AddChildren(
-					left = UICreator.CreateUIElement(
-
-					)
+					name
 					.SetNormalizedAnchoring(new Rect2D(0, 0, 0.5f, 1f))
-					.SetAbsoluteOffset(10)
-					.AddChild(
-						UICreator.CreateUIElement(
-							new UIText(name, new Color4(0, 1), "Consolas", 12, VerticalAlignment.Center, HorizontalAlignment.Left)
-						)
-					)
+					.SetAbsoluteOffset(0)
 					,
-					right = propertyElement.Root
+					editor
 					.SetNormalizedAnchoring(new Rect2D(0.5f, 0, 1f, 1f))
+					.SetAbsoluteOffset(0)
 				);
 
-			propertyElement.Root = newRoot;
-			return propertyElement;
+			return root;
+		}
+
+		private UIElement CreatePropertyName(PropertyInfo propInfo)
+		{
+			return UICreator.CreateUIElement()
+			.AddChildren(
+				UICreator.CreateUIElement(
+					new UIText(propInfo.Name, new Color4(0, 1), "Consolas", 12, VerticalAlignment.Center, HorizontalAlignment.Left)
+				)
+				.SetAbsoluteOffset(10)
+			);
 		}
 	}
 }

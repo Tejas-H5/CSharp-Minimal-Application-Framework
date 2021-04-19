@@ -10,9 +10,15 @@ namespace RenderingEngine.UI.Components.AutoResizing
         public UIAspectRatioConstraint(float aspectRatio)
         {
             _widthToHeight = aspectRatio;
+            _parent.RectTransform.OnDataChanged += OnResize;
         }
 
-        public override void OnResize()
+        public override void SetParent(UIElement parent)
+        {
+            base.SetParent(parent);
+        }
+
+        private void OnResize(UIRectTransform obj)
         {
             Rect2D parentRect = _parent.Rect;
             Rect2D wantedRect = _parent.Rect;

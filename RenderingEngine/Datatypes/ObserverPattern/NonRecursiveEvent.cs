@@ -34,5 +34,10 @@ namespace RenderingEngine.Datatypes.ObserverPattern
             Event?.Invoke(arg);
             _invoking = false;
         }
+
+        public void RemoveCallbacks()
+        {
+            Event = null;
+        }
     }
 }

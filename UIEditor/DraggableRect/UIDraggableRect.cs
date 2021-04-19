@@ -603,6 +603,8 @@ namespace UICodeGenerator.DraggableRect
 
         public override void OnResize()
         {
+            base.OnResize();
+
             if (_state.SelectedRect != this)
                 return;
         }

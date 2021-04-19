@@ -24,6 +24,13 @@ namespace RenderingEngine.UI.Core
         {
             SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1));
             SetAbsoluteOffset(new Rect2D(0, 0, 0, 0));
+
+            _rectTransform.OnDataChanged += _rectTransform_OnDataChanged;
+        }
+
+        private void _rectTransform_OnDataChanged(UIRectTransform obj)
+        {
+            _dirty = true;
         }
 
         public Rect2D Rect {
@@ -248,14 +255,12 @@ namespace RenderingEngine.UI.Core
         public UIElement SetAbsOffsetsX(float left, float right)
         {
             _rectTransform.SetAbsOffsetsX(left, right);
-            _dirty = true;
             return this;
         }
 
         public UIElement SetAbsOffsetsY(float bottom, float top)
         {
             _rectTransform.SetAbsOffsetsY(bottom, top);
-            _dirty = true;
             return this;
         }
 
@@ -267,42 +272,36 @@ namespace RenderingEngine.UI.Core
         public UIElement SetAbsoluteOffset(Rect2D pos)
         {
             _rectTransform.SetAbsoluteOffset(pos);
-            _dirty = true;
             return this;
         }
 
         public UIElement SetAbsPositionSizeX(float x, float width)
         {
             _rectTransform.SetAbsPositionSizeX(x, width);
-            _dirty = true;
             return this;
         }
 
         public UIElement SetAbsPositionSizeY(float y, float height)
         {
             _rectTransform.SetAbsPositionSizeY(y, height);
-            _dirty = true;
             return this;
         }
 
         public UIElement SetAbsPositionSize(float x, float y, float width, float height)
         {
             _rectTransform.SetAbsPositionSize(x, y, width, height);
-            _dirty = true;
             return this;
         }
 
         public UIElement SetNormalizedAnchoringX(float left, float right)
         {
             _rectTransform.SetNormalizedAnchoringX(left, right);
-            _dirty = true;
             return this;
         }
 
         public UIElement SetNormalizedAnchoringY(float bottom, float top)
         {
             _rectTransform.SetNormalizedAnchoringY(bottom, top);
-            _dirty = true;
             return this;
         }
 
@@ -310,35 +309,30 @@ namespace RenderingEngine.UI.Core
         public UIElement SetNormalizedAnchoring(Rect2D anchor)
         {
             _rectTransform.SetNormalizedAnchoring(anchor);
-            _dirty = true;
             return this;
         }
 
         public UIElement SetNormalizedPositionCenterX(float x, float centreX = 0.5f)
         {
             _rectTransform.SetNormalizedPositionCenterX(x, centreX);
-            _dirty = true;
             return this;
         }
 
         public UIElement SetNormalizedPositionCenterY(float y, float centreY = 0.5f)
         {
             _rectTransform.SetNormalizedPositionCenterY(y, centreY);
-            _dirty = true;
             return this;
         }
 
         public UIElement SetNormalizedPositionCenter(float x, float y, float centreX = 0.5f, float centreY = 0.5f)
         {
             _rectTransform.SetNormalizedPositionCenter(x, y, centreX, centreY);
-            _dirty = true;
             return this;
         }
 
         public UIElement SetNormalizedCenter(float centerX = 0.5f, float centerY = 0.5f)
         {
             _rectTransform.NormalizedCenter = new PointF(centerX, centerY);
-            _dirty = true;
             return this;
         }
 
@@ -364,10 +358,6 @@ namespace RenderingEngine.UI.Core
                 _components[i].Update(deltaTime);
             }
 
-            for (int i = 0; i < _components.Count; i++)
-            {
-                _components[i].AfterDraw(deltaTime);
-            }
 
             if (_parent == null)
             {
@@ -491,6 +481,8 @@ namespace RenderingEngine.UI.Core
 
         public void Resize()
         {
+            _rectTransform.Lock();
+
             UpdateRect();
 
             for (int i = 0; i < _components.Count; i++)
@@ -499,6 +491,8 @@ namespace RenderingEngine.UI.Core
             }
 
             ResizeChildren();
+
+            _rectTransform.UnlockNonInvoking();
         }
 
         public virtual void ResizeChildren()

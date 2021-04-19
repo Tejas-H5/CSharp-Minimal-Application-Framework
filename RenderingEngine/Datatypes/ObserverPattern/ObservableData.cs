@@ -18,15 +18,25 @@ namespace RenderingEngine.Datatypes.ObserverPattern
         bool _locked = false;
         private NonRecursiveEvent<T> _onDataChanged = new NonRecursiveEvent<T>();
 
+        public void RemoveCallbacks()
+        {
+            _onDataChanged.RemoveCallbacks();
+        }
+
         public void Lock()
         {
             _locked = true;
         }
 
-        public void Unlock(T args)
+        public void UnlockNonInvoking()
         {
             _locked = false;
-            DataChanged(args);
+        }
+
+        public void Unlock(T obj)
+        {
+            _locked = false;
+            _onDataChanged.Invoke(obj);
         }
 
         protected void DataChanged(T args)

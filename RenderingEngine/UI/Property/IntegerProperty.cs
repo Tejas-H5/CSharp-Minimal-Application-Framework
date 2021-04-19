@@ -2,10 +2,10 @@
 
 namespace RenderingEngine.UI.Property
 {
-    public class IntegerProperty : Property<long>
+    public class IntegerProperty : Property<int>
     {
-        long _lower, _upper, _snap;
-        public long Lower {
+        int _lower, _upper, _snap;
+        public int Lower {
             get { return _lower; }
             set {
                 _lower = value;
@@ -13,7 +13,7 @@ namespace RenderingEngine.UI.Property
             }
         }
 
-        public long Upper {
+        public int Upper {
             get { return _upper; }
             set {
                 _upper = value;
@@ -21,7 +21,7 @@ namespace RenderingEngine.UI.Property
             }
         }
 
-        public long Snap {
+        public int Snap {
             get { return _snap; }
             set {
                 _snap = value;
@@ -29,7 +29,7 @@ namespace RenderingEngine.UI.Property
             }
         }
 
-        protected override void SetValue(long num)
+        protected override void SetValue(int num)
         {
             if (num < _lower)
                 num = _lower;
@@ -46,11 +46,11 @@ namespace RenderingEngine.UI.Property
         }
 
         public IntegerProperty()
-            : this(long.MinValue, long.MaxValue, 0, 0)
+            : this(int.MinValue, int.MaxValue, 0, 0)
         {
         }
 
-        public IntegerProperty(long lower, long upper, long snap, long value)
+        public IntegerProperty(int lower, int upper, int snap, int value)
             : base(value)
         {
             _lower = lower;

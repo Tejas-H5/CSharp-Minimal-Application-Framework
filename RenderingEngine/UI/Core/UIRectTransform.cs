@@ -1,11 +1,12 @@
 ﻿using RenderingEngine.Datatypes.Geometric;
+using RenderingEngine.Datatypes.ObserverPattern;
 using RenderingEngine.Util;
 using System;
 using System.Drawing;
 
 namespace RenderingEngine.UI.Core
 {
-    public class UIRectTransform
+    public class UIRectTransform : ObservableData<UIRectTransform>
     {
         Rect2D _rect;
 
@@ -13,10 +14,15 @@ namespace RenderingEngine.UI.Core
         Rect2D _normalizedAnchoring;
         PointF _normalizedCenter;
 
+        public UIRectTransform()
+        {
+        }
+
         public Rect2D Rect {
             get { return _rect; }
             set {
                 _rect = value;
+                DataChanged(this);
             }
         }
 
@@ -24,6 +30,7 @@ namespace RenderingEngine.UI.Core
             get { return _normalizedCenter; }
             set { 
                 _normalizedCenter = value;
+                DataChanged(this);
             }
         }
 
@@ -31,6 +38,7 @@ namespace RenderingEngine.UI.Core
             get { return _absoluteOffset; }
             set {
                 _absoluteOffset = value;
+                DataChanged(this);
             }
         }
 
@@ -54,6 +62,7 @@ namespace RenderingEngine.UI.Core
 
                 _normalizedAnchoring.X1 = MathF.Max(_normalizedAnchoring.X0, _normalizedAnchoring.X1);
                 _normalizedAnchoring.Y1 = MathF.Max(_normalizedAnchoring.Y0, _normalizedAnchoring.Y1);
+                DataChanged(this);
             }
         }
 
@@ -86,12 +95,14 @@ namespace RenderingEngine.UI.Core
         {
             _absoluteOffset.X0 = left;
             _absoluteOffset.X1 = right;
+            DataChanged(this);
         }
 
         public void SetAbsOffsetsY(float bottom, float top)
         {
             _absoluteOffset.Y0 = bottom;
             _absoluteOffset.Y1 = top;
+            DataChanged(this);
         }
 
         public void SetAbsoluteOffset(float offset)
@@ -108,12 +119,14 @@ namespace RenderingEngine.UI.Core
         {
             _absoluteOffset.X0 = x - _normalizedCenter.X * width;
             _absoluteOffset.X1 = -x - ((1.0f - _normalizedCenter.X) * width);
+            DataChanged(this);
         }
 
         public void SetAbsPositionSizeY(float y, float height)
         {
             _absoluteOffset.Y0 = y - _normalizedCenter.Y * height;
             _absoluteOffset.Y1 = -y - ((1.0f - _normalizedCenter.Y) * height);
+            DataChanged(this);
         }
 
         public void SetAbsPositionSize(float x, float y, float width, float height)
@@ -165,8 +178,8 @@ namespace RenderingEngine.UI.Core
 
         public void SetNormalizedPositionCenter(float x, float y, float centerX = 0.5f, float centerY = 0.5f)
         {
-            NormalizedAnchoring = new Rect2D(x, y, x, y);
             _normalizedCenter = new PointF(centerX, centerY);
+            NormalizedAnchoring = new Rect2D(x, y, x, y);
         }
 
         public void UpdateRect(Rect2D parentRect)

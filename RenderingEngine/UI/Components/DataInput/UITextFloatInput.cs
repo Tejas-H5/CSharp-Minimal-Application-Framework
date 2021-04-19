@@ -7,7 +7,7 @@ using System.Text;
 
 namespace RenderingEngine.UI.Components.DataInput
 {
-    public class UITextFloatInput : UITextInput<double>
+    public class UITextFloatInput : UITextInput<float>
     {
         public UITextFloatInput(FloatProperty property, bool shouldClear)
             : base(property.Value, false, shouldClear)
@@ -15,13 +15,13 @@ namespace RenderingEngine.UI.Components.DataInput
             _property = property;
         }
 
-        protected override void OnPropertyChanged(double obj)
+        protected override void OnPropertyChanged(float obj)
         {
         }
 
-        protected override bool TryParseText(string s, out double val)
+        protected override bool TryParseText(string s, out float val)
         {
-            return double.TryParse(s, out val);
+            return float.TryParse(s, out val);
         }
     }
 }

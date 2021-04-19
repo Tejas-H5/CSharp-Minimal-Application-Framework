@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RenderingEngine.UI.Property
 {
-    public abstract class Property<T> : ObservableData<T>
+    public abstract class Property<T> : ObservableData<T>, IProperty
     {
         protected T _value;
         public T Value {
@@ -16,14 +16,27 @@ namespace RenderingEngine.UI.Property
             }
         }
 
-        protected virtual void SetValue(T val)
+        public Type PropertyType {
+            get {
+                return typeof(T);
+            }
+        }
+
+        public Property(T value, Action<T> onChangedCallback)
         {
-            _value = val;
+            _value = value;
+            if(onChangedCallback!=null)
+                OnDataChanged += onChangedCallback;
         }
 
         public Property(T value)
+            : this(value, null)
         {
-            _value = value;
+        }
+
+        protected virtual void SetValue(T val)
+        {
+            _value = val;
         }
     }
 }

@@ -22,12 +22,17 @@ namespace RenderingEngine.UI.Components.AutoResizing
         public UIEdgeSnapConstraint(UIElement other, UIRectEdgeSnapEdge mine, UIRectEdgeSnapEdge theirs)
         {
             _other = other;
+            _other.RectTransform.OnDataChanged += OnOtherResized;
             _mine = mine;
             _theirs = theirs;
         }
 
+        public override void SetParent(UIElement parent)
+        {
+            base.SetParent(parent);
+        }
 
-        public override void OnResize()
+        public void OnOtherResized(UIRectTransform rtf)
         {
             Rect2D wantedRect = _parent.Rect;
             Rect2D otherRect = _other.Rect;
@@ -71,7 +76,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
                     break;
             }
 
-            _parent.RectTransform.Rect = wantedRect;
+            rtf.Rect = wantedRect;
         }
     }
 }

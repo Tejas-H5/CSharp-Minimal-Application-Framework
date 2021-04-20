@@ -29,7 +29,14 @@ namespace RenderingEngine.UI.Components.AutoResizing
             _parent.ResizeChildren();
 
             float endSize = _padding + (_spacing + _padding) * _parent.Count;
-            //_parent.SetAbsPositionSizeY(_parent.AnchoredPositionAbs.Y, endSize);
+            if (_vertical)
+            {
+                _parent.SetAbsPositionSizeY(_parent.AnchoredPositionAbs.Y, endSize);
+            }
+            else
+            {
+                _parent.SetAbsPositionSizeX(_parent.AnchoredPositionAbs.Y, endSize);
+            }
 
             for (int i = 0; i < _parent.Count; i++)
             {
@@ -57,8 +64,6 @@ namespace RenderingEngine.UI.Components.AutoResizing
                 _parent[i].SetAbsOffsetsY(_padding, _padding);
                 _parent[i].SetNormalizedAnchoringY(0, 1);
             }
-
-            _parent.UpdateRect();
         }
     }
 }

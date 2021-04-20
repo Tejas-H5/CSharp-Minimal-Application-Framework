@@ -130,7 +130,8 @@ namespace UICodeGenerator.Editor
             UIElement pasteCodeButton;
 
             UIElement copyPasteButtons = UICreator.CreateUIElement(
-                new UILinearArrangement(vertical: true, reverse: true, 40, 10)
+                new UILinearArrangement(vertical: true, reverse: true, 40, 10),
+                new UIFitChildren(false, true)
             )
             .SetNormalizedAnchoringX(0,1)
             .SetAbsOffsetsX(10,10)
@@ -169,8 +170,6 @@ namespace UICodeGenerator.Editor
                     .SetNormalizedAnchoring(new Rect2D(0.75f, 0.0f, 1f, 1f))
                     .SetAbsoluteOffset(0)
                     .AddChildren(
-                        copyPasteButtons
-                        ,
                         _propertiesPanel = UICreator.CreatePanel(new Color4(1))
                         .SetAbsoluteOffset(new Rect2D(10,10,10,0))
                         .AddComponent(new UIDebugComponent())
@@ -201,6 +200,8 @@ namespace UICodeGenerator.Editor
                                 .SetNormalizedPositionCenterY(0, 0)
                             )
                         )
+                        ,
+                        copyPasteButtons
                     )
                 )
             );

@@ -1,4 +1,5 @@
-﻿using RenderingEngine.Datatypes.Geometric;
+﻿using RenderingEngine.Datatypes;
+using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
 using RenderingEngine.UI.Core;
@@ -20,11 +21,40 @@ namespace RenderingEngine.UI.Components.AutoResizing
         }
 
         float x0, y0, x1, y1;
+        Rect2D _rect;
 
-        public override void AfterDraw(double deltaTime)
+        private Rect2D GetWantedRect()
         {
-            //CTX.SetDrawColor(1, 0, 1, 0.5f);
-            //CTX.DrawRect(x0, y0, x1, y1);
+            Rect2D wantedRect = _parent.Rect;
+
+
+            if (_horizontal && _vertical)
+            {
+                wantedRect = new Rect2D(x0, y0, x1, y1);
+            }
+            else if (_horizontal)
+            {
+                wantedRect.X0 = x0;
+                wantedRect.X1 = x1;
+            }
+            else
+            {
+                wantedRect.Y0 = y0;
+                wantedRect.Y1 = y1;
+            }
+
+            return wantedRect;
+        }
+
+        private void ExpandRectToFitChld(int i)
+        {
+            Rect2D rect = _parent[i].Rect;
+
+            x0 = MathF.Min(x0, rect.X0);
+            y0 = MathF.Min(y0, rect.Y0);
+
+            x1 = MathF.Max(x1, rect.X1);
+            y1 = MathF.Max(y1, rect.Y1);
         }
 
         protected override void OnRectTransformResize(UIRectTransform obj)
@@ -47,36 +77,10 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
             for (int i = 0; i < _parent.Count; i++)
             {
-                Rect2D rect = _parent[i].Rect;
-                Rect2D anchors = _parent[i].NormalizedAnchoring;
-                Rect2D offsets = _parent[i].AbsoluteOffset;
-
-                x0 = MathF.Min(x0, rect.X0);
-                y0 = MathF.Min(y0, rect.Y0);
-
-                x1 = MathF.Max(x1, rect.X1);
-                y1 = MathF.Max(y1, rect.Y1);
+                ExpandRectToFitChld(i);
             }
 
-
-            if (_horizontal && _vertical)
-            {
-                _parent.Rect = new Rect2D(x0, y0, x1, y1);
-            }
-            else if (_horizontal)
-            {
-                Rect2D wantedRect = _parent.Rect;
-                wantedRect.X0 = x0;
-                wantedRect.X1 = x1;
-                _parent.Rect = wantedRect;
-            }
-            else
-            {
-                Rect2D wantedRect = _parent.Rect;
-                wantedRect.Y0 = y0;
-                wantedRect.Y1 = y1;
-                _parent.Rect = wantedRect;
-            }
+            _parent.Rect = GetWantedRect();
         }
     }
 }

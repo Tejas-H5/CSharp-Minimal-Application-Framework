@@ -40,16 +40,18 @@ namespace RenderingEngine.VisualTests.UI
                     new UIRect(new Color4(0, 0.2f), new Color4(0,1),1),
                     new UILinearArrangement(false, false, 50, 10)
                 )
-                .SetNormalizedAnchoringX(0, 0.75f)
-                .SetAbsoluteOffset(10)
+                .SetNormalizedAnchoringY(0,1)
+                .SetAbsOffsetsY(10,10)
+                .SetNormalizedPositionCenterX(0,0)
                 ,
                 //*/
                 vArrange = UICreator.CreateUIElement(
                     new UIRect(new Color4(0, 0.2f), new Color4(0, 1), 1),
-                    new UILinearArrangement(true, false, 50, 10)
+                    new UILinearArrangement(true, true, 50, 10)
                 )
                 .SetNormalizedAnchoringX(0.75f, 1)
                 .SetAbsOffsetsX(10,10)
+                .SetNormalizedPositionCenterY(0,0)
             );
 
             ///*

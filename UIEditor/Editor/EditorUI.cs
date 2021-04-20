@@ -6,6 +6,7 @@ using RenderingEngine.Rendering;
 using RenderingEngine.UI;
 using RenderingEngine.UI.Components.AutoResizing;
 using RenderingEngine.UI.Components.DataInput;
+using RenderingEngine.UI.Components.Debugging;
 using RenderingEngine.UI.Components.MouseInput;
 using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
@@ -151,6 +152,7 @@ namespace UICodeGenerator.Editor
             .AddComponent(new UIMouseListener())
             .AddChildren(
                 _mainWorkspace = UICreator.CreateUIElement()
+                .AddComponent(new UIRect(new Color4(0, 0), new Color4(0, 1), 1))//remove later
                 .AddChildren(
                     _uiView = UICreator.CreateUIElement(
                         new UIRect(new Color4(0, 0, 0, 0)),
@@ -163,15 +165,19 @@ namespace UICodeGenerator.Editor
                     )
                     ,
                     UICreator.CreateUIElement()
+                    .AddComponent(new UIRect(new Color4(0,0), new Color4(0,1),1))//remove later
                     .SetNormalizedAnchoring(new Rect2D(0.75f, 0.0f, 1f, 1f))
                     .SetAbsoluteOffset(0)
                     .AddChildren(
+                        copyPasteButtons
+                        ,
                         _propertiesPanel = UICreator.CreatePanel(new Color4(1))
-                        .SetAbsoluteOffset(10)
+                        .SetAbsoluteOffset(new Rect2D(10,10,10,0))
+                        .AddComponent(new UIDebugComponent())
                         .AddComponent(
                             new UIMultiEdgeSnapConstraint(
                                 new UIEdgeSnapConstraint(_uiView, UIRectEdgeSnapEdge.Top, UIRectEdgeSnapEdge.Top),
-                                new UIEdgeSnapConstraint(editorComponentUI, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Top)
+                                new UIEdgeSnapConstraint(copyPasteButtons, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Top)
                             )
                         )
                         .AddChildren(
@@ -191,16 +197,10 @@ namespace UICodeGenerator.Editor
                             .SetNormalizedPositionCenterY(1, 1)
                             .SetAbsPositionSizeY(-70, 50)
                             .AddChildren(
-                            //CreateColorPropPair("Text(?)", CreateColorPropertyElement(OnSelectionColorEdited))
+                                editorComponentUI
+                                .SetNormalizedPositionCenterY(0, 0)
                             )
                         )
-                        ,
-                        editorComponentUI
-                        .AddComponent(
-                            new UIEdgeSnapConstraint(copyPasteButtons, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Top)
-                        )
-                        ,
-                        copyPasteButtons
                     )
                 )
             );

@@ -22,11 +22,9 @@
         public virtual void Draw(double deltaTime) { }
         public virtual void AfterDraw(double deltaTime) { }
         public virtual bool ProcessEvents() { return false; }
-
         public virtual void OnResize() {
             OnRectTransformResize(_parent.RectTransform);
         }
-
         protected virtual void OnRectTransformResize(UIRectTransform rtf) { }
     }
 }

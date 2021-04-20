@@ -29,7 +29,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
             _parent.ResizeChildren();
 
             float endSize = _padding + (_spacing + _padding) * _parent.Count;
-            _parent.SetAbsPositionSizeY(_parent.AnchoredPositionAbs.Y, endSize);
+            //_parent.SetAbsPositionSizeY(_parent.AnchoredPositionAbs.Y, endSize);
 
             for (int i = 0; i < _parent.Count; i++)
             {
@@ -51,7 +51,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
             }
             else
             {
-                float side = _reverse ? 0 : 1;
+                float side = _reverse ? 1 : 0;
                 _parent[i].SetNormalizedPositionCenterX(side, side);
                 _parent[i].SetAbsPositionSizeX(_reverse ? (-amount) : amount, _spacing);
                 _parent[i].SetAbsOffsetsY(_padding, _padding);

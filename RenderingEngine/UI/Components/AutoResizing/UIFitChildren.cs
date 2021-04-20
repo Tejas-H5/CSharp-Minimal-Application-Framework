@@ -23,8 +23,8 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
         public override void AfterDraw(double deltaTime)
         {
-            CTX.SetDrawColor(1, 0, 1, 0.5f);
-            CTX.DrawRect(x0, y0, x1, y1);
+            //CTX.SetDrawColor(1, 0, 1, 0.5f);
+            //CTX.DrawRect(x0, y0, x1, y1);
         }
 
         protected override void OnRectTransformResize(UIRectTransform obj)

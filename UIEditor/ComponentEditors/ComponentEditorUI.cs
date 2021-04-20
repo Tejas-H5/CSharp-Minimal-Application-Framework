@@ -144,7 +144,7 @@ namespace UICodeGenerator.ComponentEditors
 		private void InitUIRoot()
 		{
 			_root = CreatePanelRect()
-			.AddComponent(new UIFitChildren(horizontal:false, vertical:true))
+			//.AddComponent(new UIFitChildren(horizontal:false, vertical:true))
 			.SetAbsOffsetsX(10,10)
 			.SetNormalizedAnchoringX(0, 1)
 			.SetNormalizedPositionCenterY(1, 1)

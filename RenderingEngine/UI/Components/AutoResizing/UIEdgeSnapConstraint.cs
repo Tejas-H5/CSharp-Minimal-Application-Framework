@@ -32,6 +32,11 @@ namespace RenderingEngine.UI.Components.AutoResizing
             base.SetParent(parent);
         }
 
+        protected override void OnRectTransformResize(UIRectTransform rtf)
+        {
+            OnOtherResized(_other.RectTransform);
+        }
+
         public void OnOtherResized(UIRectTransform rtf)
         {
             Rect2D wantedRect = _parent.Rect;
@@ -61,22 +66,22 @@ namespace RenderingEngine.UI.Components.AutoResizing
             switch (_mine)
             {
                 case UIRectEdgeSnapEdge.Bottom:
-                    wantedRect.Y0 = newValue + _parent.AbsoluteOffset.Y0;
+                    wantedRect.Y0 = newValue;
                     break;
                 case UIRectEdgeSnapEdge.Left:
-                    wantedRect.X0 = newValue + _parent.AbsoluteOffset.X0;
+                    wantedRect.X0 = newValue;
                     break;
                 case UIRectEdgeSnapEdge.Top:
-                    wantedRect.Y1 = newValue - _parent.AbsoluteOffset.Y1;
+                    wantedRect.Y1 = newValue;
                     break;
                 case UIRectEdgeSnapEdge.Right:
-                    wantedRect.X1 = newValue - _parent.AbsoluteOffset.X1;
+                    wantedRect.X1 = newValue;
                     break;
                 default:
                     break;
             }
 
-            rtf.Rect = wantedRect;
+            _parent.Rect = wantedRect;
         }
     }
 }

@@ -4,6 +4,7 @@ using RenderingEngine.Datatypes.UI;
 using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
 using RenderingEngine.UI;
+using RenderingEngine.UI.Components.AutoResizing;
 using RenderingEngine.UI.Components.DataInput;
 using RenderingEngine.UI.Components.MouseInput;
 using RenderingEngine.UI.Components.Visuals;
@@ -12,11 +13,12 @@ using RenderingEngine.UI.Property;
 
 namespace RenderingEngine.VisualTests.UI
 {
-    public class UITextInputTest : EntryPoint
+    public class UIEdgeSnapTest : EntryPoint
     {
         UIElement _root;
         UIElement _textInputElement;
 
+        UIElement _mouseDriven;
 
         public override void Start()
         {
@@ -30,28 +32,22 @@ namespace RenderingEngine.VisualTests.UI
 
             _root = UICreator.CreatePanel(new Color4(1));
 
-            _root.SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
-            .SetAbsoluteOffset(new Rect2D(0, 0, 0, 0));
+            _mouseDriven = UICreator.CreatePanel(new Color4(1))
+                .SetNormalizedAnchoring(new Rect2D(0.5f, 0, 1f, 1))
+                .SetAbsoluteOffset(10);
 
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    float size = 300;
-                    _root.AddChildren(
-                        _textInputElement = UICreator.CreateUIElement(
-                            new UIRect(new Color4(1), new Color4(0), 1),
-                            new UIRectHitbox(false),
-                            new UIMouseListener(),
-                            new UIText("", new Color4(0), "Comic Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
-                            new UIMouseFeedback(new Color4(0.7f), new Color4(0.5f)),
-                            new UITextStringInput(new StringProperty(""), true, false)
-                        )
-                        .SetNormalizedPositionCenter(0.5f, 0.5f, 0.5f, 0.5f)
-                        .SetAbsPositionSize((i - 1) * size, (j - 1) * size, size-10, size-10)
-                    );
-                }
-            }
+            _root.SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
+            .SetAbsoluteOffset(new Rect2D(0, 0, 0, 0))
+            .AddChildren(
+                UICreator.CreatePanel(new Color4(1))
+                .AddComponent(new UIEdgeSnapConstraint(_mouseDriven, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Bottom))
+                .SetNormalizedAnchoring(new Rect2D(0, 0, 0.5f, 1))
+                .SetAbsoluteOffset(10)
+                .AddComponent(new UIText("Edge snap driven", new Color4(0, 1)))
+                ,
+                _mouseDriven
+                .AddComponent(new UIText("Mouse driven", new Color4(0, 1)))
+            );
         }
 
         public override void Render(double deltaTime)
@@ -62,6 +58,12 @@ namespace RenderingEngine.VisualTests.UI
         public override void Update(double deltaTime)
         {
             _root.Update(deltaTime);
+
+            Rect2D wantedRect = _mouseDriven.Rect;
+
+            wantedRect.Y0 = Input.MouseY;
+
+            _mouseDriven.Rect = wantedRect;
         }
 
         public override void Resize()

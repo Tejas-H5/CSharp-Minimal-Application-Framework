@@ -198,27 +198,25 @@ namespace RenderingEngine.UI.Core
         /// <returns></returns>
         public UIElement AddComponent<T>(T comp) where T : UIComponent
         {
-            int i = ComponentOfTypeIndex(comp.GetType());
+            return InsertComponent(_components.Count, comp);
+        }
 
-            //var t = comp.GetType();
-            //var t2 = typeof(T);
+        public UIElement InsertComponent<T>(int index, T comp) where T : UIComponent
+        {
+            int i = ComponentOfTypeIndex(comp.GetType());
 
             if (i == -1)
             {
-                _components.Add(comp);
+                _components.Insert(index, comp);
                 comp.SetParent(this);
-
-
 #if DEBUG
                 SetParentDebug();
 #endif
-
                 return this;
             }
 
             throw new Exception("A component of this type already exists");
         }
-
 
         protected UIElement _parent = null;
         public UIElement Parent {

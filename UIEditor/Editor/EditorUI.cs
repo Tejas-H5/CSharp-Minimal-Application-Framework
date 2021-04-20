@@ -130,8 +130,8 @@ namespace UICodeGenerator.Editor
             UIElement pasteCodeButton;
 
             UIElement copyPasteButtons = UICreator.CreateUIElement(
-                new UILinearArrangement(vertical: true, reverse: true, 40, 10),
-                new UIFitChildren(false, true)
+                new UIRect(new Color4(0, 0), new Color4(0, 1), 1),
+                new UILinearArrangement(vertical: true, reverse: true, 40, 10)
             )
             .SetNormalizedAnchoringX(0,1)
             .SetAbsOffsetsX(10,10)
@@ -166,11 +166,13 @@ namespace UICodeGenerator.Editor
                     )
                     ,
                     UICreator.CreateUIElement()
-                    .AddComponent(new UIRect(new Color4(0,0), new Color4(0,1),1))//remove later
+                    .AddComponent(
+                        new UIRect(new Color4(0,0), new Color4(0,1),1)
+                    )//remove later
                     .SetNormalizedAnchoring(new Rect2D(0.75f, 0.0f, 1f, 1f))
                     .SetAbsoluteOffset(0)
                     .AddChildren(
-                        _propertiesPanel = UICreator.CreatePanel(new Color4(1))
+                        _propertiesPanel = UICreator.CreatePanel(new Color4(0,0,1,0.5f))
                         .SetAbsoluteOffset(new Rect2D(10,10,10,0))
                         .AddComponent(new UIDebugComponent())
                         .AddComponent(
@@ -189,16 +191,16 @@ namespace UICodeGenerator.Editor
                             .SetAbsPositionSizeY(-10, 50)
                             ,
                             _propertiesContainer = UICreator.CreateUIElement(
-                                new UILinearArrangement(true, false, 30, 10)
+                                new UIRect(new Color4(0,1,0,0.5f))
                             )
                             .SetAbsOffsetsX(10, 10)
                             .SetNormalizedAnchoringX(0, 1)
                             .SetNormalizedPositionCenterY(1, 1)
                             .SetAbsPositionSizeY(-70, 50)
-                            .AddChildren(
-                                editorComponentUI
-                                .SetNormalizedPositionCenterY(0, 0)
-                            )
+                            ,
+                            editorComponentUI
+                            .SetNormalizedPositionCenterY(0, 0)
+                            .SetAbsPositionSizeY(100, 10)
                         )
                         ,
                         copyPasteButtons

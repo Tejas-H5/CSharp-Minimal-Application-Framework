@@ -32,6 +32,11 @@ namespace RenderingEngine.UI.Components.AutoResizing
             base.SetParent(parent);
         }
 
+        public override void OnResize()
+        {
+            OnOtherResized(_other.RectTransform);
+        }
+
         protected override void OnRectTransformResize(UIRectTransform rtf)
         {
             OnOtherResized(_other.RectTransform);

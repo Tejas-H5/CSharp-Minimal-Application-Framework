@@ -37,6 +37,7 @@ namespace RenderingEngine.UI.Core
             get { return _rectTransform.Rect; }
             set {
                 _rectTransform.Rect = value;
+                //_rectTransform.UpdateOffsetFromRect(GetParentRect());
             }
         }
 
@@ -356,7 +357,6 @@ namespace RenderingEngine.UI.Core
                 _components[i].Update(deltaTime);
             }
 
-
             if (_parent == null)
             {
                 ProcessChildEvents();
@@ -474,13 +474,14 @@ namespace RenderingEngine.UI.Core
 
         public void UpdateRect()
         {
-            _rectTransform.UpdateRect(GetParentRect());
+            _rectTransform.UpdateRectFromOffset(GetParentRect());
         }
 
         public void Resize()
         {
-            _rectTransform.Lock();
+            Console.WriteLine("Resizeing...");
 
+            _rectTransform.Lock();
             UpdateRect();
 
             for (int i = 0; i < _components.Count; i++)
@@ -490,7 +491,9 @@ namespace RenderingEngine.UI.Core
 
             ResizeChildren();
 
-            _rectTransform.UnlockNonInvoking();
+            _rectTransform.Unlock(_rectTransform);
+
+            _dirty = false;
         }
 
         public virtual void ResizeChildren()

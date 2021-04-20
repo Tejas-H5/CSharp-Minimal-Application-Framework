@@ -182,12 +182,10 @@ namespace RenderingEngine.UI.Core
             NormalizedAnchoring = new Rect2D(x, y, x, y);
         }
 
-        public void UpdateRect(Rect2D parentRect)
+        public void UpdateRectFromOffset(Rect2D parentRect)
         {
-            float anchorLeft = parentRect.Left + _normalizedAnchoring.X0 * parentRect.Width;
-            float anchorRight = parentRect.Left + _normalizedAnchoring.X1 * parentRect.Width;
-            float anchorBottom = parentRect.Bottom + _normalizedAnchoring.Y0 * parentRect.Height;
-            float anchorTop = parentRect.Bottom + _normalizedAnchoring.Y1 * parentRect.Height;
+            float anchorLeft, anchorRight, anchorBottom, anchorTop;
+            GetAnchors(parentRect, out anchorLeft, out anchorRight, out anchorBottom, out anchorTop);
 
             float left = anchorLeft + _absoluteOffset.X0;
             float right = anchorRight - _absoluteOffset.X1;
@@ -195,6 +193,27 @@ namespace RenderingEngine.UI.Core
             float top = anchorTop - _absoluteOffset.Y1;
 
             _rect = new Rect2D(left, bottom, right, top);
+        }
+
+        public void UpdateOffsetFromRect(Rect2D parentRect)
+        {
+            float anchorLeft, anchorRight, anchorBottom, anchorTop;
+            GetAnchors(parentRect, out anchorLeft, out anchorRight, out anchorBottom, out anchorTop);
+
+            float left = _rect.X0 - anchorLeft;
+            float right =  anchorRight - _rect.X1;
+            float bottom = _rect.Y0 - anchorBottom;
+            float top = anchorTop - _rect.Y1;
+
+            _absoluteOffset = new Rect2D(left, bottom, right, top);
+        }
+
+        public void GetAnchors(Rect2D parentRect, out float anchorLeft, out float anchorRight, out float anchorBottom, out float anchorTop)
+        {
+            anchorLeft = parentRect.Left + _normalizedAnchoring.X0 * parentRect.Width;
+            anchorRight = parentRect.Left + _normalizedAnchoring.X1 * parentRect.Width;
+            anchorBottom = parentRect.Bottom + _normalizedAnchoring.Y0 * parentRect.Height;
+            anchorTop = parentRect.Bottom + _normalizedAnchoring.Y1 * parentRect.Height;
         }
     }
 }

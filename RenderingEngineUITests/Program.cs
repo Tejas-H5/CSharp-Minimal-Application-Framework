@@ -11,8 +11,8 @@ namespace RenderingEngineVisualTests
         {
             EntryPoint[] tests =
             {
-                new UILinearArrangeTest(),
                 new UIEdgeSnapTest(),
+                new UILinearArrangeTest(),
                 new UITest(),
                 new UITextInputTest(),
                 new UITextNumberInputTest()

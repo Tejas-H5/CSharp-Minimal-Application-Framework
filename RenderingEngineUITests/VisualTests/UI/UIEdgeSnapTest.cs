@@ -13,6 +13,37 @@ using RenderingEngine.UI.Property;
 
 namespace RenderingEngine.VisualTests.UI
 {
+    class MouseBlindThinggyComponent : UIComponent
+    {
+        Rect2D _wantedRect;
+
+        float yPos = 0;
+
+        public override void Update(double deltaTime)
+        {
+            if (Input.IsKeyPressed(KeyCode.Down))
+            {
+                yPos += -10;
+                _parent.SetDirty();
+            }
+            else if (Input.IsKeyPressed(KeyCode.Up))
+            {
+                yPos += 10;
+                _parent.SetDirty();
+            }
+        }
+
+        public override void OnResize()
+        {
+            _wantedRect = _parent.Rect;
+
+            _wantedRect.Y0 += yPos;
+
+            _parent.Rect = _wantedRect;
+        }
+    }
+
+
     public class UIEdgeSnapTest : EntryPoint
     {
         UIElement _root;
@@ -32,21 +63,40 @@ namespace RenderingEngine.VisualTests.UI
 
             _root = UICreator.CreatePanel(new Color4(1));
 
-            _mouseDriven = UICreator.CreatePanel(new Color4(1))
-                .SetNormalizedAnchoring(new Rect2D(0.5f, 0, 1f, 1))
-                .SetAbsoluteOffset(10);
+            _mouseDriven = UICreator.CreatePanel(new Color4(1));
 
             _root.SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
             .SetAbsoluteOffset(new Rect2D(0, 0, 0, 0))
             .AddChildren(
                 UICreator.CreatePanel(new Color4(1))
                 .AddComponent(new UIEdgeSnapConstraint(_mouseDriven, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Bottom))
-                .SetNormalizedAnchoring(new Rect2D(0, 0, 0.5f, 1))
+                .SetNormalizedAnchoring(new Rect2D(0, 0, 1f/3f, 1))
                 .SetAbsoluteOffset(10)
                 .AddComponent(new UIText("Edge snap driven", new Color4(0, 1)))
+                .AddChildren(
+                    UICreator.CreatePanel(new Color4(1))
+                    .SetAbsoluteOffset(20)
+                )
                 ,
                 _mouseDriven
-                .AddComponent(new UIText("Mouse driven", new Color4(0, 1)))
+                .SetNormalizedAnchoring(new Rect2D(1f / 3f, 0, 2f / 3f, 1))
+                .SetAbsoluteOffset(10)
+                .AddComponent(new UIText("Press up/down", new Color4(0, 1)))
+                .AddComponent(new MouseBlindThinggyComponent())
+                .AddChildren(
+                    UICreator.CreatePanel(new Color4(1))
+                    .SetAbsoluteOffset(20)
+                )
+                ,
+                UICreator.CreatePanel(new Color4(1))
+                .AddComponent(new UIEdgeSnapConstraint(_mouseDriven, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Bottom))
+                .SetNormalizedAnchoring(new Rect2D(2f/3f, 0, 1f, 1))
+                .SetAbsoluteOffset(10)
+                .AddComponent(new UIText("Edge snap driven", new Color4(0, 1)))
+                .AddChildren(
+                    UICreator.CreatePanel(new Color4(1))
+                    .SetAbsoluteOffset(20)
+                )
             );
         }
 
@@ -58,12 +108,6 @@ namespace RenderingEngine.VisualTests.UI
         public override void Update(double deltaTime)
         {
             _root.Update(deltaTime);
-
-            Rect2D wantedRect = _mouseDriven.Rect;
-
-            wantedRect.Y0 = Input.MouseY;
-
-            _mouseDriven.Rect = wantedRect;
         }
 
         public override void Resize()

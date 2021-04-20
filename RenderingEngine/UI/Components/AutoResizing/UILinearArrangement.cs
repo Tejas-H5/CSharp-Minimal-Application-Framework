@@ -8,14 +8,14 @@ namespace RenderingEngine.UI.Components.AutoResizing
         private bool _vertical;
         private bool _reverse;
         private float _padding;
-        private float _spacing;
+        private float _elementSizing;
 
-        public UILinearArrangement(bool vertical, bool reverse, float spacing, float padding)
+        public UILinearArrangement(bool vertical, bool reverse, float elementSizing, float padding)
         {
             _vertical = vertical;
             _reverse = reverse;
             _padding = padding;
-            _spacing = spacing;
+            _elementSizing = elementSizing;
         }
 
         public override void SetParent(UIElement parent)
@@ -28,7 +28,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
             _parent.UpdateRect();
             _parent.ResizeChildren();
 
-            float endSize = _padding + (_spacing + _padding) * _parent.Count;
+            float endSize = _padding + (_elementSizing + _padding) * _parent.Count;
             if (_vertical)
             {
                 _parent.SetAbsPositionSizeY(_parent.AnchoredPositionAbs.Y, endSize);
@@ -46,13 +46,13 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
         private void SetChildAnchoring(int i, float endSize)
         {
-            float amount = _padding + (_spacing + _padding) * i;
+            float amount = _padding + (_elementSizing + _padding) * i;
 
             if (_vertical)
             {
                 float side = _reverse ? 0 : 1;
                 _parent[i].SetNormalizedPositionCenterY(side, side);
-                _parent[i].SetAbsPositionSizeY(_reverse ? amount : (-amount), _spacing);
+                _parent[i].SetAbsPositionSizeY(_reverse ? amount : (-amount), _elementSizing);
                 _parent[i].SetAbsOffsetsX(_padding, _padding);
                 _parent[i].SetNormalizedAnchoringX(0, 1);
             }
@@ -60,7 +60,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
             {
                 float side = _reverse ? 1 : 0;
                 _parent[i].SetNormalizedPositionCenterX(side, side);
-                _parent[i].SetAbsPositionSizeX(_reverse ? (-amount) : amount, _spacing);
+                _parent[i].SetAbsPositionSizeX(_reverse ? (-amount) : amount, _elementSizing);
                 _parent[i].SetAbsOffsetsY(_padding, _padding);
                 _parent[i].SetNormalizedAnchoringY(0, 1);
             }

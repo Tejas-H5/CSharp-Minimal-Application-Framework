@@ -172,7 +172,7 @@ namespace UICodeGenerator.Editor
                     .SetNormalizedAnchoring(new Rect2D(0.75f, 0.0f, 1f, 1f))
                     .SetAbsoluteOffset(0)
                     .AddChildren(
-                        _propertiesPanel = UICreator.CreatePanel(new Color4(0,0,1,0.5f))
+                        _propertiesPanel = UICreator.CreatePanel(new Color4(0,0))
                         .SetAbsoluteOffset(new Rect2D(10,10,10,0))
                         .AddComponent(new UIDebugComponent())
                         .AddComponent(
@@ -191,16 +191,14 @@ namespace UICodeGenerator.Editor
                             .SetAbsPositionSizeY(-10, 50)
                             ,
                             _propertiesContainer = UICreator.CreateUIElement(
-                                new UIRect(new Color4(0,1,0,0.5f))
+                                new UIRect(new Color4(0,1,0,0.5f)),
+                                new UIEdgeSnapConstraint(editorComponentUI, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Top)
                             )
-                            .SetAbsOffsetsX(10, 10)
-                            .SetNormalizedAnchoringX(0, 1)
-                            .SetNormalizedPositionCenterY(1, 1)
-                            .SetAbsPositionSizeY(-70, 50)
+                            .SetAbsoluteOffset(new Rect2D(10,10,10,70))
                             ,
                             editorComponentUI
                             .SetNormalizedPositionCenterY(0, 0)
-                            .SetAbsPositionSizeY(100, 10)
+                            .SetAbsPositionSizeY(10, 10)
                         )
                         ,
                         copyPasteButtons

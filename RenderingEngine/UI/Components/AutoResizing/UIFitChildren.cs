@@ -17,6 +17,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
         Rect2D _margin;
         public Rect2D Margin { get => _margin; set => _margin = value; }
 
+        //TODO: Fix bug where if margin is greater than the rectOffsets of all the children, it doesn't resize properly
         public UIFitChildren(bool horizontal, bool vertical, Rect2D margin, bool debug = false)
         {
             _horizontal = horizontal;
@@ -122,8 +123,9 @@ namespace RenderingEngine.UI.Components.AutoResizing
             _parent.ResizeChildren();
 
             UpdateWantedRect();
-
             var wantedRect = GetWantedRect();
+
+            ///*
 
             if (_vertical && _horizontal)
             {
@@ -132,12 +134,15 @@ namespace RenderingEngine.UI.Components.AutoResizing
             }
             else if(_vertical)
             {
-                _parent.SetAbsPositionSizeY(_parent.AnchoredPositionAbs.Y + _margin.Y1, wantedRect.Height);
+                _parent.SetAbsPositionSizeY(_parent.AnchoredPositionAbs.Y, wantedRect.Height);
             }
             else
             {
-                _parent.SetAbsPositionSizeX(_parent.AnchoredPositionAbs.X + _margin.X1, wantedRect.Width);
+                _parent.SetAbsPositionSizeX(_parent.AnchoredPositionAbs.X - _margin.X1 + wantedRect.Height, wantedRect.Width);
             }
+            //*/
+
+            //_parent.Rect = wantedRect;
         }
 
         private void UpdateWantedRect()

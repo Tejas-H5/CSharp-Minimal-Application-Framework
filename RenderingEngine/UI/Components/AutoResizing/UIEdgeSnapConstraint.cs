@@ -71,16 +71,16 @@ namespace RenderingEngine.UI.Components.AutoResizing
             switch (_mine)
             {
                 case UIRectEdgeSnapEdge.Bottom:
-                    wantedRect.Y0 = newValue;
+                    wantedRect.Y0 = newValue + _parent.AbsoluteOffset.Y0;
                     break;
                 case UIRectEdgeSnapEdge.Left:
-                    wantedRect.X0 = newValue;
+                    wantedRect.X0 = newValue + _parent.AbsoluteOffset.X0;
                     break;
                 case UIRectEdgeSnapEdge.Top:
-                    wantedRect.Y1 = newValue;
+                    wantedRect.Y1 = newValue - _parent.AbsoluteOffset.Y1;
                     break;
                 case UIRectEdgeSnapEdge.Right:
-                    wantedRect.X1 = newValue;
+                    wantedRect.X1 = newValue - _parent.AbsoluteOffset.X1;
                     break;
                 default:
                     break;

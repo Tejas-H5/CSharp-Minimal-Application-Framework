@@ -150,6 +150,7 @@ namespace UICodeGenerator.Editor
 
             _root = new UIZStack();
             _root.AddComponent(new UIRectHitbox())
+            .AddComponent(_editorComponent)
             .AddComponent(new UIMouseListener())
             .AddChildren(
                 _mainWorkspace = UICreator.CreateUIElement()

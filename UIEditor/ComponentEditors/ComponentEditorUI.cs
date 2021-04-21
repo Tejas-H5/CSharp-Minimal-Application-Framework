@@ -104,29 +104,29 @@ namespace UICodeGenerator.ComponentEditors
 				UIElement namePropertyEditorPair = CreateNamePropPair(nameElement, editorProperty.UIRoot);
 
 				_namePropertyEventMap[name] = editorProperty.Property;
-				SetupProperty(i);
+				SetupProperty(i, editorProperty.Property);
 
 				_editingUIRoot.AddChild(namePropertyEditorPair);
 			}
 		}
 
-		private void SetupProperty(int propNum)
+		private void SetupProperty(int propNum, IProperty iProp)
 		{
 			string name = _properties[propNum].Name;
 
-			IProperty iProp = _namePropertyEventMap[name];
+			//IProperty iProp = _namePropertyEventMap[name];
 
 			if(iProp.PropertyType == typeof(string))
 			{
 				StringProperty p = (StringProperty)(iProp);
 				AddCallback(propNum, p);
 			}
-			else if(iProp.PropertyType == typeof(long))
+			else if(iProp.PropertyType == typeof(int))
 			{
 				IntegerProperty p = (IntegerProperty)(iProp);
 				AddCallback(propNum, p);
 			}
-			else if(iProp.PropertyType == typeof(double))
+			else if(iProp.PropertyType == typeof(float))
 			{
 				FloatProperty p = (FloatProperty)(iProp);
 				AddCallback(propNum, p);
@@ -188,18 +188,11 @@ namespace UICodeGenerator.ComponentEditors
 			{
 				editor = CreateStringEditor();
 			}
-
-			if (propertyInfo.PropertyType == typeof(long))
+			else if (propertyInfo.PropertyType == typeof(long))
 			{
 				editor = CreateIntEditor();
 			}
-
-			if (propertyInfo.PropertyType == typeof(double))
-			{
-				editor = CreateFloatEditor();
-			}
-
-			if (propertyInfo.PropertyType == typeof(float))
+			else if (propertyInfo.PropertyType == typeof(float))
 			{
 				editor = CreateFloatEditor();
 			}

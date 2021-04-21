@@ -26,12 +26,9 @@ namespace UICodeGenerator.DraggableRect
             if (_isInvoking)
                 return;
 
-            if (_selRect != null)
-            {
-                _isInvoking = true;
-                OnSelectionChanged?.Invoke(_selRect);
-                _isInvoking = false;
-            }
+            _isInvoking = true;
+            OnSelectionChanged?.Invoke(_selRect);
+            _isInvoking = false;
         }
 
 

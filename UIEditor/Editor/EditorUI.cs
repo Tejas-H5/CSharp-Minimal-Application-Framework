@@ -31,10 +31,11 @@ namespace UICodeGenerator.Editor
 
         UIElement _rightclickMenu;
 
-
         UIElement _domRoot;
         UIDraggableRect _domRootRect;
         DraggableRectSelectedState _selectedState;
+
+        ComponentEditorListUI _componentList;
 
 
         public EditorUI() { }
@@ -96,7 +97,6 @@ namespace UICodeGenerator.Editor
             Console.WriteLine("Selection changed");
         }
 
-
         private void OnSelectionTextEdited(string text)
         {
             if (_selectedState.SelectedRect != null)
@@ -121,9 +121,6 @@ namespace UICodeGenerator.Editor
                 _selectedState.SelectedRect.TextSize = (int)newSize;
         }
 
-        UIElementPropertyPair _unitSnapProperty;
-        UIElementPropertyPair _normalizedSnapProperty;
-
         private void InitRootUI()
         {
             UIElement copyCodeButton;
@@ -147,6 +144,8 @@ namespace UICodeGenerator.Editor
             ComponentEditorUI<UIEditorComponent> uiEditorComponetUIEditor = new ComponentEditorUI<UIEditorComponent>(_editorComponent);
             UIElement editorComponentUI = uiEditorComponetUIEditor.Root;
             editorComponentUI.GetComponentOfType<UIRect>().InitialColor = new Color4(1, 0, 0, 0.5f);
+
+            _componentList = new ComponentEditorListUI(_selectedState);
 
             _root = new UIZStack();
             _root.AddComponent(new UIRectHitbox())
@@ -193,9 +192,16 @@ namespace UICodeGenerator.Editor
                             ,
                             _propertiesContainer = UICreator.CreateUIElement(
                                 new UIRect(new Color4(0,1,0,0.5f)),
+                                new UIInverseStencil(),
                                 new UIEdgeSnapConstraint(editorComponentUI, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Top)
                             )
                             .SetAbsoluteOffset(new Rect2D(10,10,10,70))
+                            .AddChildren(
+                                _componentList.Root
+                                .SetNormalizedPositionCenterY(1,1)
+                                .SetAbsPositionSizeY(-10,10)
+                                .SetAbsOffsetsX(10,10)
+                            )
                             ,
                             editorComponentUI
                             .SetNormalizedPositionCenterY(0, 0)

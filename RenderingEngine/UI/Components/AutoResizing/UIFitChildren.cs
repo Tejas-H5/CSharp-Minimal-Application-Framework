@@ -147,10 +147,10 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
         private void UpdateWantedRect()
         {
-            x0 = _parent.Rect.X0;
-            y0 = _parent.Rect.Y0;
-            x1 = _parent.Rect.X1;
-            y1 = _parent.Rect.Y1;
+            x0 = _parent.Rect.X1;
+            y0 = _parent.Rect.Y1;
+            x1 = _parent.Rect.X0;
+            y1 = _parent.Rect.Y0;
 
             for (int i = 0; i < _parent.Count; i++)
             {

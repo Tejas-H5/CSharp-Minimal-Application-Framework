@@ -28,21 +28,30 @@ namespace UICodeGenerator.ComponentEditors
 		}
 	}
 
-	public class ComponentEditorUI<T> where T : UIComponent
+	public class ComponentEditorUI<T> : IComponentEditorUI where T : UIComponent
     {
         UIElement _root;
 		UIElement _componentNameElement, _editingUIRoot, _contexMenuButton;
 
 		public UIElement Root { get { return _root; } }
 
-        T _boundInstace;
+		public Type Type { get; private set; }
+
+		T _boundInstace;
 		PropertyInfo[] _properties;
 
 		Dictionary<string, IProperty> _namePropertyEventMap = new Dictionary<string, IProperty>();
 
-        public virtual void Bind(T instance)
+		public void Bind(object obj)
+		{
+			Bind((T)obj);
+		}
+
+		public virtual void Bind(T instance)
         {
             _boundInstace = instance;
+			if (_boundInstace == null)
+				return;
 
 			for(int i = 0; i < _properties.Length; i++)
 			{
@@ -78,9 +87,11 @@ namespace UICodeGenerator.ComponentEditors
 			);
 		}
 
-		public ComponentEditorUI(T instance)
+		public ComponentEditorUI(T instance, bool debug = false)
 		{
-			InitUIRoot();
+			Type = typeof(ComponentEditorUI<T>);
+
+			InitUIRoot(debug);
 
 			InitProperties();
 
@@ -141,17 +152,19 @@ namespace UICodeGenerator.ComponentEditors
 			};
 		}
 
-		private void InitUIRoot()
+		private void InitUIRoot(bool debug)
 		{
 			float _internalSpacing = 5;
 
 			_root = CreatePanelRect()
-			.AddComponent(new UIFitChildren(horizontal:false, vertical:true, 
-				new Rect2D(_internalSpacing, _internalSpacing, _internalSpacing, _internalSpacing), false))
+			.AddComponent(
+				new UIFitChildren(horizontal:false, vertical:true, 
+					new Rect2D(_internalSpacing, _internalSpacing, _internalSpacing, _internalSpacing), debug)
+			)
 			.SetAbsOffsetsX(_internalSpacing, _internalSpacing)
 			.SetNormalizedAnchoringX(0, 1)
 			.SetNormalizedPositionCenterY(1, 1)
-			.SetAbsPositionSizeY(-20, 300)
+			.SetAbsPositionSizeY(-20, 100)
 			.AddChildren(
 				_componentNameElement = CreatePanelRect()
 				.AddComponent(new UIText(typeof(T).Name, _textColor, "Consolas", 16, VerticalAlignment.Center, HorizontalAlignment.Center))
@@ -188,7 +201,7 @@ namespace UICodeGenerator.ComponentEditors
 			{
 				editor = CreateStringEditor();
 			}
-			else if (propertyInfo.PropertyType == typeof(long))
+			else if (propertyInfo.PropertyType == typeof(int))
 			{
 				editor = CreateIntEditor();
 			}
@@ -294,5 +307,6 @@ namespace UICodeGenerator.ComponentEditors
 				.SetAbsoluteOffset(10)
 			);
 		}
+
 	}
 }

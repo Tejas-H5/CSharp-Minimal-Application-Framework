@@ -14,6 +14,8 @@ namespace RenderingEngine.UI.Core
         protected List<UIElement> _children = new List<UIElement>();
         protected UIRectTransform _rectTransform = new UIRectTransform();
 
+        public List<UIComponent> Components { get { return _components; } }
+
         /// <summary>
         /// Should not be used over the other wrapped getters/setters if possible.
         /// mainly for components to make some modification for example after a Resize()
@@ -96,7 +98,7 @@ namespace RenderingEngine.UI.Core
         public UIElement AddChild(UIElement element)
         {
             AddChildVirtual(element);
-
+            _dirty = true;
             return this;
         }
 
@@ -384,6 +386,7 @@ namespace RenderingEngine.UI.Core
             DrawChildren(deltaTime);
 
             AfterDraw(deltaTime);
+
 #if DEBUG
             if (UICreator.Debug)
             {
@@ -479,8 +482,6 @@ namespace RenderingEngine.UI.Core
 
         public void Resize()
         {
-            Console.WriteLine("Resizeing...");
-
             _rectTransform.Lock();
             UpdateRect();
 

@@ -10,6 +10,7 @@ using RenderingEngine.UI.Components.MouseInput;
 using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
 using RenderingEngine.UI.Property;
+using System;
 
 namespace RenderingEngine.VisualTests.UI
 {
@@ -47,11 +48,12 @@ namespace RenderingEngine.VisualTests.UI
                 //*/
                 vArrange = UICreator.CreateUIElement(
                     new UIRect(new Color4(0, 0.2f), new Color4(0, 1), 1),
-                    new UILinearArrangement(true, true, 50, 10)
+                    new UILinearArrangement(true, false, -1, 10)
                 )
                 .SetNormalizedAnchoringX(0.75f, 1)
                 .SetAbsOffsetsX(10,10)
                 .SetNormalizedPositionCenterY(0,0)
+                .SetAbsPositionSizeY(10, 0)
             );
 
             ///*
@@ -66,13 +68,19 @@ namespace RenderingEngine.VisualTests.UI
             }
             //*/
 
+            Random r = new Random();
+
             for (int i = 0; i < 10; i++)
             {
+                int size = r.Next(10, 200);
+
                 vArrange.AddChild(
                     UICreator.CreateUIElement(
                         new UIRect(new Color4(0, 0.0f), new Color4(0, 1), 1),
-                        new UIText("v" + i.ToString(), new Color4(0, 1))
+                        new UIText($"v{i}:h={size}", new Color4(0, 1))
                     )
+                    .SetNormalizedPositionCenterY(1,1)
+                    .SetAbsPositionSizeY(10, size)
                 );
             }
         }

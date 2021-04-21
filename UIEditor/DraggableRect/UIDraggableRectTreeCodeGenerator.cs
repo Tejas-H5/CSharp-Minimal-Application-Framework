@@ -41,7 +41,7 @@ namespace UICodeGenerator.DraggableRect
                 //TODO in distant future: _textColor can be linked to a string that maps to a colour
                 optionalTextComponent = $"new UIText(" +
                     $"\"{draggableRect.Text}\", " +
-                    $"_textColor_, " +
+                    $"_textColor, " +
                     $"\"{fontName}\", " +
                     $"{draggableRect.TextSize}," +
                     $"VerticalAlignment.Center," +

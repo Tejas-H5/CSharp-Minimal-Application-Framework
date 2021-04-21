@@ -69,7 +69,7 @@ namespace UICodeGenerator.ComponentEditors
 			}
 		}
 
-		Color4 _textColor_ = new Color4(0, 1);
+		Color4 _textColor = new Color4(0, 1);
 
 		UIElement CreatePanelRect()
 		{
@@ -154,7 +154,7 @@ namespace UICodeGenerator.ComponentEditors
 			.SetAbsPositionSizeY(-20, 300)
 			.AddChildren(
 				_componentNameElement = CreatePanelRect()
-				.AddComponent(new UIText(typeof(T).Name, _textColor_, "Consolas", 16, VerticalAlignment.Center, HorizontalAlignment.Center))
+				.AddComponent(new UIText(typeof(T).Name, _textColor, "Consolas", 16, VerticalAlignment.Center, HorizontalAlignment.Center))
 				.SetAbsOffsetsX(_internalSpacing, 120f)
 				.SetNormalizedAnchoringX(0f, 1f)
 				.SetNormalizedPositionCenterY(1f, 1f)

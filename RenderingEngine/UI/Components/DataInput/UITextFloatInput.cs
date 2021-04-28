@@ -20,10 +20,6 @@ namespace RenderingEngine.UI.Components.DataInput
             return new UITextFloatInput(_property.Copy(), _shouldClear);
         }
 
-        protected override void OnPropertyChanged(float obj)
-        {
-        }
-
         protected override bool TryParseText(string s, out float val)
         {
             return float.TryParse(s, out val);

@@ -1,5 +1,7 @@
 ﻿using RenderingEngine.Datatypes;
+using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Datatypes.UI;
+using RenderingEngine.Logic;
 using RenderingEngine.UI;
 using RenderingEngine.UI.Components.AutoResizing;
 using RenderingEngine.UI.Components.MouseInput;
@@ -7,6 +9,7 @@ using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Reflection;
 using System.Text;
 using UICodeGenerator.DraggableRect;
@@ -23,7 +26,8 @@ namespace UICodeGenerator.ComponentEditors
         Dictionary<Type, IComponentEditorUI> _componentEditors = new Dictionary<Type, IComponentEditorUI>();
         private UIElement _nullComponent;
         private UIElement _emptySpace;
-        private UIElement _addComponentButton;
+        private UIElement _addComponentButtonAndList;
+        private UIElement _addComponentsUI;
 
         public ComponentEditorListUI(DraggableRectSelectedState state)
         {
@@ -42,19 +46,57 @@ namespace UICodeGenerator.ComponentEditors
         }
 
 
+        UIMouseListener _mouseListener;
         private void InitAddComponentButton()
         {
-            _addComponentButton = UICreator.CreateButton("Add Component", "Consolas", 12)
+            UIElement addComponentButton;
+            UIMouseScroll scrollComponent;
+            UIElement scrollTarget;
+
+            _addComponentButtonAndList = UICreator.CreateUIElement(
+                new UIRect(new Color4(0,0), new Color4(0,1),1),
+                new UIFitChildren(false, true, new Rect2D(10,10,10,10)),
+                new UIRectHitbox(),
+                _mouseListener = new UIMouseListener()
+            )
             .SetAbsOffsetsX(40, 40)
             .SetNormalizedPositionCenterY(1, 1)
-            .SetAbsPositionSizeY(-10, 60);
+            .SetAbsPositionSizeY(-10, 60)
+            .AddChildren(
+                addComponentButton = UICreator.CreateButton(
+                "Add Component", "Consolas", 12, new Color4(0, 1),
+                new Color4(0, 0), new Color4(1.0f, 0.4f), new Color4(1, 1)
+                )
+                .SetAbsOffsetsX(10, 10)
+                .SetNormalizedPositionCenterY(1, 1)
+                .SetAbsPositionSizeY(-10, 60)
+                ,
+                _addComponentsUI = UICreator.CreateUIElement(
+                    new UIInverseStencil(),
+                    new UIRectHitbox(),
+                    new UIMouseListener(),
+                    scrollComponent = new UIMouseScroll(vertical:true)
+                )
+                .SetAbsOffsetsX(10, 10)
+                .SetNormalizedPositionCenterY(1, 1)
+                .SetAbsPositionSizeY(-80, 300)
+                .AddChildren(
+                    scrollTarget = new AllComponentsDropdownList().Root
+                    .SetNormalizedPositionCenterY(1, 1)
+                )
+            );
 
-            _addComponentButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnAddComponentButtonPressed;
+            addComponentButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnAddComponentButtonPressed;
+
+            _addComponentsUI.SetNormalizedCenter(0, 1);
+            _addComponentsUI.IsVisible = false;
+
+            scrollComponent.Target = scrollTarget;
         }
 
         private void OnAddComponentButtonPressed()
         {
-            
+            _addComponentsUI.IsVisible = !_addComponentsUI.IsVisible;
         }
 
         private void InitNullComponent()
@@ -111,17 +153,13 @@ namespace UICodeGenerator.ComponentEditors
 
             foreach(UIComponent c in obj.Components)
             {
-
                 Type t = c.GetType();
-                if (t == typeof(UIElementEditor))
-                    continue;
-
                 IComponentEditorUI editor = _componentEditors[t];
                 _root.AddChild(editor.Root);
                 editor.Bind(c);
             }
 
-            _root.AddChild(_addComponentButton);
+            _root.AddChild(_addComponentButtonAndList);
         }
     }
 }

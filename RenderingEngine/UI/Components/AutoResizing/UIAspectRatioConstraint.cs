@@ -18,11 +18,6 @@ namespace RenderingEngine.UI.Components.AutoResizing
             return new UIAspectRatioConstraint(_widthToHeight);
         }
 
-        public override void SetParent(UIElement parent)
-        {
-            base.SetParent(parent);
-        }
-
         private void OnResize(UIRectTransform obj)
         {
             Rect2D parentRect = _parent.Rect;

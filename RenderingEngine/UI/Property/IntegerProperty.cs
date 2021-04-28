@@ -29,7 +29,7 @@ namespace RenderingEngine.UI.Property
             }
         }
 
-        protected override void SetValue(int num)
+        protected override void SetValueInternal(int num)
         {
             if (num < _lower)
                 num = _lower;

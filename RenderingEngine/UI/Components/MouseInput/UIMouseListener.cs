@@ -4,6 +4,7 @@ using System;
 
 namespace RenderingEngine.UI.Components.MouseInput
 {
+    [RequiredComponents(typeof(UIHitbox))]
     public class UIMouseListener : UIComponent
     {
         public event Action OnMouseOver;
@@ -13,6 +14,8 @@ namespace RenderingEngine.UI.Components.MouseInput
         public event Action OnMousePressed;
         public event Action OnMouseReleased;
         public event Action OnMouseHeld;
+
+        public event Action OnMousewheelScroll;
 
         public bool IsMouseOver { get { return _isMouseOver; } }
         public bool WasMouseOver { get { return _wasMouseOver; } }
@@ -89,6 +92,11 @@ namespace RenderingEngine.UI.Components.MouseInput
                 if (Input.IsMouseReleasedAny)
                 {
                     OnMouseReleased?.Invoke();
+                }
+
+                if(Input.MouseWheelNotches != 0)
+                {
+                    OnMousewheelScroll?.Invoke();
                 }
             }
             else if (_wasMouseOver)

@@ -79,7 +79,6 @@ namespace RenderingEngine.VisualTests.UI
                         new UIRect(new Color4(0, 0.0f), new Color4(0, 1), 1),
                         new UIText($"v{i}:h={size}", new Color4(0, 1))
                     )
-                    .SetNormalizedPositionCenterY(1,1)
                     .SetAbsPositionSizeY(10, size)
                 );
             }

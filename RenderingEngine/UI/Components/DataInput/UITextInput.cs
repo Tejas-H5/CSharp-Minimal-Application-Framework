@@ -14,6 +14,7 @@ namespace RenderingEngine.UI.Components.DataInput
 {
     //TODO: Esc to cancel out of an input
     //might have to use another string rather than the string inside the TextComponent
+    [RequiredComponents(typeof(UIMouseListener), typeof(UIText), typeof(UIHitbox))]
     public abstract class UITextInput<T> : UIDataInput<T>
     {
         protected UIMouseListener _mouseListner;
@@ -73,7 +74,6 @@ namespace RenderingEngine.UI.Components.DataInput
             _property.OnDataChanged += OnPropertyChanged;
 
             OnTextChanged += OnTextChangedEvent;
-            _textComponent.Text = Property.Value.ToString();
 
             OnTextFinalized += OnTextFinalizedSelf;
         }
@@ -96,7 +96,10 @@ namespace RenderingEngine.UI.Components.DataInput
 
         protected abstract bool TryParseText(string s, out T val);
 
-        protected abstract void OnPropertyChanged(T obj);
+        protected virtual void OnPropertyChanged(T obj)
+        {
+            _textComponent.Text = Property.Value.ToString();
+        }
 
         private void OnTextChangedEvent()
         {

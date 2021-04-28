@@ -11,7 +11,7 @@ namespace RenderingEngine.UI.Property
         public T Value {
             get => _value;
             set {
-                SetValue(value);
+                _value = value;
                 DataChanged(_value);
             }
         }
@@ -40,7 +40,7 @@ namespace RenderingEngine.UI.Property
         {
         }
 
-        protected virtual void SetValue(T val)
+        protected virtual void SetValueInternal(T val)
         {
             _value = val;
         }
@@ -49,7 +49,7 @@ namespace RenderingEngine.UI.Property
 
         public void SetValue(object obj)
         {
-            SetValue((T)obj);
+            Value = (T)obj;
         }
     }
 }

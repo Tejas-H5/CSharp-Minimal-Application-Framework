@@ -17,7 +17,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
         Rect2D _margin;
         public Rect2D Margin { get => _margin; set => _margin = value; }
 
-        //TODO: Fix bug where if margin is greater than the rectOffsets of all the children, it doesn't resize properly
+        //TODO: Fix bug where if margin is not equal to the rectOffsets of all the children, it doesn't resize properly
         public UIFitChildren(bool horizontal, bool vertical, Rect2D margin, bool debug = false)
         {
             _horizontal = horizontal;
@@ -105,6 +105,9 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
         private void ExpandRectToFitChld(int i)
         {
+            if (!_parent[i].IsVisible)
+                return;
+
             Rect2D rect = _parent[i].Rect;
 
             x0 = MathF.Min(x0, rect.X0 - _margin.X0);

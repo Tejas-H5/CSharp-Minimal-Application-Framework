@@ -5,6 +5,7 @@ using RenderingEngine.UI.Core;
 
 namespace RenderingEngine.UI.Components.MouseInput
 {
+    [RequiredComponents(typeof(UIRect), typeof(UIMouseListener))]
     public class UIMouseFeedback : UIComponent
     {
         public Color4 HoverColor { get; set; }
@@ -17,7 +18,6 @@ namespace RenderingEngine.UI.Components.MouseInput
         }
 
         private UIMouseListener _mouseListner;
-        private UIHitbox _hitbox;
         private UIRect _bgRect;
 
         public override void SetParent(UIElement parent)
@@ -31,7 +31,6 @@ namespace RenderingEngine.UI.Components.MouseInput
 
             base.SetParent(parent);
 
-            _hitbox = _parent.GetComponentOfType<UIRectHitbox>();
             _mouseListner = _parent.GetComponentOfType<UIMouseListener>();
             _bgRect = _parent.GetComponentOfType<UIRect>();
 

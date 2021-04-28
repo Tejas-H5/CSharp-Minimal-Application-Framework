@@ -15,8 +15,8 @@ namespace RenderingEngine.UI.Components.AutoResizing
         /// Each element will have the selected axes sized to [elementSizing], and will be 
         /// placed [padding] apart from each other.
         /// 
-        /// if an element sizing of -1 or anything less than 0 is specified, then no resizeing will occur.
-        /// The elements must be anchored correctly beforehand for this to work.
+        /// if an element sizing of -1 or anything less than 0 is specified, then no resizeing will occur
+        /// and the child elements will maintain their current size along the selected axis
         /// </summary>
         /// <param name="vertical">vertical or horizontal?</param>
         /// <param name="reverse">forward or reverse?</param>
@@ -33,11 +33,6 @@ namespace RenderingEngine.UI.Components.AutoResizing
         public override UIComponent Copy()
         {
             return new UILinearArrangement(_vertical, _reverse, _elementSizing, _padding);
-        }
-
-        public override void SetParent(UIElement parent)
-        {
-            base.SetParent(parent);
         }
 
         protected override void OnRectTransformResize(UIRectTransform obj)

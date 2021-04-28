@@ -59,6 +59,8 @@ namespace UICodeGenerator.ComponentEditors
 					continue;
 
 				IProperty iProp = _namePropertyEventMap[_properties[i].Name];
+
+				Console.WriteLine(_properties[i].GetValue(_boundInstace));
 				iProp.SetValue(_properties[i].GetValue(_boundInstace));
 			}
 		}
@@ -110,7 +112,6 @@ namespace UICodeGenerator.ComponentEditors
 		private void SetupProperty(int propNum, IProperty iProp)
 		{
 			string name = _properties[propNum].Name;
-			Console.WriteLine(name);
 
 			//IProperty iProp = _namePropertyEventMap[name];
 			if (iProp.InnerType == typeof(string))

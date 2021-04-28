@@ -188,6 +188,15 @@ namespace RenderingEngine.UI.Core
             return null;
         }
 
+        public UIElement AddComponents(params UIComponent[] list)
+        {
+            for (int i = 0; i < list.Length; i++)
+            {
+                AddComponent(list[i]);
+            }
+            return this;
+        }
+
         /// <summary>
         /// Adds a component to the list of components.
         /// Generic, because two components of the same type T may not be added to the list.
@@ -204,30 +213,38 @@ namespace RenderingEngine.UI.Core
             return InsertComponent(_components.Count, comp);
         }
 
-        public UIElement AddComponents(params UIComponent[] list)
-        {
-            for(int i = 0; i < list.Length; i++)
-            {
-                AddComponent(list[i]);
-            }
-            return this;
-        }
-
         public UIElement InsertComponent<T>(int index, T comp) where T : UIComponent
         {
-            int i = ComponentOfTypeIndex(comp.GetType());
+            Type componentType = comp.GetType();
 
-            if (i == -1)
+            RequiredComponents requiredComponents = (RequiredComponents)Attribute.GetCustomAttribute(componentType, typeof(RequiredComponents));
+            if(requiredComponents != null)
             {
-                _components.Insert(index, comp);
-                comp.SetParent(this);
-#if DEBUG
-                SetParentDebug();
-#endif
-                return this;
+                for(int i = 0; i < requiredComponents.ComponentTypes.Length; i++)
+                {
+                    int existingIndex = ComponentOfTypeIndex(requiredComponents.ComponentTypes[i]);
+                    if (existingIndex == -1)
+                        throw new Exception("This component requires the following other components: " +
+                            $"{requiredComponents.GetComponentListString()}");
+                }
             }
 
-            throw new Exception("A component of this type already exists");
+            int componentIndex = ComponentOfTypeIndex(componentType);
+
+            if (componentIndex != -1)
+            {
+                throw new Exception("A component of this type already exists");
+            }
+
+            _components.Insert(index, comp);
+            comp.SetParent(this);
+
+#if DEBUG
+            SetParentDebug();
+#endif
+
+            return this;
+
         }
 
         protected UIElement _parent = null;
@@ -247,6 +264,10 @@ namespace RenderingEngine.UI.Core
             set {
                 _isVisible = value;
                 IsVisibleNextFrame = value;
+                if(_parent != null)
+                {
+                    _parent.SetDirty();
+                }
             }
         }
 
@@ -294,6 +315,12 @@ namespace RenderingEngine.UI.Core
         public UIElement SetAbsPositionSizeY(float y, float height)
         {
             _rectTransform.SetAbsPositionSizeY(y, height);
+            return this;
+        }
+
+        public UIElement SetAbsPosition(float x, float y)
+        {
+            _rectTransform.SetAbsPositionSize(x, y, _rectTransform.Width, _rectTransform.Height);
             return this;
         }
 
@@ -350,6 +377,7 @@ namespace RenderingEngine.UI.Core
         {
             if (!IsVisible)
             {
+                IsVisible = IsVisibleNextFrame;
                 return;
             }
 

@@ -19,10 +19,6 @@ namespace RenderingEngine.UI.Components.DataInput
             return new UITextNumberInput(_property.Copy(), _shouldClear);
         }
 
-        protected override void OnPropertyChanged(int obj)
-        {
-        }
-
         protected override bool TryParseText(string s, out int val)
         {
             return int.TryParse(s, out val);

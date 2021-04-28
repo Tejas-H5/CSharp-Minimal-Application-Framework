@@ -16,13 +16,6 @@ namespace RenderingEngine.UI.Components.AutoResizing.Uncompleted
             _boundsRect = boundsRect;
         }
 
-        /*
-        //for later
-        public override void SetParent(UIElement parent)
-        {
-            base.SetParent(parent);
-        }
-        */
 
         protected override void OnRectTransformResize(UIRectTransform rtf)
         {

@@ -159,8 +159,8 @@ namespace RenderingEngine.Logic
         {
             SwapInputBuffers();
 
-            _incomingWheelNotches = 0;
             _wheelNotches = _incomingWheelNotches;
+            _incomingWheelNotches = 0;
 
             _wasDragging = IsDragging;
             _wasAnyHeld = _isAnyHeld;

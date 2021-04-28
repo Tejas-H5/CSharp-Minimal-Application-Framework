@@ -27,11 +27,6 @@ namespace RenderingEngine.UI.Components.AutoResizing
             _theirs = theirs;
         }
 
-        public override void SetParent(UIElement parent)
-        {
-            base.SetParent(parent);
-        }
-
         public override void OnResize()
         {
             OnOtherResized(_other.RectTransform);

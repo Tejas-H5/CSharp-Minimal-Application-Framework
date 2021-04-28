@@ -34,7 +34,7 @@ namespace RenderingEngine.UI.Property
             }
         }
 
-        protected override void SetValue(float num)
+        protected override void SetValueInternal(float num)
         {
             if (num < _lower)
                 num = _lower;

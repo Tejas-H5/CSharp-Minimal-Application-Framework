@@ -22,6 +22,7 @@ namespace RenderingEngine.UI.Components.DataInput
 
         protected override void OnPropertyChanged(string obj)
         {
+            base.OnPropertyChanged(obj);
             OnTextFinalizedSelf();
         }
 

@@ -39,5 +39,15 @@ namespace RenderingEngine.Datatypes.ObserverPattern
         {
             Event = null;
         }
+
+        public void AddCallback(object callback)
+        {
+            Event += (Action<T>)callback;
+        }
+
+        public void RemoveCallback(object callback)
+        {
+            Event -= (Action<T>)callback;
+        }
     }
 }

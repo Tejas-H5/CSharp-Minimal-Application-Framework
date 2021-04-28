@@ -11,7 +11,7 @@ namespace UICodeGenerator.DraggableRect
 {
     public class UIDraggableRectTreeParser
     {
-        public UIElement CreateDraggableRectsFromString(string s, DraggableRectSelectedState state)
+        public UIElementEditor CreateDraggableRectsFromString(string s, DraggableRectSelectedState state)
         {
             int pos = 0;
             MoveCursorToCreationPart(s, ref pos);
@@ -19,25 +19,15 @@ namespace UICodeGenerator.DraggableRect
             return ParseElement(s, state, ref pos);
         }
 
-        private UIElement ParseElement(string s, DraggableRectSelectedState state, ref int pos)
+        private UIElementEditor ParseElement(string s, DraggableRectSelectedState state, ref int pos)
         {
             string name = ParseName(s, ref pos);
             string components = ParseComponents(s, ref pos);
 
             UIText textComponent = ExtractTextComponent(ref components);
 
-            UIElement rectElement = UIDraggableRect.CreateDraggableRect(state);
-            var rect = rectElement.GetComponentOfType<UIDraggableRect>();
-            rect.Name = name;
-            rect.OtherComponents = components;
-
-            if (textComponent != null)
-            {
-                rect.Text = textComponent.Text;
-                rect.FontName = textComponent.Font;
-                rect.TextSize = textComponent.FontSize;
-            }
-
+            UIElementEditor rectElement = UIElementEditor.CreateDraggableRect(state);
+            rectElement.Name = name;
 
             //DEBUG
             string window = s.Substring(pos, 10);

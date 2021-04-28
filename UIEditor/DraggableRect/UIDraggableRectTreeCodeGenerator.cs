@@ -22,35 +22,49 @@ namespace UICodeGenerator.DraggableRect
             sb.Append(s);
         }
 
-        void TraverseUITree(UIElement root, StringBuilder acc, List<string> variableNames, int indent)
+        void TraverseUITree(UIElementEditor editorElement, StringBuilder acc, List<string> variableNames, int indent)
         {
-            UIDraggableRect draggableRect = root.GetComponentOfType<UIDraggableRect>();
-
             string optionalVariableName = "";
-            if (!string.IsNullOrWhiteSpace(draggableRect.Name))
+            if (!string.IsNullOrWhiteSpace(editorElement.Name))
             {
-                optionalVariableName = $"{draggableRect.Name} = ";
-                variableNames.Add(draggableRect.Name);
+                optionalVariableName = $"{editorElement.Name} = ";
+                variableNames.Add(editorElement.Name);
             }
 
-            string optionalTextComponent = "";
-            if (!string.IsNullOrWhiteSpace(draggableRect.Text))
-            {
-                string fontName = draggableRect.FontName;
+            string components = GenerateComponents(editorElement.Components);
 
-                //TODO in distant future: _textColor can be linked to a string that maps to a colour
-                optionalTextComponent = $"new UIText(" +
-                    $"\"{draggableRect.Text}\", " +
-                    $"_textColor, " +
-                    $"\"{fontName}\", " +
-                    $"{draggableRect.TextSize}," +
-                    $"VerticalAlignment.Center," +
-                    $"HorizontalAlignment.Center" +
-                    $")";
+            AppendText(acc, indent, $"{optionalVariableName}UICreator.CreateUIElement({components})\n");
+
+            AppendTransformFunctions(editorElement, acc, indent);
+
+            AppendText(acc, indent, ".AddChildren(\n");
+            indent++;
+            for (int i = 0; i < editorElement.Count; i++)
+            {
+                TraverseUITree((UIElementEditor)editorElement[i], acc, variableNames, indent);
+
+                if (i != editorElement.Count - 1)
+                {
+                    AppendText(acc, indent, "\n");
+                    AppendText(acc, indent, ",");
+                }
+                AppendText(acc, indent, "\n");
             }
 
-            AppendText(acc, indent, $"{optionalVariableName}UICreator.CreateUIElement({optionalTextComponent})\n");
+            indent--;
+            AppendText(acc, indent, ")");
+        }
 
+        private string GenerateComponents(List<UIComponent> components)
+        {
+            ///Oh boy a lot more coding. 
+
+
+            throw new NotImplementedException();
+        }
+
+        private void AppendTransformFunctions(UIElementEditor root, StringBuilder acc, int indent)
+        {
             if (root.RectTransform.PositionSizeX ^ root.RectTransform.PositionSizeY)
             {
                 if (root.RectTransform.PositionSizeX)
@@ -87,38 +101,21 @@ namespace UICodeGenerator.DraggableRect
                 AppendText(acc, indent, $".SetNormalizedAnchoring(new Rect2D({root.NormalizedAnchoring.X0}f," +
                     $"{root.NormalizedAnchoring.Y0}f, {root.NormalizedAnchoring.X1}f, {root.NormalizedAnchoring.Y1}f))\n");
             }
-
-            AppendText(acc, indent, ".AddChildren(\n");
-            indent++;
-            for (int i = 0; i < root.Count; i++)
-            {
-                TraverseUITree(root[i], acc, variableNames, indent);
-
-                if (i != root.Count - 1)
-                {
-                    AppendText(acc, indent, "\n");
-                    AppendText(acc, indent, ",");
-                }
-                AppendText(acc, indent, "\n");
-            }
-
-            indent--;
-            AppendText(acc, indent, ")");
         }
 
-        void TraverseUITree(UIElement root, StringBuilder acc, List<string> names)
+        void TraverseUITree(UIElementEditor root, StringBuilder acc, List<string> names)
         {
             TraverseUITree(root, acc, names, 0);
             acc.Append(";");
         }
 
-        public string GenerateCode(UIDraggableRect root)
+        public string GenerateCode(UIElementEditor root)
         {
             StringBuilder overallBuilder = new StringBuilder();
             StringBuilder treeAccumulator = new StringBuilder();
 
             List<string> varNames = new List<string>();
-            TraverseUITree(root.Parent, treeAccumulator, varNames);
+            TraverseUITree(root, treeAccumulator, varNames);
 
             if (varNames.Count > 0)
                 overallBuilder.Append("UIElement ");

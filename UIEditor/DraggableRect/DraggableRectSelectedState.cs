@@ -4,13 +4,18 @@ namespace UICodeGenerator.DraggableRect
 {
     public class DraggableRectSelectedState
     {
-        public event Action<UIDraggableRect> OnSelectionChanged;
+        public event Action<UIElementEditor> OnSelectionChanged;
 
-        public UIDraggableRect SelectedRect {
+        public UIElementEditor SelectedEditorRect {
             get {
                 return _selRect;
             }
             set {
+                Console.WriteLine(LockSelection);
+
+                if (LockSelection)
+                    return;
+
                 if (value != _selRect)
                 {
                     _selRect = value;
@@ -32,9 +37,10 @@ namespace UICodeGenerator.DraggableRect
         }
 
 
-        UIDraggableRect _selRect;
+        private UIElementEditor _selRect;
 
         public float DimensionSnap = 5f;
         public float AnchorSnap = 0.5f;
+        public bool LockSelection = false;
     }
 }

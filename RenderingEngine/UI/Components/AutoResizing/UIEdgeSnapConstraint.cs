@@ -88,5 +88,10 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
             _parent.Rect = wantedRect;
         }
+
+        public override UIComponent Copy()
+        {
+            return new UIEdgeSnapConstraint(null, _mine, _theirs);
+        }
     }
 }

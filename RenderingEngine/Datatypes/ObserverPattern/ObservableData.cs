@@ -15,6 +15,16 @@ namespace RenderingEngine.Datatypes.ObserverPattern
             }
         }
 
+        public void AddCallback(object callback)
+        {
+            _onDataChanged.AddCallback(callback);
+        }
+
+        public void RemoveCallback(object callback)
+        {
+            _onDataChanged.RemoveCallback(callback);
+        }
+
         bool _locked = false;
         private NonRecursiveEvent<T> _onDataChanged = new NonRecursiveEvent<T>();
 

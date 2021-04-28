@@ -9,7 +9,6 @@ namespace RenderingEngine.UI.Core
     public class UIRectTransform : ObservableData<UIRectTransform>
     {
         Rect2D _rect;
-
         Rect2D _absoluteOffset;
         Rect2D _normalizedAnchoring;
         PointF _normalizedCenter;
@@ -214,6 +213,16 @@ namespace RenderingEngine.UI.Core
             anchorRight = parentRect.Left + _normalizedAnchoring.X1 * parentRect.Width;
             anchorBottom = parentRect.Bottom + _normalizedAnchoring.Y0 * parentRect.Height;
             anchorTop = parentRect.Bottom + _normalizedAnchoring.Y1 * parentRect.Height;
+        }
+
+        public void Copy(UIRectTransform rectTransform)
+        {
+            Lock();
+            AbsoluteOffset = rectTransform.AbsoluteOffset;
+            NormalizedAnchoring = rectTransform.NormalizedAnchoring;
+            NormalizedCenter = rectTransform.NormalizedCenter;
+            Rect = rectTransform.Rect;
+            Unlock(this);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace RenderingEngine.UI.Core
+﻿using System;
+
+namespace RenderingEngine.UI.Core
 {
     public abstract class UIComponent
     {
@@ -26,5 +28,7 @@
             OnRectTransformResize(_parent.RectTransform);
         }
         protected virtual void OnRectTransformResize(UIRectTransform rtf) { }
+
+        public abstract UIComponent Copy();
     }
 }

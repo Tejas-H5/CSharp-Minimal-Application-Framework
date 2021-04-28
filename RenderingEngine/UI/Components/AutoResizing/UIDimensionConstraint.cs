@@ -62,5 +62,10 @@ namespace RenderingEngine.UI.Components.AutoResizing.Uncompleted
 
             _parent.RectTransform.Rect = wantedRect;
         }
+
+        public override UIComponent Copy()
+        {
+            return new UIDimensionConstraint(_boundsRect);
+        }
     }
 }

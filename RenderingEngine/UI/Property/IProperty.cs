@@ -6,6 +6,10 @@ namespace RenderingEngine.UI.Property
 {
     public interface IProperty
     {
-        Type PropertyType { get; }
+        Type InnerType { get; }
+        void SetValue(object obj);
+
+        void AddCallback(object callback);
+        void RemoveCallback(object callback);
     }
 }

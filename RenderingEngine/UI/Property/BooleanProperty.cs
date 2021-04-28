@@ -4,16 +4,16 @@ using System;
 
 namespace RenderingEngine.UI.Property
 {
-    public class StringProperty : Property<string>
+    public class BooleanProperty : Property<bool>
     {
-        public StringProperty(string value)
+        public BooleanProperty(bool value)
             : base(value)
         {
         }
 
-        public override Property<string> Copy()
+        public override Property<bool> Copy()
         {
-            return new StringProperty(_value);
+            return new BooleanProperty(_value);
         }
     }
 }

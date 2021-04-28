@@ -157,5 +157,10 @@ namespace RenderingEngine.UI.Components.AutoResizing
                 ExpandRectToFitChld(i);
             }
         }
+
+        public override UIComponent Copy()
+        {
+            return new UIFitChildren(_horizontal, _vertical, _margin, _debug);
+        }
     }
 }

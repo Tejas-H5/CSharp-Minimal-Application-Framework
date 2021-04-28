@@ -14,19 +14,17 @@ namespace RenderingEngine.UI.Components.DataInput
 {
     //TODO: Esc to cancel out of an input
     //might have to use another string rather than the string inside the TextComponent
-    public abstract class UITextInput<T> : UIComponent
+    public abstract class UITextInput<T> : UIDataInput<T>
     {
         protected UIMouseListener _mouseListner;
         protected UIText _textComponent;
         protected UIHitbox _hitbox;
 
-        protected Property<T> _property;
-        public Property<T> Property { get { return _property; } }
         T _initValue;
 
-        bool _isTyping;
-        bool _shouldClear;
-        bool _acceptsNewLine = false;
+        protected bool _isTyping;
+        protected bool _shouldClear;
+        protected bool _acceptsNewLine = false;
 
         public UITextInput(T initValue, bool acceptsNewLines, bool shouldClear)
         {

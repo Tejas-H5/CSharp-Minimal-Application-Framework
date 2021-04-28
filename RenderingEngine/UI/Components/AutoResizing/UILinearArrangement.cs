@@ -30,6 +30,11 @@ namespace RenderingEngine.UI.Components.AutoResizing
             _elementSizing = elementSizing;
         }
 
+        public override UIComponent Copy()
+        {
+            return new UILinearArrangement(_vertical, _reverse, _elementSizing, _padding);
+        }
+
         public override void SetParent(UIElement parent)
         {
             base.SetParent(parent);

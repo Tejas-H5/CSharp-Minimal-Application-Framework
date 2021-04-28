@@ -26,5 +26,16 @@ namespace RenderingEngine.UI.Components.AutoResizing
                 _edgeSnapConstraints[i].OnResize();
             }
         }
+
+        public override UIComponent Copy()
+        {
+            var copy = new UIEdgeSnapConstraint[_edgeSnapConstraints.Length];
+            for(int i =0; i < copy.Length; i++)
+            {
+                copy[i] = (UIEdgeSnapConstraint)_edgeSnapConstraints[i].Copy();
+            }
+
+            return new UIMultiEdgeSnapConstraint(copy);
+        }
     }
 }

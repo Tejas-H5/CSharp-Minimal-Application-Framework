@@ -1,4 +1,6 @@
-﻿namespace RenderingEngine.UI.Components.MouseInput
+﻿using RenderingEngine.UI.Core;
+
+namespace RenderingEngine.UI.Components.MouseInput
 {
     public class UIRectHitbox : UIHitbox
     {
@@ -9,10 +11,15 @@
             _intersectWithParent = intersectWithParent;
         }
 
+        public override UIComponent Copy()
+        {
+            return new UIRectHitbox(_intersectWithParent);
+        }
+
         public override bool PointIsInside(float x, float y)
         {
-            return (!_intersectWithParent || Intersections.IsInside(x, y, _parent.GetParentRect()))
-                && Intersections.IsInside(x, y, _parent.Rect);
+            return (!_intersectWithParent || Intersections.IsInsideRect(x, y, _parent.GetParentRect()))
+                && Intersections.IsInsideRect(x, y, _parent.Rect);
         }
     }
 }

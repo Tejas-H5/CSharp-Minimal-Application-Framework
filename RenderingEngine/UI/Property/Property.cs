@@ -16,9 +16,15 @@ namespace RenderingEngine.UI.Property
             }
         }
 
-        public Type PropertyType {
+        public Type InnerType {
             get {
                 return typeof(T);
+            }
+        }
+
+        public Type PropertyType {
+            get {
+                return typeof(Property<T>);
             }
         }
 
@@ -37,6 +43,13 @@ namespace RenderingEngine.UI.Property
         protected virtual void SetValue(T val)
         {
             _value = val;
+        }
+
+        public abstract Property<T> Copy();
+
+        public void SetValue(object obj)
+        {
+            SetValue((T)obj);
         }
     }
 }

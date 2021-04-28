@@ -41,6 +41,11 @@ namespace RenderingEngine.VisualTests.UI
 
             _parent.Rect = _wantedRect;
         }
+
+        public override UIComponent Copy()
+        {
+            return new MouseBlindThinggyComponent();
+        }
     }
 
 

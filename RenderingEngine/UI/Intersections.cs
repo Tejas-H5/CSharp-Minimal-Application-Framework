@@ -5,17 +5,17 @@ namespace RenderingEngine.UI
 {
     public static class Intersections
     {
-        public static bool IsInside(PointF p, Rect2D a)
+        public static bool IsInsideRect(PointF p, Rect2D a)
         {
-            return IsInside(p.X, p.Y, a.Left, a.Bottom, a.Right, a.Top);
+            return IsInsideRect(p.X, p.Y, a.Left, a.Bottom, a.Right, a.Top);
         }
 
-        public static bool IsInside(float x, float y, Rect2D a)
+        public static bool IsInsideRect(float x, float y, Rect2D a)
         {
-            return IsInside(x, y, a.Left, a.Bottom, a.Right, a.Top);
+            return IsInsideRect(x, y, a.Left, a.Bottom, a.Right, a.Top);
         }
 
-        public static bool IsInside(float x, float y, float left, float bottom, float right, float top)
+        public static bool IsInsideRect(float x, float y, float left, float bottom, float right, float top)
         {
             if (x >= left && x <= right)
             {

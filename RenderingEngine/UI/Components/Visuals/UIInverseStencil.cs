@@ -3,6 +3,12 @@ using RenderingEngine.UI.Core;
 
 namespace RenderingEngine.UI.Components.Visuals
 {
+    /// <summary>
+    /// Used to prevent drawing outside of a UI element's rectangle, like a stencil.
+    /// 
+    /// Then why is it called 'inverse stencil'? 
+    /// because it sounds cool
+    /// </summary>
     public class UIInverseStencil : UIComponent
     {
         public override void BeforeDraw(double deltaTime)
@@ -13,6 +19,11 @@ namespace RenderingEngine.UI.Components.Visuals
         public override void AfterDraw(double deltaTime)
         {
             UIStateObject.PopScreenRectStencil();
+        }
+
+        public override UIComponent Copy()
+        {
+            return new UIInverseStencil();
         }
     }
 }

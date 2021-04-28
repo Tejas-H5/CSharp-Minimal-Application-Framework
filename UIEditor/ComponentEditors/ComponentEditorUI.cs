@@ -59,22 +59,7 @@ namespace UICodeGenerator.ComponentEditors
 					continue;
 
 				IProperty iProp = _namePropertyEventMap[_properties[i].Name];
-
-				if (iProp.PropertyType == typeof(string))
-				{
-					StringProperty p = (StringProperty)(iProp);
-					p.Value = (string)_properties[i].GetValue(_boundInstace);
-				}
-				else if (iProp.PropertyType == typeof(int))
-				{
-					IntegerProperty p = (IntegerProperty)(iProp);
-					p.Value = (int)_properties[i].GetValue(_boundInstace);
-				}
-				else if (iProp.PropertyType == typeof(float))
-				{
-					FloatProperty p = (FloatProperty)(iProp);
-					p.Value = (float)_properties[i].GetValue(_boundInstace);
-				}
+				iProp.SetValue(_properties[i].GetValue(_boundInstace));
 			}
 		}
 
@@ -115,6 +100,7 @@ namespace UICodeGenerator.ComponentEditors
 				UIElement namePropertyEditorPair = CreateNamePropPair(nameElement, editorProperty.UIRoot);
 
 				_namePropertyEventMap[name] = editorProperty.Property;
+
 				SetupProperty(i, editorProperty.Property);
 
 				_editingUIRoot.AddChild(namePropertyEditorPair);
@@ -124,26 +110,30 @@ namespace UICodeGenerator.ComponentEditors
 		private void SetupProperty(int propNum, IProperty iProp)
 		{
 			string name = _properties[propNum].Name;
+			Console.WriteLine(name);
 
 			//IProperty iProp = _namePropertyEventMap[name];
-
-			if(iProp.PropertyType == typeof(string))
+			if (iProp.InnerType == typeof(string))
 			{
 				StringProperty p = (StringProperty)(iProp);
 				AddCallback(propNum, p);
 			}
-			else if(iProp.PropertyType == typeof(int))
+			else if (iProp.InnerType == typeof(int))
 			{
 				IntegerProperty p = (IntegerProperty)(iProp);
 				AddCallback(propNum, p);
 			}
-			else if(iProp.PropertyType == typeof(float))
+			else if (iProp.InnerType == typeof(float))
 			{
 				FloatProperty p = (FloatProperty)(iProp);
 				AddCallback(propNum, p);
 			}
+			else if (iProp.InnerType == typeof(bool))
+			{
+				BooleanProperty p = (BooleanProperty)(iProp);
+				AddCallback(propNum, p);
+			}
 		}
-
 
 		private void AddCallback<T1>(int propNum, Property<T1> p)
 		{
@@ -192,12 +182,27 @@ namespace UICodeGenerator.ComponentEditors
 			);
 		}
 
+		private UIElement CreateEmptyPropertyElement()
+		{
+			return UICreator.CreateUIElement(
+				new UIRect(new Color4(0, 0), new Color4(0, 1), 1),
+				new UIRectHitbox(),
+				new UIMouseListener()
+			)
+			.AddChild(
+				UICreator.CreateUIElement(
+					new UIText("", new Color4(0f), "Consolas", 14, VerticalAlignment.Center, HorizontalAlignment.Right)
+				)
+				.SetAbsoluteOffset(10)
+			);
+		}
+
 		private UIElementPropertyPair CreatePropertyEditor(PropertyInfo propertyInfo)
 		{
 			string name = propertyInfo.Name;
 			UIElementPropertyPair editor = null;
 
-			if(propertyInfo.PropertyType == typeof(string))
+			if (propertyInfo.PropertyType == typeof(string))
 			{
 				editor = CreateStringEditor();
 			}
@@ -209,43 +214,33 @@ namespace UICodeGenerator.ComponentEditors
 			{
 				editor = CreateFloatEditor();
 			}
-
-
+			else if(propertyInfo.PropertyType == typeof(bool))
+			{
+				editor = CreateBoolEditor();
+			}
 			/*
-
-			if (propertyInfo.PropertyType == typeof(HorizontalAlignment))
+			else if (propertyInfo.PropertyType == typeof(HorizontalAlignment))
 			{
-				editor =  CreateHAlignEditor();
+				editor = CreateHAlignEditor();
 			}
-
-			if (propertyInfo.PropertyType == typeof(VerticalAlignment))
+			else if (propertyInfo.PropertyType == typeof(VerticalAlignment))
 			{
-				editor =  CreateVAlignEditor();
+				editor = CreateVAlignEditor();
 			}
-
-			if(propertyInfo.PropertyType == typeof(Color4))
+			else if (propertyInfo.PropertyType == typeof(Color4))
 			{
-				editor =  CreateColorEditorButton();
+				editor = CreateColorEditorButton();
 			}
-			*/
+			//*/
 
 			return editor;
 		}
 
-		private UIElement CreateEmptyPropertyElement()
+		private UIElementPropertyPair CreateBoolEditor()
 		{
-			return UICreator.CreateUIElement(
-				new UIRect(new Color4(0, 0), new Color4(0, 1), 1),
-				new UIRectHitbox(),
-				new UIMouseListener(),
-				new UIMouseFeedback(new Color4(0.5f), new Color4(0.75f))
-			)
-			.AddChild(
-				UICreator.CreateUIElement(
-					new UIText("", new Color4(0f), "Consolas", 14, VerticalAlignment.Center, HorizontalAlignment.Right)
-				)
-				.SetAbsoluteOffset(10)
-			);
+			var prop = new BooleanProperty(false);
+			var intInputComponent = new UICheckbox(prop);
+			return CreatePropertyElementNotText(prop, intInputComponent);
 		}
 
 		private UIElementPropertyPair CreateFloatEditor()
@@ -269,10 +264,20 @@ namespace UICodeGenerator.ComponentEditors
 			return CreatePropertyElementText(prop, intInputComponent);
 		}
 
-		private UIElementPropertyPair CreatePropertyElementText<T1>(Property<T1> prop, UITextInput<T1> textInputComponent)
+
+		private UIElementPropertyPair CreatePropertyElementNotText<T1>(Property<T1> prop, UIDataInput<T1> dataInputComponent)
 		{
 			UIElement root = CreateEmptyPropertyElement()
-				.AddComponent(textInputComponent);
+				.AddComponent(dataInputComponent);
+
+			return new UIElementPropertyPair(root, prop);
+		}
+
+		private UIElementPropertyPair CreatePropertyElementText<T1>(Property<T1> prop, UIDataInput<T1> dataInputComponent)
+		{
+			UIElement root = CreateEmptyPropertyElement()
+				.AddComponent(new UIMouseFeedback(new Color4(0.5f), new Color4(0.75f)))
+				.AddComponent(dataInputComponent);
 
 			return new UIElementPropertyPair(root, prop);
 		}
@@ -307,6 +312,5 @@ namespace UICodeGenerator.ComponentEditors
 				.SetAbsoluteOffset(10)
 			);
 		}
-
 	}
 }

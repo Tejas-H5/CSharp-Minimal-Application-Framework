@@ -118,5 +118,10 @@ namespace RenderingEngine.UI.Components.Visuals
 
             return CTX.GetCharHeight('|');
         }
+
+        public override UIComponent Copy()
+        {
+            return new UIText(Text, TextColor, Font, FontSize, VerticalAlignment, HorizontalAlignment);
+        }
     }
 }

@@ -204,6 +204,15 @@ namespace RenderingEngine.UI.Core
             return InsertComponent(_components.Count, comp);
         }
 
+        public UIElement AddComponents(params UIComponent[] list)
+        {
+            for(int i = 0; i < list.Length; i++)
+            {
+                AddComponent(list[i]);
+            }
+            return this;
+        }
+
         public UIElement InsertComponent<T>(int index, T comp) where T : UIComponent
         {
             int i = ComponentOfTypeIndex(comp.GetType());
@@ -524,6 +533,34 @@ namespace RenderingEngine.UI.Core
             }
 
             return parentRect;
+        }
+
+        protected virtual UIElement ShallowCopy()
+        {
+            UIElement copy = new UIElement();
+            copy.RectTransform.Copy(RectTransform);
+            return copy;
+        }
+
+        public UIElement DeepCopy()
+        {
+            UIElement duplicate = ShallowCopy();
+            UIComponent[] components = _components.ToArray();
+            for (int i = 0; i < components.Length; i++)
+            {
+                components[i] = components[i].Copy();
+            }
+
+            duplicate.AddComponents(
+                components
+            );
+
+            for (int i = 0; i < _children.Count; i++)
+            {
+                duplicate.AddChild(_children[i].DeepCopy());
+            }
+
+            return duplicate;
         }
     }
 }

@@ -15,14 +15,8 @@ namespace RenderingEngine.UI
 
         public static UIElement CreateUIElement(params UIComponent[] components)
         {
-            UIElement root = new UIElement();
-
-            for (int i = 0; i < components.Length; i++)
-            {
-                root.AddComponent(components[i]);
-            }
-
-            return root;
+            return new UIElement()
+                .AddComponents(components);
         }
 
         public static UIElement CreateButton(string buttontext, string fontName = "", int fontSize = -1)

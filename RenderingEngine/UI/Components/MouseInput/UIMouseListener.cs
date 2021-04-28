@@ -99,5 +99,10 @@ namespace RenderingEngine.UI.Components.MouseInput
 
             return _isMouseOver;
         }
+
+        public override UIComponent Copy()
+        {
+            return new UIMouseListener();
+        }
     }
 }

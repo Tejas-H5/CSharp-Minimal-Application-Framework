@@ -6,27 +6,8 @@ namespace RenderingEngine.UI.Components.Visuals
 {
     public class UIRect : UIComponent
     {
-        private int _thickness;
-
-        protected Color4 _initialColor;
-        protected Color4 _color;
-        protected Color4 _outlineColor;
-
-        public UIRect(Color4 initColor)
-            : this(initColor, new Color4(0, 0, 0, 1), 1)
-        {
-        }
-
-        public UIRect(Color4 initColor, Color4 outlineColor, int thickness)
-        {
-            InitialColor = initColor;
-            _outlineColor = outlineColor;
-            _thickness = thickness;
-        }
-
-        public UIRect()
-        {
-        }
+        public int Thickness { get; set; }
+        public Color4 OutlineColor { get; set; }
 
         public Color4 InitialColor {
             get { return _initialColor; }
@@ -36,10 +17,28 @@ namespace RenderingEngine.UI.Components.Visuals
             }
         }
 
+        protected Color4 _initialColor;
+        protected Color4 _color;
 
         public Color4 Color {
             get { return _color; }
             set { _color = value; }
+        }
+
+        public UIRect(Color4 initColor)
+            : this(initColor, new Color4(0, 0, 0, 1), 1)
+        {
+        }
+
+        public UIRect(Color4 initColor, Color4 outlineColor, int thickness)
+        {
+            InitialColor = initColor;
+            OutlineColor = outlineColor;
+            Thickness = thickness;
+        }
+
+        public UIRect()
+        {
         }
 
         public override void Draw(double deltaTime)
@@ -50,15 +49,20 @@ namespace RenderingEngine.UI.Components.Visuals
                 CTX.DrawRect(_parent.Rect);
             }
 
-            if (_outlineColor.A > 0.0001f)
+            if (OutlineColor.A > 0.0001f)
             {
-                CTX.SetDrawColor(_outlineColor);
-                CTX.DrawRectOutline(_thickness,
-                    _parent.Rect.X0 + _thickness,
-                    _parent.Rect.Y0 + _thickness,
-                    _parent.Rect.X1 - _thickness,
-                    _parent.Rect.Y1 - _thickness);
+                CTX.SetDrawColor(OutlineColor);
+                CTX.DrawRectOutline(Thickness,
+                    _parent.Rect.X0 + Thickness,
+                    _parent.Rect.Y0 + Thickness,
+                    _parent.Rect.X1 - Thickness,
+                    _parent.Rect.Y1 - Thickness);
             }
+        }
+
+        public override UIComponent Copy()
+        {
+            return new UIRect(InitialColor, OutlineColor, Thickness);
         }
     }
 }

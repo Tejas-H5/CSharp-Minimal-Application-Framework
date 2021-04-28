@@ -31,8 +31,7 @@ namespace UICodeGenerator.Editor
 
         UIElement _rightclickMenu;
 
-        UIElement _domRoot;
-        UIDraggableRect _domRootRect;
+        UIElementEditor _domRoot;
         DraggableRectSelectedState _selectedState;
 
         ComponentEditorListUI _componentList;
@@ -68,8 +67,7 @@ namespace UICodeGenerator.Editor
             _selectedState = new DraggableRectSelectedState();
             _selectedState.OnSelectionChanged += OnSelectionChanged;
 
-            _domRoot = UIDraggableRect.CreateDraggableRect(_selectedState);
-            _domRootRect = _domRoot.GetComponentOfType<UIDraggableRect>();
+            _domRoot = UIElementEditor.CreateDraggableRect(_selectedState);
 
             InitRightclickMenu();
             InitRootUI();
@@ -80,45 +78,9 @@ namespace UICodeGenerator.Editor
             return UICreator.CreateButton(s, "Consolas", 14, new Color4(0, 1), new Color4(1, 0), new Color4(0.5f), new Color4(0.75f));
         }
 
-
-        void OnUnitSnapChanged(double value)
-        {
-            _selectedState.DimensionSnap = (float)value;
-        }
-
-        void OnAnchoredSnapChanged(double value)
-        {
-            Console.WriteLine(value);
-            _selectedState.AnchorSnap = (float)value;
-        }
-
-        private void OnSelectionChanged(UIDraggableRect obj)
+        private void OnSelectionChanged(UIElementEditor obj)
         {
             Console.WriteLine("Selection changed");
-        }
-
-        private void OnSelectionTextEdited(string text)
-        {
-            if (_selectedState.SelectedRect != null)
-                _selectedState.SelectedRect.Text = text;
-        }
-
-        private void OnSelectionNameEdited(string name)
-        {
-            if (_selectedState.SelectedRect != null)
-                _selectedState.SelectedRect.Name = name;
-        }
-
-        private void OnSelectionFontEdited(string font)
-        {
-            if (_selectedState.SelectedRect != null)
-                _selectedState.SelectedRect.FontName = font;
-        }
-
-        private void OnSelectionFontSize(long newSize)
-        {
-            if (_selectedState.SelectedRect != null)
-                _selectedState.SelectedRect.TextSize = (int)newSize;
         }
 
         private void InitRootUI()
@@ -219,11 +181,6 @@ namespace UICodeGenerator.Editor
             pasteCodeButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnPasteCodeButtonPressed;
         }
 
-        private void OnSelectionTextSizeEdited(long size)
-        {
-            _selectedState.SelectedRect.TextSize = (int)size;
-        }
-
         private void OnPasteCodeButtonPressed()
         {
             _uiView.RemoveAllChildren();
@@ -237,7 +194,7 @@ namespace UICodeGenerator.Editor
 
         private void OnCopyCodeButtonPressed()
         {
-            Window.ClipboardString = codeGenerator.GenerateCode(_domRoot.GetComponentOfType<UIDraggableRect>());
+            Window.ClipboardString = codeGenerator.GenerateCode(_domRoot);
         }
 
         private void InitRightclickMenu()
@@ -262,7 +219,7 @@ namespace UICodeGenerator.Editor
 
         private void OnTogglePosSizeXButtonClicked()
         {
-            if (_selectedState.SelectedRect == null)
+            if (_selectedState.SelectedEditorRect == null)
                 return;
 
             Console.WriteLine("This method is useless now, hopefully");
@@ -270,7 +227,7 @@ namespace UICodeGenerator.Editor
 
         private void OnTogglePosSizeYButtonClicked()
         {
-            if (_selectedState.SelectedRect == null)
+            if (_selectedState.SelectedEditorRect == null)
                 return;
 
             Console.WriteLine("This method is useless now, hopefully");
@@ -279,39 +236,35 @@ namespace UICodeGenerator.Editor
 
         private void OnDeleteButtonClicked()
         {
-            if (_selectedState.SelectedRect == null)
+            if (_selectedState.SelectedEditorRect == null)
                 return;
 
-            if (_selectedState.SelectedRect == _domRootRect)
+            if (_selectedState.SelectedEditorRect == _domRoot)
                 return;
 
-            UIElement node = _selectedState.SelectedRect.Parent;
-
-            _selectedState.SelectedRect = node.Parent.GetComponentOfType<UIDraggableRect>();
-
-            node.Parent.RemoveChild(node);
-
+            _selectedState.SelectedEditorRect.Parent.RemoveChild(_selectedState.SelectedEditorRect);
         }
 
         private void OnNewButtonClicked()
         {
-            if (_selectedState.SelectedRect == null)
+            if (_selectedState.SelectedEditorRect == null)
                 return;
 
-            UIElement newRect;
-            _selectedState.SelectedRect.Parent.AddChild(
-                newRect = UIDraggableRect.CreateDraggableRect(_selectedState)
-                .SetAbsoluteOffset(20f)
+            UIElementEditor newRect;
+            _selectedState.SelectedEditorRect.AddChild(
+                newRect = UIElementEditor.CreateDraggableRect(_selectedState)
             );
 
-            _selectedState.SelectedRect = newRect.GetComponentOfType<UIDraggableRect>();
+            newRect.SetAbsoluteOffset(20f);
+
+            _selectedState.SelectedEditorRect = newRect;
         }
 
         private void OnWindowClicked()
         {
             Console.WriteLine("Window clicked");
 
-            _selectedState.SelectedRect = null;
+            _selectedState.SelectedEditorRect = null;
         }
 
         public override void Render(double deltaTime)
@@ -327,9 +280,8 @@ namespace UICodeGenerator.Editor
             {
                 if (Input.IsMouseClicked(MouseButton.Right))
                 {
-                    if (_selectedState.SelectedRect == null)
+                    if (_selectedState.SelectedEditorRect == null)
                         return;
-
 
                     _rightclickMenu.IsVisible = true;
                     _rightclickMenu.SetAbsPositionSize(Input.MouseX, Input.MouseY, _rightclickMenu.Rect.Width, _rightclickMenu.Rect.Height);
@@ -363,19 +315,20 @@ namespace UICodeGenerator.Editor
 
         private void DuplicateSelected()
         {
-            if (_selectedState.SelectedRect == null || _selectedState.SelectedRect == _domRootRect)
+            var selected = _selectedState.SelectedEditorRect;
+            if (selected == null || selected == _domRoot)
                 return;
 
-            UIElement duplicate = UIDraggableRect.DeepCopy(_selectedState.SelectedRect, offset: 10);
+            UIElement duplicate = selected.DeepCopy();
 
-            _selectedState.SelectedRect.Parent.Parent.AddChild(duplicate);
+            selected.Parent.AddChild(duplicate);
         }
 
         private void ResetRootElement()
         {
             _uiView.RemoveAllChildren();
             _uiView.AddChild(
-                _domRoot = UIDraggableRect.CreateDraggableRect(_selectedState)
+                _domRoot = UIElementEditor.CreateDraggableRect(_selectedState)
             );
         }
 

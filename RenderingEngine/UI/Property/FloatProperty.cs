@@ -57,6 +57,11 @@ namespace RenderingEngine.UI.Property
             _value = num;
         }
 
+        public override Property<float> Copy()
+        {
+            return new FloatProperty(_value, _lower, _upper, _snap);
+        }
+
         public FloatProperty()
             : this(0, float.MinValue, float.MaxValue, -1)
         {

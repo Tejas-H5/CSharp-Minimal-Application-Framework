@@ -74,7 +74,7 @@ namespace UICodeGenerator.ComponentEditors
             {
                 foreach (Type type in asm.GetTypes())
                 {
-                    if (type == typeof(UIDraggableRect))
+                    if (type == typeof(UIElementEditor))
                         continue;
 
                     if (type.IsAbstract)
@@ -99,7 +99,7 @@ namespace UICodeGenerator.ComponentEditors
             }
         }
 
-        private void OnSelectionChanged(UIDraggableRect obj)
+        private void OnSelectionChanged(UIElementEditor obj)
         {
             _root.RemoveAllChildren();
 
@@ -109,11 +109,11 @@ namespace UICodeGenerator.ComponentEditors
                 return;
             }
 
-            foreach(UIComponent c in obj.Parent.Components)
+            foreach(UIComponent c in obj.Components)
             {
 
                 Type t = c.GetType();
-                if (t == typeof(UIDraggableRect))
+                if (t == typeof(UIElementEditor))
                     continue;
 
                 IComponentEditorUI editor = _componentEditors[t];

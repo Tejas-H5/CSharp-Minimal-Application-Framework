@@ -24,5 +24,16 @@ namespace UICodeGenerator.ComponentEditors
             get => _state.AnchorSnap;
             set => _state.AnchorSnap = value;
         }
+
+        public bool SelectionLocked {
+            get => _state.LockSelection;
+            set => _state.LockSelection = value;
+        }
+
+        //dont allow this to be copied
+        public override UIComponent Copy()
+        {
+            return this;
+        }
     }
 }

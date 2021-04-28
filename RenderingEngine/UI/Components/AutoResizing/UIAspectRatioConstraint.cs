@@ -13,6 +13,11 @@ namespace RenderingEngine.UI.Components.AutoResizing
             _parent.RectTransform.OnDataChanged += OnResize;
         }
 
+        public override UIComponent Copy()
+        {
+            return new UIAspectRatioConstraint(_widthToHeight);
+        }
+
         public override void SetParent(UIElement parent)
         {
             base.SetParent(parent);
@@ -47,5 +52,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
             _parent.RectTransform.Rect = wantedRect;
         }
+
+
     }
 }

@@ -57,5 +57,10 @@ namespace RenderingEngine.UI.Components.MouseInput
         {
             _bgRect.Color = _bgRect.InitialColor;
         }
+
+        public override UIComponent Copy()
+        {
+            return new UIMouseFeedback(HoverColor, ClickedColor);
+        }
     }
 }

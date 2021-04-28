@@ -14,7 +14,7 @@ using System.Drawing;
 
 namespace UICodeGenerator.DraggableRect
 {
-    public class UIDraggableRect : UIComponent
+    public class UIElementEditor : UIElement
     {
         const float HANDLESIZE = 10;
 
@@ -34,72 +34,11 @@ namespace UICodeGenerator.DraggableRect
 
         DraggableRectSelectedState _state;
         private string name;
-        private string _text = "";
-        private Color4 color;
-
         public string Name { get => name; set { name = value; _state.InvokeChangeEvent(); } }
-        public string Text {
-            get => _text;
-            set {
-                _text = value;
-                _textComponent.Text = value;
-                _state.InvokeChangeEvent();
-            }
-        }
-        public int TextSize {
-            get => _textSize;
-            set {
-                _textSize = value;
-                _textComponent.FontSize = value;
-            }
-        }
 
-        public string FontName {
-            get => _fontName;
-            set {
-                _fontName = value;
-                _textComponent.Font = value;
-            }
-        }
-
-        public string OtherComponents { get; set; }
-        public Color4 Color { get => color; set { color = value; _state.InvokeChangeEvent(); } }
-
-
-        public static UIElement CreateDraggableRect(DraggableRectSelectedState selectionState)
+        public static UIElementEditor CreateDraggableRect(DraggableRectSelectedState selectionState)
         {
-            return CreateDraggableRect(new UIDraggableRect(selectionState));
-        }
-
-        public static UIElement CreateDraggableRect(UIDraggableRect component)
-        {
-            return UICreator.CreateUIElement(
-                new UIRectHitbox(false),
-                new UIRect(new Color4(0, 0, 0, 0)),
-                new UIMouseListener(),
-                new UIText("", new Color4(0, 1)),
-                component,
-                new UIMouseFeedback(Color4.FromRGBA(0, 0, 0, 20), Color4.FromRGBA(0, 0, 1, 20))
-                //,new UIInverseStencil() //This actually works now
-            );
-        }
-
-
-        UIText _textComponent;
-        private int _textSize = -1;
-        private string _fontName = "";
-
-        public override void SetParent(UIElement parent)
-        {
-            base.SetParent(parent);
-
-            _textComponent = parent.GetComponentOfType<UIText>();
-            _textComponent.Text = Text;
-            _textComponent.FontSize = TextSize;
-            _textComponent.VerticalAlignment = VerticalAlignment.Center;
-            _textComponent.HorizontalAlignment = HorizontalAlignment.Center;
-
-            parent.GetComponentOfType<UIMouseListener>().OnMousePressed += OnClicked;
+            return new UIElementEditor(selectionState);
         }
 
         private bool IsEdgeHeld()
@@ -113,16 +52,16 @@ namespace UICodeGenerator.DraggableRect
 
         private void StartDrag()
         {
-            _initRectOffset = _parent.RectTransform.AbsoluteOffset;
-            _initCenter = _parent.RectTransform.NormalizedCenter;
-            _initAnchoring = _parent.RectTransform.NormalizedAnchoring;
+            _initRectOffset = RectTransform.AbsoluteOffset;
+            _initCenter = RectTransform.NormalizedCenter;
+            _initAnchoring = RectTransform.NormalizedAnchoring;
         }
 
         private void Drag(float dragDeltaX, float dragDeltaY, bool shouldSnap)
         {
-            Rect2D r = _parent.Rect;
-            Rect2D pR = _parent.GetParentRect();
-            UIRectTransform rtf = _parent.RectTransform;
+            Rect2D r = Rect;
+            Rect2D pR = GetParentRect();
+            UIRectTransform rtf = RectTransform;
 
             float mouseY = MathF.Round(Input.MouseY);
             float mouseX = MathF.Round(Input.MouseX);
@@ -160,9 +99,9 @@ namespace UICodeGenerator.DraggableRect
                 DragEdgeOffsets(rtf, initOffsets, dragDX, dragDY);
             }
 
-            //_parent.SetRectAndRecalcAnchoring(r);
-            _parent.SetDirty();
-            _parent.Resize();
+            //SetRectAndRecalcAnchoring(r);
+            SetDirty();
+            Resize();
         }
 
         private void DragAnchorOffsets(UIRectTransform rtf, Rect2D pR, Rect2D initOffsets, Rect2D initAnchors, float dragDX, float dragDY, bool shouldSnap)
@@ -180,7 +119,7 @@ namespace UICodeGenerator.DraggableRect
                     newAnchorY0 = MathUtil.SnapRounded(newAnchorY0, _state.AnchorSnap);
                 }
 
-                _parent.SetNormalizedAnchoring(new Rect2D(newAnchorX0, newAnchorY0, _initAnchoring.X1, _initAnchoring.Y1));
+                SetNormalizedAnchoring(new Rect2D(newAnchorX0, newAnchorY0, _initAnchoring.X1, _initAnchoring.Y1));
             }
             else if (_upperAnchor)
             {
@@ -200,24 +139,24 @@ namespace UICodeGenerator.DraggableRect
                     newAnchorY1 = initAnchors.Y1 + dragDY / pR.Height;
                 }
 
-                _parent.SetNormalizedAnchoring(new Rect2D(_initAnchoring.X0, _initAnchoring.Y0, newAnchorX1, newAnchorY1));
+                SetNormalizedAnchoring(new Rect2D(_initAnchoring.X0, _initAnchoring.Y0, newAnchorX1, newAnchorY1));
             }
         }
 
         private void DragCenter(UIRectTransform rtf, float dragDX, float dragDY, bool shouldSnap)
         {
-            float newCenterX = _initCenter.X + dragDX / _parent.Rect.Width;
-            float newCenterY = _initCenter.Y + dragDY / _parent.Rect.Height;
+            float newCenterX = _initCenter.X + dragDX / Rect.Width;
+            float newCenterY = _initCenter.Y + dragDY / Rect.Height;
 
             if (shouldSnap)
             {
                 newCenterX = SnapCenter(newCenterX);
                 newCenterY = SnapCenter(newCenterY);
-                dragDX = (newCenterX - _initCenter.X) * _parent.Rect.Width;
-                dragDY = (newCenterY - _initCenter.Y) * _parent.Rect.Height;
+                dragDX = (newCenterX - _initCenter.X) * Rect.Width;
+                dragDY = (newCenterY - _initCenter.Y) * Rect.Height;
             }
 
-            _parent.SetNormalizedCenter(newCenterX, newCenterY);
+            SetNormalizedCenter(newCenterX, newCenterY);
         }
 
         private static float SnapCenter(float newCenterX)
@@ -243,7 +182,7 @@ namespace UICodeGenerator.DraggableRect
             //I kept dragging the entire rect by accident when I wanted to just drag an edge, so I have disabled 
             //this feature for now
 
-            _parent.SetAbsoluteOffset(new Rect2D(
+            SetAbsoluteOffset(new Rect2D(
                 initOffsets.X0 + dragDX,
                 initOffsets.Y0 + dragDY,
                 initOffsets.X1 - dragDX,
@@ -281,7 +220,7 @@ namespace UICodeGenerator.DraggableRect
                 left = initOffsets.X0 + dragDX;
             }
 
-            _parent.SetAbsoluteOffset(new Rect2D(left, bottom, right, top));
+            SetAbsoluteOffset(new Rect2D(left, bottom, right, top));
         }
 
         Rect2D GetEdgeRect(float x0, float y0, float x1, float y1)
@@ -289,9 +228,23 @@ namespace UICodeGenerator.DraggableRect
             return new Rect2D(x0 - HANDLESIZE, y0 - HANDLESIZE, x1 + HANDLESIZE, y1 + HANDLESIZE);
         }
 
-        public override bool ProcessEvents()
+
+        public override bool ProcessComponentEvents()
         {
-            if (_state.SelectedRect != this)
+            if(Intersections.IsInsideRect(Input.MouseX, Input.MouseY, _rectTransform.Rect))
+            {
+                if (Input.IsMouseClicked(MouseButton.Left))
+                {
+                    _state.SelectedEditorRect = this;
+                }
+
+                if (Input.IsMouseClickedAny)
+                {
+                    return true;
+                }
+            }
+
+            if (_state.SelectedEditorRect != this)
                 return false;
 
             if (Input.IsMouseHeld(MouseButton.Left) && Input.IsMouseDragging)
@@ -299,8 +252,8 @@ namespace UICodeGenerator.DraggableRect
 
             float x = Input.MouseX;
             float y = Input.MouseY;
-            UIRectTransform rtf = _parent.RectTransform;
-            Rect2D pR = _parent.GetParentRect();
+            UIRectTransform rtf = RectTransform;
+            Rect2D pR = GetParentRect();
 
             CheckCenterGrab();
 
@@ -313,7 +266,7 @@ namespace UICodeGenerator.DraggableRect
 
         private void CheckCenterGrab()
         {
-            _centerHeld = Intersections.IsInsideCircle(Input.MouseX, Input.MouseY, _parent.AbsCenterX, _parent.AbsCenterY, HANDLESIZE);
+            _centerHeld = Intersections.IsInsideCircle(Input.MouseX, Input.MouseY, AbsCenterX, AbsCenterY, HANDLESIZE);
         }
 
         private void CheckAnchorGrab(float x, float y, UIRectTransform rtf, Rect2D pR)
@@ -349,23 +302,18 @@ namespace UICodeGenerator.DraggableRect
 
         private void CheckEdgeGrab(float x, float y)
         {
-            _topEdge = Intersections.IsInside(x, y,
-                GetEdgeRect(_parent.Rect.X0, _parent.Rect.Y1, _parent.Rect.X1, _parent.Rect.Y1));
-            _bottomEdge = Intersections.IsInside(x, y,
-                GetEdgeRect(_parent.Rect.X0, _parent.Rect.Y0, _parent.Rect.X1, _parent.Rect.Y0));
+            _topEdge = Intersections.IsInsideRect(x, y,
+                GetEdgeRect(Rect.X0, Rect.Y1, Rect.X1, Rect.Y1));
+            _bottomEdge = Intersections.IsInsideRect(x, y,
+                GetEdgeRect(Rect.X0, Rect.Y0, Rect.X1, Rect.Y0));
 
-            _leftEdge = Intersections.IsInside(x, y,
-                GetEdgeRect(_parent.Rect.X0, _parent.Rect.Y0, _parent.Rect.X0, _parent.Rect.Y1));
-            _rightEdge = Intersections.IsInside(x, y,
-                GetEdgeRect(_parent.Rect.X1, _parent.Rect.Y0, _parent.Rect.X1, _parent.Rect.Y1));
+            _leftEdge = Intersections.IsInsideRect(x, y,
+                GetEdgeRect(Rect.X0, Rect.Y0, Rect.X0, Rect.Y1));
+            _rightEdge = Intersections.IsInsideRect(x, y,
+                GetEdgeRect(Rect.X1, Rect.Y0, Rect.X1, Rect.Y1));
         }
 
-        private void OnClicked()
-        {
-            _state.SelectedRect = this;
-        }
-
-        public UIDraggableRect(DraggableRectSelectedState state)
+        public UIElementEditor(DraggableRectSelectedState state)
         {
             _state = state;
         }
@@ -378,23 +326,23 @@ namespace UICodeGenerator.DraggableRect
 
         public override void Draw(double deltaTime)
         {
-            bool isSelected = _state.SelectedRect == this;
+            bool isSelected = _state.SelectedEditorRect == this;
 
             if (isSelected)
             {
                 CTX.SetDrawColor(1, 0, 0, 1);
-                CTX.DrawRectOutline(2, _parent.Rect);
+                CTX.DrawRectOutline(2, Rect);
             }
             else
             {
                 CTX.SetDrawColor(0, 0, 0, 0.5f);
-                CTX.DrawRectOutline(1, _parent.Rect);
+                CTX.DrawRectOutline(1, Rect);
             }
 
-            if (_parent.Rect.IsInverted())
+            if (Rect.IsInverted())
             {
                 CTX.SetDrawColor(1, 0, 0, 0.5f);
-                CTX.DrawRect(_parent.Rect);
+                CTX.DrawRect(Rect);
             }
 
             if (!isSelected)
@@ -405,9 +353,9 @@ namespace UICodeGenerator.DraggableRect
 
         private void DrawSelectionInfo()
         {
-            Rect2D r = _parent.Rect;
-            Rect2D pR = _parent.GetParentRect();
-            UIRectTransform rtf = _parent.RectTransform;
+            Rect2D r = Rect;
+            Rect2D pR = GetParentRect();
+            UIRectTransform rtf = RectTransform;
 
             CTX.SetCurrentFont("Consolas", 16);
 
@@ -419,7 +367,7 @@ namespace UICodeGenerator.DraggableRect
             GetAnchors(rtf, pR, out leftAnchor, out rightAnchor, out topAnchor, out bottomAnchor);
             DrawAnchorLines(pR, leftAnchor, rightAnchor, topAnchor, bottomAnchor);
 
-            if (_parent.Rect.IsInverted())
+            if (Rect.IsInverted())
                 return;
 
             DrawDimensionLines(r, pR, rtf);
@@ -460,10 +408,10 @@ namespace UICodeGenerator.DraggableRect
         {
             CTX.SetDrawColor(0, 0, 0, 0.5f);
             CTX.DrawText(
-                $"center:({_parent.RectTransform.NormalizedCenter.X.ToString("0.000")}, " +
-                $"{_parent.RectTransform.NormalizedCenter.Y.ToString("0.000")})",
-                _parent.AbsCenterX + 5,
-                _parent.AbsCenterY - 30
+                $"center:({RectTransform.NormalizedCenter.X.ToString("0.000")}, " +
+                $"{RectTransform.NormalizedCenter.Y.ToString("0.000")})",
+                AbsCenterX + 5,
+                AbsCenterY - 30
             );
         }
 
@@ -492,54 +440,28 @@ namespace UICodeGenerator.DraggableRect
             }
         }
 
-        public static UIElement DeepCopy(UIDraggableRect rect, int offset)
-        {
-            UIElement duplicate = CopyRect1LevelDeep(rect);
-
-            for (int i = 0; i < rect.Parent.Count; i++)
-            {
-                duplicate.AddChild(DeepCopy(rect.Parent[i].GetComponentOfType<UIDraggableRect>(), 0));
-            }
-
-            return duplicate;
-        }
-
-        private static UIElement CopyRect1LevelDeep(UIDraggableRect rect)
-        {
-            var duplicateComponent = new UIDraggableRect(rect._state);
-            UIElement duplicate = CreateDraggableRect(duplicateComponent);
-
-            duplicateComponent.TextSize = rect.TextSize;
-            duplicateComponent.FontName = rect.FontName;
-
-            duplicate.Rect = rect.Parent.Rect;
-            duplicate.RectTransform.AbsoluteOffset = rect.Parent.AbsoluteOffset;
-            duplicate.RectTransform.NormalizedAnchoring = rect.Parent.NormalizedAnchoring;
-            return duplicate;
-        }
-
         private void DrawPosSizeInfoY(Rect2D r, Rect2D pR, UIRectTransform rtf, float bottomAnchor)
         {
-            CTX.DrawLine(_parent.AbsCenterX, _parent.AbsCenterY, _parent.AbsCenterX, bottomAnchor, 2, CapType.None);
-            CTX.DrawText($"{rtf.AnchoredPositionAbs.Y}px", _parent.AbsCenterX, (_parent.AbsCenterY + bottomAnchor) / 2f);
+            CTX.DrawLine(AbsCenterX, AbsCenterY, AbsCenterX, bottomAnchor, 2, CapType.None);
+            CTX.DrawText($"{rtf.AnchoredPositionAbs.Y}px", AbsCenterX, (AbsCenterY + bottomAnchor) / 2f);
 
-            CTX.DrawLine(_parent.AbsCenterX, r.Bottom, _parent.AbsCenterX, r.Top, 2, CapType.None);
-            CTX.DrawText($"{rtf.Rect.Height}px", _parent.AbsCenterX, 20 + (r.Bottom + r.Top) / 2f);
+            CTX.DrawLine(AbsCenterX, r.Bottom, AbsCenterX, r.Top, 2, CapType.None);
+            CTX.DrawText($"{rtf.Rect.Height}px", AbsCenterX, 20 + (r.Bottom + r.Top) / 2f);
         }
 
         private void DrawPosSizeInfoX(Rect2D r, Rect2D pR, UIRectTransform rtf, float leftAnchor)
         {
-            CTX.DrawLine(_parent.AbsCenterX, _parent.AbsCenterY, leftAnchor, _parent.AbsCenterY, 2, CapType.None);
-            CTX.DrawText($"{rtf.AnchoredPositionAbs.X}px", (_parent.AbsCenterX + leftAnchor) / 2f, _parent.AbsCenterY);
+            CTX.DrawLine(AbsCenterX, AbsCenterY, leftAnchor, AbsCenterY, 2, CapType.None);
+            CTX.DrawText($"{rtf.AnchoredPositionAbs.X}px", (AbsCenterX + leftAnchor) / 2f, AbsCenterY);
 
-            CTX.DrawLine(r.Left, _parent.AbsCenterY, r.Right, _parent.AbsCenterY, 2, CapType.None);
-            CTX.DrawText($"{rtf.Rect.Width}px", 50 + (r.Left + r.Right) / 2f, _parent.AbsCenterY);
+            CTX.DrawLine(r.Left, AbsCenterY, r.Right, AbsCenterY, 2, CapType.None);
+            CTX.DrawText($"{rtf.Rect.Width}px", 50 + (r.Left + r.Right) / 2f, AbsCenterY);
         }
 
         private void DrawCenterHandle()
         {
             CTX.SetDrawColor(0, 0, 0, 0.5f);
-            CTX.DrawCircle(_parent.AbsCenterX, _parent.AbsCenterY, HANDLESIZE);
+            CTX.DrawCircle(AbsCenterX, AbsCenterY, HANDLESIZE);
         }
 
         private static void DrawOffsetInfoX(Rect2D r, Rect2D pR, UIRectTransform rtf, float leftAnchor, float rightAnchor)
@@ -575,9 +497,17 @@ namespace UICodeGenerator.DraggableRect
             DrawEdgeHandle(x1, y0, x1, y1);
         }
 
-        public override void Update(double deltaTime)
+
+        public override void UpdateChildren(double deltaTime)
         {
-            bool isSelected = _state.SelectedRect == this;
+            base.UpdateChildren(deltaTime);
+
+            UpdateSelf();
+        }
+
+        private void UpdateSelf()
+        {
+            bool isSelected = _state.SelectedEditorRect == this;
 
             if (!isSelected)
                 return;
@@ -599,14 +529,6 @@ namespace UICodeGenerator.DraggableRect
                     }
                 }
             }
-        }
-
-        public override void OnResize()
-        {
-            base.OnResize();
-
-            if (_state.SelectedRect != this)
-                return;
         }
     }
 }

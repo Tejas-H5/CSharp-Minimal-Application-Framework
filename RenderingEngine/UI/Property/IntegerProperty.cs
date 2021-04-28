@@ -58,5 +58,10 @@ namespace RenderingEngine.UI.Property
             _snap = snap;
             Value = value;
         }
+
+        public override Property<int> Copy()
+        {
+            return new IntegerProperty(_value, _lower, _upper, _snap);
+        }
     }
 }

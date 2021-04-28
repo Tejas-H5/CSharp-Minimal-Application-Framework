@@ -14,7 +14,8 @@ namespace RenderingEngine.UI.Components.DataInput
 {
     //TODO: Esc to cancel out of an input
     //might have to use another string rather than the string inside the TextComponent
-    [RequiredComponents(typeof(UIMouseListener), typeof(UIText), typeof(UIHitbox))]
+    [RequiredComponents(typeof(UIMouseListener), typeof(UIHitbox)), 
+        RequiredComponentsInChildren(typeof(UIText))]
     public abstract class UITextInput<T> : UIDataInput<T>
     {
         protected UIMouseListener _mouseListner;

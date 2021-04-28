@@ -14,7 +14,8 @@ namespace RenderingEngine.UI.Components.DataInput
 {
     //TODO: Esc to cancel out of an input
     //might have to use another string rather than the string inside the TextComponent
-    [RequiredComponents(typeof(UIRect), typeof(UIMouseListener), typeof(UIText))]
+    [RequiredComponents(typeof(UIRect), typeof(UIMouseListener)),
+        RequiredComponentsInChildren(typeof(UIText))]
     public class UICheckbox : UIDataInput<bool>
     {
         public UICheckbox(Property<bool> prop)

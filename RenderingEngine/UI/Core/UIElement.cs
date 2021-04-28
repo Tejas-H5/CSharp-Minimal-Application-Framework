@@ -137,8 +137,7 @@ namespace RenderingEngine.UI.Core
             _children.Clear();
         }
 
-
-        private int ComponentOfTypeIndex(Type t)
+        protected int ComponentOfTypeIndex(Type t)
         {
             int index = -1;
             for (int i = 0; i < _components.Count; i++)
@@ -167,6 +166,22 @@ namespace RenderingEngine.UI.Core
                 return (T)_components[i];
 
             return default;
+        }
+
+        protected bool ChildContainsComponentOfType(Type t)
+        {
+            int componentIndex = ComponentOfTypeIndex(t);
+            if (componentIndex != -1)
+                return true;
+
+            for (int i = 0; i < _children.Count; i++)
+            {
+                bool res = _children[i].ChildContainsComponentOfType(t);
+                if(res)
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -217,16 +232,15 @@ namespace RenderingEngine.UI.Core
         {
             Type componentType = comp.GetType();
 
-            RequiredComponents requiredComponents = (RequiredComponents)Attribute.GetCustomAttribute(componentType, typeof(RequiredComponents));
-            if(requiredComponents != null)
+            try
             {
-                for(int i = 0; i < requiredComponents.ComponentTypes.Length; i++)
-                {
-                    int existingIndex = ComponentOfTypeIndex(requiredComponents.ComponentTypes[i]);
-                    if (existingIndex == -1)
-                        throw new Exception("This component requires the following other components: " +
-                            $"{requiredComponents.GetComponentListString()}");
-                }
+                EnsureRequiredComponents(componentType);
+
+                EnsureRequiredComponentsInChildren(componentType);
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
 
             int componentIndex = ComponentOfTypeIndex(componentType);
@@ -245,6 +259,37 @@ namespace RenderingEngine.UI.Core
 
             return this;
 
+        }
+
+        private void EnsureRequiredComponents(Type componentType)
+        {
+            RequiredComponents requiredComponents = (RequiredComponents)Attribute.GetCustomAttribute(componentType, typeof(RequiredComponents));
+            if (requiredComponents != null)
+            {
+                for (int i = 0; i < requiredComponents.ComponentTypes.Length; i++)
+                {
+                    int existingIndex = ComponentOfTypeIndex(requiredComponents.ComponentTypes[i]);
+                    if (existingIndex == -1)
+                        throw new Exception("This component requires the following other components: " +
+                            $"{requiredComponents.GetComponentListString()}");
+                }
+            }
+        }
+
+        private void EnsureRequiredComponentsInChildren(Type componentType)
+        {
+            RequiredComponentsInChildren requiredComponents = (RequiredComponentsInChildren)Attribute.GetCustomAttribute(componentType, typeof(RequiredComponentsInChildren));
+            if (requiredComponents != null)
+            {
+                for (int i = 0; i < requiredComponents.ComponentTypes.Length; i++)
+                {
+                    Type requiredType = requiredComponents.ComponentTypes[i];
+                    bool res = ChildContainsComponentOfType(requiredType);
+                    if (!res)
+                        throw new Exception("This component requires the following other components in itself or its children: " +
+                            $"{requiredComponents.GetComponentListString()}");
+                }
+            }
         }
 
         protected UIElement _parent = null;

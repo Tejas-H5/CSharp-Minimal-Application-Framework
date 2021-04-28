@@ -115,7 +115,6 @@ namespace RenderingEngine.UI.Components.Visuals
         public float GetCharacterHeight()
         {
             //TODO: set the current font
-
             return CTX.GetCharHeight('|');
         }
 

@@ -19,14 +19,6 @@ namespace RenderingEngine.UI.Components.AutoResizing
             }
         }
 
-        public override void OnResize()
-        {
-            for (int i = 0; i < _edgeSnapConstraints.Length; i++)
-            {
-                _edgeSnapConstraints[i].OnResize();
-            }
-        }
-
         public override UIComponent Copy()
         {
             var copy = new UIEdgeSnapConstraint[_edgeSnapConstraints.Length];

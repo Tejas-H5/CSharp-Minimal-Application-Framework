@@ -17,9 +17,9 @@ namespace RenderingEngine.UI
 
         public static bool IsInsideRect(float x, float y, float left, float bottom, float right, float top)
         {
-            if (x >= left && x <= right)
+            if (x > left && x < right)
             {
-                if (y <= top && y >= bottom)
+                if (y < top && y > bottom)
                 {
                     return true;
                 }

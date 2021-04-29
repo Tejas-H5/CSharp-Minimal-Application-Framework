@@ -136,7 +136,7 @@ namespace UICodeGenerator.Editor
                     .AddChildren(
                         _propertiesPanel = UICreator.CreatePanel(new Color4(0,0))
                         .SetAbsoluteOffset(new Rect2D(10,10,10,0))
-                        .AddComponent(new UIDebugComponent())
+                        //.AddComponent(new UIDebugComponent())
                         .AddComponent(
                             new UIMultiEdgeSnapConstraint(
                                 new UIEdgeSnapConstraint(_uiView, UIRectEdgeSnapEdge.Top, UIRectEdgeSnapEdge.Top),

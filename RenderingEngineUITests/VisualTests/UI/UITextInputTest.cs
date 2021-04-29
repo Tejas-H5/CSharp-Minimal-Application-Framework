@@ -28,10 +28,10 @@ namespace RenderingEngine.VisualTests.UI
 
             CTX.SetClearColor(1, 0, 0, 1);
 
-            _root = UICreator.CreatePanel(new Color4(1));
-
-            _root.SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
-            .SetAbsoluteOffset(new Rect2D(0, 0, 0, 0));
+            _root = UICreator.CreatePanel(new Color4(1))
+                .SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
+                .SetAbsoluteOffset(new Rect2D(0, 0, 0, 0))
+                .AddComponent(new UIGraphicsRaycaster());
 
             for (int i = 0; i < 3; i++)
             {

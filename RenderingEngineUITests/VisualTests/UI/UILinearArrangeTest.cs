@@ -29,7 +29,8 @@ namespace RenderingEngine.VisualTests.UI
 
             CTX.SetClearColor(1, 0, 0, 1);
 
-            _root = UICreator.CreatePanel(new Color4(1));
+            _root = UICreator.CreatePanel(new Color4(1))
+                .AddComponent(new UIGraphicsRaycaster());
 
             UIElement hArrange, vArrange;
 

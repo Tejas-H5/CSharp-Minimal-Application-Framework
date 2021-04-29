@@ -40,7 +40,7 @@ namespace RenderingEngine.UI.Components.MouseInput
             _mouseListner.OnMouseLeave += _mouseListner_OnMouseLeave;
         }
 
-        private void _mouseListner_OnMouseOver()
+        private void _mouseListner_OnMouseOver(MouseEventArgs e)
         {
             if (Input.IsMouseHeld(MouseButton.Left))
             {
@@ -50,9 +50,11 @@ namespace RenderingEngine.UI.Components.MouseInput
             {
                 _bgRect.Color = HoverColor;
             }
+
+            e.Handled = true;
         }
 
-        private void _mouseListner_OnMouseLeave()
+        private void _mouseListner_OnMouseLeave(MouseEventArgs e)
         {
             _bgRect.Color = _bgRect.InitialColor;
         }

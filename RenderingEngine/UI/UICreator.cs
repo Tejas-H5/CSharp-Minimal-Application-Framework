@@ -28,7 +28,7 @@ namespace RenderingEngine.UI
         {
             return CreateUIElement(
                 new UIRect(color),
-                new UIRectHitbox(false),
+                new UIRectHitbox(),
                 new UIMouseListener(),
                 new UIMouseFeedback(hoverColor, clickColor),
                 new UIText(buttontext, textColor, fontName, fontSize, VerticalAlignment.Center, HorizontalAlignment.Center)

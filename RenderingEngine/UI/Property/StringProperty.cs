@@ -11,6 +11,14 @@ namespace RenderingEngine.UI.Property
         {
         }
 
+        protected override void SetValueInternal(string val)
+        {
+            if (val == null)
+                val = "";
+
+            base.SetValueInternal(val);
+        }
+
         public override Property<string> Copy()
         {
             return new StringProperty(_value);

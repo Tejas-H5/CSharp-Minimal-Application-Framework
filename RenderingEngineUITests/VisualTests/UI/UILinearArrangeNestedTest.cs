@@ -31,6 +31,7 @@ namespace RenderingEngine.VisualTests.UI
 
             _root = UICreator.CreateUIElement();
             UIElement fitChildren = UICreator.CreateUIElement(
+                new UIGraphicsRaycaster()
                 ///new UIFitChildren(false, true, new Rect2D(10,10,10,10))
             );
 
@@ -73,7 +74,7 @@ namespace RenderingEngine.VisualTests.UI
                         .SetAbsPositionSizeY(0, 20)
                     );
 
-                    button.GetComponentOfType<UIMouseListener>().OnMousePressed += () => {
+                    button.GetComponentOfType<UIMouseListener>().OnMousePressed += (MouseEventArgs e) => {
                         button.SetAbsPositionSizeY(0, button.Rect.Height + 10);
                     };
                 }

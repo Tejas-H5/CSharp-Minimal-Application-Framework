@@ -43,8 +43,10 @@ namespace RenderingEngine.UI.Components.DataInput
             _mouseListner.OnMouseOver += OnMouseOver;
         }
 
-        private void OnMouseOver()
+        private void OnMouseOver(MouseEventArgs e)
         {
+            e.Handled = true;
+
             if (Input.IsMouseClicked(MouseButton.Left))
             {
                 bool wantedValue = !_property.Value;

@@ -17,7 +17,7 @@ namespace RenderingEngine.UI.Components.AutoResizing.Uncompleted
         }
 
 
-        protected override void OnRectTransformResize(UIRectTransform rtf)
+        public override void OnResize()
         {
             Rect2D wantedRect = _parent.Rect;
 

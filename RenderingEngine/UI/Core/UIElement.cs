@@ -1,6 +1,7 @@
 ﻿using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
+using RenderingEngine.UI.Components.Debugging;
 using RenderingEngine.UI.Components.MouseInput;
 using System;
 using System.Collections.Generic;
@@ -258,7 +259,6 @@ namespace RenderingEngine.UI.Core
 #endif
 
             return this;
-
         }
 
         private void EnsureRequiredComponents(Type componentType)
@@ -329,6 +329,11 @@ namespace RenderingEngine.UI.Core
         void SetParentDebug()
         {
             _mouseListenComponent = GetComponentOfType<UIMouseListener>();
+        }
+
+        public bool HasDebugComponent()
+        {
+            return (GetComponentOfType<UIDebugComponent>() != null);
         }
 #endif
 

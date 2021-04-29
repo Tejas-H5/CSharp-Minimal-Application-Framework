@@ -32,11 +32,6 @@ namespace RenderingEngine.UI.Components.AutoResizing
             OnOtherResized(_other.RectTransform);
         }
 
-        protected override void OnRectTransformResize(UIRectTransform rtf)
-        {
-            OnOtherResized(_other.RectTransform);
-        }
-
         public void OnOtherResized(UIRectTransform rtf)
         {
             Rect2D wantedRect = _parent.Rect;

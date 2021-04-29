@@ -57,58 +57,62 @@ namespace RenderingEngine.VisualTests.UI
             UIElement closeButton;
 
             button = UICreator.CreateButton("")
-                .SetNormalizedPositionCenter(0, 0, 1, 1)
-                .SetAbsPositionSize(200, 200, 50, 50);
+            .SetNormalizedPositionCenter(0, 0, 1, 1)
+            .SetAbsPositionSize(200, 200, 50, 50);
 
-            _zStack.AddChildren(
-                _uiRoot = GeneratePanel().AddChildren(
+            _zStack
+            .AddChildren(
+                _uiRoot = GeneratePanel()
+                .AddComponent(new UIGraphicsRaycaster())
+                .AddChildren(
                     top = GeneratePanel()
-                        .SetNormalizedAnchoring(new Rect2D(0, 0.5f, 1, 1))
-                        .AddChildren(
-                            button
-                            ,
-                            GeneratePanel()
-                                .SetNormalizedAnchoringX(0, 1)
-                                .SetAbsOffsetsX(10, 220)
-                                .SetNormalizedPositionCenterY(1, 1)
-                                .SetAbsPositionSizeY(-10, 100)
-                            ,
-                            GeneratePanel()
-                                .SetNormalizedPositionCenterX(1, 1)
-                                .SetAbsPositionSizeX(-10, 200)
-                                .SetNormalizedPositionCenterY(1, 1)
-                                .SetAbsPositionSizeY(-10, 200)
-                        )
+                    .SetNormalizedAnchoring(new Rect2D(0, 0.5f, 1, 1))
+                    .AddChildren(
+                        button
+                        ,
+                        GeneratePanel()
+                        .SetNormalizedAnchoringX(0, 1)
+                        .SetAbsOffsetsX(10, 220)
+                        .SetNormalizedPositionCenterY(1, 1)
+                        .SetAbsPositionSizeY(-10, 100)
+                        ,
+                        GeneratePanel()
+                        .SetNormalizedPositionCenterX(1, 1)
+                        .SetAbsPositionSizeX(-10, 200)
+                        .SetNormalizedPositionCenterY(1, 1)
+                        .SetAbsPositionSizeY(-10, 200)
+                    )
                     ,
                     goldenRatioSpiralContainer = GeneratePanel()
-                        .SetNormalizedAnchoring(new Rect2D(0, 0f, 1f, 0.5f))
-                    )
+                    .SetNormalizedAnchoring(new Rect2D(0, 0f, 1f, 0.5f))
+                )
                 ,
                 _modal = UICreator.CreateUIElement(
                     new UIRect(new Color4(0, 0, 0, 0.2f))
-                    )
-                    .AddChildren(
-                        bruhButton = CreateButton("Bruh XD")
-                            .SetNormalizedPositionCenter(0.5f, 0.5f)
-                            .SetAbsPositionSize(0, 0, 400, 200)
-                        ,
-                        closeButton = CreateButton("X")
-                            .SetNormalizedPositionCenter(1, 1, 1, 1)
-                            .SetAbsPositionSize(-10, -10, 40, 40)
-                        ,
-                        CreateButton("some text")
-                            .SetNormalizedPositionCenter(1, 1, 1, 1)
-                            .SetAbsPositionSize(-10, -50, 100, 40)
-                        ,
-                        CreateButton("some more textaoiuoawhiaohwifa")
-                            .SetNormalizedPositionCenter(1, 1, 1, 1)
-                            .SetAbsPositionSize(-10, -100, 100, 40)
-                        ,
-                        CreateButton("some more textaoiuoawhiaohwifaa asd foifsd iasfhpdihs pasdhfosh paihsd foafopha d \na weoifo awiefoaewhfoi")
-                            .SetNormalizedPositionCenter(1, 1, 1, 1)
-                            .SetAbsPositionSize(-10, -150, 100, 40)
-                    )
-                );
+                )
+                .AddComponent(new UIGraphicsRaycaster())
+                .AddChildren(
+                    bruhButton = CreateButton("Bruh XD")
+                    .SetNormalizedPositionCenter(0.5f, 0.5f)
+                    .SetAbsPositionSize(0, 0, 400, 200)
+                    ,
+                    closeButton = CreateButton("X")
+                    .SetNormalizedPositionCenter(1, 1, 1, 1)
+                    .SetAbsPositionSize(-10, -10, 40, 40)
+                    ,
+                    CreateButton("some text")
+                    .SetNormalizedPositionCenter(1, 1, 1, 1)
+                    .SetAbsPositionSize(-10, -50, 100, 40)
+                    ,
+                    CreateButton("some more textaoiuoawhiaohwifa")
+                    .SetNormalizedPositionCenter(1, 1, 1, 1)
+                    .SetAbsPositionSize(-10, -100, 100, 40)
+                    ,
+                    CreateButton("some more textaoiuoawhiaohwifaa asd foifsd iasfhpdihs pasdhfosh paihsd foafopha d \na weoifo awiefoaewhfoi")
+                    .SetNormalizedPositionCenter(1, 1, 1, 1)
+                    .SetAbsPositionSize(-10, -150, 100, 40)
+                )
+            );
 
 
             //Create a golden ratio spiral with UI panels
@@ -132,17 +136,17 @@ namespace RenderingEngine.VisualTests.UI
             closeButton.GetComponentOfType<UIMouseListener>().OnMouseReleased += CloseButton_OnClicked;
         }
 
-        private void CloseButton_OnClicked()
+        private void CloseButton_OnClicked(MouseEventArgs e)
         {
             _modal.IsVisible = false;
         }
 
-        private void BruhButton_OnClicked()
+        private void BruhButton_OnClicked(MouseEventArgs e)
         {
             Console.WriteLine("Bruh XD");
         }
 
-        private void Button_OnClicked()
+        private void Button_OnClicked(MouseEventArgs e)
         {
             ToggleModal();
         }

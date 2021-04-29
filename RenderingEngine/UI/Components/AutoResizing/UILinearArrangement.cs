@@ -35,7 +35,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
             return new UILinearArrangement(_vertical, _reverse, _elementSizing, _padding);
         }
 
-        protected override void OnRectTransformResize(UIRectTransform obj)
+        public override void OnResize()
         {
             _parent.UpdateRect();
             _parent.ResizeChildren();
@@ -86,6 +86,9 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
         private float GetSizeOfElement(int i)
         {
+            if (!_parent[i].IsVisible)
+                return 0;
+
             return _vertical ? _parent[i].Rect.Height : _parent[i].Rect.Width;
         }
 

@@ -38,7 +38,11 @@ namespace UICodeGenerator.DraggableRect
 
         public static UIElementEditor CreateDraggableRect(DraggableRectSelectedState selectionState)
         {
-            return new UIElementEditor(selectionState);
+            UIElementEditor e = new UIElementEditor(selectionState);
+
+            //e.AddComponent(new UIInverseStencil());
+
+            return e;
         }
 
         private bool IsEdgeHeld()

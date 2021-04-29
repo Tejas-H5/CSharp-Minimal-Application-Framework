@@ -12,9 +12,9 @@ namespace RenderingEngine.UI.Components.Debugging
             return new UIDebugComponent();
         }
 
-        protected override void OnRectTransformResize(UIRectTransform rtf)
+        public override void OnResize()
         {
-            base.OnRectTransformResize(rtf);
+            base.OnResize();
         }
 
         public override void Update(double deltaTime)

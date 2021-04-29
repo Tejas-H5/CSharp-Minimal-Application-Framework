@@ -44,7 +44,7 @@ namespace UICodeGenerator.ComponentEditors
         private void InitializeAllEditors()
         {
             Root = UICreator.CreateUIElement(
-                new UIDebugComponent(),
+                //new UIDebugComponent(),
                 new UIRect(new Color4(0, 0), new Color4(0, 1), 1),
                 new UILinearArrangement(true, false, -1, 10)
             );
@@ -82,16 +82,17 @@ namespace UICodeGenerator.ComponentEditors
 
                     UIElement button = UICreator.CreateButton(
                         name, "Consolas", 11
-                    );
+                    )
+					.AddComponent(new UIDebugComponent());
 
-                    button.GetComponentOfType<UIMouseListener>().OnMousePressed += () => {
+                    button.GetComponentOfType<UIMouseListener>().OnMousePressed += (MouseEventArgs e) => {
                         AddComponentToSelectionOfType(componentType);
                     };
 
                     accordionContainer.AddChild(button);
                 }
 
-                collapseUncollapseButton.GetComponentOfType<UIMouseListener>().OnMousePressed += () => {
+                collapseUncollapseButton.GetComponentOfType<UIMouseListener>().OnMousePressed += (MouseEventArgs e) => {
                     accordionContainer.IsVisible = !accordionContainer.IsVisible;
                 };
 
@@ -107,8 +108,8 @@ namespace UICodeGenerator.ComponentEditors
 
             for (int i = 0; i < constructorParams.Length; i++)
             {
-                object defaultValue = constructorParams[i].DefaultValue;
-                if (defaultValue != null)
+                object defaultValue = constructorParams[i].RawDefaultValue;
+                if (!(defaultValue is { }))
                 {
                     args[i] = defaultValue;
                     continue;

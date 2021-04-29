@@ -116,8 +116,10 @@ namespace RenderingEngine.UI.Components.DataInput
             }
         }
 
-        private void OnMouseOver()
+        private void OnMouseOver(MouseEventArgs e)
         {
+            e.Handled = true;
+
             if (Input.IsMouseClicked(MouseButton.Left))
             {
                 _isTyping = true;

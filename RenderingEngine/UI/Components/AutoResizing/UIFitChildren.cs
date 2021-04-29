@@ -117,7 +117,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
             y1 = MathF.Max(y1, rect.Y1 + _margin.Y1);
         }
 
-        protected override void OnRectTransformResize(UIRectTransform obj)
+        public override void OnResize()
         {
             if (!(_horizontal || _vertical))
                 return;

@@ -16,7 +16,7 @@ namespace RenderingEngine.UI.Components.MouseInput
             return new UIRectHitbox(_intersectWithParent);
         }
 
-        public override bool PointIsInside(float x, float y)
+        protected override bool PointIsInsideInternal(float x, float y)
         {
             return (!_intersectWithParent || Intersections.IsInsideRect(x, y, _parent.GetParentRect()))
                 && Intersections.IsInsideRect(x, y, _parent.Rect);

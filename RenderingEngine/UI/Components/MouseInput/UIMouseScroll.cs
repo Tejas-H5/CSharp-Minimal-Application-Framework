@@ -41,7 +41,7 @@ namespace RenderingEngine.UI.Components.MouseInput
             base.Update(deltaTime);
         }
 
-        private void OnMouseScroll()
+        private void OnMouseScroll(MouseEventArgs e)
         {
             if (Target == null)
                 return;
@@ -59,6 +59,8 @@ namespace RenderingEngine.UI.Components.MouseInput
             {
                 Target.SetAbsPositionSizeX(_currentAmount, Target.Rect.Width);
             }
+
+            e.Handled = true;
         }
 
         public override UIComponent Copy()

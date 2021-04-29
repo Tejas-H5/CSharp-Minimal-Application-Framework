@@ -298,6 +298,10 @@ namespace RenderingEngine.UI.Core
                 return _parent;
             }
             set {
+                if(_parent != null)
+                {
+                    _parent.RemoveChild(this);
+                }
                 _parent = value;
                 _dirty = true;
             }
@@ -585,6 +589,8 @@ namespace RenderingEngine.UI.Core
             {
                 _children[i].Resize();
             }
+
+            _dirty = false;
         }
 
         public virtual void SetDirty()

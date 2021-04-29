@@ -39,7 +39,6 @@ namespace RenderingEngine.UI.Components.MouseInput
         public override void Update(double deltaTime)
         {
             base.Update(deltaTime);
-            OnMouseScroll();
         }
 
         private void OnMouseScroll()
@@ -60,8 +59,6 @@ namespace RenderingEngine.UI.Components.MouseInput
             {
                 Target.SetAbsPositionSizeX(_currentAmount, Target.Rect.Width);
             }
-
-            Console.WriteLine(Input.MouseWheelNotches);
         }
 
         public override UIComponent Copy()

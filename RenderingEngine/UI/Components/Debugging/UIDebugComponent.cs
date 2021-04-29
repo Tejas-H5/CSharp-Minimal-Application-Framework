@@ -16,5 +16,10 @@ namespace RenderingEngine.UI.Components.Debugging
         {
             base.OnRectTransformResize(rtf);
         }
+
+        public override void Update(double deltaTime)
+        {
+            base.Update(deltaTime);
+        }
     }
 }

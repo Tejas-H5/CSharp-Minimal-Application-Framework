@@ -11,8 +11,6 @@ namespace UICodeGenerator.DraggableRect
                 return _selRect;
             }
             set {
-                Console.WriteLine(LockSelection);
-
                 if (LockSelection)
                     return;
 

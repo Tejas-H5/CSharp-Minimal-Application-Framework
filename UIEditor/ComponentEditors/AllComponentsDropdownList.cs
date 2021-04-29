@@ -2,11 +2,13 @@
 using RenderingEngine.Datatypes.UI;
 using RenderingEngine.UI;
 using RenderingEngine.UI.Components.AutoResizing;
+using RenderingEngine.UI.Components.Debugging;
 using RenderingEngine.UI.Components.MouseInput;
 using RenderingEngine.UI.Components.Visuals;
 using RenderingEngine.UI.Core;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using UICodeGenerator.DraggableRect;
 
@@ -42,6 +44,7 @@ namespace UICodeGenerator.ComponentEditors
         private void InitializeAllEditors()
         {
             Root = UICreator.CreateUIElement(
+                new UIDebugComponent(),
                 new UIRect(new Color4(0, 0), new Color4(0, 1), 1),
                 new UILinearArrangement(true, false, -1, 10)
             );
@@ -64,6 +67,7 @@ namespace UICodeGenerator.ComponentEditors
                     collapseUncollapseButton = UICreator.CreateButton(
                         assemblyName, "Consolas", 14
                     )
+                    .SetAbsPositionSizeY(0,40)
                     ,
                     accordionContainer = UICreator.CreateUIElement(
                         new UIRect(new Color4(0, 0), new Color4(0, 1), 1),
@@ -71,19 +75,17 @@ namespace UICodeGenerator.ComponentEditors
                     )
                 );
 
-                for (int i =0; i < nameComponentPairs.Count; i++)
+                for (int i = 0; i < nameComponentPairs.Count; i++)
                 {
                     string name = nameComponentPairs[i].Name;
-                    Type type = nameComponentPairs[i].ComponentType;
+                    Type componentType = nameComponentPairs[i].ComponentType;
 
                     UIElement button = UICreator.CreateButton(
                         name, "Consolas", 11
                     );
 
                     button.GetComponentOfType<UIMouseListener>().OnMousePressed += () => {
-                        _state.SelectedEditorRect.AddComponent(
-                            //Create a component of type 'type' using reflection, then pass it here
-                        );
+                        AddComponentToSelectionOfType(componentType);
                     };
 
                     accordionContainer.AddChild(button);
@@ -92,7 +94,41 @@ namespace UICodeGenerator.ComponentEditors
                 collapseUncollapseButton.GetComponentOfType<UIMouseListener>().OnMousePressed += () => {
                     accordionContainer.IsVisible = !accordionContainer.IsVisible;
                 };
+
+                Root.AddChild(accordionRoot);
             }
+        }
+
+        private void AddComponentToSelectionOfType(Type componentType)
+        {
+            ConstructorInfo constructorInfo = componentType.GetConstructors()[0];
+            var constructorParams = constructorInfo.GetParameters();
+            object[] args = new object[constructorParams.Length];
+
+            for (int i = 0; i < constructorParams.Length; i++)
+            {
+                object defaultValue = constructorParams[i].DefaultValue;
+                if (defaultValue != null)
+                {
+                    args[i] = defaultValue;
+                    continue;
+                }
+
+                if (constructorParams[i].ParameterType.IsValueType)
+                {
+                    args[i] = Activator.CreateInstance(constructorParams[i].ParameterType);
+                }
+                else
+                {
+                    args[i] = null;
+                }
+            }
+
+            UIComponent component = (UIComponent)Activator.CreateInstance(componentType, args);
+
+            _state.SelectedEditorRect.AddComponent(
+                component
+            );
         }
 
         private void FindAllAvailableComponents()

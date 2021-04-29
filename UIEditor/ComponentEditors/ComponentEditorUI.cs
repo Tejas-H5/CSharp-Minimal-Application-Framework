@@ -60,7 +60,6 @@ namespace UICodeGenerator.ComponentEditors
 
 				IProperty iProp = _namePropertyEventMap[_properties[i].Name];
 
-				Console.WriteLine(_properties[i].GetValue(_boundInstace));
 				iProp.SetValue(_properties[i].GetValue(_boundInstace));
 			}
 		}

@@ -69,8 +69,6 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
             for (int i = 0; i < _parent.Count; i++)
             {
-                
-
                 if(_elementSizing < 0)
                 {
                     float size = GetSizeOfElement(i);

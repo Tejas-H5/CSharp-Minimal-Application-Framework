@@ -81,7 +81,7 @@ namespace UICodeGenerator.ComponentEditors
                 .SetNormalizedPositionCenterY(1, 1)
                 .SetAbsPositionSizeY(-80, 300)
                 .AddChildren(
-                    scrollTarget = new AllComponentsDropdownList().Root
+                    scrollTarget = new AllComponentsDropdownList(_state).Root
                     .SetNormalizedPositionCenterY(1, 1)
                 )
             );

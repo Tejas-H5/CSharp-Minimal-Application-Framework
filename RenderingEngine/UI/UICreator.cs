@@ -56,5 +56,12 @@ namespace RenderingEngine.UI
                 new UIMouseFeedback(hoverColor, clickedColor)
                 );
         }
+
+        public static UIElement CreateRectOutline(Color4 color, int thickness = 1)
+        {
+            return CreateUIElement(
+                new UIRect(new Color4(0,0), color, thickness)
+            );
+        }
     }
 }

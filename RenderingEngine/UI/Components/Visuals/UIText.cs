@@ -44,6 +44,9 @@ namespace RenderingEngine.UI.Components.Visuals
 
         public override void Draw(double deltaTime)
         {
+            if (Text == null)
+                return;
+
             float scale = 1;
             float textHeight = scale * CTX.GetStringHeight(Text);
             float charHeight = scale * CTX.GetCharHeight('|');

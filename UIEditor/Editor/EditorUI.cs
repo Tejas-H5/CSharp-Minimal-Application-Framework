@@ -110,7 +110,8 @@ namespace UICodeGenerator.Editor
             _componentList = new ComponentEditorListUI(_selectedState);
 
             _root = new UIZStack();
-            _root.AddComponent(new UIRectHitbox())
+            _root.AddComponent(new UIGraphicsRaycaster())
+            .AddComponent(new UIRectHitbox())
             .AddComponent(_editorComponent)
             .AddComponent(new UIMouseListener())
             .AddChildren(
@@ -181,7 +182,7 @@ namespace UICodeGenerator.Editor
             pasteCodeButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnPasteCodeButtonPressed;
         }
 
-        private void OnPasteCodeButtonPressed()
+        private void OnPasteCodeButtonPressed(MouseEventArgs e)
         {
             _uiView.RemoveAllChildren();
             _uiView.AddChild(
@@ -192,7 +193,7 @@ namespace UICodeGenerator.Editor
         UIDraggableRectTreeCodeGenerator codeGenerator = new UIDraggableRectTreeCodeGenerator();
         UIDraggableRectTreeParser codeParser = new UIDraggableRectTreeParser();
 
-        private void OnCopyCodeButtonPressed()
+        private void OnCopyCodeButtonPressed(MouseEventArgs e)
         {
             Window.ClipboardString = codeGenerator.GenerateCode(_domRoot);
         }
@@ -234,7 +235,7 @@ namespace UICodeGenerator.Editor
         }
 
 
-        private void OnDeleteButtonClicked()
+        private void OnDeleteButtonClicked(MouseEventArgs e)
         {
             if (_selectedState.SelectedEditorRect == null)
                 return;
@@ -245,7 +246,7 @@ namespace UICodeGenerator.Editor
             _selectedState.SelectedEditorRect.Parent.RemoveChild(_selectedState.SelectedEditorRect);
         }
 
-        private void OnNewButtonClicked()
+        private void OnNewButtonClicked(MouseEventArgs e)
         {
             if (_selectedState.SelectedEditorRect == null)
                 return;
@@ -260,7 +261,7 @@ namespace UICodeGenerator.Editor
             _selectedState.SelectedEditorRect = newRect;
         }
 
-        private void OnWindowClicked()
+        private void OnWindowClicked(MouseEventArgs e)
         {
             Console.WriteLine("Window clicked");
 

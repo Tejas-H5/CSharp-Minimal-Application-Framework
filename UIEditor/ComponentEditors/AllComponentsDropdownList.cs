@@ -34,6 +34,8 @@ namespace UICodeGenerator.ComponentEditors
 
         DraggableRectSelectedState _state;
 
+        public event Action OnComponentAdded;
+
         public AllComponentsDropdownList(DraggableRectSelectedState state)
         {
             _state = state;
@@ -87,6 +89,7 @@ namespace UICodeGenerator.ComponentEditors
 
                     button.GetComponentOfType<UIMouseListener>().OnMousePressed += (MouseEventArgs e) => {
                         AddComponentToSelectionOfType(componentType);
+                        OnComponentAdded?.Invoke();
                     };
 
                     accordionContainer.AddChild(button);
@@ -95,6 +98,8 @@ namespace UICodeGenerator.ComponentEditors
                 collapseUncollapseButton.GetComponentOfType<UIMouseListener>().OnMousePressed += (MouseEventArgs e) => {
                     accordionContainer.IsVisible = !accordionContainer.IsVisible;
                 };
+
+                accordionContainer.IsVisible = false;
 
                 Root.AddChild(accordionRoot);
             }

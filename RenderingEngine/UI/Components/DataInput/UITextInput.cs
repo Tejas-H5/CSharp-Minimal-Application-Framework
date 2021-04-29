@@ -99,7 +99,11 @@ namespace RenderingEngine.UI.Components.DataInput
 
         protected virtual void OnPropertyChanged(T obj)
         {
-            _textComponent.Text = Property.Value.ToString();
+            string s = "{null}";
+            if (Property.Value != null)
+                s = Property.Value.ToString();
+
+            _textComponent.Text = s;
         }
 
         private void OnTextChangedEvent()

@@ -1,15 +1,7 @@
 Actions that should be taken when I start working on this again:
 
-- Modify UIInverseStencil to occlude collisions somehow
-	- may have to rewrite event system as well
-
-- rename UIInverseStencil to UIInverseStencilRect
-- convert UIStateObject into a singleton while we're at it
-
-
 
 Current issues that we want to fix / Features that we want to add (work on them top to bottom)
 
--> Buttons that are a child of a child of a UIInverseStencil element rectangle are still responding to events even though they shouldn;t be
-- convert UIStateObject into a singleton
+-> Visual components are not being drawn 
 

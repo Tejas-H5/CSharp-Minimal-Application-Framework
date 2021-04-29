@@ -53,6 +53,10 @@ namespace UICodeGenerator.ComponentEditors
             UIMouseScroll scrollComponent;
             UIElement scrollTarget;
 
+            AllComponentsDropdownList componentList = new AllComponentsDropdownList(_state);
+
+            componentList.OnComponentAdded += ComponentList_OnComponentAdded;
+
             _addComponentButtonAndList = UICreator.CreateUIElement(
                 new UIRect(new Color4(0,0), new Color4(0,1),1),
                 new UIFitChildren(false, true, new Rect2D(10,10,10,10)),
@@ -81,7 +85,7 @@ namespace UICodeGenerator.ComponentEditors
                 .SetNormalizedPositionCenterY(1, 1)
                 .SetAbsPositionSizeY(-80, 300)
                 .AddChildren(
-                    scrollTarget = new AllComponentsDropdownList(_state).Root
+                    scrollTarget = componentList.Root
                     .SetNormalizedPositionCenterY(1, 1)
                 )
             );
@@ -94,7 +98,12 @@ namespace UICodeGenerator.ComponentEditors
             scrollComponent.Target = scrollTarget;
         }
 
-        private void OnAddComponentButtonPressed()
+        private void ComponentList_OnComponentAdded()
+        {
+            OnSelectionChanged(_state.SelectedEditorRect);
+        }
+
+        private void OnAddComponentButtonPressed(MouseEventArgs e)
         {
             _addComponentsUI.IsVisible = !_addComponentsUI.IsVisible;
         }

@@ -330,6 +330,8 @@ namespace UICodeGenerator.DraggableRect
 
         public override void Draw(double deltaTime)
         {
+            base.Draw(deltaTime);
+
             bool isSelected = _state.SelectedEditorRect == this;
 
             if (isSelected)

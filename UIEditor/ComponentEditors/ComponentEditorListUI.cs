@@ -43,6 +43,8 @@ namespace UICodeGenerator.ComponentEditors
             InitNullComponent();
 
             InitAddComponentButton();
+
+            
         }
 
 
@@ -101,6 +103,7 @@ namespace UICodeGenerator.ComponentEditors
         private void ComponentList_OnComponentAdded()
         {
             OnSelectionChanged(_state.SelectedEditorRect);
+            _addComponentsUI.IsVisible = false;
         }
 
         private void OnAddComponentButtonPressed(MouseEventArgs e)

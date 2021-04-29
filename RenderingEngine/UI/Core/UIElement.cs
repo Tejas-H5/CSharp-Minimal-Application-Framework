@@ -98,6 +98,14 @@ namespace RenderingEngine.UI.Core
 
         public UIElement AddChild(UIElement element)
         {
+            if (element.Parent == this)
+                return this;
+
+            if(element.Parent != null)
+            {
+                element.Parent.RemoveChild(element);
+            }
+
             AddChildVirtual(element);
             _dirty = true;
             return this;
@@ -298,10 +306,6 @@ namespace RenderingEngine.UI.Core
                 return _parent;
             }
             set {
-                if(_parent != null)
-                {
-                    _parent.RemoveChild(this);
-                }
                 _parent = value;
                 _dirty = true;
             }

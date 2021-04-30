@@ -51,5 +51,35 @@ namespace RenderingEngine.UI.Property
         {
             Value = (T)obj;
         }
+
+        Dictionary<Action<object>, Action<T>> _actions = null;
+
+        public void AddCallback(Action<object> a)
+        {
+            if(_actions == null)
+                _actions = new Dictionary<Action<object>, Action<T>>();
+
+            if (_actions.ContainsKey(a))
+                return;
+
+            Action<T> aT = new Action<T>(o => a(o));
+
+            OnDataChanged += aT;
+            _actions.Add(a, aT);
+        }
+
+        public void RemoveCallback(Action<object> a)
+        {
+            if (_actions == null)
+                _actions = new Dictionary<Action<object>, Action<T>>();
+
+            if (!_actions.ContainsKey(a))
+                return;
+
+            Action<T> aT = _actions[a];
+
+            OnDataChanged -= aT;
+            _actions.Remove(a);
+        }
     }
 }

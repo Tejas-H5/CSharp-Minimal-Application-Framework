@@ -43,8 +43,6 @@ namespace UICodeGenerator.ComponentEditors
             InitNullComponent();
 
             InitAddComponentButton();
-
-            
         }
 
 

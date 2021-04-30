@@ -149,7 +149,7 @@ namespace UICodeGenerator.ComponentEditors
 				)
 				,
 				_editingUIRoot = UICreator.CreateRectOutline(new Color4(0, 1))
-				.AddComponent(new UILinearArrangement(true, false, 30, _internalSpacing))
+				.AddComponent(new UILinearArrangement(true, false, -1, _internalSpacing))
 				.SetNormalizedAnchoringX(0,1)
 				.SetAbsOffsetsX(_internalSpacing, _internalSpacing)
 				.SetNormalizedPositionCenterY(1,1)

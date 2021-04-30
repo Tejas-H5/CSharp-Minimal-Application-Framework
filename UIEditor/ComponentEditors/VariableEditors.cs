@@ -41,7 +41,8 @@ namespace UICodeGenerator.ComponentEditors
 			UIElement nameElement = CreatePropertyName(name);
 
 			UIElement root = UICreator.CreateUIElement(
-				new UIRect(new Color4(0, 0), new Color4(0, 1), 1)
+				new UIRect(new Color4(0, 0), new Color4(0, 1), 1),
+				new UIFitChildren(true,true, new Rect2D(0,0,0,0))
 				)
 				.SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
 				.SetAbsoluteOffset(10)

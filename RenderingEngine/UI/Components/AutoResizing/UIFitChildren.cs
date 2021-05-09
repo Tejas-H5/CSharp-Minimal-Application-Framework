@@ -14,15 +14,12 @@ namespace RenderingEngine.UI.Components.AutoResizing
         bool _horizontal;
         bool _vertical;
         bool _debug;
-        Rect2D _margin;
-        public Rect2D Margin { get => _margin; set => _margin = value; }
 
         //TODO: Fix bug where if margin is not equal to the rectOffsets of all the children, it doesn't resize properly
-        public UIFitChildren(bool horizontal, bool vertical, Rect2D margin, bool debug = false)
+        public UIFitChildren(bool horizontal, bool vertical, bool debug = false)
         {
             _horizontal = horizontal;
             _vertical = vertical;
-            _margin = margin;
             _debug = debug;
         }
 
@@ -110,11 +107,11 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
             Rect2D rect = _parent[i].Rect;
 
-            x0 = MathF.Min(x0, rect.X0 - _margin.X0);
-            y0 = MathF.Min(y0, rect.Y0 - _margin.Y0);
+            x0 = MathF.Min(x0, rect.X0);
+            y0 = MathF.Min(y0, rect.Y0);
 
-            x1 = MathF.Max(x1, rect.X1 + _margin.X1);
-            y1 = MathF.Max(y1, rect.Y1 + _margin.Y1);
+            x1 = MathF.Max(x1, rect.X1);
+            y1 = MathF.Max(y1, rect.Y1);
         }
 
         public override void OnResize()
@@ -141,7 +138,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
             }
             else
             {
-                _parent.SetAbsPositionSizeX(_parent.AnchoredPositionAbs.X - _margin.X1 + wantedRect.Height, wantedRect.Width);
+                _parent.SetAbsPositionSizeX(_parent.AnchoredPositionAbs.X + wantedRect.Height, wantedRect.Width);
             }
             //*/
 
@@ -163,7 +160,7 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
         public override UIComponent Copy()
         {
-            return new UIFitChildren(_horizontal, _vertical, _margin, _debug);
+            return new UIFitChildren(_horizontal, _vertical, _debug);
         }
     }
 }

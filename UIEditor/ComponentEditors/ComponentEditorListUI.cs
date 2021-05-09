@@ -59,11 +59,11 @@ namespace UICodeGenerator.ComponentEditors
 
             _addComponentButtonAndList = UICreator.CreateUIElement(
                 new UIRect(new Color4(0,0), new Color4(0,1),1),
-                new UIFitChildren(false, true, new Rect2D(10,10,10,10)),
+				new UILinearArrangement(true, false, -1, 10),
                 new UIRectHitbox(),
                 _mouseListener = new UIMouseListener()
             )
-            .SetAbsOffsetsX(40, 40)
+            .SetAbsOffsetsX(10, 40)
             .SetNormalizedPositionCenterY(1, 1)
             .SetAbsPositionSizeY(-10, 60)
             .AddChildren(
@@ -80,6 +80,7 @@ namespace UICodeGenerator.ComponentEditors
                     new UIRectHitbox(),
                     new UIMouseListener(),
                     scrollComponent = new UIMouseScroll(vertical:true)
+                    //,new UIRect(new Color4(1,0,0,1), new Color4(1,0,0,1), 1)
                 )
                 .SetAbsOffsetsX(10, 10)
                 .SetNormalizedPositionCenterY(1, 1)

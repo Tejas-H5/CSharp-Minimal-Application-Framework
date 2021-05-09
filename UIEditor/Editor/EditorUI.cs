@@ -204,34 +204,19 @@ namespace UICodeGenerator.Editor
             UIElement deleteButton;
 
             _rightclickMenu = UICreator.CreateUIElement(
-                new UILinearArrangement(true, false, 20, 10)
+                new UILinearArrangement(true, false, 20, 10),
+                new UIGraphicsRaycaster()
             )
             .SetNormalizedPositionCenter(0, 0, 0, 0)
             .AddChildren(
-                createButton = UICreator.CreateButton("Add"),
-                deleteButton = UICreator.CreateButton("Delete")
+                createButton = CreateButton("Add"),
+                deleteButton = CreateButton("Delete")
             );
 
             _rightclickMenu.IsVisible = false;
 
             createButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnNewButtonClicked;
             deleteButton.GetComponentOfType<UIMouseListener>().OnMousePressed += OnDeleteButtonClicked;
-        }
-
-        private void OnTogglePosSizeXButtonClicked()
-        {
-            if (_selectedState.SelectedEditorRect == null)
-                return;
-
-            Console.WriteLine("This method is useless now, hopefully");
-        }
-
-        private void OnTogglePosSizeYButtonClicked()
-        {
-            if (_selectedState.SelectedEditorRect == null)
-                return;
-
-            Console.WriteLine("This method is useless now, hopefully");
         }
 
 

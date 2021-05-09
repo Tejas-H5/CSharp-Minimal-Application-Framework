@@ -123,29 +123,30 @@ namespace UICodeGenerator.ComponentEditors
 		{
 			float _internalSpacing = 5;
 
-			_root = UICreator.CreateRectOutline(new Color4(0,1))
+			_root = UICreator.CreateRectOutline(new Color4(0, 1))
 			.AddComponent(
-				new UIFitChildren(horizontal:false, vertical:true, 
-					new Rect2D(_internalSpacing, _internalSpacing, _internalSpacing, _internalSpacing), debug)
+				new UILinearArrangement(true, false, -1, _internalSpacing)
 			)
 			.SetAbsOffsetsX(_internalSpacing, _internalSpacing)
 			.SetNormalizedAnchoringX(0, 1)
 			.SetNormalizedPositionCenterY(1, 1)
 			.SetAbsPositionSizeY(-20, 100)
 			.AddChildren(
-				_componentNameElement = UICreator.CreateRectOutline(new Color4(0, 1))
-				.AddComponent(new UIText(typeof(T).Name, _textColor, "Consolas", 16, VerticalAlignment.Center, HorizontalAlignment.Center))
-				.SetAbsOffsetsX(_internalSpacing, 120f)
+				UICreator.CreateRectOutline(new Color4(0, 1))
+				.SetAbsOffsetsX(0, 0)
 				.SetNormalizedAnchoringX(0f, 1f)
 				.SetNormalizedPositionCenterY(1f, 1f)
-				.SetAbsPositionSizeY(-_internalSpacing, 30f)
+				.SetAbsPositionSizeY(0, 30f + 2*_internalSpacing)
 				.AddChildren(
-				)
-				,
-				_contexMenuButton = UICreator.CreateButton("...")
-				.SetNormalizedPositionCenter(1f, 1f, 1f, 1f)
-				.SetAbsPositionSize(-_internalSpacing, -_internalSpacing, 100f, 30f)
-				.AddChildren(
+					_componentNameElement = UICreator.CreateRectOutline(new Color4(0, 1))
+					.AddComponent(new UIText(typeof(T).Name, _textColor, "Consolas", 16, VerticalAlignment.Center, HorizontalAlignment.Center))
+					.SetAbsOffsetsX(_internalSpacing, _internalSpacing + 120)
+					.SetAbsOffsetsY(_internalSpacing, _internalSpacing)
+					,
+					_contexMenuButton = UICreator.CreateButton("...")
+					.SetNormalizedPositionCenterX(1,1)
+					.SetAbsPositionSizeX(-10, 100)
+					.SetAbsOffsetsY(_internalSpacing, _internalSpacing)
 				)
 				,
 				_editingUIRoot = UICreator.CreateRectOutline(new Color4(0, 1))

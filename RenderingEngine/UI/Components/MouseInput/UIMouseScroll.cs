@@ -51,6 +51,9 @@ namespace RenderingEngine.UI.Components.MouseInput
 
             _currentAmount = MathF.Max(MathF.Min(_currentAmount, Target.Rect.Height - _parent.Rect.Height), 0);
 
+            int targetInstanceID = Target.GetHashCode();
+            int parentInstanceID = _parent.GetHashCode();
+
             if (_vertical)
             {
                 Target.SetAbsPositionSizeY(_currentAmount, Target.Rect.Height);

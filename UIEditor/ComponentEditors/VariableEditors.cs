@@ -42,7 +42,7 @@ namespace UICodeGenerator.ComponentEditors
 
 			UIElement root = UICreator.CreateUIElement(
 				new UIRect(new Color4(0, 0), new Color4(0, 1), 1),
-				new UIFitChildren(true,true, new Rect2D(0,0,0,0))
+				new UIFitChildren(true,true)
 				)
 				.SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
 				.SetAbsoluteOffset(10)

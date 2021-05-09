@@ -31,11 +31,23 @@ namespace RenderingEngine.VisualTests.UI
             _root = UICreator.CreatePanel(new Color4(1))
                 .AddComponent(new UIGraphicsRaycaster());
 
-            UIElement hArrange, vArrange;
+            UIElement autoResizingElement;
 
             _root.SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
             .SetAbsoluteOffset(new Rect2D(0, 0, 0, 0))
             .AddChildren(
+                autoResizingElement = UICreator.CreateUIElement(
+                    new UIRect(new Color4(1,0,0,0.2f), new Color4(0,1), 1),
+                    new UIFitChildren(true, true)
+                )
+                .SetNormalizedPositionCenter(0.5f, 0.5f, 0.5f,0.5f)
+                .AddChildren(
+                    UICreator.CreateUIElement(
+                        new UIRect(new Color4(0,0), new Color4(0, 1), 1),
+                        new UIText("margin 5", new Color4(0,1), VerticalAlignment.Center, HorizontalAlignment.Center)
+                    )
+                    .SetAbsoluteOffset(5)
+                )
             );
         }
 

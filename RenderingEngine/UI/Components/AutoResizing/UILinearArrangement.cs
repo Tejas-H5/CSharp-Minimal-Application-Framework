@@ -50,6 +50,9 @@ namespace RenderingEngine.UI.Components.AutoResizing
                 endSize = _padding;
                 for(int i = 0; i < _parent.Count; i++)
                 {
+                    if (!_parent[i].IsVisible)
+                        continue;
+
                     endSize += GetSizeOfElement(i);
                     endSize += _padding;
                 }
@@ -62,14 +65,17 @@ namespace RenderingEngine.UI.Components.AutoResizing
             }
             else
             {
-                _parent.SetAbsPositionSizeX(_parent.AnchoredPositionAbs.Y, endSize);
+                _parent.SetAbsPositionSizeX(_parent.AnchoredPositionAbs.X, endSize);
             }
 
             float amount = _padding;
 
             for (int i = 0; i < _parent.Count; i++)
             {
-                if(_elementSizing < 0)
+                if (!_parent[i].IsVisible)
+                    continue;
+
+                if (_elementSizing < 0)
                 {
                     float size = GetSizeOfElement(i);
                     SetChildAnchoring(i, amount, size);
@@ -86,9 +92,6 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
         private float GetSizeOfElement(int i)
         {
-            if (!_parent[i].IsVisible)
-                return 0;
-
             return _vertical ? _parent[i].Rect.Height : _parent[i].Rect.Width;
         }
 

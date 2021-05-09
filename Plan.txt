@@ -1,12 +1,10 @@
-Actions that should be taken when I start working on this again:
-
-
-Current issues that we want to fix / Features that we want to add (work on them top to bottom)
-
-
--> Color picker isnt displaying properly for some reason
-	-> UIFitChildren doesn't work properly
+What to do next
 
 - implement a colour picker
+	-> Color picker isnt displaying properly for some reason
+
+
+- Get the Add and Delete buttons on the right-click menu working again
+
 - implement something that can edit vertical alignment
 - implement something that can edit horizontal alignment

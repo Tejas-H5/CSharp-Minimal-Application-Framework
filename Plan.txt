@@ -1,10 +1,10 @@
 What to do next
 
-- implement a colour picker
-	-> Color picker isnt displaying properly for some reason
+-> Make the UI code faster to type and iterate
+- implement dynamic compilation (for tests at least, if it cannot be done for entire applications)
 
 
-- Get the Add and Delete buttons on the right-click menu working again
 
-- implement something that can edit vertical alignment
-- implement something that can edit horizontal alignment
+What has already been done
+
+- stop working on the graphical UI editor, as it is simply not worth it. Too much cost, not enough reward. Move it to it's own project if needed

@@ -24,7 +24,6 @@ namespace RenderingEngine.UI.Components.AutoResizing
         }
 
         float x0, y0, x1, y1;
-        Rect2D _rect;
 
         //visuialize resizeing
         double timer = 0;
@@ -54,24 +53,22 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
             if (childIndex == -1)
             {
-                x0 = Window.Rect.Width;
-                y0 = Window.Rect.Height;
-                x1 = 0;
-                y1 = 0;
+                x0 = _parent.Rect.X0;
+                y0 = _parent.Rect.Y0;
+                x1 = _parent.Rect.X1;
+                y1 = _parent.Rect.Y1;
                 return;
             }
 
             ExpandRectToFitChld(childIndex);
         }
 
+
         public override void AfterDraw(double deltaTime)
         {
             if (_debug)
             {
-                CTX.SetDrawColor(1, 0, 0, 0.5f);
-                CTX.DrawRect(_rect);
-
-                CTX.SetDrawColor(1, 0, 1, 0.5f);
+                CTX.SetDrawColor(0, 0, 1, 0.5f);
                 CTX.DrawRect(x0, y0, x1, y1);
             }
         }

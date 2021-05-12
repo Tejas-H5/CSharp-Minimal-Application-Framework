@@ -43,10 +43,10 @@ namespace RenderingEngine.VisualTests.UI
             .AddChildren(
                 linearArrange = UICreator.CreateRectOutline(new Color4(0, 1))
                 .AddComponent(new UILinearArrangement(true, false, -1, 5))
-                .SetNormalizedAnchoringX(0.25f, 0.75f)
-                .SetAbsOffsetsX(10,10)
-                .SetNormalizedPositionCenterY(1f, 1f)
-                .SetAbsPositionSizeY(-10f, 1f)
+                .AnchorsX(0.25f, 0.75f)
+                .OffsetsX(10,10)
+                .AnchoredPosCenterY(1f, 1f)
+                .PosSizeY(-10f, 1f)
             );
 
 
@@ -58,10 +58,10 @@ namespace RenderingEngine.VisualTests.UI
                 .AddChildren(
                     linearArrange2 = UICreator.CreateRectOutline(new Color4(0, 1))
                     .AddComponent(new UILinearArrangement(true, false, -1, 5))
-                    .SetNormalizedAnchoringX(0,1)
-                    .SetAbsOffsetsX(10, 10)
-                    .SetNormalizedPositionCenterY(1f, 1f)
-                    .SetAbsPositionSizeY(-10f, 1f)
+                    .AnchorsX(0,1)
+                    .OffsetsX(10, 10)
+                    .AnchoredPosCenterY(1f, 1f)
+                    .PosSizeY(-10f, 1f)
                 );
 
                 //*
@@ -70,12 +70,12 @@ namespace RenderingEngine.VisualTests.UI
                     UIElement button;
                     linearArrange2.AddChild(
                         button = UICreator.CreateButton(j.ToString(), "Consolas", 10)
-                        .SetNormalizedPositionCenterY(1, 1)
-                        .SetAbsPositionSizeY(0, 20)
+                        .AnchoredPosCenterY(1, 1)
+                        .PosSizeY(0, 20)
                     );
 
                     button.GetComponentOfType<UIMouseListener>().OnMousePressed += (MouseEventArgs e) => {
-                        button.SetAbsPositionSizeY(0, button.Rect.Height + 10);
+                        button.PosSizeY(0, button.Rect.Height + 10);
                     };
                 }
                 //*/

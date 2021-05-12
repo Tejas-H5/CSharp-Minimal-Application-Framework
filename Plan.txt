@@ -8,3 +8,7 @@ What to do next
 What has already been done
 
 - stop working on the graphical UI editor, as it is simply not worth it. Too much cost, not enough reward. Move it to it's own project if needed
+
+
+- Make the UI code faster to type and iterate
+	- transform names have been made less verbose

@@ -69,7 +69,7 @@ namespace RenderingEngine.UI.Components.Visuals
             int lineStart = 0;
             int lineEnd = 0;
 
-            _caratPos = new PointF(0, startY);
+            _caratPos = new PointF(CaratPosX(0), startY);
 
             CTX.SetCurrentFont(Font, FontSize);
             CTX.SetDrawColor(TextColor);
@@ -84,22 +84,24 @@ namespace RenderingEngine.UI.Components.Visuals
 
                 float lineWidth = scale * CTX.GetStringWidth(Text, lineStart, lineEnd);
 
-                switch (HorizontalAlignment)
-                {
-                    case HorizontalAlignment.Left:
-                        _caratPos.X = _parent.Rect.Left;
-                        break;
-                    case HorizontalAlignment.Center:
-                        _caratPos.X = _parent.Rect.CenterX - lineWidth / 2f;
-                        break;
-                    case HorizontalAlignment.Right:
-                        _caratPos.X = _parent.Rect.Right - lineWidth;
-                        break;
-                }
+                _caratPos.X = CaratPosX(lineWidth);
 
                 _caratPos = CTX.DrawText(Text, lineStart, lineEnd, _caratPos.X, _caratPos.Y, scale);
 
                 lineStart = lineEnd;
+            }
+        }
+
+        private float CaratPosX(float lineWidth)
+        {
+            switch (HorizontalAlignment)
+            {
+                case HorizontalAlignment.Center:
+                    return _caratPos.X = _parent.Rect.CenterX - lineWidth / 2f;
+                case HorizontalAlignment.Right:
+                    return _parent.Rect.Right - lineWidth;
+                default:
+                    return _parent.Rect.Left;
             }
         }
 

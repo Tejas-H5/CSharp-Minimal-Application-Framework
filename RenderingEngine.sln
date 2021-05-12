@@ -5,11 +5,9 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenderingEngine", "RenderingEngine\RenderingEngine.csproj", "{6E8A0D40-202B-4E41-8FC2-B1210C0BDB57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderingEngineRenderingTests", "RenderingEngineVisualTests\RenderingEngineRenderingTests.csproj", "{A3B8A8DF-8DD8-4632-B068-8F34389024F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenderingEngineRenderingTests", "RenderingEngineVisualTests\RenderingEngineRenderingTests.csproj", "{A3B8A8DF-8DD8-4632-B068-8F34389024F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UICodeGenerator", "UIEditor\UICodeGenerator.csproj", "{EF7C02A2-1B52-4502-883A-09CA6EB1BD8C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderingEngineUITests", "RenderingEngineUITests\RenderingEngineUITests.csproj", "{DDF1B36F-2776-4BA7-9C63-3002BB4E9B0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenderingEngineUITests", "RenderingEngineUITests\RenderingEngineUITests.csproj", "{DDF1B36F-2776-4BA7-9C63-3002BB4E9B0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +23,6 @@ Global
 		{A3B8A8DF-8DD8-4632-B068-8F34389024F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3B8A8DF-8DD8-4632-B068-8F34389024F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3B8A8DF-8DD8-4632-B068-8F34389024F1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF7C02A2-1B52-4502-883A-09CA6EB1BD8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF7C02A2-1B52-4502-883A-09CA6EB1BD8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF7C02A2-1B52-4502-883A-09CA6EB1BD8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF7C02A2-1B52-4502-883A-09CA6EB1BD8C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DDF1B36F-2776-4BA7-9C63-3002BB4E9B0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DDF1B36F-2776-4BA7-9C63-3002BB4E9B0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDF1B36F-2776-4BA7-9C63-3002BB4E9B0C}.Release|Any CPU.ActiveCfg = Release|Any CPU

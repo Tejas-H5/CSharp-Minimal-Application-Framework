@@ -70,37 +70,43 @@ namespace RenderingEngine.VisualTests.UI
 
             _mouseDriven = UICreator.CreatePanel(new Color4(1));
 
-            _root.SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
-            .SetAbsoluteOffset(new Rect2D(0, 0, 0, 0))
+            _root.Anchors(left: 0, bottom: 0, right: 1, top: 1)
+            .Offsets(left: 0, bottom: 0, right: 0, top: 0)
             .AddChildren(
                 UICreator.CreatePanel(new Color4(1))
-                .AddComponent(new UIEdgeSnapConstraint(_mouseDriven, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Bottom))
-                .SetNormalizedAnchoring(new Rect2D(0, 0, 1f/3f, 1))
-                .SetAbsoluteOffset(10)
-                .AddComponent(new UIText("Edge snap driven", new Color4(0, 1)))
+                .AddComponents(
+                    new UIEdgeSnapConstraint(_mouseDriven, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Bottom),
+                    new UIText("Edge snap driven", new Color4(0, 1))
+                )
+                .Anchors(0, 0, 1f/3f, 1)
+                .Offsets(10)
                 .AddChildren(
                     UICreator.CreatePanel(new Color4(1))
-                    .SetAbsoluteOffset(20)
+                    .Offsets(20)
                 )
                 ,
                 _mouseDriven
-                .SetNormalizedAnchoring(new Rect2D(1f / 3f, 0, 2f / 3f, 1))
-                .SetAbsoluteOffset(10)
-                .AddComponent(new UIText("Press up/down", new Color4(0, 1)))
-                .AddComponent(new MouseBlindThinggyComponent())
+                .Anchors(1f / 3f, 0, 2f / 3f, 1)
+                .Offsets(10)
+                .AddComponents(
+                    new UIText("Press up/down", new Color4(0, 1)),
+                    new MouseBlindThinggyComponent()
+                )
                 .AddChildren(
                     UICreator.CreatePanel(new Color4(1))
-                    .SetAbsoluteOffset(20)
+                    .Offsets(20)
                 )
                 ,
                 UICreator.CreatePanel(new Color4(1))
-                .AddComponent(new UIEdgeSnapConstraint(_mouseDriven, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Bottom))
-                .SetNormalizedAnchoring(new Rect2D(2f/3f, 0, 1f, 1))
-                .SetAbsoluteOffset(10)
-                .AddComponent(new UIText("Edge snap driven", new Color4(0, 1)))
+                .Anchors(2f/3f, 0, 1f, 1)
+                .Offsets(10)
+                .AddComponents(
+                    new UIEdgeSnapConstraint(_mouseDriven, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Bottom),
+                    new UIText("Edge snap driven", new Color4(0, 1))
+                )
                 .AddChildren(
                     UICreator.CreatePanel(new Color4(1))
-                    .SetAbsoluteOffset(20)
+                    .Offsets(20)
                 )
             );
         }

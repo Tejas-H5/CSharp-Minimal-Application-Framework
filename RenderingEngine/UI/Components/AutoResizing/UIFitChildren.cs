@@ -126,16 +126,16 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
             if (_vertical && _horizontal)
             {
-                _parent.SetAbsPositionSize(_parent.AnchoredPositionAbs.X, _parent.AnchoredPositionAbs.X,
+                _parent.PosSize(_parent.AnchoredPositionAbs.X, _parent.AnchoredPositionAbs.X,
                     wantedRect.Width, wantedRect.Height);
             }
             else if(_vertical)
             {
-                _parent.SetAbsPositionSizeY(_parent.AnchoredPositionAbs.Y, wantedRect.Height);
+                _parent.PosSizeY(_parent.AnchoredPositionAbs.Y, wantedRect.Height);
             }
             else
             {
-                _parent.SetAbsPositionSizeX(_parent.AnchoredPositionAbs.X + wantedRect.Height, wantedRect.Width);
+                _parent.PosSizeX(_parent.AnchoredPositionAbs.X + wantedRect.Height, wantedRect.Width);
             }
             //*/
 

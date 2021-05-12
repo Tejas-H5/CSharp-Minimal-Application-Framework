@@ -155,30 +155,34 @@ namespace RenderingEngine.UI.Core
             NormalizedAnchoring = anchor;
         }
 
-        public void SetNormalizedPositionCenterX(float x, float centerX = 0.5f)
+        public void SetNormalizedPosition(float x, float y)
         {
-            _normalizedAnchoring.X0 = x;
-            _normalizedAnchoring.X1 = x;
-
-            _normalizedCenter.X = centerX;
-
-            NormalizedAnchoring = _normalizedAnchoring;
-        }
-
-        public void SetNormalizedPositionCenterY(float y, float centreY = 0.5f)
-        {
-            _normalizedAnchoring.Y0 = y;
-            _normalizedAnchoring.Y1 = y;
-
-            _normalizedCenter.Y = centreY;
-
-            NormalizedAnchoring = _normalizedAnchoring;
-        }
-
-        public void SetNormalizedPositionCenter(float x, float y, float centerX = 0.5f, float centerY = 0.5f)
-        {
-            _normalizedCenter = new PointF(centerX, centerY);
             NormalizedAnchoring = new Rect2D(x, y, x, y);
+        }
+
+        public void SetNormalizedCenter(float x = 0.5f, float y = 0.5f)
+        {
+            NormalizedCenter = new PointF(x, y);
+        }
+
+        public void SetNormalizedPositionX(float x)
+        {
+            NormalizedAnchoring = new Rect2D(x, _normalizedAnchoring.Y0, x, _normalizedAnchoring.Y1);
+        }
+
+        public void SetNormalizedPositionY(float y)
+        {
+            NormalizedAnchoring = new Rect2D(_normalizedAnchoring.X0, y, _normalizedAnchoring.X1, y);
+        }
+
+        public void SetNormalizedCenterX(float x)
+        {
+            NormalizedCenter = new PointF(x, _normalizedCenter.Y);
+        }
+
+        public void SetNormalizedCenterY(float y)
+        {
+            NormalizedCenter = new PointF(_normalizedCenter.X, y);
         }
 
         public void UpdateRectFromOffset(Rect2D parentRect)

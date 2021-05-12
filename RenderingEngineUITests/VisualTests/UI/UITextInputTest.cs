@@ -29,8 +29,8 @@ namespace RenderingEngine.VisualTests.UI
             CTX.SetClearColor(1, 0, 0, 1);
 
             _root = UICreator.CreatePanel(new Color4(1))
-                .SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
-                .SetAbsoluteOffset(new Rect2D(0, 0, 0, 0))
+                .Anchors(new Rect2D(0, 0, 1, 1))
+                .Offsets(new Rect2D(0, 0, 0, 0))
                 .AddComponent(new UIGraphicsRaycaster());
 
             for (int i = 0; i < 3; i++)
@@ -47,8 +47,8 @@ namespace RenderingEngine.VisualTests.UI
                             new UIMouseFeedback(new Color4(0.7f), new Color4(0.5f)),
                             new UITextStringInput(new StringProperty(""), true, false)
                         )
-                        .SetNormalizedPositionCenter(0.5f, 0.5f, 0.5f, 0.5f)
-                        .SetAbsPositionSize((i - 1) * size, (j - 1) * size, size-10, size-10)
+                        .AnchoredPosCenter(0.5f, 0.5f, 0.5f, 0.5f)
+                        .PosSize((i - 1) * size, (j - 1) * size, size-10, size-10)
                     );
                 }
             }

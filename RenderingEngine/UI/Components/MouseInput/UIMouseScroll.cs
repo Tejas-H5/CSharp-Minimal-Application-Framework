@@ -56,11 +56,11 @@ namespace RenderingEngine.UI.Components.MouseInput
 
             if (_vertical)
             {
-                Target.SetAbsPositionSizeY(_currentAmount, Target.Rect.Height);
+                Target.PosSizeY(_currentAmount, Target.Rect.Height);
             }
             else
             {
-                Target.SetAbsPositionSizeX(_currentAmount, Target.Rect.Width);
+                Target.PosSizeX(_currentAmount, Target.Rect.Width);
             }
 
             e.Handled = true;

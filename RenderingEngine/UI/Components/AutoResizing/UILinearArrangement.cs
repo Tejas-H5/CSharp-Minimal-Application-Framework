@@ -61,11 +61,11 @@ namespace RenderingEngine.UI.Components.AutoResizing
 
             if (_vertical)
             {
-                _parent.SetAbsPositionSizeY(_parent.AnchoredPositionAbs.Y, endSize);
+                _parent.PosSizeY(_parent.AnchoredPositionAbs.Y, endSize);
             }
             else
             {
-                _parent.SetAbsPositionSizeX(_parent.AnchoredPositionAbs.X, endSize);
+                _parent.PosSizeX(_parent.AnchoredPositionAbs.X, endSize);
             }
 
             float amount = _padding;
@@ -100,18 +100,20 @@ namespace RenderingEngine.UI.Components.AutoResizing
             if (_vertical)
             {
                 float side = _reverse ? 0 : 1;
-                _parent[i].SetNormalizedPositionCenterY(side, side);
-                _parent[i].SetAbsPositionSizeY(_reverse ? amount : (-amount), size);
-                _parent[i].SetAbsOffsetsX(_padding, _padding);
-                _parent[i].SetNormalizedAnchoringX(0, 1);
+                _parent[i]
+                    .AnchoredPosCenterY(side, side)
+                    .PosSizeY(y: _reverse ? amount : (-amount), height: size)
+                    .OffsetsX(left: _padding, right: _padding)
+                    .AnchorsX(0, 1);
             }
             else
             {
                 float side = _reverse ? 1 : 0;
-                _parent[i].SetNormalizedPositionCenterX(side, side);
-                _parent[i].SetAbsPositionSizeX(_reverse ? (-amount) : amount, size);
-                _parent[i].SetAbsOffsetsY(_padding, _padding);
-                _parent[i].SetNormalizedAnchoringY(0, 1);
+                _parent[i]
+                    .AnchoredPosCenterX(side,side)
+                    .PosSizeX(x: _reverse ? -amount : amount, width: size)
+                    .OffsetsY(bottom: _padding, top: _padding)
+                    .AnchorsY(0, 1);
             }
         }
     }

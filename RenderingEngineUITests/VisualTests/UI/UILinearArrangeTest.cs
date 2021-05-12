@@ -34,27 +34,28 @@ namespace RenderingEngine.VisualTests.UI
 
             UIElement hArrange, vArrange;
 
-            _root.SetNormalizedAnchoring(new Rect2D(0, 0, 1, 1))
-            .SetAbsoluteOffset(new Rect2D(0, 0, 0, 0))
+            _root.Anchors(new Rect2D(0, 0, 1, 1))
+            .Offsets(new Rect2D(0, 0, 0, 0))
             .AddChildren(
                 ///*
                 hArrange = UICreator.CreateUIElement(
                     new UIRect(new Color4(0, 0.2f), new Color4(0,1),1),
                     new UILinearArrangement(false, false, 50, 10)
                 )
-                .SetNormalizedAnchoringY(0,1)
-                .SetAbsOffsetsY(10,10)
-                .SetNormalizedPositionCenterX(0,0)
+                .AnchorsY(0,1)
+                .OffsetsY(10,10)
+                .AnchoredPosCenterX(0,0)
+                .PosX(10)
                 ,
                 //*/
                 vArrange = UICreator.CreateUIElement(
                     new UIRect(new Color4(0, 0.2f), new Color4(0, 1), 1),
                     new UILinearArrangement(true, false, -1, 10)
                 )
-                .SetNormalizedAnchoringX(0.75f, 1)
-                .SetAbsOffsetsX(10,10)
-                .SetNormalizedPositionCenterY(0,0)
-                .SetAbsPositionSizeY(10, 0)
+                .AnchorsX(0.75f, 1)
+                .OffsetsX(10,10)
+                .AnchoredPosCenterY(0,0)
+                .PosSizeY(10, 0)
             );
 
             ///*
@@ -80,8 +81,8 @@ namespace RenderingEngine.VisualTests.UI
                         new UIRect(new Color4(0, 0.0f), new Color4(0, 1), 1),
                         new UIText($"v{i}:h={size}", new Color4(0, 1))
                     )
-                    .SetNormalizedPositionCenterY(1,1)
-                    .SetAbsPositionSizeY(10, size)
+                    .AnchoredPosCenterY(1,1)
+                    .PosSizeY(10, size)
                 );
             }
         }

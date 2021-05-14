@@ -98,6 +98,9 @@ namespace RenderingEngine.UI.Core
 
         public UIElement AddChild(UIElement element)
         {
+            if (element == null)
+                return this;
+
             if (element.Parent == this)
                 return this;
 

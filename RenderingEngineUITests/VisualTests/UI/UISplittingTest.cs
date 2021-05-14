@@ -14,7 +14,7 @@ using System;
 
 namespace RenderingEngine.VisualTests.UI
 {
-    public class UIFitChildrenTest : EntryPoint
+    public class UISplittingTest : EntryPoint
     {
         UIElement _root;
 
@@ -33,24 +33,40 @@ namespace RenderingEngine.VisualTests.UI
 
             UIElement autoResizingElement;
 
+
             _root.Anchors(new Rect2D(0, 0, 1, 1))
             .Offsets(new Rect2D(0, 0, 0, 0))
             .AddChildren(
-                autoResizingElement = UICreator.CreateUIElement(
-                    new UIRect(new Color4(1,0,0,0.2f), new Color4(0,1), 1),
-                    new UIFitChildren(true, true)
-                )
-                .AnchoredPosCenter(0.5f, 0.5f, 0.5f,0.5f)
-                .PosSize(0,0,10,10)
-                .AddChildren(
-                    UICreator.CreateUIElement(
-                        new UIRect(new Color4(0,0), new Color4(0, 1), 1),
-                        new UIText("margin 5", new Color4(0,1), VerticalAlignment.Center, HorizontalAlignment.Center)
+                UICreator.TopSplit(70, 
+                    CreateTextElement("Top-Split 70")
+                    ,
+                    UICreator.LeftSplit(200,
+                        CreateTextElement("Left-Split 200")
+                        ,
+                        UICreator.BottomSplit(100,
+                            UICreator.RightSplit(150,
+                                CreateTextElement("Null")
+                                ,
+                                CreateTextElement("Right-Split 150")
+                            )
+                            ,
+                            CreateTextElement("Bottom-Split 100")
+                        )
                     )
-                    .AnchoredPosCenter(0.5f,0.5f)
-                    .PosSize(0,0,100,30)
                 )
             );
+        }
+
+
+        UIElement CreateTextElement(string s)
+        {
+            Color4 textColor = new Color4(0, 1);
+
+            return UICreator.CreateUIElement(
+                    new UIRect(new Color4(1,0.5f)),
+                    new UIText(s, textColor)
+                )
+                .Offsets(5);
         }
 
         public override void Render(double deltaTime)

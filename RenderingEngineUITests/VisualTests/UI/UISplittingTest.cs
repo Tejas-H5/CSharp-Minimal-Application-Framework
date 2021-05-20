@@ -18,6 +18,13 @@ namespace RenderingEngine.VisualTests.UI
     {
         UIElement _root;
 
+        UIElement CreateRect(int thicnkess)
+        {
+            return UICreator.CreateUIElement(
+                new UIRect(new Color4(0, 0), new Color4(0,1), thicnkess)
+            );
+        }
+
         public override void Start()
         {
             Window.Size = (800, 600);
@@ -37,17 +44,22 @@ namespace RenderingEngine.VisualTests.UI
             _root.Anchors(new Rect2D(0, 0, 1, 1))
             .Offsets(new Rect2D(0, 0, 0, 0))
             .AddChildren(
-                UICreator.TopSplit(70, 
+                UICreator.TopSplit(
+                CreateRect(5), 70,
                     CreateTextElement("Top-Split 70")
                     ,
-                    UICreator.LeftSplit(200,
+                    CreateRect(4).LeftSplit(200,
                         CreateTextElement("Left-Split 200")
                         ,
-                        UICreator.BottomSplit(100,
-                            UICreator.RightSplit(150,
-                                CreateTextElement("Null")
+                        CreateRect(3).BottomSplit(100,
+                            CreateRect(2).RightSplit(150,
+                                CreateRect(1).AddChild(
+                                    CreateTextElement("Null")
+                                )
                                 ,
-                                CreateTextElement("Right-Split 150")
+                                CreateRect(1).AddChild(
+                                    CreateTextElement("Right-Split 150")
+                                )
                             )
                             ,
                             CreateTextElement("Bottom-Split 100")
@@ -62,11 +74,12 @@ namespace RenderingEngine.VisualTests.UI
         {
             Color4 textColor = new Color4(0, 1);
 
-            return UICreator.CreateUIElement(
-                    new UIRect(new Color4(1,0.5f)),
+            return UICreator.CreateUIElement().AddChild(
+                UICreator.CreateUIElement(
                     new UIText(s, textColor)
                 )
-                .Offsets(5);
+                .Offsets(5)
+            );
         }
 
         public override void Render(double deltaTime)

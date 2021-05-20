@@ -69,7 +69,7 @@ namespace RenderingEngine.UI
         /// and a child at the bottom that has a fixed top offset.
         /// equivelant to:
         /// <c>
-        /// CreateUIElement()
+        /// baseElement
         ///     .AddChildren(
         ///          CreateUIElement()
         ///           .AnchoredPosCenterY(1,1)
@@ -86,92 +86,65 @@ namespace RenderingEngine.UI
         ///         );
         /// </c>
         /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="upper"></param>
-        /// <param name="lower"></param>
-        /// <returns></returns>
-        public static UIElement TopSplit(float offset, UIElement upper, UIElement lower)
+        public static UIElement TopSplit(this UIElement baseElement, float offset, UIElement upper, UIElement lower)
         {
-            return CreateUIElement()
+            return baseElement
                 .AddChildren(
-                    CreateUIElement()
+                    upper
                     .AnchoredPosCenterY(1,1)
                     .PosSizeY(0,offset)
-                    .AddChildren(
-                        upper
-                    )
                     ,
-                    CreateUIElement()
+                    lower
                     .OffsetsY(0, offset)
-                    .AddChildren(
-                        lower
-                    )
                 );
         }
 
         /// <summary>
         /// Same as TopSplit but from the bottom
         /// </summary>
-        public static UIElement BottomSplit(float offset, UIElement upper, UIElement lower)
+        public static UIElement BottomSplit(this UIElement baseElement, float offset, UIElement upper, UIElement lower)
         {
-            return CreateUIElement()
+            return baseElement
                 .AddChildren(
-                    CreateUIElement()
+                    lower
                     .AnchoredPosCenterY(0, 0)
                     .PosSizeY(0, offset)
-                    .AddChildren(
-                        lower
-                    )
+                    
                     ,
-                    CreateUIElement()
+                    upper
                     .OffsetsY(offset, 0)
-                    .AddChildren(
-                        upper
-                    )
                 );
         }
 
         /// <summary>
         /// Same as TopSplit but from the right
         /// </summary>
-        public static UIElement RightSplit(float offset, UIElement left, UIElement right)
+        public static UIElement RightSplit(this UIElement baseElement, float offset, UIElement left, UIElement right)
         {
-            return CreateUIElement()
+            return baseElement
                 .AddChildren(
-                    CreateUIElement()
+                    left
                     .OffsetsX(0, offset)
-                    .AddChildren(
-                        left
-                    )
                     ,
-                    CreateUIElement()
+                    right
                     .AnchoredPosCenterX(1, 1)
                     .PosSizeX(0, offset)
-                    .AddChildren(
-                        right
-                    )
                 );
         }
 
         /// <summary>
         /// Same as TopSplit but from the left
         /// </summary>
-        public static UIElement LeftSplit(float offset, UIElement left, UIElement right)
+        public static UIElement LeftSplit(this UIElement baseElement, float offset, UIElement left, UIElement right)
         {
-            return CreateUIElement()
+            return baseElement
                 .AddChildren(
-                    CreateUIElement()
+                    left
                     .AnchoredPosCenterX(0,0)
                     .PosSizeX(0,offset)
-                    .AddChildren(
-                        left
-                    )
                     ,
-                    CreateUIElement()
+                    right
                     .OffsetsX(offset, 0)
-                    .AddChildren(
-                        right
-                    )
                 );
         }
 
@@ -181,9 +154,9 @@ namespace RenderingEngine.UI
         /// <param name="columnOffsets">Set to null to get even anchoring</param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        public static UIElement InColumns(float[] columnOffsets, UIElement[] elements)
+        public static UIElement InColumns(this UIElement baseElement, float[] columnOffsets, UIElement[] elements)
         {
-            return LinearAnchoring(false, elements, columnOffsets);
+            return LinearAnchoring(baseElement, false, elements, columnOffsets);
         }
 
         /// <summary>
@@ -197,15 +170,14 @@ namespace RenderingEngine.UI
         /// <param name="rowOffsets">Set to null to get even anchoring</param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        public static UIElement InRows(float[] rowOffsets, UIElement[] elements)
+        public static UIElement InRows(this UIElement baseElement, float[] rowOffsets, UIElement[] elements)
         {
-            return LinearAnchoring(true, elements, rowOffsets);
+            return LinearAnchoring(baseElement, true, elements, rowOffsets);
         }
 
-        private static UIElement LinearAnchoring(bool vertical, UIElement[] elements, float[] offsets = null)
+        private static UIElement LinearAnchoring(this UIElement baseElement, bool vertical, UIElement[] elements, float[] offsets = null)
         {
             float last = 0;
-            UIElement root = CreateUIElement();
 
             for (int i = 0; i < elements.Length; i++)
             {
@@ -228,12 +200,12 @@ namespace RenderingEngine.UI
                     elements[i].AnchorsX(last, amount);
                 }
 
-                root.AddChild(elements[i]);
+                baseElement.AddChild(elements[i]);
 
                 last = amount;
             }
 
-            return root;
+            return baseElement;
         }
     }
 }

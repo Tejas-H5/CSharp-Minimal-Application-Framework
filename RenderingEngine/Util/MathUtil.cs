@@ -80,6 +80,11 @@ namespace RenderingEngine.Util
             return new PointF(a.X + b.X, a.Y + b.Y);
         }
 
+        public static PointF Times(PointF a, float s)
+        {
+            return new PointF(a.X * s, a.Y * s);
+        }
+
         public static PointF Rotate(PointF a, PointF center, float angle)
         {
             /*

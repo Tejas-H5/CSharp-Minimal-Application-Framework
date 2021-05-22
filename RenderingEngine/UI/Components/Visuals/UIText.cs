@@ -47,62 +47,42 @@ namespace RenderingEngine.UI.Components.Visuals
             if (Text == null)
                 return;
 
-            float scale = 1;
-            float textHeight = scale * CTX.GetStringHeight(Text);
-            float charHeight = scale * CTX.GetCharHeight('|');
-
-            float startY = 0;
-            switch (VerticalAlignment)
-            {
-                case VerticalAlignment.Bottom:
-                    startY = _parent.Rect.Bottom + textHeight - charHeight;
-                    break;
-                case VerticalAlignment.Center:
-                    startY = _parent.Rect.CenterY + textHeight / 2f - charHeight;
-                    break;
-                case VerticalAlignment.Top:
-                    startY = _parent.Rect.Top - charHeight;
-                    break;
-            }
-
-
-            int lineStart = 0;
-            int lineEnd = 0;
-
-            _caratPos = new PointF(CaratPosX(0), startY);
-
             CTX.SetCurrentFont(Font, FontSize);
             CTX.SetDrawColor(TextColor);
 
-            while (lineEnd < Text.Length)
+            float startX = 0, startY = 0;
+
+            switch (VerticalAlignment)
             {
-                lineEnd = Text.IndexOf('\n', lineStart);
-                if (lineEnd == -1)
-                    lineEnd = Text.Length;
-                else
-                    lineEnd++;
-
-                float lineWidth = scale * CTX.GetStringWidth(Text, lineStart, lineEnd);
-
-                _caratPos.X = CaratPosX(lineWidth);
-
-                _caratPos = CTX.DrawText(Text, lineStart, lineEnd, _caratPos.X, _caratPos.Y, scale);
-
-                lineStart = lineEnd;
+                case VerticalAlignment.Bottom:
+                    startY = _parent.Rect.Bottom;
+                    break;
+                case VerticalAlignment.Center:
+                    startY = _parent.Rect.CenterY;
+                    break;
+                case VerticalAlignment.Top:
+                    startY = _parent.Rect.Top;
+                    break;
+                default:
+                    break;
             }
-        }
 
-        private float CaratPosX(float lineWidth)
-        {
             switch (HorizontalAlignment)
             {
+                case HorizontalAlignment.Left:
+                    startX = _parent.Rect.Left;
+                    break;
                 case HorizontalAlignment.Center:
-                    return _caratPos.X = _parent.Rect.CenterX - lineWidth / 2f;
+                    startX = _parent.Rect.CenterX;
+                    break;
                 case HorizontalAlignment.Right:
-                    return _parent.Rect.Right - lineWidth;
+                    startX = _parent.Rect.Right;
+                    break;
                 default:
-                    return _parent.Rect.Left;
+                    break;
             }
+
+            _caratPos = CTX.DrawTextAligned(Text, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
         }
 
         internal float TextWidth()

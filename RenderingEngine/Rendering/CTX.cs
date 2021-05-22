@@ -2,6 +2,7 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using RenderingEngine.Datatypes.Geometric;
+using RenderingEngine.Datatypes.UI;
 using RenderingEngine.Rendering.ImmediateMode;
 using System.Collections.Generic;
 using System.Drawing;
@@ -307,6 +308,12 @@ namespace RenderingEngine.Rendering
         {
             _drawingText = true;
             return _textDrawer.DrawText(text, start, end, x, y, scale);
+        }
+
+        public static PointF DrawTextAligned(string text, float x, float y, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale)
+        {
+            _drawingText = true;
+            return _textDrawer.DrawTextAligned(text, x, y, hAlign, vAlign, scale);
         }
 
         public static float GetCharHeight()

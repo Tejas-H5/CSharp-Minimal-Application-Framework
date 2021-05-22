@@ -44,8 +44,7 @@ namespace RenderingEngine.VisualTests.UI
             _root.Anchors(new Rect2D(0, 0, 1, 1))
             .Offsets(new Rect2D(0, 0, 0, 0))
             .AddChildren(
-                UICreator.TopSplit(
-                CreateRect(5), 70,
+                CreateRect(5).TopSplit( 70,
                     CreateTextElement("Top-Split 70")
                     ,
                     CreateRect(4).LeftSplit(200,

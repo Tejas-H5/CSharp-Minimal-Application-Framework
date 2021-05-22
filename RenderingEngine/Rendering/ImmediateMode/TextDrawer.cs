@@ -1,4 +1,5 @@
 ﻿using RenderingEngine.Datatypes.Geometric;
+using RenderingEngine.Datatypes.UI;
 using RenderingEngine.Rendering.Text;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,10 @@ namespace RenderingEngine.Rendering.ImmediateMode
         QuadDrawer _quadDrawer;
 
         FontManager _fontManager;
-        internal FontAtlasTexture ActiveFont {
+
+        public FontAtlasTexture ActiveFont {
             get { return _fontManager.ActiveFont; }
         }
-
 
         public TextDrawer(QuadDrawer quadDrawer)
         {
@@ -90,15 +91,74 @@ namespace RenderingEngine.Rendering.ImmediateMode
             return new Rect2D(0, 0, 0, 0);
         }
 
+        private float CaratPosX(float lineWidth, HorizontalAlignment hAlign)
+        {
+            switch (hAlign)
+            {
+                case HorizontalAlignment.Center:
+                    return -lineWidth / 2f;
+                case HorizontalAlignment.Right:
+                    return -lineWidth;
+                default:
+                    return 0;
+            }
+        }
+
+        //TODO: IMPLEMENT tabs and newlines
+        //And vertical/horizontal aiignment features
+        public PointF DrawTextAligned(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f)
+        {
+            PointF caratPos = new PointF(startX, startY);
+
+            if (text == null)
+                return caratPos;
+
+            float textHeight = scale * CTX.GetStringHeight(text);
+            float charHeight = scale * CTX.GetCharHeight('|');
+
+
+            switch (vAlign)
+            {
+                case VerticalAlignment.Bottom:
+                    caratPos.Y = startY + textHeight - charHeight;
+                    break;
+                case VerticalAlignment.Center:
+                    caratPos.Y = startY + textHeight / 2f - charHeight;
+                    break;
+                case VerticalAlignment.Top:
+                    caratPos.Y = startY - charHeight;
+                    break;
+            }
+
+            int lineStart = 0;
+            int lineEnd = 0;
+
+            while (lineEnd < text.Length)
+            {
+                lineEnd = text.IndexOf('\n', lineStart);
+                if (lineEnd == -1)
+                    lineEnd = text.Length;
+                else
+                    lineEnd++;
+
+                float lineWidth = scale * GetStringWidth(text, lineStart, lineEnd);
+
+                caratPos.X = startX + CaratPosX(lineWidth, hAlign);
+
+                caratPos = CTX.DrawText(text, lineStart, lineEnd, caratPos.X, caratPos.Y, scale);
+
+                lineStart = lineEnd;
+            }
+
+            return caratPos;
+        }
 
         public PointF DrawText(string text, float startX, float startY, float scale = 1.0f)
         {
             return DrawText(text, 0, text.Length, startX, startY, scale);
         }
 
-        //TODO: IMPLEMENT tabs and newlines
-        //And vertical/horizontal aiignment features
-        public PointF DrawText(string text, int start, int end, float startX, float startY, float scale = 1.0f)
+        public PointF DrawText(string text, int start, int end, float startX, float startY, float scale)
         {
             CTX.SetTexture(ActiveFont.FontTexture);
 

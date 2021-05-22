@@ -310,7 +310,7 @@ namespace RenderingEngine.Rendering
             return _textDrawer.DrawText(text, start, end, x, y, scale);
         }
 
-        public static PointF DrawTextAligned(string text, float x, float y, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale)
+        public static PointF DrawTextAligned(string text, float x, float y, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1)
         {
             _drawingText = true;
             return _textDrawer.DrawTextAligned(text, x, y, hAlign, vAlign, scale);

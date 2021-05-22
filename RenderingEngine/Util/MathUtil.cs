@@ -57,7 +57,12 @@ namespace RenderingEngine.Util
 
         public static float FindAngle(PointF a, PointF b)
         {
-            return MathF.Acos(Dot(a, b) / (Mag(a) * Mag(b)));
+            float dotAB = Dot(a, b);
+            float magAB = (Mag(a) * Mag(b));
+            float input = MathF.Min(MathF.Max(dotAB / magAB, -1), 1);
+
+            float res = MathF.Acos(input);
+            return res;
         }
 
         public static float FindAngle(PointF a, PointF b, PointF c)

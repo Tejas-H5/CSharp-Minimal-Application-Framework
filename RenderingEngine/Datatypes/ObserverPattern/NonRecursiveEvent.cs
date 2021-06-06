@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.Datatypes.ObserverPattern
+namespace MinimalAF.Datatypes.ObserverPattern
 {
     public class NonRecursiveEvent
     {

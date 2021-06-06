@@ -6,18 +6,14 @@ using System.Text;
 
 namespace RenderingEngine.VisualTests.Rendering
 {
-    //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
     class TextTest : EntryPoint
     {
         List<string> rain;
 
         public override void Start()
         {
-
             Window.Size = (800, 600);
             Window.Title = "Texture loading test";
-            //window.RenderFrequency = 60;
-            //window.UpdateFrequency = 120;
 
             CTX.SetClearColor(0, 0, 0, 0);
 
@@ -88,10 +84,6 @@ namespace RenderingEngine.VisualTests.Rendering
 
             CTX.SetDrawColor(1, 0, 0, 1);
 
-
         }
-
-
-
     }
 }

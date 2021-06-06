@@ -15,18 +15,12 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-
-
             //Rendering code goes here
-
-
         }
 
         public override void Update(double deltaTime)
         {
-
             //UI Events / input / other non-rendering update code goes here
-
         }
 
         public override void Resize()
@@ -34,7 +28,6 @@ namespace RenderingEngine.VisualTests
             //Don't delete base.Resize()
             base.Resize();
         }
-
 
         public override void Cleanup()
         {

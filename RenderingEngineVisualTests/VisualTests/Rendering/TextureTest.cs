@@ -7,7 +7,6 @@ using System;
 
 namespace RenderingEngine.VisualTests.Rendering
 {
-    //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
     class TextureTest : EntryPoint
     {
         Texture _tex;
@@ -15,7 +14,6 @@ namespace RenderingEngine.VisualTests.Rendering
 
         public override void Start()
         {
-
             Window.Size = (800, 600);
             Window.Title = "Texture loading test";
             //window.RenderFrequency = 60;

@@ -1,6 +1,6 @@
 ﻿using RenderingEngine.Logic;
-using RenderingEngine.VisualTests;
 using RenderingEngine.VisualTests.Rendering;
+using RenderingEngineRenderingTests.VisualTests.Rendering;
 using System;
 
 namespace RenderingEngineVisualTests

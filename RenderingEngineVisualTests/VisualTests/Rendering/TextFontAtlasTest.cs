@@ -6,11 +6,8 @@ using System.Text;
 
 namespace RenderingEngine.VisualTests.Rendering
 {
-    //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
     class TextFontAtlasText : EntryPoint
     {
-        List<string> rain;
-
         public override void Start()
         {
 

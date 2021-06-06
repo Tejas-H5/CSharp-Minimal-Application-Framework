@@ -16,11 +16,8 @@ namespace RenderingEngine.VisualTests.Rendering
 
         public override void Start()
         {
-
             Window.Size = (800, 600);
             Window.Title = "Rendering Engine Line benchmark";
-            //window.RenderFrequency = 60;
-            //window.UpdateFrequency = 120;
 
             CTX.SetClearColor(1, 1, 1, 1);
             CTX.SetCurrentFont("Consolas", 24);
@@ -30,7 +27,6 @@ namespace RenderingEngine.VisualTests.Rendering
 
         public override void Update(double deltaTime)
         {
-
         }
 
         int frames = 0;
@@ -41,8 +37,6 @@ namespace RenderingEngine.VisualTests.Rendering
 
         public override void Render(double deltaTime)
         {
-
-
             CTX.SetDrawColor(1, 0, 0, 0.1f);
 
             for (int i = 0; i < amount; i++)
@@ -56,7 +50,6 @@ namespace RenderingEngine.VisualTests.Rendering
                 CTX.DrawLine(x1, y1, x2, y2, _lineThiccness, CapType.Circle);
             }
 
-
             double FPS = frames / time;
             CTX.SetDrawColor(0, 0, 0, 1f);
             CTX.DrawText($"FPS: {FPS.ToString("0.000")}", 10, Window.Height - 50);
@@ -68,8 +61,6 @@ namespace RenderingEngine.VisualTests.Rendering
             float requiredFPS = 60;
             if (time > 0.5f)
             {
-
-
                 if (FPS < requiredFPS)
                 {
                     amount -= jump;
@@ -87,19 +78,13 @@ namespace RenderingEngine.VisualTests.Rendering
                     jump = 1000;
                 }
 
-
                 time = 0;
                 frames = 0;
             }
 
-
             //RenderingContext.DrawLine(-size, -size, size, size, 0.02f, CapType.Circle);
 
             //RenderingContext.DrawFilledArc(window.Width/2, window.Height/2, size, 0, MathF.PI * 2);
-
         }
-
-
-
     }
 }

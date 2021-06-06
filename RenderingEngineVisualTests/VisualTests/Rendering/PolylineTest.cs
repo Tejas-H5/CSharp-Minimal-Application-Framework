@@ -10,7 +10,6 @@ namespace RenderingEngine.VisualTests.Rendering
     {
         public override void Start()
         {
-
             Window.Size = (800, 600);
             Window.Title = "Polyline";
             //window.RenderFrequency = 60;
@@ -18,7 +17,6 @@ namespace RenderingEngine.VisualTests.Rendering
 
             CTX.SetClearColor(1, 1, 1, 1);
         }
-
 
         List<PointF> _points = new List<PointF>();
 
@@ -46,9 +44,6 @@ namespace RenderingEngine.VisualTests.Rendering
 
                 CTX.EndPolyLine(_points[_points.Count - 1].X, _points[_points.Count - 1].Y);
             }
-
-
-
         }
     }
 }

@@ -2,6 +2,7 @@
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using RenderingEngine.Audio.Core;
 using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Rendering;
 using System;
@@ -51,6 +52,8 @@ namespace RenderingEngine.Logic
             MouseWheel += WindowInstance_MouseWheel;
 
             CTX.Init(Context);
+            AudioCTX.Init();
+
             Input.HookToWindow(this);
 
             _program.Start();
@@ -168,6 +171,7 @@ namespace RenderingEngine.Logic
             _program.Cleanup();
 
             CTX.Dispose(true);
+            AudioCTX.Cleanup();
         }
 
         public void Maximize()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MinimalAF.Datatypes.ObserverPattern;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

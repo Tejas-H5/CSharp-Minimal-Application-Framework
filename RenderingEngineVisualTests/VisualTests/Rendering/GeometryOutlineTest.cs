@@ -5,16 +5,12 @@ using System;
 
 namespace RenderingEngine.VisualTests.Rendering
 {
-    //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
     class GeometryOutlineTest : EntryPoint
     {
         public override void Start()
         {
-
             Window.Size = (800, 600);
             Window.Title = "Triangle";
-            //window.RenderFrequency = 60;
-            //window.UpdateFrequency = 120;
 
             CTX.SetClearColor(1, 1, 1, 1);
         }
@@ -22,13 +18,10 @@ namespace RenderingEngine.VisualTests.Rendering
 
         public override void Update(double deltaTime)
         {
-
         }
 
         public override void Render(double deltaTime)
         {
-
-
             CTX.SetDrawColor(1, 0, 0, 0.5f);
 
             CTX.DrawRect(20, 20, 100, 100);
@@ -57,8 +50,6 @@ namespace RenderingEngine.VisualTests.Rendering
             CTX.DrawLineOutline(10, Window.Width - 100, 600, Window.Width - 130, 200, 10.0f, CapType.Circle);
 
             CTX.DrawLineOutline(10, lineSize, lineSize, Window.Width - lineSize, Window.Height - lineSize, lineSize / 2, CapType.Circle);
-
-
         }
     }
 }

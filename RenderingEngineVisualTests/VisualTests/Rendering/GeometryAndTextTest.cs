@@ -7,7 +7,6 @@ using System.Text;
 
 namespace RenderingEngine.VisualTests.Rendering
 {
-    //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
     class GeometryAndTextTest : EntryPoint
     {
         List<string> rain = new List<string>();
@@ -15,11 +14,8 @@ namespace RenderingEngine.VisualTests.Rendering
 
         public override void Start()
         {
-
             Window.Size = (800, 600);
             Window.Title = "Text and geometry test";
-            //window.RenderFrequency = 60;
-            //window.UpdateFrequency = 120;
 
             CTX.SetClearColor(0, 0, 0, 0);
 
@@ -64,7 +60,6 @@ namespace RenderingEngine.VisualTests.Rendering
             }
         }
 
-
         double timer = 0;
         public override void Update(double deltaTime)
         {
@@ -80,7 +75,6 @@ namespace RenderingEngine.VisualTests.Rendering
         }
 
         float a = 0;
-
         public override void Render(double deltaTime)
         {
             CTX.SetDrawColor(0, 1, 0, 0.8f);

@@ -1,4 +1,4 @@
-﻿using RenderingEngine.Datatypes.ObserverPattern;
+﻿using MinimalAF.Datatypes.ObserverPattern;
 using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
 using RenderingEngine.UI.Components.MouseInput;

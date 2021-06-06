@@ -3,7 +3,7 @@ using RenderingEngine.Rendering;
 using System;
 using System.Text;
 
-namespace RenderingEngine.VisualTests
+namespace RenderingEngineRenderingTests.VisualTests.Rendering
 {
     public class KeyboardTest : EntryPoint
     {
@@ -34,21 +34,15 @@ namespace RenderingEngine.VisualTests
 
         public override void Render(double deltaTime)
         {
-
-
             CTX.SetDrawColor(1, 1, 1, 1);
 
             CTX.DrawText("Press some keys:", Window.Width / 2, Window.Height / 2 + 200);
 
             CTX.DrawText(KeysToString(Input.CharactersDown), Window.Width / 2, Window.Height / 2);
-
-
-
         }
 
         public override void Update(double deltaTime)
         {
-
             if (Input.IsAnyKeyPressed)
             {
                 Console.WriteLine("PRessed: " + Input.CharactersPressed);

@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RenderingEngine\RenderingEngine.csproj" />
+    <ProjectReference Include="..\RenderingEngine\MinimalAF.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,16 +1,17 @@
 What to do next
  
 
--> implement dynamic compilation (for tests at least, if it cannot be done for entire applications)
+-> Rename to Minimalist Application Framework
+	-> merge audio engine project with this one
+
+- implement dynamic compilation (for tests at least, if it cannot be done for entire applications)
+
+- Implement Framebuffer/texture objects that cameras can easily render to. This is an easy way to implement splitscreen
+	- can also be implemented with calls to GL.Viewport as well tho. but still it would be cool to have framebuffers for stuff like post processing and cameras rendering to screens and whatnot.
+	
+	- requires implementing texture buffer resizing. [Texture.cs ln 68]
+
 
 - Make the UI code faster to type and iterate
 
-Replace OpenTK.Mathematics with System.Numerics, as it seems faster 
-
-What has already been done
-
-- stop working on the graphical UI editor, as it is simply not worth it. Too much cost, not enough reward. Move it to it's own project if needed
-
-
-- Make the UI code faster to type and iterate
-	- transform names have been made less verbose
+- Replace OpenTK.Mathematics with System.Numerics, as it seems faster 

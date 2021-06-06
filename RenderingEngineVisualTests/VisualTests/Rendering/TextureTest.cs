@@ -2,6 +2,7 @@
 using RenderingEngine.Datatypes.Geometric;
 using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
+using RenderingEngine.ResourceManagement;
 using System;
 
 namespace RenderingEngine.VisualTests.Rendering
@@ -22,8 +23,8 @@ namespace RenderingEngine.VisualTests.Rendering
 
             CTX.SetClearColor(0, 0, 0, 1);
 
-            TextureMap.RegisterTexture("placeholder", "settings_icon.png", new TextureImportSettings());
-            TextureMap.RegisterTexture("placeholderNN", "settings_icon.png", new TextureImportSettings { Filtering = FilteringType.NearestNeighbour });
+            TextureMap.RegisterTexture("placeholder", "./Res/settings_icon.png", new TextureImportSettings());
+            TextureMap.RegisterTexture("placeholderNN", "./Res/settings_icon.png", new TextureImportSettings { Filtering = FilteringType.NearestNeighbour });
 
             _tex = TextureMap.GetTexture("placeholder");
             _tex2 = TextureMap.GetTexture("placeholderNN");

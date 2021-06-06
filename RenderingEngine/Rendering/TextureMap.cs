@@ -1,39 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using RenderingEngine.ResourceManagement;
+using System.Collections.Generic;
 
 namespace RenderingEngine.Rendering
 {
     public static class TextureMap
     {
-        private static Dictionary<string, Texture> _textureMap = new Dictionary<string, Texture>();
-
         public static void RegisterTexture(string name, string path, TextureImportSettings settings)
         {
-            if (_textureMap.ContainsKey(name))
-                return;
-
-            var tex = Texture.LoadFromFile("./Res/" + path, settings);
-            if (tex != null)
-                _textureMap[name] = tex;
+            ResourceMap<Texture>.RegisterResource(name, path, settings, Texture.LoadFromFile);
         }
 
         //TODO: return a pink texture or similar
         public static Texture GetTexture(string name)
         {
-            if (!_textureMap.ContainsKey(name))
-                return null;
-
-            return _textureMap[name];
+            return ResourceMap<Texture>.GetCached(name);
         }
 
         //TODO: implement this if it is ever needed
         public static void UnloadTextures()
         {
-            foreach (var item in _textureMap)
-            {
-                item.Value.Dispose();
-            }
+            ResourceMap<Texture>.UnloadResources();
+        }
 
-            _textureMap.Clear();
+        public static void UnloadTexture(string name)
+        {
+            ResourceMap<Texture>.UnloadResource(name);
         }
     }
 }

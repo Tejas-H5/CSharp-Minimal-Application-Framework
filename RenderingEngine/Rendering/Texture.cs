@@ -51,7 +51,8 @@ namespace RenderingEngine.Rendering
             catch (Exception e)
             {
                 Console.Write(e.Message);
-                return null;
+                throw (e);
+                //return null;
             }
 
             return new Texture(image, settings);
@@ -64,6 +65,7 @@ namespace RenderingEngine.Rendering
         }
 
 
+        //TODO: implement this
         internal void Resize(int width, int height)
         {
 

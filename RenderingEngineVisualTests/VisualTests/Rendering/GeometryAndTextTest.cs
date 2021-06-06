@@ -1,5 +1,6 @@
 ﻿using RenderingEngine.Logic;
 using RenderingEngine.Rendering;
+using RenderingEngine.ResourceManagement;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,7 +30,7 @@ namespace RenderingEngine.VisualTests.Rendering
 
         public void Init()
         {
-            TextureMap.RegisterTexture("placeholder", "settings_icon.png", new TextureImportSettings
+            TextureMap.RegisterTexture("placeholder", "./Res/settings_icon.png", new TextureImportSettings
             {
                 Filtering = FilteringType.NearestNeighbour
             });

@@ -15,7 +15,7 @@
             _keyboardManager = new KeyboardInputManager();
         }
 
-        internal static void Init(WindowInstance window)
+        internal static void HookToWindow(WindowInstance window)
         {
             _mouseInputManager.Unhook();
             _keyboardManager.Unhook();

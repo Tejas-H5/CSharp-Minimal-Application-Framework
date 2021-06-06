@@ -100,12 +100,5 @@ namespace RenderingEngine.VisualTests.Rendering
 
             //RenderingContext.DrawRect(100,100,window.Width-100, window.Height-100);
         }
-
-
-        public override void Cleanup()
-        {
-            base.Cleanup();
-
-        }
     }
 }

@@ -34,5 +34,12 @@ namespace RenderingEngine.VisualTests
             //Don't delete base.Resize()
             base.Resize();
         }
+
+
+        public override void Cleanup()
+        {
+            //Don't delete base.Cleanup()
+            base.Cleanup();
+        }
     }
 }

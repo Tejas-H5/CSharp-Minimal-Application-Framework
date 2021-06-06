@@ -1,9 +1,11 @@
 What to do next
+ 
 
--> Make the UI code faster to type and iterate
-- implement dynamic compilation (for tests at least, if it cannot be done for entire applications)
+-> implement dynamic compilation (for tests at least, if it cannot be done for entire applications)
 
+- Make the UI code faster to type and iterate
 
+Replace OpenTK.Mathematics with System.Numerics, as it seems faster 
 
 What has already been done
 

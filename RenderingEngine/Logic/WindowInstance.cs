@@ -51,7 +51,7 @@ namespace RenderingEngine.Logic
             MouseWheel += WindowInstance_MouseWheel;
 
             CTX.Init(Context);
-            Input.Init(this);
+            Input.HookToWindow(this);
 
             _program.Start();
 
@@ -122,7 +122,11 @@ namespace RenderingEngine.Logic
         {
             base.OnRenderFrame(args);
 
-            _program.RenderLoopIteration(args.Time);
+            CTX.Clear();
+
+            _program.Render(args.Time);
+
+            CTX.SwapBuffers();
 
             renderFrames++;
         }
@@ -154,9 +158,16 @@ namespace RenderingEngine.Logic
         {
             base.OnClosing(e);
 
-            _program.Cleanup();
+            Cleanup();
 
             e.Cancel = false;
+        }
+
+        private unsafe void Cleanup()
+        {
+            _program.Cleanup();
+
+            CTX.Dispose(true);
         }
 
         public void Maximize()

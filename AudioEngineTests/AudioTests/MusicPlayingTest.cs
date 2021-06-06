@@ -1,29 +1,52 @@
 ﻿using MinimalAF.Audio.Core;
+using MinimalAF.Datatypes.UI;
+using MinimalAF.Logic;
+using MinimalAF.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace AudioEngineTests.AudioTests
 {
-    class MusicPlayingTest : AudioTest
+    class MusicPlayingTest : EntryPoint
     {
-        public override void Test()
-        {
-            AudioCTX.Init();
+        AudioSourceStreamed _streamedSource;
 
+        public override void Start()
+        {
             AudioData music = AudioData.FromFile("./Res/testMusic.mp3");
             AudioClipStreamed streamProvider = new AudioClipStreamed(music);
 
-            AudioSourceStreamed streamedSource = new AudioSourceStreamed(true, streamProvider);
+            _streamedSource = new AudioSourceStreamed(true, streamProvider);
+        }
 
-            streamedSource.Play();
+        public override void Render(double deltaTime)
+        {
+            CTX.SetDrawColor(1, 1, 1, 1);
 
-            while (streamedSource.GetSourceState() == AudioSourceState.Playing)
-            {
-                streamedSource.UpdateStream();
+            string message = "Spacebar to Pause";
+            if(_streamedSource.GetSourceState() != AudioSourceState.Playing){
+                message = "Spacebar to Play";
             }
 
-            AudioCTX.Cleanup();
+            CTX.DrawTextAligned(message, Window.Width/2, Window.Height/2, HorizontalAlignment.Center, VerticalAlignment.Center);
+        }
+
+        public override void Update(double deltaTime)
+        {
+            _streamedSource.UpdateStream();
+
+            if (Input.IsKeyPressed(KeyCode.Space))
+            {
+                if (_streamedSource.GetSourceState() != AudioSourceState.Playing)
+                {
+                    _streamedSource.Play();
+                }
+                else
+                {
+                    _streamedSource.Pause();
+                }
+            }
         }
     }
 }

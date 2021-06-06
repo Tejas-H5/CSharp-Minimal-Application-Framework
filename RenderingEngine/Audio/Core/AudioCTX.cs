@@ -129,16 +129,21 @@ namespace MinimalAF.Audio.Core
         public static void SetCurrentListener(AudioListener instance)
         {
             _currentSelectedListener = instance;
-            if (instance == null)
+            UpdateListener();
+        }
+
+        private static void UpdateListener()
+        {
+            if (_currentSelectedListener == null)
                 return;
 
-            AL.Listener(ALListenerf.Gain, instance.Gain);
-            AL.Listener(ALListenerf.EfxMetersPerUnit, instance.EfxMetersPerUnit);
-            AL.Listener(ALListener3f.Position, instance.Position.X, instance.Position.Y, instance.Position.Z);
-            AL.Listener(ALListener3f.Velocity, instance.Velocity.X, instance.Velocity.Y, instance.Velocity.Z);
+            AL.Listener(ALListenerf.Gain, _currentSelectedListener.Gain);
+            AL.Listener(ALListenerf.EfxMetersPerUnit, _currentSelectedListener.EfxMetersPerUnit);
+            AL.Listener(ALListener3f.Position, _currentSelectedListener.Position.X, _currentSelectedListener.Position.Y, _currentSelectedListener.Position.Z);
+            AL.Listener(ALListener3f.Velocity, _currentSelectedListener.Velocity.X, _currentSelectedListener.Velocity.Y, _currentSelectedListener.Velocity.Z);
 
-            var at = instance.OrientationLookAt;
-            var up = instance.OrientationUp;
+            var at = _currentSelectedListener.OrientationLookAt;
+            var up = _currentSelectedListener.OrientationUp;
             AL.Listener(ALListenerfv.Orientation, ref at, ref up);
         }
 

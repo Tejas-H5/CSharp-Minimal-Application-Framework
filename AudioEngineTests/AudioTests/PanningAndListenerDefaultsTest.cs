@@ -2,64 +2,60 @@
 using AudioEngineTests.AudioTests;
 using System;
 using System.Threading;
+using MinimalAF.Logic;
+using MinimalAF.Rendering;
+using MinimalAF.Datatypes.UI;
 
 namespace MinimalAF.AudioTests
 {
-    public class PanningAndListenerDefaultsTest : AudioTest
+    public class PanningAndListenerDefaultsTest : EntryPoint
     {
-        public override void Test()
+        AudioSourceOneShot _clackSound;
+        AudioListener _listener;
+
+        public override void Start()
         {
-            AudioCTX.Init();
+            Window.Size = (800, 600);
+            Window.Title = "PanningAndListenerDefaultsTest test";
+
+            CTX.SetClearColor(1,1,1,1);
+            CTX.SetCurrentFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
-            AudioSourceOneShot source = new AudioSourceOneShot(false, false, clip);
+            _clackSound = new AudioSourceOneShot(false, false, clip);
 
-            //moved to the left
-            AudioListener left = new AudioListener()
-                .SetPosition(10, 0, 0);
-
-            //moved to the right
-            AudioListener right = new AudioListener()
-                .SetPosition(-10, 0, 0);
-
-            AudioListener center = new AudioListener()
-                .SetPosition(0, 0, 0);
-
-
-            AudioListener front = new AudioListener()
-                .SetPosition(0, -10, 0);
-
-            //moved to the right
-            AudioListener back = new AudioListener()
-                .SetPosition(0, 10, 0);
-
-            AudioCTX.SetCurrentListener(left);
-            Console.WriteLine("Playing audio from the left...");
-            PlaySound(clip, source);
-
-            AudioCTX.SetCurrentListener(right);
-            Console.WriteLine("Playing audio from the right...");
-            PlaySound(clip, source);
-
-            AudioCTX.SetCurrentListener(center);
-            Console.WriteLine("Playing audio from the center...");
-            PlaySound(clip, source);
-
-            AudioCTX.Cleanup();
+            _listener = new AudioListener();
+            AudioCTX.SetCurrentListener(_listener);
         }
 
-        private static void PlaySound(AudioClipOneShot clip, AudioSourceOneShot source)
+        double timer = 0;
+        float listenerX, listenerZ;
+
+        public override void Update(double deltaTime)
         {
-            int passedTime = 0;
-            while(passedTime < 2000)
+            timer += deltaTime;
+            if(timer > 0.5f)
             {
-                source.Play();
-
-                int clipLen = (int)(clip.Data.Duration * 1000);
-                Thread.Sleep(clipLen);
-
-                passedTime += clipLen;
+                timer = 0;
+                _clackSound.Play();
             }
+
+            listenerX = 10 * ((Input.MouseX / Window.Width) - 0.5f);
+            listenerZ = 10 * ((Input.MouseY / Window.Height) - 0.5f);
+
+            _listener.SetPosition(listenerX, 0, listenerZ);
+            AudioCTX.SetCurrentListener(_listener);
+        }
+
+        public override void Render(double deltaTime)
+        {
+            CTX.SetDrawColor(0, 0,0,1);
+            CTX.DrawCircle(Window.Width / 2, Window.Height / 2, 20);
+
+
+            CTX.SetDrawColor(1, 0, 0, 1);
+            CTX.DrawCircle(Input.MouseX, Input.MouseY, 20);
+            CTX.DrawTextAligned("You are here ("+listenerX +"," +listenerZ +")", Input.MouseX, Input.MouseY, HorizontalAlignment.Center, VerticalAlignment.Bottom);
         }
     }
 }

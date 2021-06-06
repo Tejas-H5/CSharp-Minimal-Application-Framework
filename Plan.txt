@@ -1,8 +1,7 @@
 What to do next
  
 
--> Rename to Minimalist Application Framework
-	-> merge audio engine project with this one
+-> Add a resource-map for Audio Data
 
 - implement dynamic compilation (for tests at least, if it cannot be done for entire applications)
 

@@ -2,7 +2,7 @@
 using System;
 using System.Drawing;
 
-namespace RenderingEngine.Util
+namespace MinimalAF.Util
 {
 
     public static class MathUtil

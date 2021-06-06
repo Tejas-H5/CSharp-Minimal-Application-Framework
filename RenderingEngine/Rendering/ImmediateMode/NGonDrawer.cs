@@ -1,4 +1,4 @@
-﻿namespace RenderingEngine.Rendering.ImmediateMode
+﻿namespace MinimalAF.Rendering.ImmediateMode
 {
     class NGonDrawer : GeometryDrawer
     {

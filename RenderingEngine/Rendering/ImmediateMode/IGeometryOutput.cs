@@ -1,4 +1,4 @@
-﻿namespace RenderingEngine.Rendering.ImmediateMode
+﻿namespace MinimalAF.Rendering.ImmediateMode
 {
     public interface IGeometryOutput
     {

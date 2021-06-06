@@ -1,6 +1,6 @@
-﻿using RenderingEngine.Datatypes;
+﻿using MinimalAF.Datatypes;
 
-namespace RenderingEngine.UI.Property
+namespace MinimalAF.UI.Property
 {
     public class IntegerProperty : Property<int>
     {

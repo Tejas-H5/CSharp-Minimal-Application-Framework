@@ -1,7 +1,7 @@
-﻿using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
+﻿using MinimalAF.Logic;
+using MinimalAF.Rendering;
 
-namespace RenderingEngine.VisualTests
+namespace MinimalAF.VisualTests
 {
     public class TemplateForEntrypointProgram : EntryPoint
     {

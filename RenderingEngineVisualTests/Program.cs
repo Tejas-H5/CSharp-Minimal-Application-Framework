@@ -1,5 +1,5 @@
-﻿using RenderingEngine.Logic;
-using RenderingEngine.VisualTests.Rendering;
+﻿using MinimalAF.Logic;
+using MinimalAF.VisualTests.Rendering;
 using RenderingEngineRenderingTests.VisualTests.Rendering;
 using System;
 

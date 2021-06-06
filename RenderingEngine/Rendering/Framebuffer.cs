@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.Rendering.Uncomplete
+namespace MinimalAF.Rendering.Uncomplete
 {
     /// <summary>
     /// Will be used later to implement post-processing and 3D UI

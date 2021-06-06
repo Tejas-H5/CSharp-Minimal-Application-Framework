@@ -1,15 +1,15 @@
 ﻿using OpenTK.Mathematics;
-using RenderingEngine.Datatypes.Geometric;
-using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
-using RenderingEngine.UI;
-using RenderingEngine.UI.Components.MouseInput;
-using RenderingEngine.UI.Components.Visuals;
-using RenderingEngine.UI.Core;
+using MinimalAF.Datatypes.Geometric;
+using MinimalAF.Logic;
+using MinimalAF.Rendering;
+using MinimalAF.UI;
+using MinimalAF.UI.Components.MouseInput;
+using MinimalAF.UI.Components.Visuals;
+using MinimalAF.UI.Core;
 using System;
 using Color4 = RenderingEngine.Datatypes.Color4;
 
-namespace RenderingEngine.VisualTests.UI
+namespace MinimalAF.VisualTests.UI
 {
     public class UITest : EntryPoint
     {

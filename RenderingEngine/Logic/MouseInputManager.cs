@@ -1,7 +1,7 @@
-﻿using RenderingEngine.Util;
+﻿using MinimalAF.Util;
 using System;
 
-namespace RenderingEngine.Logic
+namespace MinimalAF.Logic
 {
     class MouseInputManager
     {

@@ -1,11 +1,11 @@
 ﻿using OpenTK.Mathematics;
-using RenderingEngine.Datatypes.Geometric;
-using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
-using RenderingEngine.ResourceManagement;
+using MinimalAF.Datatypes.Geometric;
+using MinimalAF.Logic;
+using MinimalAF.Rendering;
+using MinimalAF.ResourceManagement;
 using System;
 
-namespace RenderingEngine.VisualTests.Rendering
+namespace MinimalAF.VisualTests.Rendering
 {
     class TextureTest : EntryPoint
     {

@@ -1,11 +1,11 @@
-﻿using RenderingEngine.UI.Core;
-using RenderingEngine.UI.Property;
-using RenderingEngine.Util;
+﻿using MinimalAF.UI.Core;
+using MinimalAF.UI.Property;
+using MinimalAF.Util;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Components.DataInput
+namespace MinimalAF.UI.Components.DataInput
 {
     public class UITextFloatInput : UITextInput<float>
     {

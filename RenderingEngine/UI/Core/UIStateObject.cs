@@ -1,11 +1,11 @@
-﻿using RenderingEngine.Datatypes.Geometric;
-using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
+﻿using MinimalAF.Datatypes.Geometric;
+using MinimalAF.Logic;
+using MinimalAF.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Core
+namespace MinimalAF.UI.Core
 {
     /// <summary>
     /// Will be used to manage which UIElement is focused in the future

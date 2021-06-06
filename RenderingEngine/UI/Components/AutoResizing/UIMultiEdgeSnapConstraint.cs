@@ -1,6 +1,6 @@
-﻿using RenderingEngine.UI.Core;
+﻿using MinimalAF.UI.Core;
 
-namespace RenderingEngine.UI.Components.AutoResizing
+namespace MinimalAF.UI.Components.AutoResizing
 {
     public class UIMultiEdgeSnapConstraint : UIComponent
     {

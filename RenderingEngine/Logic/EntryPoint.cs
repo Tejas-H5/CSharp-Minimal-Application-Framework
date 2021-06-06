@@ -1,6 +1,6 @@
-﻿using RenderingEngine.Rendering;
+﻿using MinimalAF.Rendering;
 
-namespace RenderingEngine.Logic
+namespace MinimalAF.Logic
 {
     //Used by all classes associated with program logic
     public abstract class EntryPoint

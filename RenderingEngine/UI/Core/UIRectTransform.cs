@@ -1,10 +1,10 @@
-﻿using RenderingEngine.Datatypes.Geometric;
-using RenderingEngine.Datatypes.ObserverPattern;
-using RenderingEngine.Util;
+﻿using MinimalAF.Datatypes.Geometric;
+using MinimalAF.Datatypes.ObserverPattern;
+using MinimalAF.Util;
 using System;
 using System.Drawing;
 
-namespace RenderingEngine.UI.Core
+namespace MinimalAF.UI.Core
 {
     public class UIRectTransform : ObservableData<UIRectTransform>
     {

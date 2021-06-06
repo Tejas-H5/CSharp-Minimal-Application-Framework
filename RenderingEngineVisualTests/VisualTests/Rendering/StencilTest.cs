@@ -1,8 +1,8 @@
-﻿using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
+﻿using MinimalAF.Logic;
+using MinimalAF.Rendering;
 using System;
 
-namespace RenderingEngine.VisualTests.Rendering
+namespace MinimalAF.VisualTests.Rendering
 {
     public class StencilTest : EntryPoint
     {

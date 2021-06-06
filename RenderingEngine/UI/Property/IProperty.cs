@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Property
+namespace MinimalAF.UI.Property
 {
     public interface IProperty
     {

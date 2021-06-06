@@ -1,16 +1,16 @@
 ﻿using MinimalAF.Datatypes.ObserverPattern;
-using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
-using RenderingEngine.UI.Components.MouseInput;
-using RenderingEngine.UI.Components.Visuals;
-using RenderingEngine.UI.Core;
-using RenderingEngine.UI.Property;
+using MinimalAF.Logic;
+using MinimalAF.Rendering;
+using MinimalAF.UI.Components.MouseInput;
+using MinimalAF.UI.Components.Visuals;
+using MinimalAF.UI.Core;
+using MinimalAF.UI.Property;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
-namespace RenderingEngine.UI.Components.DataInput
+namespace MinimalAF.UI.Components.DataInput
 {
     //TODO: Esc to cancel out of an input
     //might have to use another string rather than the string inside the TextComponent

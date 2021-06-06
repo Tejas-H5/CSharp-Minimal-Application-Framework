@@ -1,9 +1,9 @@
 ﻿using AudioEngineTests.AudioTests;
-using RenderingEngine.Audio.Core;
+using MinimalAF.Audio.Core;
 using System;
 using System.Threading;
 
-namespace RenderingEngine.AudioTests
+namespace MinimalAF.AudioTests
 {
     public class PanningWithVelocityTest : AudioTest
     {

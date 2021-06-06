@@ -1,8 +1,8 @@
-﻿using RenderingEngine.Datatypes;
-using RenderingEngine.Util;
+﻿using MinimalAF.Datatypes;
+using MinimalAF.Util;
 using System;
 
-namespace RenderingEngine.UI.Property
+namespace MinimalAF.UI.Property
 {
     public class BooleanProperty : Property<bool>
     {

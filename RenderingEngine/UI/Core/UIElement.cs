@@ -1,13 +1,13 @@
-﻿using RenderingEngine.Datatypes.Geometric;
-using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
-using RenderingEngine.UI.Components.Debugging;
-using RenderingEngine.UI.Components.MouseInput;
+﻿using MinimalAF.Datatypes.Geometric;
+using MinimalAF.Logic;
+using MinimalAF.Rendering;
+using MinimalAF.UI.Components.Debugging;
+using MinimalAF.UI.Components.MouseInput;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace RenderingEngine.UI.Core
+namespace MinimalAF.UI.Core
 {
     public class UIElement
     {

@@ -1,6 +1,6 @@
-﻿using RenderingEngine.UI.Core;
+﻿using MinimalAF.UI.Core;
 
-namespace RenderingEngine.UI.Components.MouseInput
+namespace MinimalAF.UI.Components.MouseInput
 {
     public abstract class UIHitbox : UIComponent
     {

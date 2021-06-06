@@ -2,7 +2,7 @@
 using System;
 using System.Text;
 
-namespace RenderingEngine.Logic
+namespace MinimalAF.Logic
 {
     class KeyboardInputManager
     {

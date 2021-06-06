@@ -1,4 +1,4 @@
-﻿namespace RenderingEngine.UI.Core
+﻿namespace MinimalAF.UI.Core
 {
     public class UIZStack : UIElement
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RenderingEngine.Rendering.ImmediateMode
+namespace MinimalAF.Rendering.ImmediateMode
 {
     //TODO: add support for 3D lines if needed
     class PolyLineDrawer : GeometryDrawer

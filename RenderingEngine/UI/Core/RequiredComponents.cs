@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Core
+namespace MinimalAF.UI.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Class |
                        System.AttributeTargets.Struct, Inherited = true)]

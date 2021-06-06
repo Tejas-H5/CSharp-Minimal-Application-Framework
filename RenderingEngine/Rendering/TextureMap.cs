@@ -1,7 +1,7 @@
-﻿using RenderingEngine.ResourceManagement;
+﻿using MinimalAF.ResourceManagement;
 using System.Collections.Generic;
 
-namespace RenderingEngine.Rendering
+namespace MinimalAF.Rendering
 {
     public static class TextureMap
     {

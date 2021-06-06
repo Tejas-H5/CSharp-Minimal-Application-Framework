@@ -1,10 +1,10 @@
-﻿using RenderingEngine.UI.Core;
-using RenderingEngine.UI.Property;
+﻿using MinimalAF.UI.Core;
+using MinimalAF.UI.Property;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Components.DataInput
+namespace MinimalAF.UI.Components.DataInput
 {
     public abstract class UIDataInput<T> : UIComponent
     {

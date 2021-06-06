@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
-namespace RenderingEngine.Rendering
+namespace MinimalAF.Rendering
 {
     // Initially Taken from https://github.com/opentk/LearnOpenTK/blob/master/Common/Texture.cs
     // And then modified

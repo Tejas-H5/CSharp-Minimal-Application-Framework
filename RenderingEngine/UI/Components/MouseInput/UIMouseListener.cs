@@ -1,8 +1,8 @@
-﻿using RenderingEngine.Logic;
-using RenderingEngine.UI.Core;
+﻿using MinimalAF.Logic;
+using MinimalAF.UI.Core;
 using System;
 
-namespace RenderingEngine.UI.Components.MouseInput
+namespace MinimalAF.UI.Components.MouseInput
 {
     [RequiredComponents(typeof(UIHitbox))]
     public class UIMouseListener : UIComponent

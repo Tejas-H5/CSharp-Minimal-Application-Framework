@@ -1,10 +1,10 @@
-﻿using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
+﻿using MinimalAF.Logic;
+using MinimalAF.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.VisualTests.Rendering
+namespace MinimalAF.VisualTests.Rendering
 {
     class TextFontAtlasText : EntryPoint
     {

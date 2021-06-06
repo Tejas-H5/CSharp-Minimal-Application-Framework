@@ -1,6 +1,6 @@
-﻿using RenderingEngine.Datatypes.Geometric;
+﻿using MinimalAF.Datatypes.Geometric;
 
-namespace RenderingEngine.Rendering.ImmediateMode
+namespace MinimalAF.Rendering.ImmediateMode
 {
     class CombinedDrawer
     {

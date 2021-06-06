@@ -1,17 +1,17 @@
-﻿using RenderingEngine.Datatypes;
-using RenderingEngine.Datatypes.Geometric;
-using RenderingEngine.Datatypes.UI;
-using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
-using RenderingEngine.UI;
-using RenderingEngine.UI.Components.AutoResizing;
-using RenderingEngine.UI.Components.DataInput;
-using RenderingEngine.UI.Components.MouseInput;
-using RenderingEngine.UI.Components.Visuals;
-using RenderingEngine.UI.Core;
-using RenderingEngine.UI.Property;
+﻿using MinimalAF.Datatypes;
+using MinimalAF.Datatypes.Geometric;
+using MinimalAF.Datatypes.UI;
+using MinimalAF.Logic;
+using MinimalAF.Rendering;
+using MinimalAF.UI;
+using MinimalAF.UI.Components.AutoResizing;
+using MinimalAF.UI.Components.DataInput;
+using MinimalAF.UI.Components.MouseInput;
+using MinimalAF.UI.Components.Visuals;
+using MinimalAF.UI.Core;
+using MinimalAF.UI.Property;
 
-namespace RenderingEngine.VisualTests.UI
+namespace MinimalAF.VisualTests.UI
 {
     class MouseBlindThinggyComponent : UIComponent
     {

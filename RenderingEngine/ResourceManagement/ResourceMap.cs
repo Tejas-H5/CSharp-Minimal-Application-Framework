@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RenderingEngine.ResourceManagement
+namespace MinimalAF.ResourceManagement
 {
     public static class ResourceMap<T>
     {

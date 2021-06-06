@@ -1,4 +1,4 @@
-﻿using RenderingEngine.Datatypes.Geometric;
+﻿using MinimalAF.Datatypes.Geometric;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -6,7 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.IO;
 
-namespace RenderingEngine.Rendering.Text
+namespace MinimalAF.Rendering.Text
 {
     //taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
     public class FontImportSettings

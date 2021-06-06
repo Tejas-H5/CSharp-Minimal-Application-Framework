@@ -1,11 +1,11 @@
-﻿using RenderingEngine.Datatypes.Geometric;
-using RenderingEngine.Logic;
-using RenderingEngine.UI.Core;
+﻿using MinimalAF.Datatypes.Geometric;
+using MinimalAF.Logic;
+using MinimalAF.UI.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Components.MouseInput
+namespace MinimalAF.UI.Components.MouseInput
 {
     //Sends mouse input to whatever isn't occluded
     public class UIGraphicsRaycaster : UIComponent

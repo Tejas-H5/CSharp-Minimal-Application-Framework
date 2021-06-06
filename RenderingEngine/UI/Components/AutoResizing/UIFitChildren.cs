@@ -1,13 +1,13 @@
-﻿using RenderingEngine.Datatypes;
-using RenderingEngine.Datatypes.Geometric;
-using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
-using RenderingEngine.UI.Core;
+﻿using MinimalAF.Datatypes;
+using MinimalAF.Datatypes.Geometric;
+using MinimalAF.Logic;
+using MinimalAF.Rendering;
+using MinimalAF.UI.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Components.AutoResizing
+namespace MinimalAF.UI.Components.AutoResizing
 {
     public class UIFitChildren : UIComponent
     {

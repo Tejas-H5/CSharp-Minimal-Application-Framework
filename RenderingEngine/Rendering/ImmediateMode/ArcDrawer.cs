@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RenderingEngine.Rendering.ImmediateMode
+namespace MinimalAF.Rendering.ImmediateMode
 {
     class ArcDrawer : GeometryDrawer
     {

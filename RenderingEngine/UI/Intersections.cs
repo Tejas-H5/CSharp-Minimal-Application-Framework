@@ -1,7 +1,7 @@
-﻿using RenderingEngine.Datatypes.Geometric;
+﻿using MinimalAF.Datatypes.Geometric;
 using System.Drawing;
 
-namespace RenderingEngine.UI
+namespace MinimalAF.UI
 {
     public static class Intersections
     {

@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System;
 
-namespace RenderingEngine.Rendering
+namespace MinimalAF.Rendering
 {
     public class Mesh : IDisposable
     {

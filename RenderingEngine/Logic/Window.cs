@@ -1,10 +1,10 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using RenderingEngine.Datatypes.Geometric;
+using MinimalAF.Datatypes.Geometric;
 using System;
 
-namespace RenderingEngine.Logic
+namespace MinimalAF.Logic
 {
     public static class Window
     {

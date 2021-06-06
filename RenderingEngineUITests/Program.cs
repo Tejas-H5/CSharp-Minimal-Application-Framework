@@ -1,6 +1,6 @@
-﻿using RenderingEngine.Logic;
-using RenderingEngine.VisualTests;
-using RenderingEngine.VisualTests.UI;
+﻿using MinimalAF.Logic;
+using MinimalAF.VisualTests;
+using MinimalAF.VisualTests.UI;
 using System;
 
 namespace RenderingEngineVisualTests

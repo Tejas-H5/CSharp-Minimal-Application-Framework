@@ -1,10 +1,10 @@
-﻿using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
-using RenderingEngine.Rendering.ImmediateMode;
+﻿using MinimalAF.Logic;
+using MinimalAF.Rendering;
+using MinimalAF.Rendering.ImmediateMode;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace RenderingEngine.VisualTests.Rendering
+namespace MinimalAF.VisualTests.Rendering
 {
     public class PolylineTest : EntryPoint
     {

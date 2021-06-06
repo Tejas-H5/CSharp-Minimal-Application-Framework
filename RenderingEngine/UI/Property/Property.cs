@@ -1,9 +1,9 @@
-﻿using RenderingEngine.Datatypes.ObserverPattern;
+﻿using MinimalAF.Datatypes.ObserverPattern;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Property
+namespace MinimalAF.UI.Property
 {
     public abstract class Property<T> : ObservableData<T>, IProperty
     {

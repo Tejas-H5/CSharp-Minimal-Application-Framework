@@ -1,7 +1,7 @@
-﻿using RenderingEngine.Datatypes;
-using RenderingEngine.UI.Core;
+﻿using MinimalAF.Datatypes;
+using MinimalAF.UI.Core;
 
-namespace RenderingEngine.UI.Components.AutoResizing
+namespace MinimalAF.UI.Components.AutoResizing
 {
     public class UILinearArrangement : UIComponent
     {

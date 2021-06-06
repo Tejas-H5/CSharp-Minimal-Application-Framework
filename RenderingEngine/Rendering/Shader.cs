@@ -3,9 +3,9 @@ using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Color4 = RenderingEngine.Datatypes.Color4;
+using Color4 = MinimalAF.Datatypes.Color4;
 
-namespace RenderingEngine.Rendering
+namespace MinimalAF.Rendering
 {
     //Taken from https://github.com/opentk/LearnOpenTK/blob/master/Common/Shader.cs
     //The destructor code was modified to be more like https://docs.microsoft.com/en-us/dotnet/api/system.idisposable.dispose?view=net-5.0

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace RenderingEngine.Rendering
+namespace MinimalAF.Rendering
 {
     //TODO: implement multiple units if needed
     class TextureManager : IDisposable

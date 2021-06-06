@@ -1,8 +1,8 @@
 ﻿using AudioEngineTests.AudioTests;
-using RenderingEngine.Audio.Core;
+using MinimalAF.Audio.Core;
 using System;
 
-namespace RenderingEngine.AudioTests
+namespace MinimalAF.AudioTests
 {
     public class BasicWavPlayingTest : AudioTest
     {

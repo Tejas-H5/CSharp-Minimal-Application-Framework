@@ -1,9 +1,9 @@
 ﻿using OpenTK.Mathematics;
 using System;
-using Color4 = RenderingEngine.Datatypes.Color4;
+using Color4 = MinimalAF.Datatypes.Color4;
 
 
-namespace RenderingEngine.Rendering.ImmediateMode
+namespace MinimalAF.Rendering.ImmediateMode
 {
     public class ImmediateModeShader : IDisposable
     {

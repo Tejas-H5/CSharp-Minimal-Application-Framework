@@ -1,4 +1,4 @@
-﻿namespace RenderingEngine.Logic
+﻿namespace MinimalAF.Logic
 {
     public enum MouseButton
     {

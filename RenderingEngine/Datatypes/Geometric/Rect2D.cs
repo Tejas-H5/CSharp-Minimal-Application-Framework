@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RenderingEngine.Datatypes.Geometric
+namespace MinimalAF.Datatypes.Geometric
 {
     public struct Rect2D
     {

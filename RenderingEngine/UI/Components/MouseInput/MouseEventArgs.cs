@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Components.MouseInput
+namespace MinimalAF.UI.Components.MouseInput
 {
     public class MouseEventArgs
     {

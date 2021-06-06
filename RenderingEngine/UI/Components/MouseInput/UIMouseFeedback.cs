@@ -1,9 +1,9 @@
-﻿using RenderingEngine.Datatypes;
-using RenderingEngine.Logic;
-using RenderingEngine.UI.Components.Visuals;
-using RenderingEngine.UI.Core;
+﻿using MinimalAF.Datatypes;
+using MinimalAF.Logic;
+using MinimalAF.UI.Components.Visuals;
+using MinimalAF.UI.Core;
 
-namespace RenderingEngine.UI.Components.MouseInput
+namespace MinimalAF.UI.Components.MouseInput
 {
     [RequiredComponents(typeof(UIRect), typeof(UIMouseListener))]
     public class UIMouseFeedback : UIComponent

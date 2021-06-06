@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
-namespace RenderingEngine.Rendering.Text
+namespace MinimalAF.Rendering.Text
 {
     public class FontAtlasTexture
     {

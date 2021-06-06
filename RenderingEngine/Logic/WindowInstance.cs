@@ -2,13 +2,13 @@
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using RenderingEngine.Audio.Core;
-using RenderingEngine.Datatypes.Geometric;
-using RenderingEngine.Rendering;
+using MinimalAF.Audio.Core;
+using MinimalAF.Datatypes.Geometric;
+using MinimalAF.Rendering;
 using System;
 using System.ComponentModel;
 
-namespace RenderingEngine.Logic
+namespace MinimalAF.Logic
 {
     internal class WindowInstance : GameWindow
     {

@@ -1,4 +1,4 @@
-﻿using RenderingEngine.Audio.Core;
+﻿using MinimalAF.Audio.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;

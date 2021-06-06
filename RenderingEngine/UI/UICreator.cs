@@ -1,10 +1,10 @@
-﻿using RenderingEngine.Datatypes;
-using RenderingEngine.Datatypes.UI;
-using RenderingEngine.UI.Components.MouseInput;
-using RenderingEngine.UI.Components.Visuals;
-using RenderingEngine.UI.Core;
+﻿using MinimalAF.Datatypes;
+using MinimalAF.Datatypes.UI;
+using MinimalAF.UI.Components.MouseInput;
+using MinimalAF.UI.Components.Visuals;
+using MinimalAF.UI.Core;
 
-namespace RenderingEngine.UI
+namespace MinimalAF.UI
 {
     public static class UICreator
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.Datatypes.UI
+namespace MinimalAF.Datatypes.UI
 {
     public enum VerticalAlignment
     {

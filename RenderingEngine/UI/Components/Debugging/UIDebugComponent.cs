@@ -1,9 +1,9 @@
-﻿using RenderingEngine.UI.Core;
+﻿using MinimalAF.UI.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.UI.Components.Debugging
+namespace MinimalAF.UI.Components.Debugging
 {
     public class UIDebugComponent : UIComponent
     {

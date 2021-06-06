@@ -1,9 +1,9 @@
-﻿using RenderingEngine.Logic;
-using RenderingEngine.Rendering;
-using RenderingEngine.Rendering.ImmediateMode;
+﻿using MinimalAF.Logic;
+using MinimalAF.Rendering;
+using MinimalAF.Rendering.ImmediateMode;
 using System;
 
-namespace RenderingEngine.VisualTests.Rendering
+namespace MinimalAF.VisualTests.Rendering
 {
     class GeometryOutlineTest : EntryPoint
     {

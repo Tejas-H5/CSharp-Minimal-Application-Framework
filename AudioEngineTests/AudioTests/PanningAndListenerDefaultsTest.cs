@@ -1,9 +1,9 @@
-﻿using RenderingEngine.Audio.Core;
+﻿using MinimalAF.Audio.Core;
 using AudioEngineTests.AudioTests;
 using System;
 using System.Threading;
 
-namespace RenderingEngine.AudioTests
+namespace MinimalAF.AudioTests
 {
     public class PanningAndListenerDefaultsTest : AudioTest
     {

@@ -1,14 +1,14 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
-using RenderingEngine.Datatypes.Geometric;
-using RenderingEngine.Datatypes.UI;
-using RenderingEngine.Rendering.ImmediateMode;
+using MinimalAF.Datatypes.Geometric;
+using MinimalAF.Datatypes.UI;
+using MinimalAF.Rendering.ImmediateMode;
 using System.Collections.Generic;
 using System.Drawing;
-using Color4 = RenderingEngine.Datatypes.Color4;
+using Color4 = MinimalAF.Datatypes.Color4;
 
-namespace RenderingEngine.Rendering
+namespace MinimalAF.Rendering
 {
     //TODO: Extend this to draw meshes and other retained geometry
     //Was initially called RenderingContext, and was not a static class.

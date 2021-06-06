@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace RenderingEngine.Rendering
+namespace MinimalAF.Rendering
 {
     public enum FilteringType
     {

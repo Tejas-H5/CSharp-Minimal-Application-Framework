@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using System.Runtime.InteropServices;
 
-namespace RenderingEngine.Rendering
+namespace MinimalAF.Rendering
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Vertex

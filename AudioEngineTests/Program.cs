@@ -1,6 +1,6 @@
 ﻿using AudioEngineTests.AudioTests;
-using RenderingEngine.AudioTests;
-using RenderingEngine.Logic;
+using MinimalAF.AudioTests;
+using MinimalAF.Logic;
 using System;
 
 namespace AudioEngine

@@ -1,11 +1,11 @@
-﻿using RenderingEngine.Datatypes.Geometric;
-using RenderingEngine.Datatypes.UI;
-using RenderingEngine.Rendering.Text;
+﻿using MinimalAF.Datatypes.Geometric;
+using MinimalAF.Datatypes.UI;
+using MinimalAF.Rendering.Text;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace RenderingEngine.Rendering.ImmediateMode
+namespace MinimalAF.Rendering.ImmediateMode
 {
     class TextDrawer : IDisposable
     {

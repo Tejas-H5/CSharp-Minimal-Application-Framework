@@ -1,6 +1,6 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace RenderingEngine.Logic
+namespace MinimalAF.Logic
 {
     /// <summary>
     /// Currently implemented with the same values as OpenTK.Keys under the hood,

@@ -1,4 +1,4 @@
-﻿namespace RenderingEngine.Datatypes
+﻿namespace MinimalAF.Datatypes
 {
     public struct Color4
     {

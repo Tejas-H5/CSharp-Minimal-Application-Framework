@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace RenderingEngine.Rendering.ImmediateMode
+namespace MinimalAF.Rendering.ImmediateMode
 {
     // It's like a stringbuilder, but for an OpenGL mesh
     // And with slightly different intentions.

@@ -1,11 +1,11 @@
-﻿using RenderingEngine.Datatypes;
-using RenderingEngine.Datatypes.UI;
-using RenderingEngine.Rendering;
-using RenderingEngine.UI.Core;
+﻿using MinimalAF.Datatypes;
+using MinimalAF.Datatypes.UI;
+using MinimalAF.Rendering;
+using MinimalAF.UI.Core;
 using System;
 using System.Drawing;
 
-namespace RenderingEngine.UI.Components.Visuals
+namespace MinimalAF.UI.Components.Visuals
 {
     public class UIText : UIComponent
     {

@@ -1,7 +1,7 @@
-﻿using RenderingEngine.Datatypes.Geometric;
-using RenderingEngine.UI.Core;
+﻿using MinimalAF.Datatypes.Geometric;
+using MinimalAF.UI.Core;
 
-namespace RenderingEngine.UI.Components.AutoResizing.Uncompleted
+namespace MinimalAF.UI.Components.AutoResizing.Uncompleted
 {
     public class UIDimensionConstraint : UIComponent
     {

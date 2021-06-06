@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RenderingEngine.Rendering.Uncomplete
+namespace MinimalAF.Rendering.Uncomplete
 {
     /// <summary>
     /// Used for drawing 2D rectangles that have stuff inside them that cant overflow to the outside

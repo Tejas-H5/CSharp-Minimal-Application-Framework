@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.Audio.Core
+namespace MinimalAF.Audio
 {
     /// <summary>
     /// Merely an AudioData that has been loaded into an OpenAL buffer.

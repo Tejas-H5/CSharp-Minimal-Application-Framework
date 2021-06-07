@@ -1,4 +1,4 @@
-﻿using MinimalAF.Audio.Core;
+﻿using MinimalAF.Audio;
 using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;

@@ -1,6 +1,5 @@
 ﻿using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.Rendering.ImmediateMode;
 using System.Collections.Generic;
 using System.Drawing;
 

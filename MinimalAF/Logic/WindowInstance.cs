@@ -1,8 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-using MinimalAF.Audio.Core;
+using MinimalAF.Audio;
 using MinimalAF.Rendering;
 using System;
 using System.ComponentModel;

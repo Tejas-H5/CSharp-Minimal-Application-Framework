@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.Audio.Core
+namespace MinimalAF.Audio
 {
     /// <summary>
     /// Should only be used by one audio source at a time, otherwise multiple sources

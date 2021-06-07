@@ -2,7 +2,7 @@
 using OpenTK.Mathematics;
 using System;
 
-namespace MinimalAF.Audio.Core
+namespace MinimalAF.Audio
 {
     public abstract class AudioSource : IDisposable
     {

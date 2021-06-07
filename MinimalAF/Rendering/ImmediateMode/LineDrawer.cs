@@ -2,12 +2,6 @@
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
-    public enum CapType
-    {
-        None,
-        Circle
-    }
-
     class LineDrawer : GeometryDrawer
     {
         QuadDrawer _quadDrawer;

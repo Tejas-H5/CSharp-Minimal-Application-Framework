@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using OpenTK.Audio.OpenAL;
 
-namespace MinimalAF.Audio.Core
+namespace MinimalAF.Audio
 {
     public class AudioData
     {

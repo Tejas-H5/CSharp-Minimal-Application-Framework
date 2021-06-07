@@ -1,4 +1,4 @@
-﻿using MinimalAF.Audio.Core;
+﻿using MinimalAF.Audio;
 using AudioEngineTests.AudioTests;
 using System;
 using System.Threading;

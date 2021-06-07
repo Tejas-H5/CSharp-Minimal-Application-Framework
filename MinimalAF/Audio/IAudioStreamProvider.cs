@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.Audio.Core
+namespace MinimalAF.Audio
 {
     /// <summary>
     /// Should be used to playback of audio by calling low level OpenAL Apis, through a single Play() call,

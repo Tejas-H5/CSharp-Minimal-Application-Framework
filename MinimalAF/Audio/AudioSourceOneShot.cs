@@ -4,7 +4,7 @@ using System.Text;
 using OpenTK.Audio.OpenAL;
 using OpenTK.Mathematics;
 
-namespace MinimalAF.Audio.Core
+namespace MinimalAF.Audio
 {
     /// <summary>
     /// Use this one to load and play small sound effects. 

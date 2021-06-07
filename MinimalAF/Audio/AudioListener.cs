@@ -4,7 +4,7 @@ using System.Text;
 using OpenTK.Audio.OpenAL;
 using OpenTK.Mathematics;
 
-namespace MinimalAF.Audio.Core
+namespace MinimalAF.Audio
 {
     public class AudioListener
     {

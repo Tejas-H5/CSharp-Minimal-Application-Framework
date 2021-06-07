@@ -11,17 +11,44 @@ namespace MinimalAF.UI.Core
 {
     public class UIElement
     {
-        protected List<UIComponent> _components = new List<UIComponent>();
-        protected List<UIElement> _children = new List<UIElement>();
-        protected UIRectTransform _rectTransform = new UIRectTransform();
-
         public List<UIComponent> Components { get { return _components; } }
+        protected List<UIComponent> _components = new List<UIComponent>();
 
         /// <summary>
         /// Should not be used over the other wrapped getters/setters if possible.
         /// mainly for components to make some modification for example after a Resize()
         /// </summary>
         public UIRectTransform RectTransform { get { return _rectTransform; } }
+        protected UIRectTransform _rectTransform = new UIRectTransform();
+
+        protected List<UIElement> _children = new List<UIElement>();
+
+        protected UIElement _parent = null;
+        public UIElement Parent {
+            get {
+                return _parent;
+            }
+            set {
+                _parent = value;
+                _dirty = true;
+            }
+        }
+
+        public bool IsVisible {
+            get { return _isVisible; }
+            set {
+                _isVisible = value;
+                IsVisibleNextFrame = value;
+                if (_parent != null)
+                {
+                    _parent.SetDirty();
+                }
+            }
+        }
+        private bool _isVisible = true;
+
+        public bool IsVisibleNextFrame = true;
+        protected bool _dirty = true;
 
         public UIElement()
         {
@@ -40,19 +67,6 @@ namespace MinimalAF.UI.Core
             get { return _rectTransform.Rect; }
             set {
                 _rectTransform.Rect = value;
-                //_rectTransform.UpdateOffsetFromRect(GetParentRect());
-            }
-        }
-
-        public float AbsCenterX {
-            get {
-                return Rect.X0 + _rectTransform.NormalizedCenter.X * Rect.Width;
-            }
-        }
-
-        public float AbsCenterY {
-            get {
-                return Rect.Y0 + _rectTransform.NormalizedCenter.Y * Rect.Height;
             }
         }
 
@@ -73,6 +87,18 @@ namespace MinimalAF.UI.Core
 
         public Rect2D NormalizedAnchoring {
             get { return _rectTransform.NormalizedAnchoring; }
+        }
+
+        public float AbsCenterX {
+            get {
+                return Rect.X0 + _rectTransform.NormalizedCenter.X * Rect.Width;
+            }
+        }
+
+        public float AbsCenterY {
+            get {
+                return Rect.Y0 + _rectTransform.NormalizedCenter.Y * Rect.Height;
+            }
         }
 
         public UIElement this[int index] {
@@ -307,34 +333,6 @@ namespace MinimalAF.UI.Core
             }
         }
 
-        protected UIElement _parent = null;
-        public UIElement Parent {
-            get {
-                return _parent;
-            }
-            set {
-                _parent = value;
-                _dirty = true;
-            }
-        }
-
-        private bool _isVisible = true;
-        public bool IsVisible {
-            get { return _isVisible; }
-            set {
-                _isVisible = value;
-                IsVisibleNextFrame = value;
-                if(_parent != null)
-                {
-                    _parent.SetDirty();
-                }
-            }
-        }
-
-        public bool IsVisibleNextFrame = true;
-
-        protected bool _dirty = true;
-
 #if DEBUG
         UIMouseListener _mouseListenComponent;
         void SetParentDebug()
@@ -563,7 +561,7 @@ namespace MinimalAF.UI.Core
         }
 
 #if DEBUG
-        void DrawDebug()
+        private void DrawDebug()
         {
             //CTX.SetDrawColor(0, 0, 0, 0.5f);
             //CTX.DrawRectOutline(1, Rect);
@@ -608,10 +606,6 @@ namespace MinimalAF.UI.Core
             bool hasProcessed = false;
             for (int i = 0; i < _children.Count; i++)
             {
-                // Fun fact:
-                // if I write this as hasProcessed || _children[i].ProcessChildEvents(), then 
-                // ProcessChildEvents() half of the or statement won't execute if hasProcessed is true
-
                 bool hasChildProcessed = _children[i].ProcessChildEvents();
                 hasProcessed = hasProcessed || hasChildProcessed;
             }

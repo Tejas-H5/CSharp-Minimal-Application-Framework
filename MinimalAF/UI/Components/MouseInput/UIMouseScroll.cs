@@ -1,11 +1,11 @@
 ﻿using MinimalAF.Logic;
-using MinimalAF.UI.Core;
+using MinimalAF.UI;
 using MinimalAF.Util;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.UI.Components.MouseInput
+namespace MinimalAF.UI
 {
     [RequiredComponents(typeof(UIMouseListener))]
     public class UIMouseScroll : UIComponent

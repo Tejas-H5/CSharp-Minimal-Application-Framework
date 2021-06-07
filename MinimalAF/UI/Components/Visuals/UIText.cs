@@ -1,10 +1,10 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.Rendering;
-using MinimalAF.UI.Core;
+using MinimalAF.UI;
 using System;
 using System.Drawing;
 
-namespace MinimalAF.UI.Components.Visuals
+namespace MinimalAF.UI
 {
     public class UIText : UIComponent
     {

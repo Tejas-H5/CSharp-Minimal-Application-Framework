@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.UI.Property
+namespace MinimalAF.UI
 {
     public abstract class Property<T> : ObservableData<T>, IProperty
     {

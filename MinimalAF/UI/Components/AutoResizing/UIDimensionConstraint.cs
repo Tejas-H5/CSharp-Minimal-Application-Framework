@@ -1,7 +1,7 @@
 ﻿using MinimalAF.Datatypes;
-using MinimalAF.UI.Core;
+using MinimalAF.UI;
 
-namespace MinimalAF.UI.Components.AutoResizing.Uncompleted
+namespace MinimalAF.UI
 {
     public class UIDimensionConstraint : UIComponent
     {

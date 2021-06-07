@@ -1,8 +1,8 @@
 ﻿using MinimalAF.Datatypes;
-using MinimalAF.UI.Components.MouseInput;
-using MinimalAF.UI.Components.Visuals;
+using MinimalAF.UI;
+using MinimalAF.UI;
 
-namespace MinimalAF.UI.Core
+namespace MinimalAF.UI
 {
     public static class UICreator
     {

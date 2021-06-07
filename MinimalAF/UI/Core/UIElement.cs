@@ -1,13 +1,13 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.UI.Components.Debugging;
-using MinimalAF.UI.Components.MouseInput;
+using MinimalAF.UI;
+using MinimalAF.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace MinimalAF.UI.Core
+namespace MinimalAF.UI
 {
     public class UIElement
     {

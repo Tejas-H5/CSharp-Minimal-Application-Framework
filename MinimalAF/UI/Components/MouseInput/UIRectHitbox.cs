@@ -1,6 +1,6 @@
-﻿using MinimalAF.UI.Core;
+﻿using MinimalAF.UI;
 
-namespace MinimalAF.UI.Components.MouseInput
+namespace MinimalAF.UI
 {
     public class UIRectHitbox : UIHitbox
     {

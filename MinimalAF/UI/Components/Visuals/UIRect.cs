@@ -1,8 +1,8 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.Rendering;
-using MinimalAF.UI.Core;
+using MinimalAF.UI;
 
-namespace MinimalAF.UI.Components.Visuals
+namespace MinimalAF.UI
 {
     public class UIRect : UIComponent
     {

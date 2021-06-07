@@ -1,9 +1,9 @@
-﻿using MinimalAF.UI.Core;
+﻿using MinimalAF.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.UI.Components.Debugging
+namespace MinimalAF.UI
 {
     public class UIDebugComponent : UIComponent
     {

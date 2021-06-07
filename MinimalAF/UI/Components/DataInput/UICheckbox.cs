@@ -1,15 +1,15 @@
 ﻿using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.UI.Components.MouseInput;
-using MinimalAF.UI.Components.Visuals;
-using MinimalAF.UI.Core;
-using MinimalAF.UI.Property;
+using MinimalAF.UI;
+using MinimalAF.UI;
+using MinimalAF.UI;
+using MinimalAF.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
-namespace MinimalAF.UI.Components.DataInput
+namespace MinimalAF.UI
 {
     //TODO: Esc to cancel out of an input
     //might have to use another string rather than the string inside the TextComponent

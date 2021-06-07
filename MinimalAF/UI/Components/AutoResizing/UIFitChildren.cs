@@ -1,12 +1,12 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.UI.Core;
+using MinimalAF.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.UI.Components.AutoResizing
+namespace MinimalAF.UI
 {
     public class UIFitChildren : UIComponent
     {

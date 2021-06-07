@@ -3,7 +3,7 @@ using MinimalAF.Util;
 using System;
 using System.Drawing;
 
-namespace MinimalAF.UI.Core
+namespace MinimalAF.UI
 {
     public class UIRectTransform : ObservableData<UIRectTransform>
     {

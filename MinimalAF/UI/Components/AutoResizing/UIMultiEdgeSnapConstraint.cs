@@ -1,6 +1,6 @@
-﻿using MinimalAF.UI.Core;
+﻿using MinimalAF.UI;
 
-namespace MinimalAF.UI.Components.AutoResizing
+namespace MinimalAF.UI
 {
     public class UIMultiEdgeSnapConstraint : UIComponent
     {

@@ -1,10 +1,10 @@
-﻿using MinimalAF.UI.Core;
-using MinimalAF.UI.Property;
+﻿using MinimalAF.UI;
+using MinimalAF.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.UI.Components.DataInput
+namespace MinimalAF.UI
 {
     public class UITextStringInput : UITextInput<string>
     {

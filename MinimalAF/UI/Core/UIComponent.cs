@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MinimalAF.UI.Core
+namespace MinimalAF.UI
 {
     public abstract class UIComponent
     {

@@ -2,7 +2,7 @@
 using MinimalAF.Util;
 using System;
 
-namespace MinimalAF.UI.Property
+namespace MinimalAF.UI
 {
     public class BooleanProperty : Property<bool>
     {

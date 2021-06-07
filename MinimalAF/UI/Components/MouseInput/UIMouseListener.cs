@@ -1,8 +1,8 @@
 ﻿using MinimalAF.Logic;
-using MinimalAF.UI.Core;
+using MinimalAF.UI;
 using System;
 
-namespace MinimalAF.UI.Components.MouseInput
+namespace MinimalAF.UI
 {
     [RequiredComponents(typeof(UIHitbox))]
     public class UIMouseListener : UIComponent

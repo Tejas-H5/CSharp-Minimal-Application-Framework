@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.UI.Core
+namespace MinimalAF.UI
 {
     /// <summary>
     /// Will be used to manage which UIElement is focused in the future

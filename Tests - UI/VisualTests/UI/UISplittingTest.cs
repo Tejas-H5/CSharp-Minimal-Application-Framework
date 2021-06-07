@@ -1,14 +1,9 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.UI;
-using MinimalAF.UI.Components.AutoResizing;
-using MinimalAF.UI.Components.DataInput;
 using MinimalAF.UI.Components.MouseInput;
 using MinimalAF.UI.Components.Visuals;
 using MinimalAF.UI.Core;
-using MinimalAF.UI.Property;
-using System;
 
 namespace MinimalAF.VisualTests.UI
 {

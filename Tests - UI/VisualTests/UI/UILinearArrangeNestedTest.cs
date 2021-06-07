@@ -1,7 +1,6 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.UI;
 using MinimalAF.UI.Components.AutoResizing;
 using MinimalAF.UI.Components.DataInput;
 using MinimalAF.UI.Components.MouseInput;

@@ -1,6 +1,5 @@
 ﻿using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.UI;
 using MinimalAF.UI.Components.MouseInput;
 using MinimalAF.UI.Components.Visuals;
 using MinimalAF.UI.Core;

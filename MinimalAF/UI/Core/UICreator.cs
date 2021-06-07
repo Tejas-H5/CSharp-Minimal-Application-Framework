@@ -1,9 +1,8 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.UI.Components.MouseInput;
 using MinimalAF.UI.Components.Visuals;
-using MinimalAF.UI.Core;
 
-namespace MinimalAF.UI
+namespace MinimalAF.UI.Core
 {
     public static class UICreator
     {
@@ -59,7 +58,7 @@ namespace MinimalAF.UI
         public static UIElement CreateRectOutline(Color4 color, int thickness = 1)
         {
             return CreateUIElement(
-                new UIRect(new Color4(0,0), color, thickness)
+                new UIRect(new Color4(0, 0), color, thickness)
             );
         }
 
@@ -90,8 +89,8 @@ namespace MinimalAF.UI
             return baseElement
                 .AddChildren(
                     upper
-                    .AnchoredPosCenterY(1,1)
-                    .PosSizeY(0,offset)
+                    .AnchoredPosCenterY(1, 1)
+                    .PosSizeY(0, offset)
                     ,
                     lower
                     .OffsetsY(0, offset)
@@ -108,7 +107,7 @@ namespace MinimalAF.UI
                     lower
                     .AnchoredPosCenterY(0, 0)
                     .PosSizeY(0, offset)
-                    
+
                     ,
                     upper
                     .OffsetsY(offset, 0)
@@ -139,8 +138,8 @@ namespace MinimalAF.UI
             return baseElement
                 .AddChildren(
                     left
-                    .AnchoredPosCenterX(0,0)
-                    .PosSizeX(0,offset)
+                    .AnchoredPosCenterX(0, 0)
+                    .PosSizeX(0, offset)
                     ,
                     right
                     .OffsetsX(offset, 0)
@@ -155,7 +154,7 @@ namespace MinimalAF.UI
         /// <returns></returns>
         public static UIElement InColumns(this UIElement baseElement, float[] columnOffsets, UIElement[] elements)
         {
-            return LinearAnchoring(baseElement, false, elements, columnOffsets);
+            return baseElement.LinearAnchoring(false, elements, columnOffsets);
         }
 
         /// <summary>
@@ -171,7 +170,7 @@ namespace MinimalAF.UI
         /// <returns></returns>
         public static UIElement InRows(this UIElement baseElement, float[] rowOffsets, UIElement[] elements)
         {
-            return LinearAnchoring(baseElement, true, elements, rowOffsets);
+            return baseElement.LinearAnchoring(true, elements, rowOffsets);
         }
 
         private static UIElement LinearAnchoring(this UIElement baseElement, bool vertical, UIElement[] elements, float[] offsets = null)
@@ -181,9 +180,9 @@ namespace MinimalAF.UI
             for (int i = 0; i < elements.Length; i++)
             {
                 float amount;
-                if(offsets == null)
+                if (offsets == null)
                 {
-                    amount = (i+1.0f) / (float)elements.Length;
+                    amount = (i + 1.0f) / elements.Length;
                 }
                 else
                 {
@@ -191,7 +190,7 @@ namespace MinimalAF.UI
                 }
 
                 if (vertical)
-                { 
+                {
                     elements[i].AnchorsY(last, amount);
                 }
                 else

@@ -53,10 +53,10 @@ namespace MinimalAF.UI.Core
             get { return _normalizedAnchoring; }
             set {
                 _normalizedAnchoring = value;
-                _normalizedAnchoring.X0 = MathUtil.Clamp01(_normalizedAnchoring.X0);
-                _normalizedAnchoring.X1 = MathUtil.Clamp01(_normalizedAnchoring.X1);
-                _normalizedAnchoring.Y0 = MathUtil.Clamp01(_normalizedAnchoring.Y0);
-                _normalizedAnchoring.Y1 = MathUtil.Clamp01(_normalizedAnchoring.Y1);
+                _normalizedAnchoring.X0 = MathUtilF.Clamp01(_normalizedAnchoring.X0);
+                _normalizedAnchoring.X1 = MathUtilF.Clamp01(_normalizedAnchoring.X1);
+                _normalizedAnchoring.Y0 = MathUtilF.Clamp01(_normalizedAnchoring.Y0);
+                _normalizedAnchoring.Y1 = MathUtilF.Clamp01(_normalizedAnchoring.Y1);
 
                 _normalizedAnchoring.X1 = MathF.Max(_normalizedAnchoring.X0, _normalizedAnchoring.X1);
                 _normalizedAnchoring.Y1 = MathF.Max(_normalizedAnchoring.Y0, _normalizedAnchoring.Y1);

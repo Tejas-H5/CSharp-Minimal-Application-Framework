@@ -138,7 +138,7 @@ namespace MinimalAF.Logic
         {
             _dragDeltaY = y - _dragStartY;
             _dragDeltaX = x - _dragStartX;
-            _dragDisplacement = MathF.Min(_dragDisplacement + MathUtil.Mag(x - _displacementStartX, y - _displacementStartY), 100);
+            _dragDisplacement = MathF.Min(_dragDisplacement + MathUtilF.Mag(x - _displacementStartX, y - _displacementStartY), 100);
             _displacementStartX = x;
             _displacementStartY = y;
         }

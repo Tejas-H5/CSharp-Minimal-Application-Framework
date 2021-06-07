@@ -1,5 +1,4 @@
 ﻿using MinimalAF.UI;
-using MinimalAF.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;

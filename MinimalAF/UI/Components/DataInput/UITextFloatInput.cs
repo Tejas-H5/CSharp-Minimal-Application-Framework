@@ -1,5 +1,4 @@
 ﻿using MinimalAF.UI;
-using MinimalAF.UI;
 using MinimalAF.Util;
 using System;
 using System.Collections.Generic;

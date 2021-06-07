@@ -16,7 +16,6 @@ namespace MinimalAF.Rendering
             return ResourceMap<Texture>.GetCached(name);
         }
 
-        //TODO: implement this if it is ever needed
         public static void UnloadTextures()
         {
             ResourceMap<Texture>.UnloadResources();

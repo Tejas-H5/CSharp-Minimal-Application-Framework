@@ -39,10 +39,10 @@ namespace MinimalAF.Audio
             Data = audioData;
         }
 
-        public static AudioClipOneShot FromFile(string filepath)
+        public static AudioClipOneShot FromFile(string filepath, AudioDataImportSettings settings = null)
         {
             //TODO: Cache this as well as audiodata
-            AudioData d = AudioData.FromFile(filepath);
+            AudioData d = AudioData.FromFile(filepath, settings);
             if (d == null)
                 return null;
 

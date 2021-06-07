@@ -82,11 +82,19 @@ namespace MinimalAF.Audio
             }
         }
 
-        public static AudioData FromFile(string filepath)
+        public static AudioData FromFile(string filepath, AudioDataImportSettings importSettings = null)
         {
+            if(importSettings == null)
+            {
+                importSettings = new AudioDataImportSettings()
+                {
+                    ForceMono = false
+                };
+            }
+
             try
             {
-                return LoadAudioClip(filepath);
+                return LoadAudioClip(filepath, importSettings);
             }
             catch (Exception e)
             {
@@ -96,7 +104,7 @@ namespace MinimalAF.Audio
         }
 
         //Code partially taken from https://stackoverflow.com/questions/42483778/how-to-get-float-array-of-samples-from-audio-file
-        private static AudioData LoadAudioClip(string filepath)
+        private static AudioData LoadAudioClip(string filepath, AudioDataImportSettings importSettings)
         {
             using (MediaFoundationReader media = new MediaFoundationReader(filepath))
             {
@@ -116,6 +124,28 @@ namespace MinimalAF.Audio
                 for (int i = 0; i < rawData.Length; i++)
                 {
                     rawData16bit[i] = (short)(rawData[i] * short.MaxValue);
+                }
+
+                if (importSettings.ForceMono)
+                {
+                    if(channels > 1)
+                    {
+                        short[] rawData16BitMono = new short[rawData16bit.Length / channels];
+
+                        for(int i = 0; i < rawData16BitMono.Length; i++)
+                        {
+                            short data = 0;
+                            for(int j = 0; j < channels; j++)
+                            {
+                                data += (short)(rawData16bit[i * channels + j]/channels);
+                            }
+
+                            rawData16BitMono[i] = data;
+                        }
+
+                        rawData16bit = rawData16BitMono;
+                        channels = 1;
+                    }
                 }
 
                 Console.WriteLine("Opened [" + filepath + "]");

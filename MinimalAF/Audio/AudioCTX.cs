@@ -163,6 +163,8 @@ namespace MinimalAF.Audio
 
             _device = ALDevice.Null;
 
+            AudioMap.UnloadAllCachedAudio();
+
             CurrentSelectedInstance = null;
         }
 

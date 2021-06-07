@@ -1,6 +1,4 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.Util;
-using System;
+﻿using System;
 
 namespace MinimalAF.UI
 {

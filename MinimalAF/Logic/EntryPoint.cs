@@ -19,6 +19,6 @@ namespace MinimalAF.Logic
             CTX.Viewport2D(Window.Width, Window.Height);
         }
 
-        public virtual void Cleanup(){}
+        public virtual void Cleanup() { }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.Rendering;
-using MinimalAF.UI;
-using System;
 using System.Drawing;
 
 namespace MinimalAF.UI

@@ -1,7 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF.Rendering.Uncomplete
 {
@@ -27,10 +25,11 @@ namespace MinimalAF.Rendering.Uncomplete
 
             _fbo = GL.GenFramebuffer();
 
-            _textureObject = new Texture(1, 1, 
-                new TextureImportSettings { 
-                    Clamping = ClampingType.ClampToEdge, 
-                    Filtering = FilteringType.NearestNeighbour ,
+            _textureObject = new Texture(1, 1,
+                new TextureImportSettings
+                {
+                    Clamping = ClampingType.ClampToEdge,
+                    Filtering = FilteringType.NearestNeighbour,
                     PixelFormatType = PixelFormat.Rgb,
                     InternalFormat = PixelInternalFormat.Rgb
                 });

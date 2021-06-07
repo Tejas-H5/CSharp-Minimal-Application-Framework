@@ -1,7 +1,6 @@
 ﻿using MinimalAF.Datatypes;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF.UI
 {
@@ -31,7 +30,7 @@ namespace MinimalAF.UI
         public Property(T value, Action<T> onChangedCallback)
         {
             _value = value;
-            if(onChangedCallback!=null)
+            if (onChangedCallback != null)
                 OnDataChanged += onChangedCallback;
         }
 
@@ -56,7 +55,7 @@ namespace MinimalAF.UI
 
         public void AddCallback(Action<object> a)
         {
-            if(_actions == null)
+            if (_actions == null)
                 _actions = new Dictionary<Action<object>, Action<T>>();
 
             if (_actions.ContainsKey(a))

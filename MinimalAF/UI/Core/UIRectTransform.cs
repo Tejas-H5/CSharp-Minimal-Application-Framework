@@ -26,7 +26,7 @@ namespace MinimalAF.UI
 
         public PointF NormalizedCenter {
             get { return _normalizedCenter; }
-            set { 
+            set {
                 _normalizedCenter = value;
                 DataChanged(this);
             }
@@ -203,7 +203,7 @@ namespace MinimalAF.UI
             GetAnchors(parentRect, out anchorLeft, out anchorRight, out anchorBottom, out anchorTop);
 
             float left = _rect.X0 - anchorLeft;
-            float right =  anchorRight - _rect.X1;
+            float right = anchorRight - _rect.X1;
             float bottom = _rect.Y0 - anchorBottom;
             float top = anchorTop - _rect.Y1;
 

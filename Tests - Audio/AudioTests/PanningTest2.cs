@@ -1,10 +1,7 @@
 ﻿using MinimalAF.Audio;
-using AudioEngineTests.AudioTests;
-using System;
-using System.Threading;
+using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.Datatypes;
 
 namespace MinimalAF.AudioTests
 {

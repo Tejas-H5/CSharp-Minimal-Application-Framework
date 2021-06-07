@@ -1,6 +1,4 @@
-﻿using OpenTK.Mathematics;
-using System;
-using System.Drawing;
+﻿using System;
 
 namespace MinimalAF.Util
 {
@@ -31,9 +29,9 @@ namespace MinimalAF.Util
             return v * MathF.PI / (float)180;
         }
 
-		public static float ToDegrees(float v)
+        public static float ToDegrees(float v)
         {
-            return v * (float)180/ MathF.PI;
+            return v * (float)180 / MathF.PI;
         }
 
         public static float Clamp01(float value)

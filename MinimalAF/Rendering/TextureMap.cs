@@ -1,5 +1,4 @@
 ﻿using MinimalAF.ResourceManagement;
-using System.Collections.Generic;
 
 namespace MinimalAF.Rendering
 {

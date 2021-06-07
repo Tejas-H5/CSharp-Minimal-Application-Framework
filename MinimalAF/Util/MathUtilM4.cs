@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 
 namespace MinimalAF.Util
 {
     public static class MathUtilM4
     {
-		public static Matrix4 Translation(float x, float y, float z = 0)
+        public static Matrix4 Translation(float x, float y, float z = 0)
         {
             return Matrix4.Transpose(Matrix4.CreateTranslation(x, y, z));
         }

@@ -1,11 +1,11 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using MinimalAF.Datatypes;
+using MinimalAF.Rendering.ImmediateMode;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
-using MinimalAF.Rendering.ImmediateMode;
 using System.Collections.Generic;
 using System.Drawing;
 using Color4 = MinimalAF.Datatypes.Color4;
-using MinimalAF.Datatypes;
 
 namespace MinimalAF.Rendering
 {

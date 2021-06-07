@@ -1,9 +1,7 @@
 ﻿using MinimalAF.Datatypes;
 using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using OpenTK.Audio.OpenAL;
+using System;
 
 namespace MinimalAF.Audio
 {
@@ -84,7 +82,7 @@ namespace MinimalAF.Audio
 
         public static AudioData FromFile(string filepath, AudioDataImportSettings importSettings = null)
         {
-            if(importSettings == null)
+            if (importSettings == null)
             {
                 importSettings = new AudioDataImportSettings()
                 {
@@ -128,16 +126,16 @@ namespace MinimalAF.Audio
 
                 if (importSettings.ForceMono)
                 {
-                    if(channels > 1)
+                    if (channels > 1)
                     {
                         short[] rawData16BitMono = new short[rawData16bit.Length / channels];
 
-                        for(int i = 0; i < rawData16BitMono.Length; i++)
+                        for (int i = 0; i < rawData16BitMono.Length; i++)
                         {
                             short data = 0;
-                            for(int j = 0; j < channels; j++)
+                            for (int j = 0; j < channels; j++)
                             {
-                                data += (short)(rawData16bit[i * channels + j]/channels);
+                                data += (short)(rawData16bit[i * channels + j] / channels);
                             }
 
                             rawData16BitMono[i] = data;

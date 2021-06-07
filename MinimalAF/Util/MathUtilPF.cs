@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace MinimalAF.Util
 {
@@ -14,7 +12,7 @@ namespace MinimalAF.Util
                     MathUtilF.Lerp(a.Y, b.Y, t)
                 );
         }
-		
+
         public static float Mag(PointF a)
         {
             return MathF.Sqrt(a.X * a.X + a.Y * a.Y);
@@ -25,7 +23,7 @@ namespace MinimalAF.Util
             return a.X * b.X + a.Y * b.Y;
         }
 
-		public static float FindAngle(PointF a, PointF b)
+        public static float FindAngle(PointF a, PointF b)
         {
             float dotAB = Dot(a, b);
             float magAB = (Mag(a) * Mag(b));

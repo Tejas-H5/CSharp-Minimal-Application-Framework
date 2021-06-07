@@ -1,5 +1,4 @@
 ﻿using MinimalAF.Logic;
-using MinimalAF.UI;
 using System;
 
 namespace MinimalAF.UI

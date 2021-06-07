@@ -1,17 +1,14 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.UI;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace MinimalAF.UI
 {
     //TODO: Esc to cancel out of an input
     //might have to use another string rather than the string inside the TextComponent
-    [RequiredComponents(typeof(UIMouseListener), typeof(UIHitbox)), 
+    [RequiredComponents(typeof(UIMouseListener), typeof(UIHitbox)),
         RequiredComponentsInChildren(typeof(UIText))]
     public abstract class UITextInput<T> : UIDataInput<T>
     {
@@ -83,7 +80,7 @@ namespace MinimalAF.UI
         protected void OnTextFinalizedSelf()
         {
             T val;
-            if(!TryParseText(_textComponent.Text, out val))
+            if (!TryParseText(_textComponent.Text, out val))
             {
                 val = _initValue;
             }

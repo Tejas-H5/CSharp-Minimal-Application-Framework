@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace MinimalAF.UI
@@ -20,7 +19,7 @@ namespace MinimalAF.UI
             StringBuilder sb = new StringBuilder();
 
             sb.Append(ComponentTypes[0]);
-            for(int i = 1; i < ComponentTypes.Length; i++)
+            for (int i = 1; i < ComponentTypes.Length; i++)
             {
                 sb.Append(", ");
                 sb.Append(ComponentTypes[i]);

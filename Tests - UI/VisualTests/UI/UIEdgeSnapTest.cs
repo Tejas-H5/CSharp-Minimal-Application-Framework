@@ -70,7 +70,7 @@ namespace MinimalAF.VisualTests.UI
                     new UIEdgeSnapConstraint(_mouseDriven, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Bottom),
                     new UIText("Edge snap driven", new Color4(0, 1))
                 )
-                .Anchors(0, 0, 1f/3f, 1)
+                .Anchors(0, 0, 1f / 3f, 1)
                 .Offsets(10)
                 .AddChildren(
                     UICreator.CreatePanel(new Color4(1))
@@ -90,7 +90,7 @@ namespace MinimalAF.VisualTests.UI
                 )
                 ,
                 UICreator.CreatePanel(new Color4(1))
-                .Anchors(2f/3f, 0, 1f, 1)
+                .Anchors(2f / 3f, 0, 1f, 1)
                 .Offsets(10)
                 .AddComponents(
                     new UIEdgeSnapConstraint(_mouseDriven, UIRectEdgeSnapEdge.Bottom, UIRectEdgeSnapEdge.Bottom),

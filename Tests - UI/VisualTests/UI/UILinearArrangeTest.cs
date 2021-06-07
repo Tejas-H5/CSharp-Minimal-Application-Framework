@@ -31,12 +31,12 @@ namespace MinimalAF.VisualTests.UI
             .AddChildren(
                 ///*
                 hArrange = UICreator.CreateUIElement(
-                    new UIRect(new Color4(0, 0.2f), new Color4(0,1),1),
+                    new UIRect(new Color4(0, 0.2f), new Color4(0, 1), 1),
                     new UILinearArrangement(false, false, 50, 10)
                 )
-                .AnchorsY(0,1)
-                .OffsetsY(10,10)
-                .AnchoredPosCenterX(0,0)
+                .AnchorsY(0, 1)
+                .OffsetsY(10, 10)
+                .AnchoredPosCenterX(0, 0)
                 .PosX(10)
                 ,
                 //*/
@@ -45,13 +45,13 @@ namespace MinimalAF.VisualTests.UI
                     new UILinearArrangement(true, false, -1, 10)
                 )
                 .AnchorsX(0.75f, 1)
-                .OffsetsX(10,10)
-                .AnchoredPosCenterY(0,0)
+                .OffsetsX(10, 10)
+                .AnchoredPosCenterY(0, 0)
                 .PosSizeY(10, 0)
             );
 
             ///*
-            for(int i =0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 hArrange.AddChild(
                     UICreator.CreateUIElement(
@@ -73,7 +73,7 @@ namespace MinimalAF.VisualTests.UI
                         new UIRect(new Color4(0, 0.0f), new Color4(0, 1), 1),
                         new UIText($"v{i}:h={size}", new Color4(0, 1))
                     )
-                    .AnchoredPosCenterY(1,1)
+                    .AnchoredPosCenterY(1, 1)
                     .PosSizeY(10, size)
                 );
             }

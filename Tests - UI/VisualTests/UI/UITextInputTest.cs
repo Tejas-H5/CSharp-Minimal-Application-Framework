@@ -41,7 +41,7 @@ namespace MinimalAF.VisualTests.UI
                             new UITextStringInput(new StringProperty(""), true, false)
                         )
                         .AnchoredPosCenter(0.5f, 0.5f, 0.5f, 0.5f)
-                        .PosSize((i - 1) * size, (j - 1) * size, size-10, size-10)
+                        .PosSize((i - 1) * size, (j - 1) * size, size - 10, size - 10)
                     );
                 }
             }

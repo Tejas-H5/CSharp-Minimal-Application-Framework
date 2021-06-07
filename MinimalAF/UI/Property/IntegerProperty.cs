@@ -1,6 +1,4 @@
-﻿using MinimalAF.Datatypes;
-
-namespace MinimalAF.UI
+﻿namespace MinimalAF.UI
 {
     public class IntegerProperty : Property<int>
     {

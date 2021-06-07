@@ -1,7 +1,6 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.Rendering.Text;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace MinimalAF.Rendering.ImmediateMode

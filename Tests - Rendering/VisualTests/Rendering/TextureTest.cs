@@ -1,9 +1,8 @@
-﻿using OpenTK.Mathematics;
+﻿using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.ResourceManagement;
+using OpenTK.Mathematics;
 using System;
-using MinimalAF.Datatypes;
 
 namespace MinimalAF.VisualTests.Rendering
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace MinimalAF.Rendering.Text
 {
@@ -66,7 +65,7 @@ namespace MinimalAF.Rendering.Text
                         }
                     );
 
-                if(atlas == null)
+                if (atlas == null)
                 {
                     SetCurrentFont("", fontSize);
                     _allLoadedFonts[key] = _activeFont;

@@ -2,7 +2,6 @@
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
 using MinimalAF.UI;
-using System;
 
 namespace MinimalAF.VisualTests.UI
 {
@@ -24,7 +23,7 @@ namespace MinimalAF.VisualTests.UI
             _root = UICreator.CreateUIElement();
             UIElement fitChildren = UICreator.CreateUIElement(
                 new UIGraphicsRaycaster()
-                ///new UIFitChildren(false, true, new Rect2D(10,10,10,10))
+            ///new UIFitChildren(false, true, new Rect2D(10,10,10,10))
             );
 
             _root.AddChild(fitChildren);
@@ -36,13 +35,13 @@ namespace MinimalAF.VisualTests.UI
                 linearArrange = UICreator.CreateRectOutline(new Color4(0, 1))
                 .AddComponent(new UILinearArrangement(true, false, -1, 5))
                 .AnchorsX(0.25f, 0.75f)
-                .OffsetsX(10,10)
+                .OffsetsX(10, 10)
                 .AnchoredPosCenterY(1f, 1f)
                 .PosSizeY(-10f, 1f)
             );
 
 
-            for(int i = 0; i < 2; i++)
+            for (int i = 0; i < 2; i++)
             {
                 UIElement linearArrange2;
 
@@ -50,7 +49,7 @@ namespace MinimalAF.VisualTests.UI
                 .AddChildren(
                     linearArrange2 = UICreator.CreateRectOutline(new Color4(0, 1))
                     .AddComponent(new UILinearArrangement(true, false, -1, 5))
-                    .AnchorsX(0,1)
+                    .AnchorsX(0, 1)
                     .OffsetsX(10, 10)
                     .AnchoredPosCenterY(1f, 1f)
                     .PosSizeY(-10f, 1f)

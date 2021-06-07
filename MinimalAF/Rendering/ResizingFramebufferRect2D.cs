@@ -1,7 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF.Rendering.Uncomplete
 {
@@ -21,7 +18,7 @@ namespace MinimalAF.Rendering.Uncomplete
 
         public void Resize(int width, int height)
         {
-            if(width < _frameBuffer.Width)
+            if (width < _frameBuffer.Width)
             {
                 float nX = width / (float)_frameBuffer.Width;
                 float nY = height / (float)_frameBuffer.Height;

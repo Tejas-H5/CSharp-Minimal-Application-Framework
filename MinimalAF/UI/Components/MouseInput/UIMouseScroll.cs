@@ -1,9 +1,5 @@
 ﻿using MinimalAF.Logic;
-using MinimalAF.UI;
-using MinimalAF.Util;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF.UI
 {
@@ -24,7 +20,7 @@ namespace MinimalAF.UI
 
         public override void SetParent(UIElement parent)
         {
-            if(_mouseListener!=null)
+            if (_mouseListener != null)
                 _mouseListener.OnMousewheelScroll -= OnMouseScroll;
 
             base.SetParent(parent);

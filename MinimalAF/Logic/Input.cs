@@ -103,7 +103,7 @@
         }
 
         public static string CharactersPressed { get { return _keyboardManager.CharactersPressed; } }
-		public static string CharactersTyped { get { return _keyboardManager.CharactersTyped; } }
+        public static string CharactersTyped { get { return _keyboardManager.CharactersTyped; } }
         public static string CharactersReleased { get { return _keyboardManager.CharactersReleased; } }
         public static string CharactersDown { get { return _keyboardManager.CharactersDown; } }
 

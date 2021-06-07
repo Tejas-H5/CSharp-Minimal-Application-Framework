@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 
 namespace MinimalAF.Util
 {
@@ -30,9 +29,9 @@ namespace MinimalAF.Util
             return v * Math.PI / (double)180;
         }
 
-		public static double ToDegrees(double v)
+        public static double ToDegrees(double v)
         {
-            return v * (double)180/ Math.PI;
+            return v * (double)180 / Math.PI;
         }
 
         public static double Clamp01(double value)

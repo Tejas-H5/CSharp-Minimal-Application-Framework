@@ -1,9 +1,7 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF.UI
 {
@@ -17,7 +15,7 @@ namespace MinimalAF.UI
 
         public static Rect2D PeekStencilRect()
         {
-            if(_stencilRectStack.Count > 0)
+            if (_stencilRectStack.Count > 0)
             {
                 return _stencilRectStack[_stencilRectStack.Count - 1];
             }

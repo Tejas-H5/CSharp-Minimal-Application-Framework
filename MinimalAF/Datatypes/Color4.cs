@@ -16,7 +16,7 @@
         }
 
         public Color4(float f, float a = 1.0f)
-            : this(f,f,f,a)
+            : this(f, f, f, a)
         {
         }
 

@@ -1,5 +1,4 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
-using System;
 using System.Text;
 
 namespace MinimalAF.Logic
@@ -25,8 +24,8 @@ namespace MinimalAF.Logic
 
         internal void Unhook()
         {
-			if(_window != null)
-            	_window.TextInputEvent -= OnWindowTextInput;
+            if (_window != null)
+                _window.TextInputEvent -= OnWindowTextInput;
         }
 
         public bool IsKeyDown(KeyCode key)
@@ -116,7 +115,7 @@ namespace MinimalAF.Logic
         string _charactersReleased = "";
 
         public string CharactersPressed { get { return _charactersPressed; } }
-		public string CharactersTyped { get { return _charactersTyped; } }
+        public string CharactersTyped { get { return _charactersTyped; } }
         public string CharactersReleased { get { return _charactersReleased; } }
         public string CharactersDown { get { return _charactersDown; } }
 
@@ -142,7 +141,7 @@ namespace MinimalAF.Logic
             _charactersReleasedSB.Clear();
 
             _charactersTyped = _charactersTypedSB.ToString();
-            _charactersTypedSB.Clear(); 
+            _charactersTypedSB.Clear();
 
             bool[] temp = _prevKeyStates;
             _prevKeyStates = _keyStates;

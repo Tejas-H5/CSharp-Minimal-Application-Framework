@@ -12,7 +12,7 @@ namespace MinimalAF.VisualTests.UI
         UIElement CreateRect(int thicnkess)
         {
             return UICreator.CreateUIElement(
-                new UIRect(new Color4(0, 0), new Color4(0,1), thicnkess)
+                new UIRect(new Color4(0, 0), new Color4(0, 1), thicnkess)
             );
         }
 
@@ -35,7 +35,7 @@ namespace MinimalAF.VisualTests.UI
             _root.Anchors(new Rect2D(0, 0, 1, 1))
             .Offsets(new Rect2D(0, 0, 0, 0))
             .AddChildren(
-                CreateRect(5).TopSplit( 70,
+                CreateRect(5).TopSplit(70,
                     CreateTextElement("Top-Split 70")
                     ,
                     CreateRect(4).LeftSplit(200,

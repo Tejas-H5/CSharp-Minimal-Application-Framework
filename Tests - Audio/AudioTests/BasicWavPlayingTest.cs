@@ -1,5 +1,4 @@
-﻿using AudioEngineTests.AudioTests;
-using MinimalAF.Audio;
+﻿using MinimalAF.Audio;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
 using System;

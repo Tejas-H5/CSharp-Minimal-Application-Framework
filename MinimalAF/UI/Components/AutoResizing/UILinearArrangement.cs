@@ -1,7 +1,4 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.UI;
-
-namespace MinimalAF.UI
+﻿namespace MinimalAF.UI
 {
     public class UILinearArrangement : UIComponent
     {
@@ -41,14 +38,14 @@ namespace MinimalAF.UI
             _parent.ResizeChildren();
 
             float endSize;
-            if(_elementSizing >= 0)
+            if (_elementSizing >= 0)
             {
                 endSize = _padding + (_elementSizing + _padding) * _parent.Count;
             }
             else
             {
                 endSize = _padding;
-                for(int i = 0; i < _parent.Count; i++)
+                for (int i = 0; i < _parent.Count; i++)
                 {
                     if (!_parent[i].IsVisible)
                         continue;
@@ -57,7 +54,7 @@ namespace MinimalAF.UI
                     endSize += _padding;
                 }
             }
-            
+
 
             if (_vertical)
             {
@@ -110,7 +107,7 @@ namespace MinimalAF.UI
             {
                 float side = _reverse ? 1 : 0;
                 _parent[i]
-                    .AnchoredPosCenterX(side,side)
+                    .AnchoredPosCenterX(side, side)
                     .PosSizeX(x: _reverse ? -amount : amount, width: size)
                     .OffsetsY(bottom: _padding, top: _padding)
                     .AnchorsY(0, 1);

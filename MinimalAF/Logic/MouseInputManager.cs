@@ -27,7 +27,7 @@ namespace MinimalAF.Logic
 
         internal void Unhook()
         {
-            if(_window != null)
+            if (_window != null)
                 _window.MouseWheel -= OnWindowMouseWheel;
         }
 

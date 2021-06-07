@@ -1,7 +1,4 @@
-﻿using MinimalAF.Rendering;
-using MinimalAF.UI;
-
-namespace MinimalAF.UI
+﻿namespace MinimalAF.UI
 {
     /// <summary>
     /// Used to prevent drawing outside of a UI element's rectangle, like a stencil.

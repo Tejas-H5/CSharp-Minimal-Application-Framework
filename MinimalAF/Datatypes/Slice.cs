@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MinimalAF.Datatypes
+﻿namespace MinimalAF.Datatypes
 {
     // convenience class for working with arrays in place to reduce memory allocation/deallocation
     // It is inspired by the way python deals with arrays internally (or at least this is how I think it does)

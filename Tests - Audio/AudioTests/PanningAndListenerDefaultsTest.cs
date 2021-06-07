@@ -1,10 +1,7 @@
 ﻿using MinimalAF.Audio;
-using AudioEngineTests.AudioTests;
-using System;
-using System.Threading;
+using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.Datatypes;
 
 namespace MinimalAF.AudioTests
 {
@@ -18,7 +15,7 @@ namespace MinimalAF.AudioTests
             Window.Size = (800, 600);
             Window.Title = "PanningAndListenerDefaultsTest test";
 
-            CTX.SetClearColor(1,1,1,1);
+            CTX.SetClearColor(1, 1, 1, 1);
             CTX.SetCurrentFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
@@ -34,7 +31,7 @@ namespace MinimalAF.AudioTests
         public override void Update(double deltaTime)
         {
             timer += deltaTime;
-            if(timer > 0.5f)
+            if (timer > 0.5f)
             {
                 timer = 0;
                 _clackSound.Play();
@@ -49,13 +46,13 @@ namespace MinimalAF.AudioTests
 
         public override void Render(double deltaTime)
         {
-            CTX.SetDrawColor(0, 0,0,1);
+            CTX.SetDrawColor(0, 0, 0, 1);
             CTX.DrawCircle(Window.Width / 2, Window.Height / 2, 20);
 
 
             CTX.SetDrawColor(1, 0, 0, 1);
             CTX.DrawCircle(Input.MouseX, Input.MouseY, 20);
-            CTX.DrawTextAligned("You are here ("+listenerX +"," +listenerZ +")", Input.MouseX, Input.MouseY, HorizontalAlignment.Center, VerticalAlignment.Bottom);
+            CTX.DrawTextAligned("You are here (" + listenerX + "," + listenerZ + ")", Input.MouseX, Input.MouseY, HorizontalAlignment.Center, VerticalAlignment.Bottom);
         }
     }
 }

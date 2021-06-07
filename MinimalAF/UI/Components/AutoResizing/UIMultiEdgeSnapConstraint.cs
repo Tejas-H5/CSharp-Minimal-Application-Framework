@@ -1,6 +1,4 @@
-﻿using MinimalAF.UI;
-
-namespace MinimalAF.UI
+﻿namespace MinimalAF.UI
 {
     public class UIMultiEdgeSnapConstraint : UIComponent
     {
@@ -22,7 +20,7 @@ namespace MinimalAF.UI
         public override UIComponent Copy()
         {
             var copy = new UIEdgeSnapConstraint[_edgeSnapConstraints.Length];
-            for(int i =0; i < copy.Length; i++)
+            for (int i = 0; i < copy.Length; i++)
             {
                 copy[i] = (UIEdgeSnapConstraint)_edgeSnapConstraints[i].Copy();
             }

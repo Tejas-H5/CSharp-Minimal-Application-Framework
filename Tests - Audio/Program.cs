@@ -1,7 +1,6 @@
 ﻿using AudioEngineTests.AudioTests;
 using MinimalAF.AudioTests;
 using MinimalAF.Logic;
-using System;
 
 namespace AudioEngine
 {

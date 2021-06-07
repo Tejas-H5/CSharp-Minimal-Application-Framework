@@ -1,6 +1,4 @@
-﻿using MinimalAF.Logic;
-
-namespace RenderingEngine
+﻿namespace RenderingEngine
 {
     internal class Program
     {

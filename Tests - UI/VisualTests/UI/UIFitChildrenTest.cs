@@ -2,7 +2,6 @@
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
 using MinimalAF.UI;
-using System;
 
 namespace MinimalAF.VisualTests.UI
 {
@@ -29,18 +28,18 @@ namespace MinimalAF.VisualTests.UI
             .Offsets(new Rect2D(0, 0, 0, 0))
             .AddChildren(
                 autoResizingElement = UICreator.CreateUIElement(
-                    new UIRect(new Color4(1,0,0,0.2f), new Color4(0,1), 1),
+                    new UIRect(new Color4(1, 0, 0, 0.2f), new Color4(0, 1), 1),
                     new UIFitChildren(true, true)
                 )
-                .AnchoredPosCenter(0.5f, 0.5f, 0.5f,0.5f)
-                .PosSize(0,0,10,10)
+                .AnchoredPosCenter(0.5f, 0.5f, 0.5f, 0.5f)
+                .PosSize(0, 0, 10, 10)
                 .AddChildren(
                     UICreator.CreateUIElement(
-                        new UIRect(new Color4(0,0), new Color4(0, 1), 1),
-                        new UIText("margin 5", new Color4(0,1), VerticalAlignment.Center, HorizontalAlignment.Center)
+                        new UIRect(new Color4(0, 0), new Color4(0, 1), 1),
+                        new UIText("margin 5", new Color4(0, 1), VerticalAlignment.Center, HorizontalAlignment.Center)
                     )
-                    .AnchoredPosCenter(0.5f,0.5f)
-                    .PosSize(0,0,100,30)
+                    .AnchoredPosCenter(0.5f, 0.5f)
+                    .PosSize(0, 0, 100, 30)
                 )
             );
         }

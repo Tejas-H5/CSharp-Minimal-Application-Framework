@@ -1,10 +1,4 @@
-﻿using MinimalAF.UI;
-using MinimalAF.UI;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MinimalAF.UI
+﻿namespace MinimalAF.UI
 {
     public class UITextNumberInput : UITextInput<int>
     {

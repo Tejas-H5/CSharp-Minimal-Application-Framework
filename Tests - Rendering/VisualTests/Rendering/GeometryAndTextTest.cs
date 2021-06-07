@@ -1,6 +1,5 @@
 ﻿using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.ResourceManagement;
 using System;
 using System.Collections.Generic;
 using System.Text;

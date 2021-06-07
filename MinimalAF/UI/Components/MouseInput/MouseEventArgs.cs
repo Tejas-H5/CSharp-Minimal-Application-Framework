@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MinimalAF.UI
+﻿namespace MinimalAF.UI
 {
     public class MouseEventArgs
     {

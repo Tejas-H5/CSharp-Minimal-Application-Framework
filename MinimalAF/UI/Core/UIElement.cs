@@ -1,7 +1,6 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -129,7 +128,7 @@ namespace MinimalAF.UI
             if (element.Parent == this)
                 return this;
 
-            if(element.Parent != null)
+            if (element.Parent != null)
             {
                 element.Parent.RemoveChild(element);
             }
@@ -213,7 +212,7 @@ namespace MinimalAF.UI
             for (int i = 0; i < _children.Count; i++)
             {
                 bool res = _children[i].ChildContainsComponentOfType(t);
-                if(res)
+                if (res)
                     return true;
             }
 
@@ -229,7 +228,7 @@ namespace MinimalAF.UI
             if (res != null)
                 return res;
 
-            for(int i = 0; i < _children.Count; i++)
+            for (int i = 0; i < _children.Count; i++)
             {
                 res = _children[i].GetComponentInChildrenOfType<T>();
                 if (res != null)
@@ -370,7 +369,7 @@ namespace MinimalAF.UI
 
         public UIElement Offsets(float left, float bottom, float right, float top)
         {
-            return Offsets(new Rect2D(left,bottom,right,top));
+            return Offsets(new Rect2D(left, bottom, right, top));
         }
 
         public UIElement PosSizeX(float x, float width)
@@ -430,7 +429,7 @@ namespace MinimalAF.UI
 
         public UIElement Anchors(float left, float bottom, float right, float top)
         {
-            _rectTransform.SetNormalizedAnchoring(new Rect2D(left,bottom,right,top));
+            _rectTransform.SetNormalizedAnchoring(new Rect2D(left, bottom, right, top));
             return this;
         }
 

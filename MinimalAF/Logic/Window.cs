@@ -1,8 +1,6 @@
-﻿using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
-using OpenTK.Windowing.GraphicsLibraryFramework;
+﻿using MinimalAF.Datatypes;
+using OpenTK.Mathematics;
 using System;
-using MinimalAF.Datatypes;
 
 namespace MinimalAF.Logic
 {
@@ -20,9 +18,9 @@ namespace MinimalAF.Logic
             _instance = null;
         }
 
-        public static Vector2i Size { 
-            get { return new Vector2i(_instance.Size.X, _instance.Size.Y); } 
-            set { _instance.Size = new OpenTK.Mathematics.Vector2i(value.X, value.Y); } 
+        public static Vector2i Size {
+            get { return new Vector2i(_instance.Size.X, _instance.Size.Y); }
+            set { _instance.Size = new OpenTK.Mathematics.Vector2i(value.X, value.Y); }
         }
         public static void Maximize() { _instance.Maximize(); }
         public static void Fullscreen() { _instance.Fullscreen(); }

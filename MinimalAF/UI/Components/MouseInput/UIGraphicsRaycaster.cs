@@ -1,9 +1,6 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF.Logic;
-using MinimalAF.UI;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF.UI
 {
@@ -37,7 +34,7 @@ namespace MinimalAF.UI
             if (!Intersections.IsInsideRect(Input.MouseX, Input.MouseY, occlusionRect))
                 return;
 
-            for(int i = 0; i < root.Count; i++)
+            for (int i = 0; i < root.Count; i++)
             {
                 DepthFirstUpdate(root[i], occlusionRect.Intersect(root[i].Rect), intersectAction);
             }

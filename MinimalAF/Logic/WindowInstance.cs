@@ -1,11 +1,11 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using MinimalAF.Audio;
+using MinimalAF.Datatypes;
+using MinimalAF.Rendering;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
-using MinimalAF.Audio;
-using MinimalAF.Rendering;
 using System;
 using System.ComponentModel;
-using MinimalAF.Datatypes;
 
 namespace MinimalAF.Logic
 {
@@ -71,7 +71,7 @@ namespace MinimalAF.Logic
         private void ProcessCharTextInputs(TextInputEventArgs obj)
         {
             Console.WriteLine("char input");
-            for(int i = 0; i < obj.AsString.Length; i++)
+            for (int i = 0; i < obj.AsString.Length; i++)
             {
                 TextInputEvent?.Invoke(obj.AsString[i]);
             }
@@ -101,7 +101,7 @@ namespace MinimalAF.Logic
 
             TrackFPS(args);
 
-            updateFrames++;            
+            updateFrames++;
         }
 
         private void TrackFPS(FrameEventArgs args)

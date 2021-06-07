@@ -1,8 +1,4 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.Util;
-using System;
-
-namespace MinimalAF.UI
+﻿namespace MinimalAF.UI
 {
     public class StringProperty : Property<string>
     {

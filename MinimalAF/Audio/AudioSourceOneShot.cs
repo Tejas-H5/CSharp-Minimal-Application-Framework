@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using OpenTK.Audio.OpenAL;
-using OpenTK.Mathematics;
+﻿using OpenTK.Audio.OpenAL;
 
 namespace MinimalAF.Audio
 {

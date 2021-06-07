@@ -1,6 +1,4 @@
-﻿using MinimalAF.UI;
-
-namespace MinimalAF.UI
+﻿namespace MinimalAF.UI
 {
     public abstract class UIHitbox : UIComponent
     {

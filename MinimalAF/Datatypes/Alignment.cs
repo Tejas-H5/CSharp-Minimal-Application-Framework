@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MinimalAF.Datatypes
+﻿namespace MinimalAF.Datatypes
 {
     public enum VerticalAlignment
     {

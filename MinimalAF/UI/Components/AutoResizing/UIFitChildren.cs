@@ -1,10 +1,6 @@
 ﻿using MinimalAF.Datatypes;
-using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using MinimalAF.UI;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF.UI
 {
@@ -35,7 +31,7 @@ namespace MinimalAF.UI
 
             timer += deltaTime;
 
-            if(timer > 1)
+            if (timer > 1)
             {
                 timer = 0;
                 Tick();
@@ -128,7 +124,7 @@ namespace MinimalAF.UI
                 _parent.PosSize(_parent.AnchoredPositionAbs.X, _parent.AnchoredPositionAbs.X,
                     wantedRect.Width, wantedRect.Height);
             }
-            else if(_vertical)
+            else if (_vertical)
             {
                 _parent.PosSizeY(_parent.AnchoredPositionAbs.Y, wantedRect.Height);
             }

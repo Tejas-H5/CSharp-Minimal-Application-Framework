@@ -2,9 +2,6 @@
 using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AudioEngineTests.AudioTests
 {
@@ -25,11 +22,12 @@ namespace AudioEngineTests.AudioTests
             CTX.SetDrawColor(1, 1, 1, 1);
 
             string message = "Spacebar to Pause";
-            if(_streamedSource.GetSourceState() != AudioSourceState.Playing){
+            if (_streamedSource.GetSourceState() != AudioSourceState.Playing)
+            {
                 message = "Spacebar to Play";
             }
 
-            CTX.DrawTextAligned(message, Window.Width/2, Window.Height/2, HorizontalAlignment.Center, VerticalAlignment.Center);
+            CTX.DrawTextAligned(message, Window.Width / 2, Window.Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
         }
 
         public override void Update(double deltaTime)

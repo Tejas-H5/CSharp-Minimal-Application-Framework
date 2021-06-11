@@ -21,8 +21,7 @@ namespace MinimalAF.AudioTests
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
             _clackSound = new AudioSourceOneShot(false, false, clip);
 
-            _listener = new AudioListener();
-            AudioCTX.SetCurrentListener(_listener);
+            _listener = new AudioListener().MakeCurrent();
         }
 
         double timer = 0;
@@ -41,7 +40,6 @@ namespace MinimalAF.AudioTests
             listenerZ = 10 * ((Input.MouseY / Window.Height) - 0.5f);
 
             _listener.SetPosition(listenerX, 0, listenerZ);
-            AudioCTX.SetCurrentListener(_listener);
         }
 
         public override void Render(double deltaTime)

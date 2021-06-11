@@ -2,6 +2,7 @@
 using MinimalAF.Datatypes;
 using MinimalAF.Logic;
 using MinimalAF.Rendering;
+using OpenTK.Mathematics;
 
 namespace MinimalAF.AudioTests
 {
@@ -21,8 +22,7 @@ namespace MinimalAF.AudioTests
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
             _clackSound = new AudioSourceOneShot(false, false, clip);
 
-            _listener = new AudioListener();
-            AudioCTX.SetCurrentListener(_listener);
+            _listener = new AudioListener().MakeCurrent();
         }
 
         double timer = 0;
@@ -44,9 +44,8 @@ namespace MinimalAF.AudioTests
             listenerX = 10 * ((Input.MouseX / Window.Width) - 0.5f);
             listenerZ = 10 * ((Input.MouseY / Window.Height) - 0.5f);
 
-
-            _clackSound.SetPosition(listenerX, 0, listenerZ);
-            _clackSound.SetVelocity((listenerX - prevListenerX) / (float)deltaTime, 0, (listenerZ - prevListenerZ) / (float)deltaTime);
+            _clackSound.Position = new Vector3(listenerX, 0, listenerZ);
+            _clackSound.Velocity = new Vector3((listenerX - prevListenerX) / (float)deltaTime, 0, (listenerZ - prevListenerZ) / (float)deltaTime);
         }
 
         public override void Render(double deltaTime)

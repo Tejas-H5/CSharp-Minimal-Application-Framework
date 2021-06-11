@@ -96,6 +96,7 @@ namespace MinimalAF.Logic
             base.OnUpdateFrame(args);
 
             Input.Update();
+            AudioCTX.Update();
 
             _program.Update(args.Time);
 

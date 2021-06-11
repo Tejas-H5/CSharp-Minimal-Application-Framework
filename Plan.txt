@@ -1,7 +1,8 @@
 What to do next
  
 
--> Add a resource-map for Audio Data
+- Completely rework the audio class to pool openal Audio sources
+- implement Disposable for Audiosource and possibly other classes
 
 - implement dynamic compilation (for tests at least, if it cannot be done for entire applications)
 
@@ -10,7 +11,5 @@ What to do next
 	
 	- requires implementing texture buffer resizing. [Texture.cs ln 68]
 
-
-- Make the UI code faster to type and iterate
 
 - Replace OpenTK.Mathematics with System.Numerics, as it seems faster 

@@ -22,25 +22,159 @@ namespace MinimalAF.Audio
         const int NUM_BUFFERS = 4;
         const int BUFFER_SIZE = 65536; // 32kb of data in each buffer
 
-        short[] _intermediateBuffer = new short[BUFFER_SIZE];
+        short[] _tempBuffer = new short[BUFFER_SIZE];
 
         int[] _buffers = new int[NUM_BUFFERS];
 
         IAudioStreamProvider _streamProvider;
+        int _lastStreamPosition = 0;
 
         bool _isPlaying = false;
 
         public AudioSourceStreamed(bool relative, IAudioStreamProvider stream)
             : base(relative, false)
         {
-            for (int i = 0; i < _buffers.Length; i++)
-            {
-                _buffers[i] = AL.GenBuffer();
-                AL.BufferData(_buffers[i], stream.Format, _intermediateBuffer, stream.SampleRate);
-                AL.SourceQueueBuffer(_alSource, _buffers[i]);
-            }
+            InitializeBuffers();
 
             SetStream(stream);
+        }
+
+        private void InitializeBuffers()
+        {
+            CreateALBuffers();
+
+            ClearBuffers();
+        }
+
+        public override void Play()
+        {
+            OpenALSource alSource = ALAudioSourcePool.AcquireSource(this);
+            if (alSource == null)
+                return;
+
+            QueueAllBuffersForFirstTime(alSource);
+            StartPlaying(alSource);
+        }
+
+
+        private void QueueAllBuffersForFirstTime(OpenALSource alSource)
+        {
+            ClearBuffers();
+
+            for (int i = 0; i < _buffers.Length; i++)
+            {
+                alSource.QueueBuffer(_buffers[i]);
+            }
+        }
+
+
+        private void CreateALBuffers()
+        {
+            for (int i = 0; i < _buffers.Length; i++)
+            {
+                CreateALBuffer(i);
+            }
+        }
+
+        private void ClearBuffers()
+        {
+            ClearTempData();
+            for (int i = 0; i < _buffers.Length; i++)
+            {
+                SendTempDataToBuffer(_buffers[i]);
+            }
+        }
+
+        public override void Pause()
+        {
+            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
+            if (alSource == null)
+                return;
+
+            alSource.Pause();
+
+            _isPlaying = false;
+        }
+
+        public override void Stop()
+        {
+            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
+            if (alSource == null)
+                return;
+
+            alSource.Stop();
+
+            _isPlaying = false;
+            _streamProvider.PlaybackPosition = 0;
+            _lastStreamPosition = 0;
+        }
+
+        public void UpdateStream()
+        {
+            if (!_isPlaying)
+                return;
+
+            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
+            if (alSource == null)
+                return;
+
+            RotateProcessedBuffers(alSource);
+        }
+
+        private void RotateProcessedBuffers(OpenALSource alSource)
+        {
+            int buffersProcessed = alSource.GetBuffersProcessed();
+
+            while (buffersProcessed > 0)
+            {
+                int nextBuffer = alSource.UnqueueBuffer();
+                ReadStreamToTempDataBuffer();
+                SendTempDataToBuffer(nextBuffer);
+                alSource.QueueBuffer(nextBuffer);
+                buffersProcessed--;
+            }
+        }
+
+        private void ReadStreamToTempDataBuffer()
+        {
+            int amountCopied = _streamProvider.AdvanceStream(_tempBuffer, BUFFER_SIZE);
+
+            bool endOfStreamReached = amountCopied < BUFFER_SIZE;
+            if (endOfStreamReached)
+            {
+                _streamProvider.PlaybackPosition = 0;
+                _isPlaying = false;
+
+                //Clear the end of the buffer
+                for (int i = amountCopied; i < BUFFER_SIZE; i++)
+                {
+                    _tempBuffer[i] = 0;
+                }
+            }
+        }
+
+        private void CreateALBuffer(int bufferIndex)
+        {
+            _buffers[bufferIndex] = AL.GenBuffer();
+        }
+
+        private void SendTempDataToBuffer(int alBuffer)
+        {
+            AL.BufferData(alBuffer, _streamProvider.Format, _tempBuffer, _streamProvider.SampleRate);
+        }
+
+        private void ClearTempData()
+        {
+            for (int i = 0; i < _tempBuffer.Length; i++)
+            {
+                _tempBuffer[i] = 0;
+            }
+        }
+
+        private void StartPlaying(OpenALSource alSource)
+        {
+            alSource.Play();
+            _isPlaying = true;
         }
 
         public void SetStream(IAudioStreamProvider stream)
@@ -57,88 +191,5 @@ namespace MinimalAF.Audio
         {
             _streamProvider.PlaybackPosition = pos;
         }
-
-        public override void Play()
-        {
-            base.Play();
-            _isPlaying = true;
-        }
-
-        public override void Pause()
-        {
-            base.Pause();
-            _isPlaying = false;
-        }
-
-        public override void Stop()
-        {
-            base.Stop();
-            _isPlaying = false;
-        }
-
-        public void UpdateStream()
-        {
-            if (!_isPlaying)
-                return;
-
-            int buffersProcessed = 0;
-            AL.GetSource(_alSource, ALGetSourcei.BuffersProcessed, out buffersProcessed);
-
-            while (buffersProcessed > 0)
-            {
-                int unqueuedBuffer = AL.SourceUnqueueBuffer(_alSource);
-
-                CopyDataToIntermediateBuffer();
-
-                AL.BufferData(unqueuedBuffer, _streamProvider.Format, _intermediateBuffer, _streamProvider.SampleRate);
-                AL.SourceQueueBuffer(_alSource, unqueuedBuffer);
-
-                buffersProcessed--;
-            }
-        }
-
-        private void CopyDataToIntermediateBuffer()
-        {
-            int amountCopied = _streamProvider.AdvanceStream(_intermediateBuffer, BUFFER_SIZE);
-
-            bool endOfStreamReached = amountCopied < BUFFER_SIZE;
-            if (endOfStreamReached)
-            {
-                _streamProvider.PlaybackPosition = 0;
-                _isPlaying = false;
-
-                //Clear the end of the buffer
-                for (int i = amountCopied; i < BUFFER_SIZE; i++)
-                {
-                    _intermediateBuffer[i] = 0;
-                }
-            }
-        }
-
-
-        #region IDisposable Support
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects).
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-            }
-        }
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~AudioClipStreamed()
-        // {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
-        #endregion
     }
 }

@@ -17,8 +17,9 @@ namespace MinimalAF.Audio
     public class AudioSourceOneShot : AudioSource
     {
         AudioClipOneShot _clip;
+        float _pausedTime = 0;
 
-        public AudioSourceOneShot(bool relative, bool looping, AudioClipOneShot sound)
+        public AudioSourceOneShot(bool relative, bool looping, AudioClipOneShot sound = null)
             : base(relative, looping)
         {
             SetAudioClip(sound);
@@ -27,19 +28,63 @@ namespace MinimalAF.Audio
         public void SetAudioClip(AudioClipOneShot sound)
         {
             _clip = sound;
-            SetBuffer(_clip.ALBuffer);
+
+            if (sound == null)
+                return;
+        }
+
+
+        public override void Play()
+        {
+            OpenALSource alSource = ALAudioSourcePool.AcquireSource(this);
+            if (alSource == null)
+                return;
+
+            alSource.SetBuffer(_clip.ALBuffer);
+            alSource.SetSecOffset(_pausedTime);
+
+            alSource.Play();
+        }
+
+        public override void Pause()
+        {
+            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
+            if (alSource == null)
+                return;
+
+            alSource.Pause();
+
+            _pausedTime = alSource.GetSecOffset();
+        }
+
+        public override void Stop()
+        {
+            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
+            if (alSource == null)
+                return;
+
+            alSource.Stop();
+
+            _pausedTime = 0;
         }
 
         public override double GetPlaybackPosition()
         {
-            float pos;
-            AL.GetSource(_alSource, ALSourcef.SecOffset, out pos);
-            return pos;
+            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
+            if (alSource == null)
+                return 0;
+
+            return alSource.GetSecOffset();
         }
 
         public override void SetPlaybackPosition(double pos)
         {
-            AL.Source(_alSource, ALSourcef.SecOffset, (float)pos);
+            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
+            if (alSource == null)
+                return;
+
+            alSource.SetSecOffset((float)pos);
         }
+
     }
 }

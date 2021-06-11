@@ -59,10 +59,17 @@ namespace MinimalAF.Audio
 
         private void QueueAllBuffersForFirstTime(OpenALSource alSource)
         {
-            ClearBuffers();
+            if (_streamProvider == null)
+                return;
+
+            double lastPositionSeconds = _lastStreamPosition / (double)(_streamProvider.SampleRate * _streamProvider.Channels);
+            _streamProvider.PlaybackPosition = lastPositionSeconds;
+
 
             for (int i = 0; i < _buffers.Length; i++)
             {
+                ReadStreamToTempDataBuffer();
+                SendTempDataToBuffer(_buffers[i]);
                 alSource.QueueBuffer(_buffers[i]);
             }
         }
@@ -87,17 +94,24 @@ namespace MinimalAF.Audio
 
         public override void Pause()
         {
+            if (_streamProvider == null)
+                return;
+
             OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
             if (alSource == null)
                 return;
 
             alSource.Pause();
+            _lastStreamPosition += alSource.GetSampleOffset() * _streamProvider.Channels;
 
             _isPlaying = false;
         }
 
         public override void Stop()
         {
+            if (_streamProvider == null)
+                return;
+
             OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
             if (alSource == null)
                 return;
@@ -131,12 +145,17 @@ namespace MinimalAF.Audio
                 ReadStreamToTempDataBuffer();
                 SendTempDataToBuffer(nextBuffer);
                 alSource.QueueBuffer(nextBuffer);
+
                 buffersProcessed--;
+                _lastStreamPosition += BUFFER_SIZE;
             }
         }
 
         private void ReadStreamToTempDataBuffer()
         {
+            if (_streamProvider == null)
+                return;
+
             int amountCopied = _streamProvider.AdvanceStream(_tempBuffer, BUFFER_SIZE);
 
             bool endOfStreamReached = amountCopied < BUFFER_SIZE;
@@ -160,7 +179,18 @@ namespace MinimalAF.Audio
 
         private void SendTempDataToBuffer(int alBuffer)
         {
-            AL.BufferData(alBuffer, _streamProvider.Format, _tempBuffer, _streamProvider.SampleRate);
+            if (_streamProvider == null)
+                return;
+
+            ALFormat format = ALFormat.Mono16;
+            int sampleRate = 44100;
+            if (_streamProvider != null)
+            {
+                format = _streamProvider.Format;
+                sampleRate = _streamProvider.SampleRate;
+            }
+
+            AL.BufferData(alBuffer, format, _tempBuffer, sampleRate);
         }
 
         private void ClearTempData()
@@ -184,11 +214,17 @@ namespace MinimalAF.Audio
 
         public override double GetPlaybackPosition()
         {
+            if (_streamProvider == null)
+                return 0;
+
             return _streamProvider.PlaybackPosition;
         }
 
         public override void SetPlaybackPosition(double pos)
         {
+            if (_streamProvider == null)
+                return;
+
             _streamProvider.PlaybackPosition = pos;
         }
     }

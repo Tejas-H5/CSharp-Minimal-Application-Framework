@@ -20,15 +20,14 @@ namespace MinimalAF.Audio
         public int Priority = 0;
 
 
-        public float Gain { get; set; }
-        public float Pitch { get; set; }
-        public bool Relative { get; set; }
-        public bool Looping { get; set; }
+        public float Gain { get; set; } = 1;
+        public float Pitch { get; set; } = 1;
+        public bool Relative { get; set; } = false;
+        public bool Looping { get; set; } = false;
 
-        public Vector3 Position { get; set; }
-        public Vector3 Velocity { get; set; }
-        public Vector3 UpVector { get; set; }
-        public Vector3 LookAtVector { get; set; }
+        public Vector3 Position { get; set; } = Vector3.Zero;
+        public Vector3 Velocity { get; set; } = Vector3.Zero;
+        public Vector3 Direction { get; set; } = Vector3.Zero;
 
         protected AudioSource(bool relative = false, bool looping = false)
         {
@@ -47,8 +46,11 @@ namespace MinimalAF.Audio
 
         public AudioSourceState GetSourceState()
         {
-            throw new NotImplementedException();
-        }
+            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
+            if (alSource == null)
+                return AudioSourceState.Stopped;
 
+            return AudioSourceState.Playing;
+        }
     }
 }

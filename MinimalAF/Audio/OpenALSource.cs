@@ -37,28 +37,25 @@ namespace MinimalAF.Audio
         private OpenALSource(int sourceId)
         {
             _alSourceId = sourceId;
-
-            AudioCTX.ALCall(() => { SetPitch(1); });
-            AudioCTX.ALCall(() => { SetGain(1); });
-            AudioCTX.ALCall(() => { SetPosition(0, 0, 0); });
-            AudioCTX.ALCall(() => { SetVelocity(0, 0, 0); });
-            AudioCTX.ALCall(() => { SetSourceRelative(false); });
-            AudioCTX.ALCall(() => { SetLooping(false); });
         }
 
         public virtual void Play()
         {
-            AL.SourcePlay(_alSourceId);
+            if (GetSourceState() == AudioSourceState.Playing)
+                return;
+
+            AudioCTX.ALCall(() => { AL.SourcePlay(_alSourceId); });
+            AudioSourceState state = GetSourceState();
         }
 
         public virtual void Pause()
         {
-            AL.SourcePause(_alSourceId);
+            AudioCTX.ALCall(() => { AL.SourcePause(_alSourceId); });
         }
 
         public virtual void Stop()
         {
-            AL.SourceStop(_alSourceId);
+            AudioCTX.ALCall(() => { AL.SourceStop(_alSourceId); });
         }
 
         public AudioSourceState GetSourceState()
@@ -70,12 +67,14 @@ namespace MinimalAF.Audio
 
         public void QueueBuffer(int alBufferID)
         {
-            AL.SourceQueueBuffer(_alSourceId, alBufferID);
+            AudioCTX.ALCall(() => { AL.SourceQueueBuffer(_alSourceId, alBufferID); });
         }
 
         public int UnqueueBuffer()
         {
-            return AL.SourceUnqueueBuffer(_alSourceId);
+            int value;
+            AudioCTX.ALCall(out value, () => { return AL.SourceUnqueueBuffer(_alSourceId); });
+            return value;
         }
 
         /// <summary>
@@ -86,7 +85,25 @@ namespace MinimalAF.Audio
         public void StopAndUnqueueAllBuffers()
         {
             Stop();
-            AL.SourceUnqueueBuffers(_alSourceId, GetBuffersProcessed());
+            int numQueued = GetBuffersQueued();
+            if(numQueued > 0)
+            {
+                AudioCTX.ALCall(() => { AL.SourceUnqueueBuffers(_alSourceId, numQueued); });
+            }
+        }
+
+
+        public void PullDataFrom(AudioSource virtualSource)
+        {
+            SetPosition(virtualSource.Position.X, virtualSource.Position.Y, virtualSource.Position.Z);
+            SetVelocity(virtualSource.Velocity.X, virtualSource.Velocity.Y, virtualSource.Velocity.Z);
+            SetDirection(virtualSource.Direction.X, virtualSource.Direction.Y, virtualSource.Direction.Z);
+
+            SetGain(virtualSource.Gain);
+            SetPitch(virtualSource.Pitch);
+
+            SetLooping(virtualSource.Looping);
+            SetSourceRelative(virtualSource.Relative);
         }
 
 
@@ -103,7 +120,7 @@ namespace MinimalAF.Audio
 
         public void SetSecOffset(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.SecOffset, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.SecOffset, value); });
         }
 
         public float GetReferenceDistance()
@@ -115,7 +132,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetReferenceDistance(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.ReferenceDistance, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.ReferenceDistance, value); });
             return this;
         }
 
@@ -128,7 +145,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetMaxDistance(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.MaxDistance, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.MaxDistance, value); });
             return this;
         }
 
@@ -141,7 +158,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetRolloffFactor(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.RolloffFactor, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.RolloffFactor, value); });
             return this;
         }
 
@@ -154,7 +171,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetPitch(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.Pitch, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.Pitch, value); });
             return this;
         }
 
@@ -167,7 +184,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetGain(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.Gain, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.Gain, value); });
             return this;
         }
 
@@ -180,7 +197,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetMinGain(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.MinGain, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.MinGain, value); });
             return this;
         }
 
@@ -193,7 +210,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetMaxGain(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.MaxGain, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.MaxGain, value); });
             return this;
         }
 
@@ -206,7 +223,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetConeInnerAngle(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.ConeInnerAngle, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.ConeInnerAngle, value); });
             return this;
         }
 
@@ -219,7 +236,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetConeOuterAngle(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.ConeOuterAngle, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.ConeOuterAngle, value); });
             return this;
         }
 
@@ -232,7 +249,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetConeOuterGain(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.ConeOuterGain, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.ConeOuterGain, value); });
             return this;
         }
 
@@ -245,7 +262,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetEfxAirAbsorptionFactor(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.EfxAirAbsorptionFactor, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.EfxAirAbsorptionFactor, value); });
             return this;
         }
 
@@ -258,7 +275,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetEfxRoomRolloffFactor(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.EfxRoomRolloffFactor, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.EfxRoomRolloffFactor, value); });
             return this;
         }
 
@@ -271,7 +288,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetEfxConeOuterGainHighFrequency(float value)
         {
-            AL.Source(_alSourceId, ALSourcef.EfxConeOuterGainHighFrequency, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcef.EfxConeOuterGainHighFrequency, value); });
             return this;
         }
 
@@ -322,32 +339,34 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetByteOffset(int value)
         {
-            AL.Source(_alSourceId, ALSourcei.ByteOffset, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcei.ByteOffset, value); });
             return this;
         }
 
         public OpenALSource SetSampleOffset(int value)
         {
-            AL.Source(_alSourceId, ALSourcei.SampleOffset, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcei.SampleOffset, value); });
             return this;
         }
 
         public OpenALSource SetBuffer(int value)
         {
-            AL.Source(_alSourceId, ALSourcei.Buffer, value);
+            if (GetBuffer() == value)
+                return this;
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcei.Buffer, value); });
             return this;
         }
 
         public OpenALSource SetSourceType(int value)
         {
-            AL.Source(_alSourceId, ALSourcei.SourceType, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcei.SourceType, value); });
             return this;
         }
 
         //Does not contain a corresponding getter
         public OpenALSource SetEfxDirectFilter(int value)
         {
-            AL.Source(_alSourceId, ALSourcei.EfxDirectFilter, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcei.EfxDirectFilter, value); });
             return this;
         }
 
@@ -363,7 +382,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetSourceRelative(bool value)
         {
-            AL.Source(_alSourceId, ALSourceb.SourceRelative, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourceb.SourceRelative, value); });
             return this;
         }
         public bool GetLooping()
@@ -375,7 +394,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetLooping(bool value)
         {
-            AL.Source(_alSourceId, ALSourceb.Looping, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourceb.Looping, value); });
             return this;
         }
         public bool GetEfxDirectFilterGainHighFrequencyAuto()
@@ -387,7 +406,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetEfxDirectFilterGainHighFrequencyAuto(bool value)
         {
-            AL.Source(_alSourceId, ALSourceb.EfxDirectFilterGainHighFrequencyAuto, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourceb.EfxDirectFilterGainHighFrequencyAuto, value); });
             return this;
         }
         public bool GetEfxAuxiliarySendFilterGainAuto()
@@ -399,7 +418,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetEfxAuxiliarySendFilterGainAuto(bool value)
         {
-            AL.Source(_alSourceId, ALSourceb.EfxAuxiliarySendFilterGainAuto, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourceb.EfxAuxiliarySendFilterGainAuto, value); });
             return this;
         }
         public bool GetEfxAuxiliarySendFilterGainHighFrequencyAuto()
@@ -411,7 +430,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetEfxAuxiliarySendFilterGainHighFrequencyAuto(bool value)
         {
-            AL.Source(_alSourceId, ALSourceb.EfxAuxiliarySendFilterGainHighFrequencyAuto, value);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourceb.EfxAuxiliarySendFilterGainHighFrequencyAuto, value); });
             return this;
         }
 
@@ -427,7 +446,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetPosition(float x, float y, float z)
         {
-            AL.Source(_alSourceId, ALSource3f.Position, x, y, -z);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSource3f.Position, x, y, -z); });
             return this;
         }
 
@@ -440,7 +459,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetVelocity(float x, float y, float z)
         {
-            AL.Source(_alSourceId, ALSource3f.Velocity, x, y, -z);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSource3f.Velocity, x, y, -z); });
             return this;
         }
 
@@ -453,7 +472,7 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetDirection(float x, float y, float z)
         {
-            AL.Source(_alSourceId, ALSource3f.Direction, x, y, -z);
+            AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSource3f.Direction, x, y, -z); });
             return this;
         }
 

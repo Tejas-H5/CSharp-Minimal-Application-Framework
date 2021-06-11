@@ -10,7 +10,7 @@ namespace MinimalAF.Audio
         const int MAX_AUDIO_SOURCES = 256;
         private static Stack<OpenALSource> _allAvailableOpenALSources = new Stack<OpenALSource>();
 
-        private static Dictionary<AudioSource, OpenALSource> _activeSources = new Dictionary<AudioSource, ALSourceAOpenALSourceudioSourcePair>();
+        private static Dictionary<AudioSource, OpenALSource> _activeSources = new Dictionary<AudioSource, OpenALSource>();
         private static List<AudioSource> _unactiveList = new List<AudioSource>();
 
         internal static void Init()
@@ -20,7 +20,19 @@ namespace MinimalAF.Audio
 
         internal static void Update()
         {
+            SendAudioSourceDataToALSources();
+
             ReclaimUnactiveSources();
+        }
+
+        private static void SendAudioSourceDataToALSources()
+        {
+            foreach(var items in _activeSources)
+            {
+                AudioSource virtualSource = items.Key;
+                OpenALSource alSource = items.Value;
+                alSource.PullDataFrom(virtualSource);
+            }
         }
 
         internal static void Cleanup()
@@ -28,6 +40,11 @@ namespace MinimalAF.Audio
             DisposeAllOpenALSources();
         }
 
+        private static void DisposeAllOpenALSources()
+        {
+            ReclaimAllSources();
+            DisposeAllPooledSources();
+        }
 
         internal static OpenALSource AcquireSource(AudioSource audioSource)
         {
@@ -56,7 +73,7 @@ namespace MinimalAF.Audio
             if (lowerPrioritiySource != null)
             {
                 OpenALSource newALSource = _activeSources[lowerPrioritiySource];
-                _activeSources.Remove(lowerPrioritiySource);
+                RemoveActiveSource(lowerPrioritiySource);
 
                 return AssignALSourceToAudioSource(newALSource, audioSource);
             }
@@ -90,7 +107,7 @@ namespace MinimalAF.Audio
         {
             foreach (var pairs in _activeSources)
             {
-                if (SourceIsntPlayingAnything(pairs.Value.OpenAlAudioSource))
+                if (SourceIsntPlayingAnything(pairs.Value))
                 {
                     _unactiveList.Add(pairs.Key);
                 }
@@ -99,30 +116,37 @@ namespace MinimalAF.Audio
 
         private static void ReturnUnactiveSourcesToPool()
         {
-            foreach (int id in _unactiveList)
+            foreach (AudioSource source in _unactiveList)
             {
-                ReturnToPool(id);
+                ReturnToPool(source);
             }
 
             _unactiveList.Clear();
         }
 
-        private static void ReturnToPool(int id)
+        private static void ReturnToPool(AudioSource connectedSource)
         {
-            OpenALSource source = _activeSources[id].OpenAlAudioSource;
+            OpenALSource source = _activeSources[connectedSource];
 
-            _activeSources.Remove(id);
+            RemoveActiveSource(connectedSource);
 
             source.StopAndUnqueueAllBuffers();
 
             _allAvailableOpenALSources.Push(source);
         }
 
+        private static void RemoveActiveSource(AudioSource connectedSource)
+        {
+            Console.WriteLine("Source [" + connectedSource.SourceID + "] no longer active");
+
+            _activeSources.Remove(connectedSource);
+        }
 
         private static OpenALSource AssignALSourceToAudioSource(OpenALSource alSource, AudioSource audioSource)
         {
-            _activeSources[audioSource] = alSource;
+            Console.WriteLine("Made source [" + audioSource.SourceID + "] active");
 
+            _activeSources[audioSource] = alSource;
             alSource.StopAndUnqueueAllBuffers();
 
             return alSource;
@@ -144,18 +168,20 @@ namespace MinimalAF.Audio
             }
         }
 
-        private static void DisposeAllOpenALSources()
+        private static void DisposeAllPooledSources()
         {
-            foreach(var items in _activeSources)
-            {
-                _unactiveList.Add(items.Key);
-            }
-
-            ReclaimUnactiveSources();
-
-            foreach(OpenALSource alSource in _allAvailableOpenALSources)
+            foreach (OpenALSource alSource in _allAvailableOpenALSources)
             {
                 alSource.Dispose();
+            }
+            _allAvailableOpenALSources.Clear();
+        }
+
+        private static void ReclaimAllSources()
+        {
+            foreach (var items in _activeSources)
+            {
+                ReturnToPool(items.Key);
             }
         }
 

@@ -4,9 +4,10 @@ namespace MinimalAF.Audio
 {
     public static class AudioMap
     {
-        public static void RegisterAudioData(string name, string path, AudioDataImportSettings settings)
+        public static AudioData RegisterAudioData(string name, string path, AudioDataImportSettings settings)
         {
             ResourceMap<AudioData>.RegisterResource(name, path, settings, AudioData.FromFile);
+            return GetAudioData(name);
         }
 
         public static AudioData GetAudioData(string name)

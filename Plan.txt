@@ -1,8 +1,9 @@
 What to do next
  
 
-- Completely rework the audio class to pool openal Audio sources
-- implement Disposable for Audiosource and possibly other classes
+- check if I actually need to implement Disposable for Audiosource and possibly other classes
+	since they are now pooled
+
 
 - implement dynamic compilation (for tests at least, if it cannot be done for entire applications)
 

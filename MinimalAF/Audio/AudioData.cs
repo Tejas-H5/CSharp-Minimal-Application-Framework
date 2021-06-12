@@ -5,8 +5,21 @@ using System;
 
 namespace MinimalAF.Audio
 {
+    /// <summary>
+    /// Represents audio as an array of shorts.
+    /// 
+    /// Overrides GetHashCode to be a constant ID, so this can be used as a HashMap/Dictionary key
+    /// </summary>
     public class AudioData
     {
+        private static int _nextAudioDataID = 1;
+        public int ID;
+        public override int GetHashCode()
+        {
+            return ID;
+        }
+
+
         short[] _rawData;
         public short[] RawData {
             get {
@@ -65,6 +78,9 @@ namespace MinimalAF.Audio
 
         public AudioData(short[] rawInterleavedData, int sampleRate, int numChannels)
         {
+            ID = _nextAudioDataID;
+            _nextAudioDataID++;
+
             _sampleRate = sampleRate;
             _channels = numChannels;
             _rawData = rawInterleavedData;

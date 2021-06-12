@@ -10,8 +10,8 @@ namespace AudioEngine
         {
             EntryPoint[] tests =
             {
-                new BasicWavPlayingTest(),
                 new MusicPlayingTest(),
+                new BasicWavPlayingTest(),
                 new PanningAndListenerDefaultsTest(),
                 new PanningTest2(),
             };

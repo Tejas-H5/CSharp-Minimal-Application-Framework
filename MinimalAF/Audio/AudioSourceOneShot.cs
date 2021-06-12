@@ -36,6 +36,9 @@ namespace MinimalAF.Audio
 
         public override void Play()
         {
+            if (_clip == null)
+                return;
+
             OpenALSource alSource = ALAudioSourcePool.AcquireSource(this);
             if (alSource == null)
                 return;

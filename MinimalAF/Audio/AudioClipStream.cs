@@ -8,36 +8,42 @@ namespace MinimalAF.Audio
     /// 
     /// Multiple AudioClipStreamed instances can however point to the same AudioData.
     /// </summary>
-    public class AudioClipStreamed : IAudioStreamProvider
+    public class AudioClipStream : IAudioStreamProvider
     {
         AudioData _data;
         int _cursor = 0;
 
-        public AudioClipStreamed(AudioData data)
+        public AudioClipStream(AudioData data)
         {
             _data = data;
         }
 
-        double IAudioStreamProvider.PlaybackPosition {
+        public double PlaybackPosition {
             get {
                 return _cursor / (double)_data.SampleRate / _data.Channels;
             }
 
             set {
                 _cursor = _data.Channels * (int)(value * _data.SampleRate);
+
+                if (_cursor < 0)
+                    _cursor = 0;
+
+                if (_cursor >= _data.RawData.Length - _data.Channels)
+                    _cursor = _data.RawData.Length - _data.Channels;
             }
         }
 
-        double IAudioStreamProvider.Duration => _data.Duration;
+        public double Duration => _data.Duration;
 
 
-        ALFormat IAudioStreamProvider.Format => _data.Format;
+        public ALFormat Format => _data.Format;
 
-        int IAudioStreamProvider.SampleRate => _data.SampleRate;
+        public int SampleRate => _data.SampleRate;
 
-        int IAudioStreamProvider.Channels => _data.Channels;
+        public int Channels => _data.Channels;
 
-        int IAudioStreamProvider.AdvanceStream(short[] outputBuffer, int dataToWrite)
+        public int AdvanceStream(short[] outputBuffer, int dataToWrite)
         {
             int dataLeft = _data.RawData.Length - _cursor;
 

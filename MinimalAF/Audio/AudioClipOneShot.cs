@@ -1,5 +1,6 @@
 ﻿using OpenTK.Audio.OpenAL;
 using System;
+using System.Collections.Generic;
 
 namespace MinimalAF.Audio
 {
@@ -17,7 +18,21 @@ namespace MinimalAF.Audio
 
         public AudioData Data { get; private set; }
 
-        public AudioClipOneShot(AudioData audioData)
+
+        private static Dictionary<AudioData, AudioClipOneShot> _audioClipCache = new Dictionary<AudioData, AudioClipOneShot>();
+        public static AudioClipOneShot FromAudioData(AudioData data)
+        {
+            if (_audioClipCache.ContainsKey(data))
+            {
+                return _audioClipCache[data];
+            }
+
+            AudioClipOneShot clip = new AudioClipOneShot(data);
+            _audioClipCache[data] = clip;
+            return clip;
+        }
+
+        private AudioClipOneShot(AudioData audioData)
         {
             AudioCTX.ALCall(out _ALBuffer, () => { return AL.GenBuffer(); });
 

@@ -1,4 +1,5 @@
 ﻿using OpenTK.Audio.OpenAL;
+using System;
 
 namespace MinimalAF.Audio
 {
@@ -29,7 +30,8 @@ namespace MinimalAF.Audio
         IAudioStreamProvider _streamProvider;
         int _lastStreamPosition = 0;
 
-        bool _isPlaying = false;
+        bool _endOfStreamFound = false;
+        int _finalBufferSize = 0;
 
         public AudioSourceStreamed(bool relative, IAudioStreamProvider stream)
             : base(relative, false)
@@ -62,14 +64,15 @@ namespace MinimalAF.Audio
             if (_streamProvider == null)
                 return;
 
-            double lastPositionSeconds = _lastStreamPosition / (double)(_streamProvider.SampleRate * _streamProvider.Channels);
-            _streamProvider.PlaybackPosition = lastPositionSeconds;
-
+            _streamProvider.PlaybackPosition = SamplesToSeconds(_lastStreamPosition);
 
             for (int i = 0; i < _buffers.Length; i++)
             {
-                ReadStreamToTempDataBuffer();
-                SendTempDataToBuffer(_buffers[i]);
+                if (_endOfStreamFound)
+                    return;
+
+                int numCopied = ReadStreamToTempDataBuffer();
+                SendTempDataToBuffer(_buffers[i], numCopied);
                 alSource.QueueBuffer(_buffers[i]);
             }
         }
@@ -88,7 +91,7 @@ namespace MinimalAF.Audio
             ClearTempData();
             for (int i = 0; i < _buffers.Length; i++)
             {
-                SendTempDataToBuffer(_buffers[i]);
+                SendTempDataToBuffer(_buffers[i], BUFFER_SIZE);
             }
         }
 
@@ -101,10 +104,18 @@ namespace MinimalAF.Audio
             if (alSource == null)
                 return;
 
-            alSource.Pause();
-            _lastStreamPosition += alSource.GetSampleOffset() * _streamProvider.Channels;
+            int sampleOffset = alSource.GetSampleOffset();
+            alSource.StopAndUnqueueAllBuffers();
 
-            _isPlaying = false;
+            _lastStreamPosition += sampleOffset * _streamProvider.Channels;
+
+            //important as it will prevent the call to Update() from advancing the stream.
+            _endOfStreamFound = false;
+        }
+
+        private double SamplesToSeconds(int streamPos)
+        {
+            return streamPos / (double)(_streamProvider.SampleRate * _streamProvider.Channels);
         }
 
         public override void Stop()
@@ -116,21 +127,25 @@ namespace MinimalAF.Audio
             if (alSource == null)
                 return;
 
-            alSource.Stop();
+            alSource.StopAndUnqueueAllBuffers();
 
-            _isPlaying = false;
             _streamProvider.PlaybackPosition = 0;
             _lastStreamPosition = 0;
+            _endOfStreamFound = false;
         }
 
         public void UpdateStream()
         {
-            if (!_isPlaying)
-                return;
-
             OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
             if (alSource == null)
+            {
+                if (_endOfStreamFound)
+                {
+                    _lastStreamPosition += _finalBufferSize;
+                    _endOfStreamFound = false;
+                }
                 return;
+            }
 
             RotateProcessedBuffers(alSource);
         }
@@ -142,34 +157,38 @@ namespace MinimalAF.Audio
             while (buffersProcessed > 0)
             {
                 int nextBuffer = alSource.UnqueueBuffer();
-                ReadStreamToTempDataBuffer();
-                SendTempDataToBuffer(nextBuffer);
-                alSource.QueueBuffer(nextBuffer);
+
+                if (!_endOfStreamFound)
+                {
+                    int numCopied = ReadStreamToTempDataBuffer();
+                    SendTempDataToBuffer(nextBuffer, numCopied);
+                    alSource.QueueBuffer(nextBuffer);
+                }
 
                 buffersProcessed--;
-                _lastStreamPosition += BUFFER_SIZE;
+
+                int bufferSize = BUFFER_SIZE;
+                _lastStreamPosition += bufferSize;
+
+                Console.WriteLine(GetCurrentTime());
             }
         }
 
-        private void ReadStreamToTempDataBuffer()
+        private int ReadStreamToTempDataBuffer()
         {
             if (_streamProvider == null)
-                return;
+                return 0;
 
             int amountCopied = _streamProvider.AdvanceStream(_tempBuffer, BUFFER_SIZE);
 
-            bool endOfStreamReached = amountCopied < BUFFER_SIZE;
-            if (endOfStreamReached)
-            {
-                _streamProvider.PlaybackPosition = 0;
-                _isPlaying = false;
+            _endOfStreamFound = amountCopied < BUFFER_SIZE;
 
-                //Clear the end of the buffer
-                for (int i = amountCopied; i < BUFFER_SIZE; i++)
-                {
-                    _tempBuffer[i] = 0;
-                }
+            if (_endOfStreamFound)
+            {
+                _finalBufferSize = amountCopied;
             }
+
+            return amountCopied;
         }
 
         private void CreateALBuffer(int bufferIndex)
@@ -177,7 +196,7 @@ namespace MinimalAF.Audio
             _buffers[bufferIndex] = AL.GenBuffer();
         }
 
-        private void SendTempDataToBuffer(int alBuffer)
+        private void SendTempDataToBuffer(int alBuffer, int count)
         {
             if (_streamProvider == null)
                 return;
@@ -190,7 +209,7 @@ namespace MinimalAF.Audio
                 sampleRate = _streamProvider.SampleRate;
             }
 
-            AL.BufferData(alBuffer, format, _tempBuffer, sampleRate);
+            AL.BufferData(alBuffer, format, new Span<short>(_tempBuffer, 0, count), sampleRate);
         }
 
         private void ClearTempData()
@@ -204,7 +223,6 @@ namespace MinimalAF.Audio
         private void StartPlaying(OpenALSource alSource)
         {
             alSource.Play();
-            _isPlaying = true;
         }
 
         public void SetStream(IAudioStreamProvider stream)
@@ -214,18 +232,38 @@ namespace MinimalAF.Audio
 
         public override double GetPlaybackPosition()
         {
-            if (_streamProvider == null)
-                return 0;
-
-            return _streamProvider.PlaybackPosition;
+            return GetCurrentTime();
         }
+
+
+        double GetCurrentTime()
+        {
+            int streamPos = _lastStreamPosition;
+
+            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
+            if (alSource != null)
+                streamPos += alSource.GetSampleOffset() * _streamProvider.Channels;
+
+            double lastPositionSeconds = SamplesToSeconds(streamPos);
+            return lastPositionSeconds;
+        }
+
 
         public override void SetPlaybackPosition(double pos)
         {
             if (_streamProvider == null)
                 return;
 
+            bool wasPlaying = GetSourceState() == AudioSourceState.Playing;
+
+            if(wasPlaying)
+                Stop();
+
             _streamProvider.PlaybackPosition = pos;
+            _lastStreamPosition = (int)(Math.Floor(_streamProvider.PlaybackPosition * _streamProvider.SampleRate) * _streamProvider.Channels);
+
+            if (wasPlaying)
+                Play();
         }
     }
 }

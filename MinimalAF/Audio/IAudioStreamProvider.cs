@@ -11,6 +11,10 @@ namespace MinimalAF.Audio
     /// </summary>
     public interface IAudioStreamProvider
     {
+        /// <summary>
+        /// advances the stream by dataUnitsToWrite (short)s, then 
+        /// returns the number of (short)s that were written to the output bufferregardless of format or channels
+        /// </summary>
         int AdvanceStream(short[] outputBuffer, int dataUnitsToWrite);
 
         double PlaybackPosition { get; set; }

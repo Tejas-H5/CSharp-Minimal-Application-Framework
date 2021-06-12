@@ -66,7 +66,7 @@ namespace MinimalAF.Audio
             if (alSource == null)
                 return;
 
-            alSource.Stop();
+            alSource.StopAndUnqueueAllBuffers();
 
             _pausedTime = 0;
         }

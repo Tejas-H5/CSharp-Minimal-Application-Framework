@@ -11,8 +11,8 @@ namespace MinimalAF.Audio
     /// </summary>
     internal class OpenALSource : IDisposable
     {
-        protected int _alSourceId;
-        protected internal int ALSourceID {
+        private int _alSourceId;
+        internal int ALSourceID {
             get {
                 return _alSourceId;
             }
@@ -39,7 +39,7 @@ namespace MinimalAF.Audio
             _alSourceId = sourceId;
         }
 
-        public virtual void Play()
+        public void Play()
         {
             if (GetSourceState() == AudioSourceState.Playing)
                 return;
@@ -48,12 +48,12 @@ namespace MinimalAF.Audio
             AudioSourceState state = GetSourceState();
         }
 
-        public virtual void Pause()
+        public void Pause()
         {
             AudioCTX.ALCall(() => { AL.SourcePause(_alSourceId); });
         }
 
-        public virtual void Stop()
+        private void Stop()
         {
             AudioCTX.ALCall(() => { AL.SourceStop(_alSourceId); });
         }
@@ -91,6 +91,9 @@ namespace MinimalAF.Audio
             {
                 AudioCTX.ALCall(() => { AL.SourceUnqueueBuffers(_alSourceId, numQueued); });
             }
+            GetBuffersQueued();
+            SetBuffer(0);
+            ALSourceType type = AL.GetSourceType(_alSourceId);
         }
 
 
@@ -352,8 +355,6 @@ namespace MinimalAF.Audio
 
         public OpenALSource SetBuffer(int value)
         {
-            if (GetBuffer() == value)
-                return this;
             AudioCTX.ALCall(() => { AL.Source(_alSourceId, ALSourcei.Buffer, value); });
             return this;
         }
@@ -485,9 +486,9 @@ namespace MinimalAF.Audio
         #endregion
 
         #region IDisposable Support
-        protected bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue = false; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
+        void Dispose(bool disposing)
         {
             if (!disposedValue)
             {

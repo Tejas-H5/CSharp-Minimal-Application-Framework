@@ -150,7 +150,7 @@ namespace MinimalAF.UI
         /// <param name="columnOffsets">Set to null to get even anchoring</param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        public static UIElement InColumns(this UIElement baseElement, float[] columnOffsets, UIElement[] elements)
+        public static UIElement InColumns(this UIElement baseElement, float[] columnOffsets, params UIElement[] elements)
         {
             return baseElement.LinearAnchoring(false, elements, columnOffsets);
         }
@@ -166,39 +166,46 @@ namespace MinimalAF.UI
         /// <param name="rowOffsets">Set to null to get even anchoring</param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        public static UIElement InRows(this UIElement baseElement, float[] rowOffsets, UIElement[] elements)
+        public static UIElement InRows(this UIElement baseElement, float[] rowOffsets, params UIElement[] elements)
         {
             return baseElement.LinearAnchoring(true, elements, rowOffsets);
         }
 
         private static UIElement LinearAnchoring(this UIElement baseElement, bool vertical, UIElement[] elements, float[] offsets = null)
         {
-            float last = 0;
+            float previousAnchor = 0;
 
             for (int i = 0; i < elements.Length; i++)
             {
-                float amount;
+                float rightOrTopAnchor;
                 if (offsets == null)
                 {
-                    amount = (i + 1.0f) / elements.Length;
+                    rightOrTopAnchor = (i + 1.0f) / elements.Length;
                 }
                 else
                 {
-                    amount = offsets[i];
+                    if(i == elements.Length - 1)
+                    {
+                        rightOrTopAnchor = 1;
+                    }
+                    else
+                    {
+                        rightOrTopAnchor = offsets[i];
+                    }
                 }
 
                 if (vertical)
                 {
-                    elements[i].AnchorsY(last, amount);
+                    elements[i].AnchorsY(previousAnchor, rightOrTopAnchor);
                 }
                 else
                 {
-                    elements[i].AnchorsX(last, amount);
+                    elements[i].AnchorsX(previousAnchor, rightOrTopAnchor);
                 }
 
                 baseElement.AddChild(elements[i]);
 
-                last = amount;
+                previousAnchor = rightOrTopAnchor;
             }
 
             return baseElement;

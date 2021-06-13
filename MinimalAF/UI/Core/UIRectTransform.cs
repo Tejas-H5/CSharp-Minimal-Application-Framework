@@ -227,5 +227,21 @@ namespace MinimalAF.UI
             Rect = rectTransform.Rect;
             Unlock(this);
         }
+
+        public void SetWidth(float newWidth)
+        {
+            float centerX = NormalizedCenter.X;
+            float deltaW = Width - newWidth;
+            _rect.X0 += deltaW * centerX;
+            _rect.X1 -= deltaW * (1.0f - centerX);
+        }
+
+        public void SetHeight(float newHeight)
+        {
+            float centerY = NormalizedCenter.Y;
+            float deltaH = Height - newHeight;
+            _rect.Y0 += deltaH * centerY;
+            _rect.Y1 -= deltaH * (1.0f - centerY);
+        }
     }
 }

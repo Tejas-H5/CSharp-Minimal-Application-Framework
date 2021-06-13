@@ -4,15 +4,16 @@ namespace MinimalAF.Rendering
 {
     public static class TextureMap
     {
-        public static void RegisterTexture(string name, string path, TextureImportSettings settings)
+        public static Texture LoadTexture(string name, string path, TextureImportSettings settings)
         {
-            ResourceMap<Texture>.RegisterResource(name, path, settings, Texture.LoadFromFile);
+            ResourceMap<Texture>.LoadResource(name, path, settings, Texture.LoadFromFile);
+            return GetTexture(name);
         }
 
         //TODO: return a pink texture or similar
         public static Texture GetTexture(string name)
         {
-            return ResourceMap<Texture>.GetCached(name);
+            return ResourceMap<Texture>.GetResource(name);
         }
 
         public static void UnloadTextures()

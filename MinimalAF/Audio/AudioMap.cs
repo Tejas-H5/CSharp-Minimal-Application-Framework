@@ -4,15 +4,15 @@ namespace MinimalAF.Audio
 {
     public static class AudioMap
     {
-        public static AudioData RegisterAudioData(string name, string path, AudioDataImportSettings settings)
+        public static AudioData LoadAudio(string name, string path, AudioDataImportSettings settings)
         {
-            ResourceMap<AudioData>.RegisterResource(name, path, settings, AudioData.FromFile);
-            return GetAudioData(name);
+            ResourceMap<AudioData>.LoadResource(name, path, settings, AudioData.FromFile);
+            return GetAudio(name);
         }
 
-        public static AudioData GetAudioData(string name)
+        public static AudioData GetAudio(string name)
         {
-            return ResourceMap<AudioData>.GetCached(name);
+            return ResourceMap<AudioData>.GetResource(name);
         }
 
         public static void UnloadAllCachedAudio()

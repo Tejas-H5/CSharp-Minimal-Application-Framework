@@ -9,6 +9,7 @@ namespace RenderingEngineVisualTests
         {
             EntryPoint[] tests =
             {
+                new UIAspectRatioTest(),
                 new UISplittingTest(),
                 new UIFitChildrenTest(),
                 new UITest(),

@@ -7,7 +7,7 @@ namespace MinimalAF.ResourceManagement
     {
         private static Dictionary<string, T> _resourceCache = new Dictionary<string, T>();
 
-        public static void RegisterResource<TLoadSettings>(string name, string path, TLoadSettings loadSettings, Func<string, TLoadSettings, T> loadingFunction)
+        public static void LoadResource<TLoadSettings>(string name, string path, TLoadSettings loadSettings, Func<string, TLoadSettings, T> loadingFunction)
         {
             if (_resourceCache.ContainsKey(name))
                 return;
@@ -18,7 +18,7 @@ namespace MinimalAF.ResourceManagement
         }
 
         //TODO: return a pink texture or similar
-        public static T GetCached(string name)
+        public static T GetResource(string name)
         {
             if (!_resourceCache.ContainsKey(name))
                 return default;

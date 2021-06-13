@@ -33,7 +33,7 @@ namespace MinimalAF.Audio
         bool _endOfStreamFound = false;
         int _finalBufferSize = 0;
 
-        public AudioSourceStreamed(bool relative, IAudioStreamProvider stream)
+        public AudioSourceStreamed(bool relative, IAudioStreamProvider stream = null)
             : base(relative, false)
         {
             InitializeBuffers();
@@ -238,6 +238,9 @@ namespace MinimalAF.Audio
 
         double GetCurrentTime()
         {
+            if (_streamProvider == null)
+                return 0;
+
             int streamPos = _lastStreamPosition;
 
             OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);

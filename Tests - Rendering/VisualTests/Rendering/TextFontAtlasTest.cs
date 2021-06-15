@@ -16,13 +16,6 @@ namespace MinimalAF.VisualTests.Rendering
             CTX.SetClearColor(0, 0, 0, 0);
 
             CTX.SetCurrentFont("Consolas", 24);
-
-            Window.MouseWheel += MousewheelScroll;
-        }
-
-        private void MousewheelScroll(float amount)
-        {
-            pos += 50 * amount;
         }
 
 
@@ -35,6 +28,11 @@ namespace MinimalAF.VisualTests.Rendering
                 return;
             //*/
             timer = 0;
+
+            if (Input.MouseWheelNotches != 0)
+            {
+                pos += 50 * Input.MouseWheelNotches;
+            }
         }
 
         float pos = 0;

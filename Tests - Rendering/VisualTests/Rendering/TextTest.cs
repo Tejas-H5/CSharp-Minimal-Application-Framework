@@ -13,13 +13,11 @@ namespace MinimalAF.VisualTests.Rendering
         public override void Start()
         {
             Window.Size = (800, 600);
-            Window.Title = "Texture loading test";
+            Window.Title = "Matrix rain test";
 
             CTX.SetClearColor(0, 0, 0, 0);
 
             CTX.SetCurrentFont("Consolas", 24);
-
-            Window.MouseWheel += MousewheelScroll;
 
             rain = new List<string>();
         }
@@ -50,11 +48,6 @@ namespace MinimalAF.VisualTests.Rendering
             }
         }
 
-        private void MousewheelScroll(float amount)
-        {
-            pos += 50 * amount;
-        }
-
 
         double timer = 0;
         public override void Update(double deltaTime)
@@ -68,8 +61,6 @@ namespace MinimalAF.VisualTests.Rendering
 
             PushGibberish();
         }
-
-        float pos = 0;
 
         public override void Render(double deltaTime)
         {

@@ -38,7 +38,7 @@ namespace MinimalAF.Logic
         public static string ClipboardString { get { return _instance.ClipboardString; } set { _instance.ClipboardString = value; } }
 
 
-        public static event Action<float> MouseWheel {
+        internal static event Action<float> MouseWheel {
             add {
                 lock (_instance)
                 {

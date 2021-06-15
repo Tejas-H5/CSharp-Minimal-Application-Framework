@@ -25,7 +25,7 @@ namespace MinimalAF.VisualTests.Rendering
 
         public void Init()
         {
-            TextureMap.RegisterTexture("placeholder", "./Res/settings_icon.png", new TextureImportSettings
+            TextureMap.LoadTexture("placeholder", "./Res/settings_icon.png", new TextureImportSettings
             {
                 Filtering = FilteringType.NearestNeighbour
             });

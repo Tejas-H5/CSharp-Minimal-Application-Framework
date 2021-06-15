@@ -1,6 +1,8 @@
 What to do next
  
 
+- Debug error when at end of playing buffer
+
 - check if I actually need to implement Disposable for Audiosource and possibly other classes
 	since they are now pooled
 	

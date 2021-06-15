@@ -3,6 +3,9 @@ using System;
 
 namespace MinimalAF.UI
 {
+    /// <summary>
+    /// The root component must have  a GraphicsRaycaster component for this to work
+    /// </summary>
     [RequiredComponents(typeof(UIHitbox))]
     public class UIMouseListener : UIComponent
     {

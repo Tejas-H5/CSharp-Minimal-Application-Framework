@@ -13,6 +13,17 @@ namespace MinimalAF.Audio
         AudioData _data;
         int _cursor = 0;
 
+        /// <summary>
+        /// Can the playback position go negative?
+        /// </summary>
+        public bool UseSlackAtBegining { get; set; }
+
+        /// <summary>
+        /// Can the playback position go past the end?
+        /// (However, the stream will still stop playing)
+        /// </summary>
+        public bool UseSlackAtEnd { get; set; }
+
         public AudioClipStream(AudioData data)
         {
             _data = data;
@@ -25,17 +36,20 @@ namespace MinimalAF.Audio
 
             set {
                 _cursor = _data.Channels * (int)(value * _data.SampleRate);
-
-                if (_cursor < 0)
-                    _cursor = 0;
-
-                if (_cursor >= _data.RawData.Length - _data.Channels)
-                    _cursor = _data.RawData.Length - _data.Channels;
+                ConstrainSlack();
             }
         }
 
-        public double Duration => _data.Duration;
+        private void ConstrainSlack()
+        {
+            if (!UseSlackAtBegining && _cursor < 0)
+                _cursor = 0;
 
+            if (!UseSlackAtEnd && (_cursor >= _data.RawData.Length - _data.Channels))
+                _cursor = _data.RawData.Length - _data.Channels;
+        }
+
+        public double Duration => _data.Duration;
 
         public ALFormat Format => _data.Format;
 
@@ -45,6 +59,25 @@ namespace MinimalAF.Audio
 
         public int AdvanceStream(short[] outputBuffer, int dataToWrite)
         {
+            if(_cursor < 0)
+            {
+                int zeroesToWrite = -_cursor;
+                if (zeroesToWrite > dataToWrite)
+                    zeroesToWrite = dataToWrite;
+
+                for(int i = 0; i < zeroesToWrite; i++)
+                {
+                    outputBuffer[i] = 0;
+                }
+
+                _cursor += zeroesToWrite;
+
+                if (zeroesToWrite == dataToWrite)
+                    return dataToWrite;
+
+                dataToWrite -= zeroesToWrite;
+            }
+
             int dataLeft = _data.RawData.Length - _cursor;
 
             if (dataLeft <= 0)

@@ -5,7 +5,7 @@ namespace MinimalAF.Rendering
 {
     public class Mesh : IDisposable
     {
-        Vertex[] _data;
+        Vertex[] _vertices;
         uint[] _indices;
 
         int _vbo;
@@ -24,7 +24,7 @@ namespace MinimalAF.Rendering
 
         public Vertex[] Vertices {
             get {
-                return _data;
+                return _vertices;
             }
         }
 
@@ -34,68 +34,122 @@ namespace MinimalAF.Rendering
             }
         }
 
+
+        /// <summary>
+        /// If you are going to update the data every frame with UpdateBuffers, then set stream=true.
+        /// </summary>
         public Mesh(Vertex[] data, uint[] indices, bool stream = false)
         {
-            _data = data;
+            BufferUsageHint bufferUsage = BufferUsageHint.StaticDraw;
+            if (stream)
+                bufferUsage = BufferUsageHint.StreamDraw;
+
+            _vertices = data;
             _indices = indices;
 
             _indexCount = (uint)_indices.Length;
-            _vertexCount = (uint)_data.Length;
+            _vertexCount = (uint)_vertices.Length;
 
-            _vbo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+            InitMeshOpenGL(bufferUsage);
+        }
 
-            if (stream)
-            {
-                GL.BufferData(BufferTarget.ArrayBuffer, _data.Length * Vertex.SizeOf(), _data, BufferUsageHint.StreamDraw);
-            }
-            else
-            {
-                GL.BufferData(BufferTarget.ArrayBuffer, _data.Length * Vertex.SizeOf(), _data, BufferUsageHint.StaticDraw);
-            }
-
-            _vao = GL.GenVertexArray();
-            GL.BindVertexArray(_vao);
-
-            int positionInArray = 0;
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Vertex.SizeOf(), positionInArray * sizeof(float));
-            GL.EnableVertexAttribArray(0);
-            positionInArray += 3;
-
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Vertex.SizeOf(), positionInArray * sizeof(float));
-            GL.EnableVertexAttribArray(1);
-
-            _ebo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
-
-            if (stream)
-            {
-                GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.StreamDraw);
-            }
-            else
-            {
-                GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.StaticDraw);
-            }
+        private void InitMeshOpenGL(BufferUsageHint bufferUsage)
+        {
+            InitializeVertices(bufferUsage);
+            InitializeIndices(bufferUsage);
 
             GL.BindVertexArray(0);
         }
 
-
-        public void UpdateBuffer()
+        private void InitializeVertices(BufferUsageHint bufferUsage)
         {
-            UpdateBuffer((uint)_data.Length, (uint)_indices.Length);
+            GenerateAndBindVertexBuffer();
+            SendDataToBoundBuffer(bufferUsage);
+            GenerateAndBindVertexArray();
+            RegisterVertexAttributes();
         }
 
-        public void UpdateBuffer(uint vertexCount, uint indexCount)
+        private void GenerateAndBindVertexBuffer()
         {
-            _indexCount = indexCount;
-            _vertexCount = vertexCount;
+            _vbo = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+        }
+
+        private void SendDataToBoundBuffer(BufferUsageHint bufferUsage)
+        {
+            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * Vertex.SizeOf(), _vertices, bufferUsage);
+        }
+
+        private void GenerateAndBindVertexArray()
+        {
+            _vao = GL.GenVertexArray();
+            GL.BindVertexArray(_vao);
+        }
+
+        private static void RegisterVertexAttributes()
+        {
+            CreateVertexAttribPointer(attribute: 0, length: 3, offsetInArray: 0);
+            CreateVertexAttribPointer(attribute: 1, length: 2, offsetInArray: 3);
+        }
+
+        private static void CreateVertexAttribPointer(int attribute, int length, int offsetInArray)
+        {
+            GL.VertexAttribPointer(attribute, length, VertexAttribPointerType.Float, false, Vertex.SizeOf(), offsetInArray * sizeof(float));
+            GL.EnableVertexAttribArray(attribute);
+        }
+
+        private void InitializeIndices(BufferUsageHint bufferUsage)
+        {
+            GenerateAndBindIndexBuffer();
+            SendIndicesToBoundIndexBuffer(bufferUsage);
+        }
+
+        private void GenerateAndBindIndexBuffer()
+        {
+            _ebo = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
+        }
+
+        private void SendIndicesToBoundIndexBuffer(BufferUsageHint bufferUsage)
+        {
+            GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, bufferUsage);
+        }
+
+        public void UpdateBuffers()
+        {
+            UpdateBuffers((uint)_vertices.Length, (uint)_indices.Length);
+        }
+
+        /// <summary>
+        /// newVertexCount and newIndexCount MUST be less than the total number of vertices and indices on this mesh object.
+        /// </summary>
+        public void UpdateBuffers(uint newVertexCount, uint newIndexCount)
+        {
+            _indexCount = newIndexCount;
+            _vertexCount = newVertexCount;
+
+            if(_indexCount > _indices.Length || _vertexCount > _vertices.Length)
+            {
+                throw new Exception("The mesh buffer does not have this many vertices."
+                    + "you may only specify new index and vertex counts that are less than the amount initially allocated");
+            }
+
 
             GL.BindVertexArray(_vao);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (int)_vertexCount * Vertex.SizeOf(), _data);
+            UpdateVertexBuffer();
 
+            UpdateIndexBuffer();
+        }
+
+        private void UpdateVertexBuffer()
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (int)_vertexCount * Vertex.SizeOf(), _vertices);
+        }
+
+        private void UpdateIndexBuffer()
+        {
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
             GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)0, (int)_indexCount * sizeof(uint), _indices);
         }

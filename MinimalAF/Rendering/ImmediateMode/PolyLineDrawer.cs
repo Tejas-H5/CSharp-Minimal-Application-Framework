@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MinimalAF.Util;
+using System;
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
@@ -19,6 +20,9 @@ namespace MinimalAF.Rendering.ImmediateMode
         bool _canEnd = true;
 
         float _thickness = 0;
+
+        float _lastLastX;
+        float _lastLastY;
         float _lastX;
         float _lastY;
         float _lastPerpX;
@@ -45,6 +49,8 @@ namespace MinimalAF.Rendering.ImmediateMode
             }
 
             _thickness = thickness /= 2;
+            _lastLastX = x;
+            _lastLastY = y;
             _lastX = x;
             _lastY = y;
             _capType = cap;
@@ -53,11 +59,14 @@ namespace MinimalAF.Rendering.ImmediateMode
         }
 
 
-        public void AppendToPolyLine(float x, float y, bool useAv = true)
+        public void AppendToPolyLine(float x, float y, bool useAverage = true)
         {
             float dirX = x - _lastX;
             float dirY = y - _lastY;
             float mag = MathF.Sqrt(dirX * dirX + dirY * dirY);
+
+            if (mag < 0.00001f)
+                return;
 
             float perpX = -_thickness * dirY / mag;
             float perpY = _thickness * dirX / mag;
@@ -68,8 +77,11 @@ namespace MinimalAF.Rendering.ImmediateMode
             }
             else
             {
-                ExtendLineSegment(perpX, perpY, useAv);
+                ExtendLineSegment(perpX, perpY, useAverage);
             }
+
+            _lastLastX = _lastX;
+            _lastLastY = _lastY;
 
             _lastX = x;
             _lastY = y;
@@ -90,14 +102,15 @@ namespace MinimalAF.Rendering.ImmediateMode
             _lastV2Vert = v2;
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
+
             _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
         }
 
-        private void ExtendLineSegment(float perpX, float perpY, bool useAv = true)
+        private void ExtendLineSegment(float perpX, float perpY, bool useAverage = true)
         {
             float perpUsedX, perpUsedY;
 
-            if (useAv)
+            if (useAverage)
             {
                 perpUsedX = (perpX + _lastPerpX) / 2f;
                 perpUsedY = (perpY + _lastPerpY) / 2f;
@@ -144,6 +157,13 @@ namespace MinimalAF.Rendering.ImmediateMode
             float dirX = x - _lastX;
             float dirY = y - _lastY;
 
+            float mag = MathUtilF.Mag(dirX, dirY);
+            if(mag < 0.001f)
+            {
+                dirX = x - _lastLastX;
+                dirY = y - _lastLastY;
+            }
+
             AppendToPolyLine(x, y);
             AppendToPolyLine(x + dirX, y + dirY, false);
 
@@ -151,17 +171,30 @@ namespace MinimalAF.Rendering.ImmediateMode
             _lastY = y;
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
+
+            if(_count == 1)
+            {
+                _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
+            }
+
             _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle + MathF.PI);
 
             _canStart = true;
         }
 
+
+        /// <summary>
+        /// Use very carefully.
+        /// </summary>
         public void DisableEnding()
         {
             _canEnd = false;
             _canStart = false;
         }
 
+        /// <summary>
+        /// Use very carefully.
+        /// </summary>
         public void EnableEnding()
         {
             _canEnd = true;

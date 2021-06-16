@@ -11,10 +11,10 @@ namespace RenderingEngineVisualTests
             EntryPoint[] tests =
             {
                 new StencilTest(),
+                new PolylineTest(),
                 new TextureTest(),
                 new KeyboardTest(),
                 new Benchmark(5),
-                new PolylineTest(),
                 new GeometryOutlineTest(),
                 new GeometryAndTextTest(),
                 new ArcTest(),

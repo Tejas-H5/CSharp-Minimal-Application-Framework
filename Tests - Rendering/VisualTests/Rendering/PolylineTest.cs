@@ -11,37 +11,57 @@ namespace MinimalAF.VisualTests.Rendering
         {
             Window.Size = (800, 600);
             Window.Title = "Polyline";
-            //window.RenderFrequency = 60;
-            //window.UpdateFrequency = 120;
+
+            Window.RenderFrequency = 120;
+            Window.UpdateFrequency = 120;
 
             CTX.SetClearColor(1, 1, 1, 1);
         }
 
-        List<PointF> _points = new List<PointF>();
+        Queue<PointF> _points = new Queue<PointF>();
+        Queue<double> _times = new Queue<double>();
+
+
+        double timer = 0;
 
         public override void Update(double deltaTime)
         {
-            if (Input.IsMouseClicked(MouseButton.Left))
+            timer += deltaTime;
+
+            _points.Enqueue(new PointF(Input.MouseX, Input.MouseY));
+            _times.Enqueue(timer);
+            
+            if (timer - _times.Peek() > 0.5f)
             {
-                _points.Add(new PointF(Input.MouseX, Input.MouseY));
+                _points.Dequeue();
+                _times.Dequeue();
             }
         }
 
         public override void Render(double deltaTime)
         {
+            if (_points.Count < 2)
+                return;
 
             CTX.SetDrawColor(0, 0, 1, 0.5f);
 
-            if (_points.Count > 0)
+            int i = 0;
+            foreach (PointF p in _points)
             {
-                CTX.BeginPolyLine(_points[0].X, _points[0].Y, 10, CapType.None);
-
-                for (int i = 1; i < _points.Count - 1; i++)
+                if (i == 0)
                 {
-                    CTX.AppendToPolyLine(_points[i].X, _points[i].Y);
+                    CTX.BeginPolyLine(p.X, p.Y, 50, CapType.Circle);
+                }
+                else if(i == _points.Count - 1)
+                {
+                    CTX.EndPolyLine(p.X, p.Y);
+                }
+                else
+                {
+                    CTX.AppendToPolyLine(p.X, p.Y);
                 }
 
-                CTX.EndPolyLine(_points[_points.Count - 1].X, _points[_points.Count - 1].Y);
+                i++;
             }
         }
     }

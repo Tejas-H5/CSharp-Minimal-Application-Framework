@@ -54,7 +54,7 @@ namespace MinimalAF.Rendering.ImmediateMode
             if (_currentIndexIndex == 0)
                 return;
 
-            _backingMesh.UpdateBuffer(_currentVertexIndex, _currentIndexIndex);
+            _backingMesh.UpdateBuffers(_currentVertexIndex, _currentIndexIndex);
 
             _backingMesh.Draw();
 

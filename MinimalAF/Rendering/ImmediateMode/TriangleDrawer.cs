@@ -40,8 +40,8 @@ namespace MinimalAF.Rendering.ImmediateMode
         public void DrawTriangleOutline(float thickness, float x0, float y0, float x1, float y1, float x2, float y2)
         {
             _outlineDrawer.BeginPolyLine(x0, y0, thickness, CapType.None);
-            _outlineDrawer.AppendToPolyLine(x1, y1);
-            _outlineDrawer.AppendToPolyLine(x2, y2);
+            _outlineDrawer.ContinuePolyline(x1, y1);
+            _outlineDrawer.ContinuePolyline(x2, y2);
             _outlineDrawer.EndPolyLine(x0, y0);
         }
     }

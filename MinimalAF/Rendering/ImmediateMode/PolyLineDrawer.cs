@@ -44,7 +44,7 @@ namespace MinimalAF.Rendering.ImmediateMode
         {
             if (!_canStart)
             {
-                AppendToPolyLine(x, y);
+                ContinuePolyline(x, y);
                 return;
             }
 
@@ -55,29 +55,27 @@ namespace MinimalAF.Rendering.ImmediateMode
             _lastY = y;
             _capType = cap;
             _count = 1;
-            _geometryOutput.FlushIfRequired(4, 6);
         }
 
 
-        public void AppendToPolyLine(float x, float y, bool useAverage = true)
+        public void ContinuePolyline(float x, float y, bool useAverage = true)
         {
-            float dirX = x - _lastX;
-            float dirY = y - _lastY;
+            float dirX, dirY, perpX, perpY;
+            CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
+
             float mag = MathF.Sqrt(dirX * dirX + dirY * dirY);
 
             if (mag < 0.00001f)
                 return;
 
-            float perpX = -_thickness * dirY / mag;
-            float perpY = _thickness * dirX / mag;
 
             if (_count == 1)
             {
-                StartLineSegment(dirX, dirY, perpX, perpY);
+                StartLineSegment(x, y);
             }
             else
             {
-                ExtendLineSegment(perpX, perpY, useAverage);
+                MoveLineSegmentInDirectionOf(x, y, useAverage);
             }
 
             _lastLastX = _lastX;
@@ -88,32 +86,56 @@ namespace MinimalAF.Rendering.ImmediateMode
             _count++;
         }
 
-        private void StartLineSegment(float dirX, float dirY, float perpX, float perpY)
+        private void CalculateLineParameters(float x, float y, out float dirX, out float dirY, out float perpX, out float perpY)
         {
-            _lastPerpX = perpX;
-            _lastPerpY = perpY;
+            dirX = x - _lastX;
+            dirY = y - _lastY;
+
+            float mag = MathF.Sqrt(dirX * dirX + dirY * dirY);
+
+            perpX = -_thickness * dirY / mag;
+            perpY = _thickness * dirX / mag;
+        }
+
+        private void StartLineSegment(float x, float y)
+        {
+            float dirX, dirY, perpX, perpY;
+            CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
+
+
             Vertex v1 = new Vertex(_lastX + perpX, _lastY + perpY, 0);
             Vertex v2 = new Vertex(_lastX - perpX, _lastY - perpY, 0);
 
+            _geometryOutput.FlushIfRequired(2, 0);
             _lastV1 = _geometryOutput.AddVertex(v1);
             _lastV2 = _geometryOutput.AddVertex(v2);
 
             _lastV1Vert = v1;
             _lastV2Vert = v2;
+            _lastPerpX = perpX;
+            _lastPerpY = perpY;
+
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
-
             _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
         }
 
-        private void ExtendLineSegment(float perpX, float perpY, bool useAverage = true)
+        private void MoveLineSegmentInDirectionOf(float x, float y, bool averageAngle = true)
         {
+            float dirX, dirY, perpX, perpY;
+            CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
+
+
             float perpUsedX, perpUsedY;
 
-            if (useAverage)
+            if (averageAngle)
             {
                 perpUsedX = (perpX + _lastPerpX) / 2f;
                 perpUsedY = (perpY + _lastPerpY) / 2f;
+
+                float mag = MathUtilF.Mag(perpUsedX, perpUsedY);
+                perpUsedX = _thickness * perpUsedX / mag;
+                perpUsedY = _thickness * perpUsedY / mag;
             }
             else
             {
@@ -121,8 +143,9 @@ namespace MinimalAF.Rendering.ImmediateMode
                 perpUsedY = perpY;
             }
 
-            _lastPerpX = perpX;
-            _lastPerpY = perpY;
+
+            Vertex v3 = new Vertex(_lastX + perpUsedX, _lastY + perpUsedY, 0);
+            Vertex v4 = new Vertex(_lastX - perpUsedX, _lastY - perpUsedY, 0);
 
             if (_geometryOutput.FlushIfRequired(4, 6))
             {
@@ -130,27 +153,26 @@ namespace MinimalAF.Rendering.ImmediateMode
                 _lastV2 = _geometryOutput.AddVertex(_lastV2Vert);
             }
 
-
-            Vertex v3 = new Vertex(_lastX + perpUsedX, _lastY + perpUsedY, 0);
-            Vertex v4 = new Vertex(_lastX - perpUsedX, _lastY - perpUsedY, 0);
-
             _lastV3 = _geometryOutput.AddVertex(v3);
             _lastV4 = _geometryOutput.AddVertex(v4);
 
             _geometryOutput.MakeTriangle(_lastV1, _lastV2, _lastV3);
             _geometryOutput.MakeTriangle(_lastV3, _lastV2, _lastV4);
 
+
             _lastV1 = _lastV3;
             _lastV2 = _lastV4;
             _lastV1Vert = v3;
             _lastV2Vert = v4;
+            _lastPerpX = perpX;
+            _lastPerpY = perpY;
         }
 
         public void EndPolyLine(float x, float y)
         {
             if (!_canEnd)
             {
-                AppendToPolyLine(x, y);
+                ContinuePolyline(x, y);
                 return;
             }
 
@@ -164,8 +186,8 @@ namespace MinimalAF.Rendering.ImmediateMode
                 dirY = y - _lastLastY;
             }
 
-            AppendToPolyLine(x, y);
-            AppendToPolyLine(x + dirX, y + dirY, false);
+            ContinuePolyline(x, y);
+            ContinuePolyline(x + dirX, y + dirY, false);
 
             _lastX = x;
             _lastY = y;

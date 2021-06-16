@@ -102,7 +102,7 @@ namespace MinimalAF.Rendering.ImmediateMode
                 }
                 else if (angle + deltaAngle < endAngle + 0.00001f)
                 {
-                    _outlineDrawer.AppendToPolyLine(X, Y);
+                    _outlineDrawer.ContinuePolyline(X, Y);
                 }
                 else
                 {

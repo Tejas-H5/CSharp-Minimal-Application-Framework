@@ -13,7 +13,7 @@ namespace MinimalAF.VisualTests.Rendering
             Window.Title = "Polyline";
 
             Window.RenderFrequency = 120;
-            Window.UpdateFrequency = 120;
+            //Window.UpdateFrequency = 20;
 
             CTX.SetClearColor(1, 1, 1, 1);
         }

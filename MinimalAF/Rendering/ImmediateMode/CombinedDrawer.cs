@@ -95,7 +95,7 @@ namespace MinimalAF.Rendering.ImmediateMode
 
         public void AppendToPolyLine(float x0, float y0)
         {
-            _polyLineDrawer.AppendToPolyLine(x0, y0);
+            _polyLineDrawer.ContinuePolyline(x0, y0);
         }
 
         public void EndPolyLine(float x0, float y0)

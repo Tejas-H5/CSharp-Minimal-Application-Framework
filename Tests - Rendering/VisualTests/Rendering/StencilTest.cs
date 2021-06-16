@@ -54,7 +54,6 @@ namespace MinimalAF.VisualTests.Rendering
             CTX.SetDrawColor(0, 0, 1, 1);
             CTX.DrawRect(Window.Width / 2 - size + xPos, Window.Height / 2 - size,
                 Window.Width / 2 + size + xPos, Window.Height / 2 + size);
-            CTX.Flush();
         }
 
         private static void DrawRedRectangle(float size, float xPos)
@@ -63,7 +62,6 @@ namespace MinimalAF.VisualTests.Rendering
             CTX.SetDrawColor(1, 0, 0, 1);
             CTX.DrawRect(Window.Width / 2 - size + xPos, Window.Height / 2 - size,
                 Window.Width / 2 + size + xPos, Window.Height / 2 + size);
-            CTX.Flush();
         }
 
         float _time = 0;

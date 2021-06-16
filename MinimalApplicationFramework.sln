@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests - Rendering", "Tests 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests - UI", "Tests - UI\Tests - UI.csproj", "{7A938776-780E-496A-A69E-B24251F62C4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests - Data Structures", "Tests - Data Structures\Tests - Data Structures.csproj", "{4C321A8F-0F11-4291-BB33-2AF8066AC691}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests - Data Structures", "Tests - Data Structures\UnitTests - Data Structures.csproj", "{4C321A8F-0F11-4291-BB33-2AF8066AC691}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,12 +10,11 @@ using Color4 = MinimalAF.Datatypes.Color4;
 namespace MinimalAF.Rendering
 {
     //TODO: Extend this to draw meshes and other retained geometry
-    //Was initially called RenderingContext, and was not a static class.
-    //Instead, each class that needed to be drawn held a reference to an instance of this class
-    //and each instance was usually named _ctx 
-    //but if every single instance needs to have a reference to this in order do draw, then wouldn't it be
-    //better off as a static class?
-    //so that is what I ended up doing
+
+    /// <summary>
+    /// CTX is short for RenderContext. Because this will be typed a LOT, I have opted for
+    /// a shorter name even though it is contrary to principles of 'clean code'
+    /// </summary>
     public static class CTX
     {
         //Here solely for the SwapBuffers function
@@ -67,23 +66,27 @@ namespace MinimalAF.Rendering
         }
 
 
-        public static void Flush()
+        internal static void Flush()
         {
             _meshOutputStream.Flush();
         }
 
-        public static void SwapBuffers()
+        internal static void SwapBuffers()
         {
             Flush();
+
             _glContext.SwapBuffers();
 
+            FlushTransformMatrices();
+        }
+
+        private static void FlushTransformMatrices()
+        {
             _modelMatrices.Clear();
             _solidShader.ModelMatrix = Matrix4.Identity;
-
             _solidShader.ViewMatrix = _viewMatrix;
             _solidShader.ProjectionMatrix = _projectionMatrix;
             _solidShader.UpdateTransformUniforms();
-
         }
 
         /// <summary>
@@ -96,8 +99,10 @@ namespace MinimalAF.Rendering
         /// <param name="height"></param>
         public static void Viewport2D(float width, float height)
         {
-            _viewMatrix = Matrix4.Identity;
             _projectionMatrix = Matrix4.Identity;
+
+
+            _viewMatrix = Matrix4.Identity;
 
             Matrix4 translation = Matrix4.CreateTranslation(-1, -1, 0);
             translation.Transpose();
@@ -105,16 +110,16 @@ namespace MinimalAF.Rendering
 
             _viewMatrix *= Matrix4.CreateScale(2.0f / width, 2.0f / height, 1);
 
+
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             GL.Enable(EnableCap.StencilTest);
             GL.StencilFunc(StencilFunction.Equal, 0, 0xFF);
 
-
             GL.Enable(EnableCap.DepthTest);
-            //TODO: change this for viewport3D
-            GL.DepthFunc(DepthFunction.Always);
+            //TODO: change this to DepthFunction.Less for viewport3D
+            GL.DepthFunc(DepthFunction.Lequal);
         }
 
         public static void SetDrawColor(float r, float g, float b, float a)
@@ -288,6 +293,9 @@ namespace MinimalAF.Rendering
         {
             _drawingText = true;
             _textDrawer.SetCurrentFont(name, size);
+            
+            //SetCurrentFont creates a new OpenGL texture, which also sets it globally.
+            //We need to set it back to what it was before. 
             _textureManager.SetTexture(_textureManager.CurrentTexture());
         }
 

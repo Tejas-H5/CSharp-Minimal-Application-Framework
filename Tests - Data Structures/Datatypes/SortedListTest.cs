@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Tests___Data_Structures
+namespace UnitTests___Data_Structures
 {
     class SomeObject : ObservableData<SomeObject>, IComparable<SomeObject>, IIndexed
     {
@@ -36,7 +36,7 @@ namespace Tests___Data_Structures
     {
 
         [TestMethod]
-        public void AddSeveralHitobjects_ShouldRemainSorted()
+        public void AddSeveralObjects_ShouldRemainSorted()
         {
             SortedObservableDataList<SomeObject> sortedList = new SortedObservableDataList<SomeObject>();
 
@@ -51,7 +51,7 @@ namespace Tests___Data_Structures
         }
 
         [TestMethod]
-        public void AddSingleHitObject_ShouldRemainSorted()
+        public void AddSingleObject_ShouldRemainSorted()
         {
             SortedObservableDataList<SomeObject> sortedList = new SortedObservableDataList<SomeObject>();
 

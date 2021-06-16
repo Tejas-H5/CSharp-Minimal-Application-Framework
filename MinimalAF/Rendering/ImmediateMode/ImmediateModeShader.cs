@@ -43,6 +43,7 @@ namespace MinimalAF.Rendering.ImmediateMode
                 "uniform mat4 model;" +
                 "uniform mat4 projection;" +
                 "uniform mat4 view;" +
+                "" +
                 "void main(){" +
                 "   gl_Position = projection * view * model * vec4(position, 1);" +
                 "   uv0 = uv;" +
@@ -55,6 +56,7 @@ namespace MinimalAF.Rendering.ImmediateMode
                 "uniform vec4 color;" +
                 "uniform sampler2D sampler;" +
                 "in vec2 uv0;" +
+                "" +
                 "void main(){" +
                 "   vec4 texColor = texture2D(sampler, uv0.xy);" +
                 "   gl_FragColor = color * texColor;" +

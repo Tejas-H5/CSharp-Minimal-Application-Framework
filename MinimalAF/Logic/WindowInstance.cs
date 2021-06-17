@@ -18,8 +18,8 @@ namespace MinimalAF.Logic
         int updateFrames = 0;
         float _fps;
 
-        public float Height { get { return Size.Y; } }
-        public float Width { get { return Size.X; } }
+        public int Height { get { return Size.Y; } }
+        public int Width { get { return Size.X; } }
         public Rect2D Rect { get { return new Rect2D(0, 0, Width, Height); } }
         public float CurrentFPS { get { return _fps; } }
 
@@ -51,6 +51,7 @@ namespace MinimalAF.Logic
             MouseWheel += WindowInstance_MouseWheel;
 
             CTX.Init(Context);
+
             AudioCTX.Init();
 
             Input.HookToWindow(this);
@@ -61,6 +62,8 @@ namespace MinimalAF.Logic
             _program.Resize();
 
             IsVisible = true;
+
+            CTX.SwapBuffers();
         }
 
         private void WindowInstance_MouseWheel(MouseWheelEventArgs obj)
@@ -121,6 +124,7 @@ namespace MinimalAF.Logic
             }
         }
 
+
         protected override void OnRenderFrame(FrameEventArgs args)
         {
             base.OnRenderFrame(args);
@@ -134,12 +138,13 @@ namespace MinimalAF.Logic
             renderFrames++;
         }
 
-        void OnResize()
+        void ResizeAction()
         {
             GL.Viewport(0, 0, Size.X, Size.Y);
 
             _program.Resize();
         }
+
 
         protected override void OnResize(ResizeEventArgs e)
         {
@@ -148,12 +153,12 @@ namespace MinimalAF.Logic
 
             base.OnResize(e);
 
-            OnResize();
+            ResizeAction();
         }
 
         protected override void OnMaximized(MaximizedEventArgs e)
         {
-            OnResize();
+            ResizeAction();
         }
 
         //TODO: Find out why OnUnload() wasn't working

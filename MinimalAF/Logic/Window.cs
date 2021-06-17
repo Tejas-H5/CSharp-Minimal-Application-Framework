@@ -27,8 +27,8 @@ namespace MinimalAF.Logic
         public static void Unmaximize() { _instance.Unmaximize(); }
 
         public static string Title { get { return _instance.Title; } set { _instance.Title = value; } }
-        public static float Height { get { return _instance.Height; } }
-        public static float Width { get { return _instance.Width; } }
+        public static int Height { get { return _instance.Height; } }
+        public static int Width { get { return _instance.Width; } }
         public static Rect2D Rect { get { return _instance.Rect; } }
         public static float CurrentFPS { get { return _instance.CurrentFPS; } }
 

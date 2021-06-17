@@ -36,6 +36,8 @@ namespace MinimalAF.Rendering
 
         private static List<Matrix4> _modelMatrices = new List<Matrix4>();
 
+        private static Color4 _clearColor = new Color4(0, 0);
+
         internal static void Init(IGLFWGraphicsContext context)
         {
             int bufferSize = 4096;
@@ -53,20 +55,28 @@ namespace MinimalAF.Rendering
             _disposed = false;
         }
 
+
+        public static Color4 GetClearColor()
+        {
+            return _clearColor;
+        }
+
         public static void SetClearColor(float r, float g, float b, float a)
         {
-            GL.ClearColor(r, g, b, a);
+            _clearColor = new Color4(r, g, b, a);
         }
 
 
         public static void Clear()
         {
             GL.StencilMask(1);
+            GL.ClearColor(_clearColor.R, _clearColor.G, _clearColor.B, _clearColor.A);
+
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
         }
 
 
-        internal static void Flush()
+        public static void Flush()
         {
             _meshOutputStream.Flush();
         }
@@ -76,7 +86,7 @@ namespace MinimalAF.Rendering
             Flush();
 
             _glContext.SwapBuffers();
-
+            
             FlushTransformMatrices();
         }
 
@@ -100,8 +110,6 @@ namespace MinimalAF.Rendering
         public static void Viewport2D(float width, float height)
         {
             _projectionMatrix = Matrix4.Identity;
-
-
             _viewMatrix = Matrix4.Identity;
 
             Matrix4 translation = Matrix4.CreateTranslation(-1, -1, 0);

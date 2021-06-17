@@ -10,6 +10,7 @@ namespace RenderingEngineVisualTests
         {
             EntryPoint[] tests =
             {
+                new FramebufferTest(),
                 new PolylineSelfIntersectionAlgorithmTest(),
                 new StencilTest(),
                 new PolylineTest(),

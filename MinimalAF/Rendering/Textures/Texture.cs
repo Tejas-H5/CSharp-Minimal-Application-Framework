@@ -13,6 +13,7 @@ namespace MinimalAF.Rendering
         int _handle;
         private int _height;
         private int _width;
+        TextureImportSettings _importSettings;
 
         public int Handle {
             get {
@@ -67,9 +68,12 @@ namespace MinimalAF.Rendering
         //TODO: implement this
         internal void Resize(int width, int height)
         {
+            BindTextureHandle();
+            SendImageDataToOpenGL(width, height, (IntPtr)null, _importSettings);
+            SendTextureParamsToOpenGL(_importSettings);
 
+            TextureManager.SetCurrentTextureChangedFlag();
         }
-
 
         public Texture(Bitmap image, TextureImportSettings settings)
         {
@@ -86,26 +90,41 @@ namespace MinimalAF.Rendering
 
         private void Init(int width, int height, IntPtr data, TextureImportSettings settings)
         {
+            _handle = GL.GenTexture();
+            _importSettings = settings;
+
+            BindTextureHandle();
+            SendImageDataToOpenGL(width, height, data, settings);
+            SendTextureParamsToOpenGL(settings);
+
+            TextureManager.SetCurrentTextureChangedFlag();
+        }
+
+        private void BindTextureHandle()
+        {
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, _handle);
+        }
+
+
+        private void SendImageDataToOpenGL(int width, int height, IntPtr data, TextureImportSettings settings)
+        {
             _width = width;
             _height = height;
 
-
-            _handle = GL.GenTexture();
-
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, _handle);
-
             GL.TexImage2D(TextureTarget.Texture2D,
-                0,
-                settings.InternalFormat,
-                width,
-                height,
-                0,
-                settings.PixelFormatType,
-                PixelType.UnsignedByte,
-                data);
+                            0,
+                            settings.InternalFormat,
+                            width,
+                            height,
+                            0,
+                            settings.PixelFormatType,
+                            PixelType.UnsignedByte,
+                            data);
+        }
 
-
+        private static void SendTextureParamsToOpenGL(TextureImportSettings settings)
+        {
             TextureMinFilter minFilter;
             TextureMagFilter magFilter;
 
@@ -116,9 +135,8 @@ namespace MinimalAF.Rendering
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)settings.Clamping);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)settings.Clamping);
-
-            TextureManager.CurrentTextureChanged();
         }
+
 
         private static void SetAppropriateFilter(TextureImportSettings settings, out TextureMinFilter minFilter, out TextureMagFilter magFilter)
         {
@@ -150,10 +168,10 @@ namespace MinimalAF.Rendering
             {
                 if (disposing)
                 {
+                    // Don't forget to dispose of the texture too!
+                    GL.DeleteTexture(Handle);
                 }
 
-                // Don't forget to dispose of the texture too!
-                GL.DeleteTexture(Handle);
 
                 Console.WriteLine("Texture destructed");
 

@@ -153,17 +153,49 @@ namespace MinimalAF.Rendering.ImmediateMode
                 _lastV2 = _geometryOutput.AddVertex(_lastV2Vert);
             }
 
-            _lastV3 = _geometryOutput.AddVertex(v3);
-            _lastV4 = _geometryOutput.AddVertex(v4);
 
-            _geometryOutput.MakeTriangle(_lastV1, _lastV2, _lastV3);
-            _geometryOutput.MakeTriangle(_lastV3, _lastV2, _lastV4);
+            //check if v3 and v4 intersect with v1 and v2
+            float lastDirX = -_lastPerpY;
+            float lastDirY = _lastPerpX;
+            float vec1X = (_lastX + perpUsedX) - _lastLastX;
+            float vec1Y = (_lastY + perpUsedY) - _lastLastY;
+            float vec2X = (_lastX - perpUsedX) - _lastLastX;
+            float vec2Y = (_lastY - perpUsedY) - _lastLastY;
 
+            bool v3IsArtifacting = ((vec1X * lastDirX + vec1Y * lastDirY) > 0);
+            bool v4IsArtifacting = ((vec2X * lastDirX + vec2Y * lastDirY) > 0);
 
-            _lastV1 = _lastV3;
-            _lastV2 = _lastV4;
-            _lastV1Vert = v3;
-            _lastV2Vert = v4;
+            if(v3IsArtifacting || v4IsArtifacting)
+            {
+                if (v3IsArtifacting)
+                {
+                    _lastV4 = _geometryOutput.AddVertex(v4);
+                    _geometryOutput.MakeTriangle(_lastV1, _lastV2, _lastV4);
+                    _lastV2 = _lastV4;
+                    _lastV2Vert = v4;
+                }
+                else if (v4IsArtifacting)
+                {
+                    _lastV3 = _geometryOutput.AddVertex(v3);
+                    _geometryOutput.MakeTriangle(_lastV1, _lastV2, _lastV3);
+                    _lastV1 = _lastV3;
+                    _lastV1Vert = v3;
+                }
+            }
+            else
+            {
+                _lastV3 = _geometryOutput.AddVertex(v3);
+                _lastV4 = _geometryOutput.AddVertex(v4);
+
+                _geometryOutput.MakeTriangle(_lastV1, _lastV2, _lastV3);
+                _geometryOutput.MakeTriangle(_lastV3, _lastV2, _lastV4);
+
+                _lastV1 = _lastV3;
+                _lastV2 = _lastV4;
+                _lastV1Vert = v3;
+                _lastV2Vert = v4;
+            }
+
             _lastPerpX = perpX;
             _lastPerpY = perpY;
         }

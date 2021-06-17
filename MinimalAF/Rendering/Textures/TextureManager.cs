@@ -10,7 +10,7 @@ namespace MinimalAF.Rendering
 
         //Since the current texture can be changed outside of this class even though it shouldnt,
         //this can be used to inform this class of it
-        public static void CurrentTextureChanged()
+        internal static void SetCurrentTextureChangedFlag()
         {
             _globalTextureChanged = true;
         }

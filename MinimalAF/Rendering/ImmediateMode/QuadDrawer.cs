@@ -36,7 +36,7 @@ namespace MinimalAF.Rendering.ImmediateMode
             );
         }
 
-        public void DrawRect(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 1, float u1 = 1, float v1 = 0)
+        public void DrawRect(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 0, float u1 = 1, float v1 = 1)
         {
             DrawQuad(
                 x0, y0,
@@ -57,7 +57,7 @@ namespace MinimalAF.Rendering.ImmediateMode
 
         public void DrawRect(Rect2D rect)
         {
-            DrawRect(rect.X0, rect.Y0, rect.X1, rect.Y1, 0, 1, 1, 0);
+            DrawRect(rect.X0, rect.Y0, rect.X1, rect.Y1, 0, 0, 1, 1);
         }
 
         public void DrawRectOutline(float thickness, Rect2D rect)

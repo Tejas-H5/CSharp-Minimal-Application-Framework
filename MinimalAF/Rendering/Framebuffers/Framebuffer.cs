@@ -5,13 +5,17 @@ using System;
 namespace MinimalAF.Rendering
 {
     /// <summary>
-    /// Will be used later to implement post-processing, 3D UI, transparency in overlapping meshes and more
+    /// Will be used later to implement post-processing, 3D UI, render passes,
+    /// transparency in overlapping meshes and more
     /// 
     /// TODO: Make resizeing this more memory efficient
     /// </summary>
     public class Framebuffer : IDisposable
     {
         int _width=-1, _height=-1;
+
+        //int _backingWidth = 0, _backingHeight = 0;
+
         bool _init = false;
 
         public int Width { get { return _width; } }
@@ -48,13 +52,14 @@ namespace MinimalAF.Rendering
             _fbo = GL.GenFramebuffer();
             _renderBufferObject = GL.GenRenderbuffer();
 
-            Resize(width, height);
+            ResizeIfRequired(width, height);
         }
 
         /// <summary>
         /// Reallocates a Texture2D and a renderbuffer under the hood
+        /// if the current dimensions are different.
         /// </summary>
-        public void Resize(int width, int height)
+        public void ResizeIfRequired(int width, int height)
         {
             if (_width == width && _height == height)
                 return;
@@ -63,8 +68,14 @@ namespace MinimalAF.Rendering
             _height = height;
 
             BindFrameBuffer();
+
+
             ReallocateRenderbuffer(_width, _height);
+
+            //TODO: more efficient resizing
+
             ReallocateTexture(_width, _height);
+
 
             ValidateFrameBuffer();
 
@@ -139,10 +150,6 @@ namespace MinimalAF.Rendering
         public void Use()
         {
             BindFrameBuffer();
-
-            GL.ClearColor(0, 0, 0, 0);
-            GL.StencilMask(1);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
         }
 
         public void StopUsing()

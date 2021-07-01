@@ -20,6 +20,8 @@ namespace MinimalAF.Rendering
         //Here solely for the SwapBuffers function
         private static IGLFWGraphicsContext _glContext;
 
+        private static int _width, _height;
+
         private static ImmediateModeShader _solidShader;
         private static MeshOutputStream _meshOutputStream;
         private static CombinedDrawer _geometryDrawer;
@@ -37,6 +39,8 @@ namespace MinimalAF.Rendering
         private static List<Matrix4> _modelMatrices = new List<Matrix4>();
 
         private static Color4 _clearColor = new Color4(0, 0);
+
+        private static Dictionary<int, Framebuffer> _framebufferList = new Dictionary<int, Framebuffer>();
 
         internal static void Init(IGLFWGraphicsContext context)
         {
@@ -76,7 +80,7 @@ namespace MinimalAF.Rendering
         }
 
 
-        public static void Flush()
+        internal static void Flush()
         {
             _meshOutputStream.Flush();
         }
@@ -88,6 +92,8 @@ namespace MinimalAF.Rendering
             _glContext.SwapBuffers();
             
             FlushTransformMatrices();
+
+            StopUsingFramebuffer();
         }
 
         private static void FlushTransformMatrices()
@@ -107,8 +113,11 @@ namespace MinimalAF.Rendering
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public static void Viewport2D(float width, float height)
+        public static void Viewport2D(int width, int height)
         {
+            _width = width;
+            _height = height;
+
             _projectionMatrix = Matrix4.Identity;
             _viewMatrix = Matrix4.Identity;
 
@@ -295,6 +304,90 @@ namespace MinimalAF.Rendering
             GL.Disable(EnableCap.StencilTest);
         }
 
+
+        /// <summary>
+        /// Creates a new framebuffer with a depth buffer and a stencil buffer for the given index
+        /// that is the same size as the window (Specified with Viewport2D (or Viewport3D when it exists) )
+        /// if it does not yet exist, and tells the rendering API to start using it.
+        /// 
+        /// If you are using MinimalAF, the window size thing should be taken care of automatically.
+        /// As of now, drawing to a framebuffer of any size other than the window size does not work
+        /// </summary>
+        public static void UseFramebuffer(int index)
+        {
+            if (!_framebufferList.ContainsKey(index))
+            {
+                _framebufferList[index] = new Framebuffer(_width, _height,
+                    new TextureImportSettings
+                    {
+                        Filtering = FilteringType.NearestNeighbour
+                    });
+            }
+
+
+            _framebufferList[index].ResizeIfRequired(_width, _height);
+
+            Flush();
+
+
+            _framebufferList[index].Use();
+            Clear();
+        }
+
+        public static void UseFramebufferTransparent(int index)
+        {
+            Color4 prevClearColor = _clearColor;
+            _clearColor = new Color4(0, 0, 0, 0);
+
+            UseFramebuffer(index);
+
+            _clearColor = prevClearColor;
+        }
+
+        public static void StopUsingFramebuffer()
+        {
+            Flush();
+
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+        }
+
+        public static Texture GetFramebufferTextureHandle(int index)
+        {
+            if (!_framebufferList.ContainsKey(index))
+            {
+                return null;
+            }
+
+            return _framebufferList[index].Texture;
+        }
+
+        /// <summary>
+        /// Exact same as
+        /// SetTexture(GetFramebufferTextureHandle(index));
+        /// but with a null check on result of GetFramebufferTextureHandle
+        /// </summary>
+        /// <param name="index"></param>
+        public static void SetTextureToFramebuffer(int index)
+        {
+            Texture t = GetFramebufferTextureHandle(index);
+            if (t == null)
+                return;
+
+            SetTexture(t);
+        }
+
+        /// <summary>
+        /// This only works in a 2D context
+        /// </summary>
+        /// <param name="index"></param>
+        public static void DrawFramebufferToScreen2D(int index)
+        {
+            Texture prevTexture = _textureManager.CurrentTexture();
+            SetTextureToFramebuffer(index);
+            DrawRect(0, 0, _width, _height);
+            SetTexture(prevTexture);
+        }
+
         #region _textDrawer Wrappers 
 
         public static void SetCurrentFont(string name, int size)
@@ -430,7 +523,7 @@ namespace MinimalAF.Rendering
             _geometryDrawer.DrawRect(rect, uvs);
         }
 
-        public static void DrawRect(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 1, float u1 = 1, float v1 = 0)
+        public static void DrawRect(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 0, float u1 = 1, float v1 = 1)
         {
             StopUsingTextTexture();
             _geometryDrawer.DrawRect(x0, y0, x1, y1, u0, v0, u1, v1);
@@ -525,7 +618,16 @@ namespace MinimalAF.Rendering
 
                 TextureMap.UnloadTextures();
 
+                foreach(var intFramebufferPair in _framebufferList)
+                {
+                    intFramebufferPair.Value.Dispose();
+                }
+
+                _framebufferList.Clear();
+
+                SetTexture(null);
                 // TODO: set large fields to null.
+
 
                 _disposed = true;
             }

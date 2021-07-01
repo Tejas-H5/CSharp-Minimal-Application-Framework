@@ -1,5 +1,35 @@
 What to do next
  
+- Implement Framebuffer/texture objects that cameras can easily render to. This is an easy way to implement splitscreen
+	- can also be implemented with calls to GL.Viewport as well tho. but still it would be cool to have framebuffers for stuff like post processing and cameras rendering to screens and whatnot.
+	
+	- requires implementing texture buffer resizing. [Texture.cs ln 68]
+		- Actually harder than I thought, very obscure
+		
+	- One way to statically expose framebuffers:
+		- UseFramebuffer(int)
+			UseFramebufferTransparent(int)
+		- StopUsingFramebuffer();
+		- SetTextureToFramebuffer(int);
+		
+	- but it might be better to have local framebuffers for every object that needs one
+	- possibly pooled as well?
+
+- Concept of a Render Pipeline might also be useful
+	- eg you render the scene, then u render all the enemies to a framebuffer with a different shader then render that to the screen with transparency
+		thats a way u can get overlays of enemy positions in a first person game
+	- also framebuffers are required for rendering osu sliders. They can be statically exposed or instance-based
+	
+	Uses for static 
+		- osu slider
+		- other
+	
+	
+	
+	
+	uses for instance based
+	
+
 
 - Debug error when at end of playing buffer
 
@@ -10,11 +40,6 @@ What to do next
 
 
 - implement dynamic compilation (for tests at least, if it cannot be done for entire applications)
-
-- Implement Framebuffer/texture objects that cameras can easily render to. This is an easy way to implement splitscreen
-	- can also be implemented with calls to GL.Viewport as well tho. but still it would be cool to have framebuffers for stuff like post processing and cameras rendering to screens and whatnot.
-	
-	- requires implementing texture buffer resizing. [Texture.cs ln 68]
 
 
 - Replace OpenTK.Mathematics with System.Numerics, as it seems faster 

@@ -10,8 +10,6 @@ namespace MinimalAF.VisualTests.Rendering
 {
     public class FramebufferTest : EntryPoint
     {
-        Framebuffer _fb;
-
         public override void Start()
         {
             Window.Size = (800, 600);
@@ -21,9 +19,6 @@ namespace MinimalAF.VisualTests.Rendering
             //Window.UpdateFrequency = 20;
 
             CTX.SetClearColor(1, 1, 1, 1);
-
-            _fb = new Framebuffer(1,1,new TextureImportSettings());
-            _fb.Resize(600, 600);
         }
 
 
@@ -36,54 +31,49 @@ namespace MinimalAF.VisualTests.Rendering
 
         public override void Render(double deltaTime)
         {
-            _fb.Resize(Window.Width, Window.Height);
+            CTX.UseFramebufferTransparent(0);
+
+            CTX.SetDrawColor(0, 0, 1, 1);
+
+            float wCX = Window.Width / 2;
+            float wCY = Window.Height / 2;
+            DrawDualCirclesCenter(wCX, wCY);
+            CTX.SetDrawColor(1, 1, 0, 1);
+            CTX.DrawRect(wCX, wCY, wCX + 50, wCY + 25);
+
+            CTX.StopUsingFramebuffer();
 
             CTX.SetDrawColor(new Color4(0, 0, 0, 1));
             CTX.SetCurrentFont("Consolas", 12);
             CTX.DrawText("The red square must be fully visible under the circles.\n" +
-                "The part where the circles overlap must not be visible.",
+                "The part where the circles overlap must not be visible.\n" +
+                "This text must be 0,0,0 black \n",
                 0, Window.Height - 20);
 
             CTX.SetDrawColor(1, 0, 0, 1);
 
             float rectSize = 200;
 
-            float wCX = Window.Width / 2;
-            float wCY = Window.Height / 2;
 
             CTX.DrawRect(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
-            CTX.Flush();
-
             CTX.SetDrawColor(1, 1, 1, 0.5f);
-            CTX.SetTexture(_fb.Texture);
-            //CTX.DrawRect(wCX - 300, wCY + 300, wCX + 300, wCY - 300);
+            CTX.SetTextureToFramebuffer(0);
+            
             CTX.DrawRect(0, 0, Window.Width,Window.Height);
+
             CTX.SetTexture(null);
 
             CTX.SetDrawColor(0, 1, 0, 0.5f);
             CTX.DrawRectOutline(10, wCX - 300, wCY - 300, wCX + 300, wCY + 300);
-
-            CTX.Flush();
-            _fb.Use();
-
-            CTX.SetDrawColor(0, 0, 1, 1);
-            DrawDualCirclesCenter();
-
-            CTX.Flush();
-            _fb.StopUsing();
-
-            GL.Viewport(0, 0, Window.Width, Window.Height);
-            CTX.Viewport2D(Window.Width, Window.Height);
         }
 
 
-        private static void DrawDualCirclesCenter()
+        private static void DrawDualCirclesCenter(float x, float y)
         {
-            float wCX = Window.Width / 2;
-            float wCY = Window.Height / 2;
+            CTX.DrawCircle(x - 100, y - 100, 200);
+            CTX.DrawCircle(x + 100, y + 100, 200);
 
-            CTX.DrawCircle(wCX - 100, wCY - 100, 200);
-            CTX.DrawCircle(wCX + 100, wCY + 100, 200);
+            CTX.DrawRect(x, y, x + 10, x + 10);
         }
 
         private static void DrawDualCircles()

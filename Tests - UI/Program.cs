@@ -9,6 +9,8 @@ namespace RenderingEngineVisualTests
         {
             EntryPoint[] tests =
             {
+                new UITextInputTest(),
+                new UITextNumberInputTest(),
                 new UIAspectRatioTest(),
                 new UISplittingTest(),
                 new UIFitChildrenTest(),
@@ -16,8 +18,6 @@ namespace RenderingEngineVisualTests
                 new UILinearArrangeNestedTest(),
                 new UILinearArrangeTest(),
                 new UIEdgeSnapTest(),
-                new UITextInputTest(),
-                new UITextNumberInputTest()
             };
 
 

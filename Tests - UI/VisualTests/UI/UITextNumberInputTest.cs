@@ -27,8 +27,12 @@ namespace MinimalAF.VisualTests.UI
 
             for (int i = 0; i < 3; i++)
             {
+                float lowerAnchorX = i / 3f;
+                float upperAnchorX = (i + 1f) / 3f;
                 for (int j = 0; j < 3; j++)
                 {
+                    float lowerAnchorY = j / 3f;
+                    float upperAnchorY = (j + 1f) / 3f;
                     float size = 300;
                     _root.AddChildren(
                         _textInputElement = UICreator.CreateUIElement(
@@ -39,8 +43,8 @@ namespace MinimalAF.VisualTests.UI
                             new UIMouseFeedback(new Color4(0.7f), new Color4(0.5f)),
                             new UITextFloatInput(new FloatProperty(10, -30, 29.9f, 0.5f), false)
                         )
-                        .AnchoredPosCenter(0.5f, 0.5f, 0.5f, 0.5f)
-                        .PosSize((i - 1) * size, (j - 1) * size, size - 10, size - 10)
+                        .Anchors(lowerAnchorX, lowerAnchorY, upperAnchorX, upperAnchorY)
+                        .Offsets(10)
                     );
                 }
             }

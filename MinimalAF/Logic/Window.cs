@@ -31,6 +31,7 @@ namespace MinimalAF.Logic
         public static int Width { get { return _instance.Width; } }
         public static Rect2D Rect { get { return _instance.Rect; } }
         public static float CurrentFPS { get { return _instance.CurrentFPS; } }
+        public static float CurrentUpdateFPS { get { return _instance.CurrentUpdateFPS; } }
 
         public static double UpdateFrequency { get { return _instance.UpdateFrequency; } set { _instance.UpdateFrequency = value; } }
         public static double RenderFrequency { get { return _instance.RenderFrequency; } set { _instance.RenderFrequency = value; } }

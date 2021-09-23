@@ -17,11 +17,14 @@ namespace MinimalAF.Logic
         int renderFrames = 0;
         int updateFrames = 0;
         float _fps;
+        float _updateFps;
 
         public int Height { get { return Size.Y; } }
         public int Width { get { return Size.X; } }
         public Rect2D Rect { get { return new Rect2D(0, 0, Width, Height); } }
         public float CurrentFPS { get { return _fps; } }
+
+        public float CurrentUpdateFPS { get { return _updateFps; } }
 
         public WindowInstance(EntryPoint program)
             : base(new GameWindowSettings
@@ -115,6 +118,7 @@ namespace MinimalAF.Logic
             if (time >= 1)
             {
                 _fps = renderFrames / (float)time;
+                _updateFps = updateFrames / (float)time;
 
                 Console.WriteLine($"Render FPS: {_fps}, Update FPS: {updateFrames / time}");
 

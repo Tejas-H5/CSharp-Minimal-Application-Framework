@@ -20,6 +20,11 @@
         {
         }
 
+        public static implicit operator OpenTK.Mathematics.Color4(Color4 value)
+        {
+            return new OpenTK.Mathematics.Color4(value.R, value.G, value.B, value.A);
+        }
+
         public static Color4 FromRGBA(int r, int g, int b, int a)
         {
             return new Color4(r / 255f, g / 255f, b / 255f, a / 255f);

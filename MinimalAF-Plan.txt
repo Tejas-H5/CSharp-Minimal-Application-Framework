@@ -1,0 +1,24 @@
+TODO:
+
+	- Move ALL application logic to UI rather than entrypoint
+		- Replace drawing with canvas
+		- UI can be tree based, while game or whatever is ECS or anything
+
+Later:
+ 
+	- Framebuffer optimization
+		- texture buffer resizing [Texture.cs ln 68]
+			- currently created with new() each time
+
+	- Custom render pipelines
+		- boils down to rendering the same scene and all differently
+
+	- implement Disposable for Audiosource and 	possibly other classes
+		since they are now pooled
+		
+	- Add unit tests for renderbuffer
+		- find rare memory corruption that may now be fixed
+
+Later later:
+
+	- C# dynamic compilation	

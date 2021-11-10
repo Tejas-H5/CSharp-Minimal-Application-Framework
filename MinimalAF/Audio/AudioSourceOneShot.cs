@@ -36,6 +36,16 @@ namespace MinimalAF.Audio
 
         public override void Play()
         {
+            playInternal(_pausedTime);
+        }
+
+        public void Play(float offset)
+        {
+            playInternal(offset);
+        }
+
+        private void playInternal(float offset)
+        {
             if (_clip == null)
                 return;
 
@@ -44,7 +54,7 @@ namespace MinimalAF.Audio
                 return;
 
             alSource.SetBuffer(_clip.ALBuffer);
-            alSource.SetSecOffset(_pausedTime);
+            alSource.SetSecOffset(offset);
 
             alSource.Play();
         }

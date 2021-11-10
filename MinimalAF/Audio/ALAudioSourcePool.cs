@@ -137,14 +137,14 @@ namespace MinimalAF.Audio
 
         private static void RemoveActiveSource(AudioSource connectedSource)
         {
-            Console.WriteLine("Source [" + connectedSource.SourceID + "] no longer active");
+            //Console.WriteLine("Source [" + connectedSource.SourceID + "] no longer active");
 
             _activeSources.Remove(connectedSource);
         }
 
         private static OpenALSource AssignALSourceToAudioSource(OpenALSource alSource, AudioSource audioSource)
         {
-            Console.WriteLine("Made source [" + audioSource.SourceID + "] active");
+            //Console.WriteLine("Made source [" + audioSource.SourceID + "] active");
 
             _activeSources[audioSource] = alSource;
             alSource.StopAndUnqueueAllBuffers();

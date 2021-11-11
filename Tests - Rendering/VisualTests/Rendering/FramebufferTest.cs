@@ -47,6 +47,7 @@ namespace MinimalAF.VisualTests.Rendering
             CTX.SetCurrentFont("Consolas", 12);
             CTX.DrawText("The red square must be fully visible under the circles.\n" +
                 "The part where the circles overlap must not be visible.\n" +
+                "There must be a small orange rectangle in the middle\n" +
                 "This text must be 0,0,0 black \n",
                 0, Window.Height - 20);
 
@@ -72,8 +73,6 @@ namespace MinimalAF.VisualTests.Rendering
         {
             CTX.DrawCircle(x - 100, y - 100, 200);
             CTX.DrawCircle(x + 100, y + 100, 200);
-
-            CTX.DrawRect(x, y, x + 10, x + 10);
         }
 
         private static void DrawDualCircles()

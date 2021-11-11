@@ -169,6 +169,7 @@ namespace MinimalAF.Rendering
                 if (disposing)
                 {
                     // Don't forget to dispose of the texture too!
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
                     GL.DeleteTexture(Handle);
                 }
 

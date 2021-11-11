@@ -16,7 +16,6 @@ namespace MinimalAF.Logic
         /// </summary>
         public virtual void Resize()
         {
-            CTX.Viewport2D(Window.Width, Window.Height);
         }
 
         public virtual void Cleanup() { }

@@ -3,6 +3,7 @@ using MinimalAF.Rendering.ImmediateMode;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Color4 = MinimalAF.Datatypes.Color4;
@@ -19,31 +20,28 @@ namespace MinimalAF.Rendering
     {
         //Here solely for the SwapBuffers function
         private static IGLFWGraphicsContext _glContext;
-
-        private static int _width, _height;
-
         private static ImmediateModeShader _solidShader;
         private static MeshOutputStream _meshOutputStream;
         private static CombinedDrawer _geometryDrawer;
         private static TextDrawer _textDrawer;
         private static TextureManager _textureManager;
 
-        private static bool _drawingText = false;
-
-        private static bool _textDrawingCodeCalledSetTexture = false;
-        private static Texture _previousNonTextTexture = null;
-
-        private static Matrix4 _viewMatrix = Matrix4.Identity;
-        private static Matrix4 _projectionMatrix = Matrix4.Identity;
-
-        private static List<Matrix4> _modelMatrices = new List<Matrix4>();
-
-        private static Color4 _clearColor = new Color4(0, 0);
-
-        private static Dictionary<int, Framebuffer> _framebufferList = new Dictionary<int, Framebuffer>();
+        private static int _width, _height;
+        private static bool _drawingText;
+        private static bool _disposed; // To detect redundant calls to Dispose()
+        private static bool _textDrawingCodeCalledSetTexture;
+        private static Texture _previousNonTextTexture;
+        private static Matrix4 _viewMatrix;
+        private static Matrix4 _projectionMatrix;
+        private static List<Matrix4> _modelMatrices;
+        private static Color4 _clearColor;
+        private static Dictionary<int, Framebuffer> _framebufferList;
 
         internal static void Init(IGLFWGraphicsContext context)
         {
+            //Composition
+            _glContext = context;
+
             int bufferSize = 4096;
             _meshOutputStream = new MeshOutputStream(bufferSize, 4 * bufferSize);
 
@@ -55,8 +53,18 @@ namespace MinimalAF.Rendering
 
             _textureManager = new TextureManager();
 
-            _glContext = context;
-            _disposed = false;
+            //State
+            _drawingText = false;
+            _disposed = false; // To detect redundant calls to Dispose()
+            _textDrawingCodeCalledSetTexture = false;
+            _previousNonTextTexture = null;
+            _viewMatrix = Matrix4.Identity;
+            _projectionMatrix = Matrix4.Identity;
+            _modelMatrices = new List<Matrix4>();
+            _clearColor = new Color4(0, 0);
+            _framebufferList = new Dictionary<int, Framebuffer>();
+
+            Console.WriteLine("Context initialized");
         }
 
 
@@ -600,7 +608,6 @@ namespace MinimalAF.Rendering
         #endregion
 
         #region IDisposable Support
-        private static bool _disposed = false; // To detect redundant calls
 
         internal static void Dispose(bool disposing)
         {
@@ -628,7 +635,7 @@ namespace MinimalAF.Rendering
                 SetTexture(null);
                 // TODO: set large fields to null.
 
-
+                Console.WriteLine("Context disposed");
                 _disposed = true;
             }
         }

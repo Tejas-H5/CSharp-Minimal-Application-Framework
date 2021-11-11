@@ -62,7 +62,7 @@ namespace MinimalAF.Logic
             _program.Start();
 
             _init = true;
-            _program.Resize();
+            ResizeAction();
 
             IsVisible = true;
 
@@ -147,6 +147,8 @@ namespace MinimalAF.Logic
             GL.Viewport(0, 0, Size.X, Size.Y);
 
             _program.Resize();
+
+            CTX.Viewport2D(Window.Width, Window.Height);
         }
 
 

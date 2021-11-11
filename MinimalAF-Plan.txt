@@ -1,8 +1,6 @@
 TODO:
-
-	- Move ALL application logic to UI rather than entrypoint
-		- Replace drawing with canvas
-		- UI can be tree based, while game or whatever is ECS or anything
+	- Make Entrypoint a UI thing
+		- Make UIElement something that is inherited from
 
 Later:
  

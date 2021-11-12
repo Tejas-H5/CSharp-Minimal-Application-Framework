@@ -24,7 +24,7 @@ namespace MinimalAF.Datatypes
 
         public float CenterX { get { return X0 + (X1 - X0) * 0.5f; } }
 
-        public void Rectify()
+        public Rect2D Rectify()
         {
             if (X0 > X1)
             {
@@ -39,6 +39,8 @@ namespace MinimalAF.Datatypes
                 Y1 = Y0;
                 Y0 = temp;
             }
+
+            return this;
         }
 
         public float CenterY { get { return Y0 + (Y1 - Y0) * 0.5f; } }

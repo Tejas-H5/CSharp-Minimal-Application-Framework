@@ -1,6 +1,8 @@
 TODO:
-	- Make Entrypoint a UI thing
-		- Make UIElement something that is inherited from
+	- Seperate app config and window management from Rendering and updating code. 
+	- Move all drawing code into UIElement
+	- Split UIElement into multiple files, since it will be big
+
 
 Later:
  
@@ -16,6 +18,8 @@ Later:
 		
 	- Add unit tests for renderbuffer
 		- find rare memory corruption that may now be fixed
+		
+	- Strip down CTX class. Alot of useless stuff there imo
 
 Later later:
 

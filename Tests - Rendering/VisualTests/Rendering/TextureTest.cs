@@ -49,7 +49,7 @@ namespace MinimalAF.VisualTests.Rendering
             CTX.PushMatrix(Matrix4.CreateScale(MathF.Sin(t)));
 
             CTX.SetTexture(_tex2);
-            CTX.DrawRect(new Rect2D(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2));
+            CTX.DrawRect(new Rect2D(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectify());
 
             CTX.PopMatrix();
             CTX.PopMatrix();

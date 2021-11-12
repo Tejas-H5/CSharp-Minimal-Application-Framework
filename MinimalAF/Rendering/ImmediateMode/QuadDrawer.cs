@@ -12,6 +12,9 @@ namespace MinimalAF.Rendering.ImmediateMode
             _outputStream = outputStream;
         }
 
+        /// <summary>
+        /// Assumes the verts are defined clockwise
+        /// </summary>
         public void AppendQuad(Vertex v1, Vertex v2, Vertex v3, Vertex v4)
         {
             _outputStream.FlushIfRequired(4, 6);

@@ -346,13 +346,13 @@ namespace MinimalAF.UI
 
         public UIElement OffsetsX(float left, float right)
         {
-            _rectTransform.SetAbsOffsetsX(left, right);
+            _rectTransform.OffsetsX(left, right);
             return this;
         }
 
         public UIElement OffsetsY(float bottom, float top)
         {
-            _rectTransform.SetAbsOffsetsY(bottom, top);
+            _rectTransform.OffsetsY(bottom, top);
             return this;
         }
 
@@ -374,99 +374,99 @@ namespace MinimalAF.UI
 
         public UIElement PosSizeX(float x, float width)
         {
-            _rectTransform.SetAbsPositionSizeX(x, width);
+            _rectTransform.PosSizeX(x, width);
             return this;
         }
 
         public UIElement PosSizeY(float y, float height)
         {
-            _rectTransform.SetAbsPositionSizeY(y, height);
+            _rectTransform.PosSizeY(y, height);
             return this;
         }
 
         public UIElement Pos(float x, float y)
         {
-            _rectTransform.SetAbsPositionSize(x, y, _rectTransform.Width, _rectTransform.Height);
+            _rectTransform.PosSize(x, y, _rectTransform.Width, _rectTransform.Height);
             return this;
         }
 
         public UIElement PosX(float x)
         {
-            _rectTransform.SetAbsPositionSizeX(x, _rectTransform.Width);
+            _rectTransform.PosSizeX(x, _rectTransform.Width);
             return this;
         }
 
         public UIElement PosY(float y)
         {
-            _rectTransform.SetAbsPositionSizeY(y, _rectTransform.Height);
+            _rectTransform.PosSizeY(y, _rectTransform.Height);
             return this;
         }
 
         public UIElement PosSize(float x, float y, float width, float height)
         {
-            _rectTransform.SetAbsPositionSize(x, y, width, height);
+            _rectTransform.PosSize(x, y, width, height);
             return this;
         }
 
         public UIElement AnchorsX(float left, float right)
         {
-            _rectTransform.SetNormalizedAnchoringX(left, right);
+            _rectTransform.AnchorsX(left, right);
             return this;
         }
 
         public UIElement AnchorsY(float bottom, float top)
         {
-            _rectTransform.SetNormalizedAnchoringY(bottom, top);
+            _rectTransform.AnchorsY(bottom, top);
             return this;
         }
 
 
         public UIElement Anchors(Rect2D anchor)
         {
-            _rectTransform.SetNormalizedAnchoring(anchor);
+            _rectTransform.Anchors(anchor);
             return this;
         }
 
         public UIElement Anchors(float left, float bottom, float right, float top)
         {
-            _rectTransform.SetNormalizedAnchoring(new Rect2D(left, bottom, right, top));
+            _rectTransform.Anchors(new Rect2D(left, bottom, right, top));
             return this;
         }
 
         public UIElement AnchoredPosX(float x)
         {
-            _rectTransform.SetNormalizedPositionX(x);
+            _rectTransform.AnchoredPosX(x);
             return this;
         }
 
         public UIElement AnchoredPosY(float y)
         {
-            _rectTransform.SetNormalizedPositionY(y);
+            _rectTransform.AnchoredPosY(y);
             return this;
         }
 
         public UIElement AnchoredCenterX(float x)
         {
-            _rectTransform.SetNormalizedCenterX(x);
+            _rectTransform.AnchoredCenterX(x);
             return this;
         }
 
         public UIElement AnchoredCenterY(float y)
         {
-            _rectTransform.SetNormalizedCenterY(y);
+            _rectTransform.AnchoredCenterY(y);
             return this;
         }
 
         public UIElement AnchoredPos(float x, float y)
         {
-            _rectTransform.SetNormalizedPosition(x, y);
+            _rectTransform.AnchoredPos(x, y);
             return this;
         }
 
         //Set this before you set the anchored position
         public UIElement AnchoredCenter(float x = 0.5f, float y = 0.5f)
         {
-            _rectTransform.SetNormalizedCenter(x, y);
+            _rectTransform.AnchoredCenter(x, y);
             return this;
         }
 

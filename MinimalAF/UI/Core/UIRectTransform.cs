@@ -89,14 +89,14 @@ namespace MinimalAF.UI
             }
         }
 
-        public void SetAbsOffsetsX(float left, float right)
+        public void OffsetsX(float left, float right)
         {
             _absoluteOffset.X0 = left;
             _absoluteOffset.X1 = right;
             DataChanged(this);
         }
 
-        public void SetAbsOffsetsY(float bottom, float top)
+        public void OffsetsY(float bottom, float top)
         {
             _absoluteOffset.Y0 = bottom;
             _absoluteOffset.Y1 = top;
@@ -113,27 +113,27 @@ namespace MinimalAF.UI
             AbsoluteOffset = rectOffset;
         }
 
-        public void SetAbsPositionSizeX(float x, float width)
+        public void PosSizeX(float x, float width)
         {
             _absoluteOffset.X0 = x - _normalizedCenter.X * width;
             _absoluteOffset.X1 = -x - ((1.0f - _normalizedCenter.X) * width);
             DataChanged(this);
         }
 
-        public void SetAbsPositionSizeY(float y, float height)
+        public void PosSizeY(float y, float height)
         {
             _absoluteOffset.Y0 = y - _normalizedCenter.Y * height;
             _absoluteOffset.Y1 = -y - ((1.0f - _normalizedCenter.Y) * height);
             DataChanged(this);
         }
 
-        public void SetAbsPositionSize(float x, float y, float width, float height)
+        public void PosSize(float x, float y, float width, float height)
         {
-            SetAbsPositionSizeX(x, width);
-            SetAbsPositionSizeY(y, height);
+            PosSizeX(x, width);
+            PosSizeY(y, height);
         }
 
-        public void SetNormalizedAnchoringX(float left, float right)
+        public void AnchorsX(float left, float right)
         {
             _normalizedAnchoring.X0 = left;
             _normalizedAnchoring.X1 = right;
@@ -141,7 +141,7 @@ namespace MinimalAF.UI
             NormalizedAnchoring = _normalizedAnchoring;
         }
 
-        public void SetNormalizedAnchoringY(float bottom, float top)
+        public void AnchorsY(float bottom, float top)
         {
             _normalizedAnchoring.Y0 = bottom;
             _normalizedAnchoring.Y1 = top;
@@ -149,37 +149,37 @@ namespace MinimalAF.UI
             NormalizedAnchoring = _normalizedAnchoring;
         }
 
-        public void SetNormalizedAnchoring(Rect2D anchor)
+        public void Anchors(Rect2D anchor)
         {
             NormalizedAnchoring = anchor;
         }
 
-        public void SetNormalizedPosition(float x, float y)
+        public void AnchoredPos(float x, float y)
         {
             NormalizedAnchoring = new Rect2D(x, y, x, y);
         }
 
-        public void SetNormalizedCenter(float x = 0.5f, float y = 0.5f)
+        public void AnchoredCenter(float x = 0.5f, float y = 0.5f)
         {
             NormalizedCenter = new PointF(x, y);
         }
 
-        public void SetNormalizedPositionX(float x)
+        public void AnchoredPosX(float x)
         {
             NormalizedAnchoring = new Rect2D(x, _normalizedAnchoring.Y0, x, _normalizedAnchoring.Y1);
         }
 
-        public void SetNormalizedPositionY(float y)
+        public void AnchoredPosY(float y)
         {
             NormalizedAnchoring = new Rect2D(_normalizedAnchoring.X0, y, _normalizedAnchoring.X1, y);
         }
 
-        public void SetNormalizedCenterX(float x)
+        public void AnchoredCenterX(float x)
         {
             NormalizedCenter = new PointF(x, _normalizedCenter.Y);
         }
 
-        public void SetNormalizedCenterY(float y)
+        public void AnchoredCenterY(float y)
         {
             NormalizedCenter = new PointF(_normalizedCenter.X, y);
         }

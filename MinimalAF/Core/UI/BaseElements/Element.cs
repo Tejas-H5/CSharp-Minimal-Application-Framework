@@ -129,7 +129,7 @@ namespace MinimalAF
 
         /// <summary>
         /// Should re-calculate all child rect-transforms if applicable,
-        /// and then call Resize() (And NOT OnResize) on them after.
+        /// and then call OnResize() (And NOT Resize) on them after.
         /// </summary>
         public virtual void OnResize() { }
 

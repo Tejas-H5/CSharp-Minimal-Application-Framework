@@ -32,7 +32,8 @@ namespace MinimalAF.VisualTests.UI
             base.OnRender();
         }
 
-        public override bool ProcessEvents()
+
+        public override bool OnProcessEvents()
         {
             if (Input.Mouse.IsOver(Rect))
             {

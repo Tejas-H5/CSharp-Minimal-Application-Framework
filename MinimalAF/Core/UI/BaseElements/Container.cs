@@ -4,9 +4,17 @@ using System.Text;
 
 namespace MinimalAF
 {
+    /// <summary>
+    /// When overriding methods in a container, you should be calling base.OnRender() to render all the children.
+    /// But if you want to render a specific child, you should be calling child[i].Render() instead.
+    /// This is because the base.Render() method will call OnRender, so if OnRender then calls base.Render, you will get
+    /// A stack-overflow exception from infinite recursion.
+    /// </summary>
     public class Container : Element
     {
         protected Element[] _children;
+
+        static readonly Element[] NULL_ARRAY = new Element[0];
 
         public Element[] Children {
             get {
@@ -30,7 +38,9 @@ namespace MinimalAF
         /// and not a normal method)
         /// </para>
         /// </summary>
-        public Container() {}
+        public Container() {
+            _children = NULL_ARRAY;
+        }
 
         public override void OnStart()
         {
@@ -72,13 +82,26 @@ namespace MinimalAF
             }
         }
 
+        /// <summary>
+        /// For containers, override OnProcessEvents instead
+        /// </summary>
+        /// <returns></returns>
         public override bool ProcessEvents()
         {
+            bool result = false;
             for (int i = 0; i < _children.Length; i++)
             {
-                if (_children[i].ProcessEvents())
-                    return true;
+                result = result || _children[i].ProcessEvents();
             }
+
+            if (result)
+                return true;
+
+            return OnProcessEvents();
+        }
+
+        public virtual bool OnProcessEvents()
+        {
             return false;
         }
     }

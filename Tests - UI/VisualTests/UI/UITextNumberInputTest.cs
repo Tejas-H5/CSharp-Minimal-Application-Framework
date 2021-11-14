@@ -7,9 +7,11 @@ namespace MinimalAF.VisualTests.UI
 {
     public class UITextNumberInputTest : Container
     {
+        Container[] rows;
+
         public UITextNumberInputTest()
         {
-            Container[] rows = new Container[3];
+            rows = new Container[3];
 
             for (int i = 0; i < 3; i++)
             {
@@ -32,7 +34,15 @@ namespace MinimalAF.VisualTests.UI
                 );
             }
 
-            this.SetChildren(rows);
+            this.InRows(
+                new float[] { 0.33333f, 0.66666f },
+                rows
+            );
+        }
+
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
         }
 
         public override void OnStart()
@@ -43,6 +53,8 @@ namespace MinimalAF.VisualTests.UI
 
             w.RenderFrequency = 120;
             w.UpdateFrequency = 120;
+
+            CTX.SetClearColor(1, 1, 1, 1);
         }
     }
 }

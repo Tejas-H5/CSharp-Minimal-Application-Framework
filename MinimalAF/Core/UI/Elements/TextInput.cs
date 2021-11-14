@@ -57,36 +57,40 @@ namespace MinimalAF
             CTX.DrawRect(caratPos.X, caratPos.Y, caratPos.X + 2, caratPos.Y + height);
         }
 
-        public override bool ProcessEvents()
+        public override void OnUpdate()
         {
-            if (!_isTyping)
+            if(_isTyping)
             {
-                return WaitForMouseClick();
-            }
-            else
-            {
-                if (_isTyping && Input.Mouse.IsPressed(MouseButton.Left))
+                if (Input.Mouse.IsPressed(MouseButton.Left))
                 {
                     if (!Input.Mouse.IsOver(Rect))
                     {
                         EndTyping();
-                        return true;
                     }
                 }
 
                 if (Input.Keyboard.IsPressed(KeyCode.Escape))
                 {
                     EndTyping();
-                    return true;
                 }
 
-                return TypeKeystrokes();
+                TypeKeystrokes();
             }
+
+            base.OnUpdate();
+        }
+
+        public override bool ProcessEvents()
+        {
+            if (_isTyping)
+                return true;
+
+            return WaitForMouseClick();
         }
 
         private bool WaitForMouseClick()
         {
-            if (Input.Mouse.IsPressed(MouseButton.Left))
+            if (Input.Mouse.IsPressed(MouseButton.Left) && Input.Mouse.IsOver(Rect))
             {
                 _isTyping = true;
 

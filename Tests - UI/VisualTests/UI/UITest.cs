@@ -10,7 +10,7 @@ namespace MinimalAF.VisualTests.UI
     {
         Panel GeneratePanel()
         {
-            return new Panel(new Color4(0, 0.1f), new Color4(0, 0, 1, 0.1f), new Color4());
+            return new Panel(new Color4(0, 0.1f), new Color4(0, 0, 1, 0.5f), new Color4(1,1,1,1));
         }
 
         public UITest()
@@ -47,6 +47,11 @@ namespace MinimalAF.VisualTests.UI
 
                 cont = upper;
             }
+        }
+
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
         }
 
         public override void OnStart()

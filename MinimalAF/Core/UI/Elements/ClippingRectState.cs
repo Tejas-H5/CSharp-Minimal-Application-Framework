@@ -10,7 +10,7 @@ namespace MinimalAF
         //Used to draw InverseStencil components to an infinite depth
         private static List<Rect2D> _stencilRectStack = new List<Rect2D>();
 
-        public ClippingRectState(params Element[] children) : base(children)
+        public ClippingRectState()
         {
         }
 

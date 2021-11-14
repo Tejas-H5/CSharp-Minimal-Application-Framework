@@ -6,8 +6,7 @@ namespace MinimalAF
     {
         float _widthToHeight;
 
-        public AspectRatioElement(float widthToHeight, params Element[] children)
-            : base(children)
+        public AspectRatioElement(float widthToHeight)
         {
             _widthToHeight = widthToHeight;
         }

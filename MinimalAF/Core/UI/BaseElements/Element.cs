@@ -123,7 +123,7 @@ namespace MinimalAF
         /// Render cycle that runs every frame.
         /// Frequency is controlled by the window configuration's RenderFrequency.
         /// 
-        /// Make sure to call base.OnRender() to render the children, but AFTER it renders itself
+        /// Make sure to call base.Render() (NOT OnRender) to render the children, but AFTER it renders itself
         /// </summary>
         public virtual void OnRender() { }
 

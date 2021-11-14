@@ -1,16 +1,13 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF;
 using MinimalAF.Rendering;
-using MinimalAF.UI;
+using MinimalAF;
 using System;
 
 namespace MinimalAF.VisualTests.UI
 {
     public class UIAspectRatioTest : Container
     {
-        Element _root;
-        Element _textInputElement;
-
         public UIAspectRatioTest()
             : base()
         {
@@ -18,15 +15,15 @@ namespace MinimalAF.VisualTests.UI
                 new OutlineRect(new Color4(1, 1, 1, 1),2)
                 .Offsets(10)
                 .SetChildren(
-                    new AspectRatioElement(
-                        4f / 3f,
-                        new OutlineRect(
-                            new Color4(1, 0, 0, 1),
-                            1,
+                    new AspectRatioElement(4f / 3f)
+                    .Offsets(10)
+                    .AnchoredCenter(0.5f,0.5f)
+                    .SetChildren(
+                        new OutlineRect(new Color4(1, 0, 0, 1),1)
+                        .SetChildren(
                             new TextElement("4 : 3 Aspect ratio", new Color4(1, 0, 0, 1))
                         )
                     )
-                    .Offsets(10)
                 )
             );
         }

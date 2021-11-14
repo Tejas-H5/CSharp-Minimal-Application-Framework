@@ -27,6 +27,7 @@ Refactoring:
 			
 			So we have far less code to maintain
 
+	- use System.Drawing.Color rather than Color4, because it has a lot more presets
 Later:
  
 	- Framebuffer optimization

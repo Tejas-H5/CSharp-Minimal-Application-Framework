@@ -1,7 +1,7 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF;
 using MinimalAF.Rendering;
-using MinimalAF.UI;
+using MinimalAF;
 using System;
 
 namespace MinimalAF.VisualTests.UI

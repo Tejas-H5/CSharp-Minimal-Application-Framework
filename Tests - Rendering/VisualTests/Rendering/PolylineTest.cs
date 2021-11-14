@@ -29,7 +29,7 @@ namespace MinimalAF.VisualTests.Rendering
         {
             timer += Time.DeltaTime;
 
-            _points.Enqueue(new PointF(Input.MouseX, Input.MouseY));
+            _points.Enqueue(new PointF(Input.Mouse.X, Input.Mouse.Y));
             _times.Enqueue(timer);
             
             if (timer - _times.Peek() > 0.5f)

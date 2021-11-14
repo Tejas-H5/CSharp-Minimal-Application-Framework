@@ -10,7 +10,7 @@ namespace MinimalAF.VisualTests.UI
     {
         Color4 _col;
         float _thickness;
-        public OutlineRect(Color4 col, float thickness, params Element[] children) : base(children)
+        public OutlineRect(Color4 col, float thickness)
         {
             _thickness = thickness;
             _col = col;

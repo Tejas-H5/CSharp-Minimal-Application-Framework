@@ -23,7 +23,7 @@ namespace RenderingEngineRenderingTests.VisualTests.Rendering
             for (int i = 0; i < s.Length; i++)
             {
                 char c = s[i];
-                if (Input.IsShiftDown)
+                if (Input.Keyboard.IsShiftDown)
                 {
                     c = char.ToUpper(c);
                 }
@@ -39,19 +39,19 @@ namespace RenderingEngineRenderingTests.VisualTests.Rendering
 
             CTX.DrawText("Press some keys:", Width / 2, Height / 2 + 200);
 
-            CTX.DrawText(KeysToString(Input.CharactersDown), Width / 2, Height / 2);
+            CTX.DrawText(KeysToString(Input.Keyboard.CharactersDown), Width / 2, Height / 2);
         }
 
         public override void OnUpdate()
         {
-            if (Input.IsAnyKeyPressed)
+            if (Input.Keyboard.IsAnyPressed)
             {
-                Console.WriteLine("PRessed: " + Input.CharactersPressed);
+                Console.WriteLine("PRessed: " + Input.Keyboard.CharactersPressed);
             }
 
-            if (Input.IsAnyKeyReleased)
+            if (Input.Keyboard.IsAnyReleased)
             {
-                Console.WriteLine("Released: " + Input.CharactersReleased);
+                Console.WriteLine("Released: " + Input.Keyboard.CharactersReleased);
             }
         }
     }

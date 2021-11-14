@@ -7,23 +7,21 @@ namespace RenderingEngineVisualTests
     {
         static void Main(string[] args)
         {
-            EntryPoint[] tests =
+            Element[] tests =
             {
                 new UITextInputTest(),
                 new UITextNumberInputTest(),
                 new UIAspectRatioTest(),
                 new UISplittingTest(),
-                new UIFitChildrenTest(),
                 new UITest(),
                 new UILinearArrangeNestedTest(),
                 new UILinearArrangeTest(),
-                new UIEdgeSnapTest(),
             };
 
 
-            foreach (EntryPoint entryPoint in tests)
+            foreach (Element entryPoint in tests)
             {
-                Window.RunProgram(entryPoint);
+                new Window(entryPoint).Run();
             }
         }
     }

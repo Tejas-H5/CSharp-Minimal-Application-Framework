@@ -29,9 +29,9 @@ namespace MinimalAF.VisualTests.Rendering
             //*/
             timer = 0;
 
-            if (Input.MouseWheelNotches != 0)
+            if (Input.Mouse.WheelNotches != 0)
             {
-                pos += 50 * Input.MouseWheelNotches;
+                pos += 50 * Input.Mouse.WheelNotches;
             }
         }
 

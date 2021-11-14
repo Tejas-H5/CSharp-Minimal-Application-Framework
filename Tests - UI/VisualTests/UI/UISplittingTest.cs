@@ -1,7 +1,7 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF;
 using MinimalAF.Rendering;
-using MinimalAF.UI;
+using MinimalAF;
 
 namespace MinimalAF.VisualTests.UI
 {
@@ -17,23 +17,23 @@ namespace MinimalAF.VisualTests.UI
                 .Offsets(10)
                 .TopSplit(
                     70,
-                    new OutlineRect(col, 4, new TextElement("TopSplit 70", col)),
+                    new OutlineRect(col, 4).SetChildren(new TextElement("TopSplit 70", col)),
                     new OutlineRect(col, 4)
                     .Offsets(10)
                     .LeftSplit(
                         200,
-                        new OutlineRect(col, 3, new TextElement("LeftSplit 200", col)),
+                        new OutlineRect(col, 3).SetChildren(new TextElement("LeftSplit 200", col)),
                         new OutlineRect(col, 3)
                         .Offsets(10)
                         .RightSplit(
                             150,
-                            new OutlineRect(col, 2, new TextElement("RightSplit 150", col)),
+                            new OutlineRect(col, 2).SetChildren(new TextElement("RightSplit 150", col)),
                             new OutlineRect(col, 2)
                             .Offsets(10)
                             .BottomSplit(
                                 100,
-                                new OutlineRect(col, 1, new TextElement("BottomSplit 100", col)),
-                                new OutlineRect(col, 1, new TextElement("Nothing", col))
+                                new OutlineRect(col, 1).SetChildren(new TextElement("BottomSplit 100", col)),
+                                new OutlineRect(col, 1).SetChildren(new TextElement("Nothing", col))
                             )
                         )
                     )

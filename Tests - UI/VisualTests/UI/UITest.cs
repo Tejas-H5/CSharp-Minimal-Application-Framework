@@ -1,13 +1,18 @@
 ﻿using MinimalAF.Datatypes;
 using MinimalAF;
 using MinimalAF.Rendering;
-using MinimalAF.UI;
+using MinimalAF;
 using System;
 
 namespace MinimalAF.VisualTests.UI
 {
     public class UITest : Container
     {
+        Panel GeneratePanel()
+        {
+            return new Panel(new Color4(0, 0.1f), new Color4(0, 0, 1, 0.1f), new Color4());
+        }
+
         public UITest()
         {
             Container cont = this;
@@ -16,27 +21,27 @@ namespace MinimalAF.VisualTests.UI
 
             for (int i = 0; i < 5; i++)
             {
-                Container left = new Panel();
-                Container right = new Panel();
+                Container left = GeneratePanel();
+                Container right = GeneratePanel();
                 cont.InColumns(
                     goldenRatioSplit,
                     left, right
                 );
 
-                Container upper = new Panel();
-                Container lower = new Panel();
+                Container upper = GeneratePanel();
+                Container lower = GeneratePanel();
                 right.InRows(goldenRatioSplit,
                     upper, lower);
 
-                left = new Panel();
-                right = new Panel();
+                left = GeneratePanel();
+                right = GeneratePanel();
                 lower.InColumns(
                     goldenRatioSplit,
                     left, right
                 );
 
-                upper = new Panel();
-                lower = new Panel();
+                upper = GeneratePanel();
+                lower = GeneratePanel();
                 left.InRows(goldenRatioSplit,
                     upper, lower);
 

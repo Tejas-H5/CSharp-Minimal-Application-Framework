@@ -37,8 +37,8 @@ namespace MinimalAF.AudioTests
                 _clackSound.Play();
             }
 
-            listenerX = 10 * ((Input.MouseX / Width) - 0.5f);
-            listenerZ = 10 * ((Input.MouseY / Height) - 0.5f);
+            listenerX = 10 * ((Input.Mouse.X / Width) - 0.5f);
+            listenerZ = 10 * ((Input.Mouse.Y / Height) - 0.5f);
 
             _listener.SetPosition(listenerX, 0, listenerZ);
         }
@@ -50,8 +50,8 @@ namespace MinimalAF.AudioTests
 
 
             CTX.SetDrawColor(1, 0, 0, 1);
-            CTX.DrawCircle(Input.MouseX, Input.MouseY, 20);
-            CTX.DrawTextAligned("You are here (" + listenerX + "," + listenerZ + ")", Input.MouseX, Input.MouseY, HorizontalAlignment.Center, VerticalAlignment.Bottom);
+            CTX.DrawCircle(Input.Mouse.X, Input.Mouse.Y, 20);
+            CTX.DrawTextAligned("You are here (" + listenerX + "," + listenerZ + ")", Input.Mouse.X, Input.Mouse.Y, HorizontalAlignment.Center, VerticalAlignment.Bottom);
         }
     }
 }

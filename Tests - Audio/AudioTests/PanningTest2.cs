@@ -42,8 +42,8 @@ namespace MinimalAF.AudioTests
             prevListenerX = listenerX;
             prevListenerZ = listenerZ;
 
-            listenerX = 10 * ((Input.MouseX / Width) - 0.5f);
-            listenerZ = 10 * ((Input.MouseY / Height) - 0.5f);
+            listenerX = 10 * ((Input.Mouse.X / Width) - 0.5f);
+            listenerZ = 10 * ((Input.Mouse.Y / Height) - 0.5f);
 
             _clackSound.Position = new Vector3(listenerX, 0, listenerZ);
             _clackSound.Velocity = new Vector3((listenerX - prevListenerX) / Time.DeltaTime, 0, (listenerZ - prevListenerZ) / Time.DeltaTime);
@@ -56,8 +56,8 @@ namespace MinimalAF.AudioTests
 
 
             CTX.SetDrawColor(1, 0, 0, 1);
-            CTX.DrawCircle(Input.MouseX, Input.MouseY, 20);
-            CTX.DrawTextAligned("source is here (" + listenerX + "," + listenerZ + ")", Input.MouseX, Input.MouseY, HorizontalAlignment.Center, VerticalAlignment.Bottom);
+            CTX.DrawCircle(Input.Mouse.X, Input.Mouse.Y, 20);
+            CTX.DrawTextAligned("source is here (" + listenerX + "," + listenerZ + ")", Input.Mouse.X, Input.Mouse.Y, HorizontalAlignment.Center, VerticalAlignment.Bottom);
         }
     }
 }

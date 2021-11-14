@@ -5,13 +5,30 @@ namespace MinimalAF
 {
     public class KeyboardInputManager
     {
-        internal KeyboardInputManager() { }
+        const string KEYBOARD_CHARS = "\t\b\n `1234567890-=qwertyuiop[]asdfghjkl;'\\zxcvbnm,./";
 
         OpenTKWindowWrapper _window;
 
         bool[] _prevKeyStates = new bool[(int)KeyCode.LastKey];
         bool[] _keyStates = new bool[(int)KeyCode.LastKey];
 
+
+        StringBuilder _charactersTypedSB = new StringBuilder();
+        StringBuilder _charactersPressedSB = new StringBuilder();
+        StringBuilder _charactersReleasedSB = new StringBuilder();
+        StringBuilder _charactersDownSB = new StringBuilder();
+
+        string _charactersPressed = "";
+        string _charactersTyped = "";
+        string _charactersDown = "";
+        string _charactersReleased = "";
+
+
+        bool _anyKeyDown = false;
+        bool _anyKeyPressed = false;
+        bool _anyKeyReleased = false;
+
+        internal KeyboardInputManager() { }
 
         private void OnWindowTextInput(uint c)
         {
@@ -30,103 +47,87 @@ namespace MinimalAF
                 _window.TextInputEvent -= OnWindowTextInput;
         }
 
-        public bool IsKeyDown(KeyCode key)
+        public bool IsPressed(KeyCode key)
         {
             return _keyStates[(int)key];
         }
 
-        private bool WasKeyDown(KeyCode key)
+        private bool WasPressed(KeyCode key)
         {
             return _prevKeyStates[(int)key];
         }
 
-        public bool IsKeyReleased(KeyCode key)
+        public bool IsReleased(KeyCode key)
         {
-            return WasKeyDown(key) && (!IsKeyDown(key));
+            return WasPressed(key) && (!IsPressed(key));
         }
 
-        public bool IsKeyPressed(KeyCode key)
+        public bool IsDown(KeyCode key)
         {
-            return (!WasKeyDown(key)) && (IsKeyDown(key));
+            return (!WasPressed(key)) && (IsPressed(key));
         }
 
         public bool IsShiftPressed {
             get {
-                return IsKeyPressed(KeyCode.LeftShift) || IsKeyPressed(KeyCode.RightShift);
+                return IsDown(KeyCode.LeftShift) || IsDown(KeyCode.RightShift);
             }
         }
 
         public bool IsCtrlPressed {
             get {
-                return IsKeyPressed(KeyCode.LeftControl) || IsKeyPressed(KeyCode.RightControl);
+                return IsDown(KeyCode.LeftControl) || IsDown(KeyCode.RightControl);
             }
         }
 
         public bool IsAltPressed {
             get {
-                return IsKeyPressed(KeyCode.LeftAlt) || IsKeyPressed(KeyCode.RightAlt);
+                return IsDown(KeyCode.LeftAlt) || IsDown(KeyCode.RightAlt);
             }
         }
 
         public bool IsShiftReleased {
             get {
-                return IsKeyReleased(KeyCode.LeftShift) || IsKeyReleased(KeyCode.RightShift);
+                return IsReleased(KeyCode.LeftShift) || IsReleased(KeyCode.RightShift);
             }
         }
 
         public bool IsCtrlReleased {
             get {
-                return IsKeyReleased(KeyCode.LeftControl) || IsKeyReleased(KeyCode.RightControl);
+                return IsReleased(KeyCode.LeftControl) || IsReleased(KeyCode.RightControl);
             }
         }
 
         public bool IsAltReleased {
             get {
-                return IsKeyReleased(KeyCode.LeftAlt) || IsKeyReleased(KeyCode.RightAlt);
+                return IsReleased(KeyCode.LeftAlt) || IsReleased(KeyCode.RightAlt);
             }
         }
 
 
         public bool IsShiftDown {
             get {
-                return IsKeyDown(KeyCode.LeftShift) || IsKeyDown(KeyCode.RightShift);
+                return IsPressed(KeyCode.LeftShift) || IsPressed(KeyCode.RightShift);
             }
         }
 
         public bool IsCtrlDown {
             get {
-                return IsKeyDown(KeyCode.LeftControl) || IsKeyDown(KeyCode.RightControl);
+                return IsPressed(KeyCode.LeftControl) || IsPressed(KeyCode.RightControl);
             }
         }
 
         public bool IsAltDown {
             get {
-                return IsKeyDown(KeyCode.LeftAlt) || IsKeyDown(KeyCode.RightAlt);
+                return IsPressed(KeyCode.LeftAlt) || IsPressed(KeyCode.RightAlt);
             }
         }
 
-        StringBuilder _charactersTypedSB = new StringBuilder();
-
-        StringBuilder _charactersPressedSB = new StringBuilder();
-        StringBuilder _charactersReleasedSB = new StringBuilder();
-        StringBuilder _charactersDownSB = new StringBuilder();
-
-        string _charactersPressed = "";
-        string _charactersTyped = "";
-        string _charactersDown = "";
-        string _charactersReleased = "";
 
         public string CharactersPressed { get { return _charactersPressed; } }
         public string CharactersTyped { get { return _charactersTyped; } }
         public string CharactersReleased { get { return _charactersReleased; } }
         public string CharactersDown { get { return _charactersDown; } }
 
-
-        const string keyboardChars = "\t\b\n `1234567890-=qwertyuiop[]asdfghjkl;'\\zxcvbnm,./";
-
-        bool _anyKeyDown = false;
-        bool _anyKeyPressed = false;
-        bool _anyKeyReleased = false;
 
         public bool IsAnyDown { get { return _anyKeyDown; } }
         public bool IsAnyPressed { get { return _anyKeyPressed; } }

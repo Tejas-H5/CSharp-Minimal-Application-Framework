@@ -2,7 +2,7 @@
 using MinimalAF;
 using MinimalAF.Rendering;
 
-namespace MinimalAF.UI
+namespace MinimalAF
 {
     /// <summary>
     /// Used to prevent drawing outside of a UI element's rectangle, like a stencil.
@@ -12,7 +12,7 @@ namespace MinimalAF.UI
     /// </summary>
     public class ClippingRect : Container
     {
-        public ClippingRect(params Element[] children) : base(children)
+        public ClippingRect()
         {
         }
 

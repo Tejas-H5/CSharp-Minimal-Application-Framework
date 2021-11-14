@@ -1,7 +1,7 @@
 ﻿using MinimalAF.Datatypes;
 using System.Drawing;
 
-namespace MinimalAF.UI
+namespace MinimalAF
 {
     public static class Intersections
     {

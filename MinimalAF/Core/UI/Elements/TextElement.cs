@@ -3,7 +3,7 @@ using MinimalAF;
 using MinimalAF.Rendering;
 using System.Drawing;
 
-namespace MinimalAF.UI
+namespace MinimalAF
 {
     public class TextElement : Element
     {

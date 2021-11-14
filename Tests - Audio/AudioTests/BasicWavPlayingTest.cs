@@ -63,12 +63,12 @@ namespace MinimalAF.AudioTests
         {
             if (Input.IsAnyKeyPressed)
             {
-                Console.WriteLine("Pressed: " + Input.CharactersPressed);
+                Console.WriteLine("Pressed: " + Input.Keyboard.CharactersPressed);
             }
 
             if (Input.IsAnyKeyReleased)
             {
-                Console.WriteLine("Released: " + Input.CharactersReleased);
+                Console.WriteLine("Released: " + Input.Keyboard.CharactersReleased);
             }
         }
     }

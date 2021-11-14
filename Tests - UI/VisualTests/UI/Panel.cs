@@ -34,9 +34,9 @@ namespace MinimalAF.VisualTests.UI
 
         public override bool ProcessEvents()
         {
-            if (Input.IsMouseOver(Rect))
+            if (Input.Mouse.IsOver(Rect))
             {
-                if (Input.IsMouseDownAny)
+                if (Input.Mouse.IsAnyDown)
                 {
                     _drawColor = _clickColor;
                 }

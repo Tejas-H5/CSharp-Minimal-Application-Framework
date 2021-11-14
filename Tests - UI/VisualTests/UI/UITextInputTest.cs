@@ -42,7 +42,9 @@ namespace MinimalAF.VisualTests.UI
             w.Title = "Text input ui element test";
 
             w.RenderFrequency = 120;
-            w.UpdateFrequency = 120; 
+            w.UpdateFrequency = 120;
+
+            CTX.SetClearColor(1, 1, 1, 1);
         }
     }
 }

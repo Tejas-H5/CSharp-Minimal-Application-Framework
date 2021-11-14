@@ -10,12 +10,12 @@ namespace RenderingEngineVisualTests
             Element[] tests =
             {
                 new UITextInputTest(),
-                new UITextNumberInputTest(),
-                new UIAspectRatioTest(),
-                new UISplittingTest(),
-                new UITest(),
-                new UILinearArrangeNestedTest(),
-                new UILinearArrangeTest(),
+                //new UITextNumberInputTest(),
+                //new UIAspectRatioTest(),
+                //new UISplittingTest(),
+                //new UITest(),
+                //new UILinearArrangeNestedTest(),
+                //new UILinearArrangeTest(),
             };
 
 

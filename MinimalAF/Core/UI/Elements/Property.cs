@@ -29,7 +29,7 @@ namespace MinimalAF
 
                 try
                 {
-                    if (_validator == null)
+                    if (_validator != null)
                     {
                         _value = _validator(value);
                     }

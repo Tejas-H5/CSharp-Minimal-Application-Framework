@@ -75,9 +75,12 @@ namespace MinimalAF.Rendering.Text
         public SizeF GetCharacterSize(char c)
         {
             Rect2D normalized = GetCharacterUV(c);
+            float width = _bitmap.Width;
+            float height = _bitmap.Height;
+
             return new SizeF(
-                normalized.Width * _bitmap.Width,
-                normalized.Height * _bitmap.Height
+                normalized.Width * width,
+                normalized.Height * height
                 );
         }
 

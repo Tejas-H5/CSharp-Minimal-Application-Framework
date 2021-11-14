@@ -40,19 +40,22 @@ namespace MinimalAF
 
         public override void OnRender()
         {
-            if (!_isTyping)
+            if (_isTyping)
             {
-                return;
+                RenderCarat();
             }
 
+
+            base.OnRender();
+        }
+
+        private void RenderCarat()
+        {
             PointF caratPos = _textObject.GetCaratPos();
             float height = _textObject.GetCharacterHeight();
             CTX.SetDrawColor(_textObject.TextColor);
             CTX.DrawRect(caratPos.X, caratPos.Y, caratPos.X + 2, caratPos.Y + height);
-
-            base.Render();
         }
-
 
         public override bool ProcessEvents()
         {

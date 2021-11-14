@@ -1,4 +1,4 @@
-﻿using MinimalAF.Logic;
+﻿using MinimalAF;
 using MinimalAF.Rendering;
 using System;
 using System.Collections.Generic;
@@ -6,14 +6,15 @@ using System.Text;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    class TextTest : EntryPoint
+    class TextTest : Element
     {
         List<string> rain;
 
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "Matrix rain test";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "Matrix rain test";
 
             CTX.SetClearColor(0, 0, 0, 0);
 
@@ -29,7 +30,7 @@ namespace MinimalAF.VisualTests.Rendering
             sb.Clear();
 
             float totalLength = 0;
-            while (totalLength < Window.Width)
+            while (totalLength < Width)
             {
                 int character = rand.Next(0, 512);
                 char c = (char)character;
@@ -42,7 +43,7 @@ namespace MinimalAF.VisualTests.Rendering
             }
 
             rain.Insert(0, sb.ToString());
-            if ((rain.Count - 2) * CTX.GetCharHeight() > Window.Height)
+            if ((rain.Count - 2) * CTX.GetCharHeight() > Height)
             {
                 rain.RemoveAt(rain.Count - 1);
             }
@@ -50,10 +51,10 @@ namespace MinimalAF.VisualTests.Rendering
 
 
         double timer = 0;
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
             //*
-            timer += deltaTime;
+            timer += Time.DeltaTime;
             if (timer < 0.05)
                 return;
             //*/
@@ -62,7 +63,7 @@ namespace MinimalAF.VisualTests.Rendering
             PushGibberish();
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
 
 
@@ -70,7 +71,7 @@ namespace MinimalAF.VisualTests.Rendering
 
             for (int i = 0; i < rain.Count; i++)
             {
-                CTX.DrawText(rain[i], 0, Window.Height - CTX.GetCharHeight() * i);
+                CTX.DrawText(rain[i], 0, Height - CTX.GetCharHeight() * i);
             }
 
             CTX.SetDrawColor(1, 0, 0, 1);

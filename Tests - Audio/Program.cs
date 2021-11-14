@@ -1,6 +1,6 @@
 ﻿using AudioEngineTests.AudioTests;
 using MinimalAF.AudioTests;
-using MinimalAF.Logic;
+using MinimalAF;
 
 namespace AudioEngine
 {
@@ -8,7 +8,7 @@ namespace AudioEngine
     {
         static void Main(string[] args)
         {
-            EntryPoint[] tests =
+            Element[] tests =
             {
                 new MusicAndKeysTest(),
                 new MusicPlayingTest(),
@@ -18,9 +18,9 @@ namespace AudioEngine
             };
 
 
-            foreach (EntryPoint entryPoint in tests)
+            foreach (Element entryPoint in tests)
             {
-                Window.RunProgram(entryPoint);
+                new Window(entryPoint).Run();
             }
         }
     }

@@ -1,11 +1,11 @@
-﻿using MinimalAF.Logic;
+﻿using MinimalAF;
 using MinimalAF.Rendering;
 using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
     //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
-    class Benchmark : EntryPoint
+    class Benchmark : Element
     {
         private int _lineThiccness;
         public Benchmark(int thickness)
@@ -13,10 +13,11 @@ namespace MinimalAF.VisualTests.Rendering
             _lineThiccness = thickness;
         }
 
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "Rendering Engine Line benchmark";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "Rendering Engine Line benchmark";
 
             CTX.SetClearColor(1, 1, 1, 1);
             CTX.SetCurrentFont("Consolas", 24);
@@ -24,7 +25,7 @@ namespace MinimalAF.VisualTests.Rendering
 
         Random rand = new Random(1);
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
         }
 
@@ -34,27 +35,27 @@ namespace MinimalAF.VisualTests.Rendering
         int amount = 10000;
         int jump = 6000;
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             CTX.SetDrawColor(1, 0, 0, 0.1f);
 
             for (int i = 0; i < amount; i++)
             {
-                float x1 = (float)rand.NextDouble() * Window.Width;
-                float y1 = (float)rand.NextDouble() * Window.Height;
+                float x1 = Left + (float)rand.NextDouble() * Width;
+                float y1 = Bottom + (float)rand.NextDouble() * Height;
 
-                float x2 = (float)rand.NextDouble() * Window.Width;
-                float y2 = (float)rand.NextDouble() * Window.Height;
+                float x2 = Left + (float)rand.NextDouble() * Width;
+                float y2 = Bottom + (float)rand.NextDouble() * Height;
 
                 CTX.DrawLine(x1, y1, x2, y2, _lineThiccness, CapType.Circle);
             }
 
             double FPS = frames / time;
             CTX.SetDrawColor(0, 0, 0, 1f);
-            CTX.DrawText($"FPS: {FPS.ToString("0.000")}", 10, Window.Height - 50);
-            CTX.DrawText($"Lines drawn: {amount}", 10, Window.Height - 100);
+            CTX.DrawText($"FPS: {FPS.ToString("0.000")}", Left + 10, Bottom + Height - 50);
+            CTX.DrawText($"Lines drawn: {amount}", Left + 10, Bottom + Height - 100);
 
-            time += deltaTime;
+            time += Time.DeltaTime;
             frames++;
 
             float requiredFPS = 60;
@@ -83,7 +84,7 @@ namespace MinimalAF.VisualTests.Rendering
 
             //RenderingContext.DrawLine(-size, -size, size, size, 0.02f, CapType.Circle);
 
-            //RenderingContext.DrawFilledArc(window.Width/2, window.Height/2, size, 0, MathF.PI * 2);
+            //RenderingContext.DrawFilledArc(Width/2, Height/2, size, 0, MathF.PI * 2);
         }
     }
 }

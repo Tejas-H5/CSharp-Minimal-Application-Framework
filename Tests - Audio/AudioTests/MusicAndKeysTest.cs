@@ -1,22 +1,23 @@
 ﻿using MinimalAF.Audio;
 using MinimalAF.Datatypes;
-using MinimalAF.Logic;
+using MinimalAF;
 using MinimalAF.Rendering;
 using System;
 using System.Text;
 
 namespace MinimalAF.AudioTests
 {
-    public class MusicAndKeysTest : EntryPoint
+    public class MusicAndKeysTest : Element
     {
         AudioSourceOneShot _clackSound;
         AudioSourceStreamed _streamedSource;
         AudioClipStream _streamProvider;
 
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "music and keyboard test";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "music and keyboard test";
 
             CTX.SetClearColor(0, 0, 0, 0);
             CTX.SetCurrentFont("Consolas", 36);
@@ -51,11 +52,11 @@ namespace MinimalAF.AudioTests
             return sb.ToString();
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             CTX.SetDrawColor(1, 1, 1, 1);
 
-            CTX.DrawText("Press some keys:", Window.Width / 2, Window.Height / 2 + 200);
+            CTX.DrawText("Press some keys:", Width / 2, Height / 2 + 200);
 
             string newString = KeysToString(Input.CharactersDown);
             if (newString != oldString)
@@ -64,7 +65,7 @@ namespace MinimalAF.AudioTests
                 _clackSound.Play();
             }
 
-            CTX.DrawText(newString, Window.Width / 2, Window.Height / 2);
+            CTX.DrawText(newString, Width / 2, Height / 2);
 
             //music
             CTX.SetDrawColor(1, 1, 1, 1);
@@ -77,12 +78,12 @@ namespace MinimalAF.AudioTests
 
             message += "Time: " + _streamedSource.GetPlaybackPosition();
 
-            CTX.DrawTextAligned(message, Window.Width / 2, Window.Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
+            CTX.DrawTextAligned(message, Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
 
             CTX.SetDrawColor(1, 0, 0, 1);
             float amount = (float)(_streamedSource.GetPlaybackPosition() / _streamProvider.Duration);
-            float x = amount * Window.Width;
-            CTX.DrawLine(x, 0, x, Window.Height, 2, CapType.None);
+            float x = amount * Width;
+            CTX.DrawLine(x, 0, x, Height, 2, CapType.None);
 
             if (amount > 1)
             {
@@ -90,7 +91,7 @@ namespace MinimalAF.AudioTests
             }
         }
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
             if (Input.IsAnyKeyPressed)
             {

@@ -1,16 +1,16 @@
 ﻿using MinimalAF.Audio;
 using MinimalAF.Datatypes;
-using MinimalAF.Logic;
+using MinimalAF;
 using MinimalAF.Rendering;
 
 namespace AudioEngineTests.AudioTests
 {
-    class MusicPlayingTest : EntryPoint
+    class MusicPlayingTest : Element
     {
         AudioSourceStreamed _streamedSource;
         AudioClipStream _streamProvider;
 
-        public override void Start()
+        public override void OnStart()
         {
             AudioData music = AudioData.FromFile("./Res/testMusicShort.mp3");
             _streamProvider = new AudioClipStream(music);
@@ -18,7 +18,7 @@ namespace AudioEngineTests.AudioTests
             _streamedSource = new AudioSourceStreamed(true, _streamProvider);
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             CTX.SetDrawColor(1, 1, 1, 1);
 
@@ -30,12 +30,12 @@ namespace AudioEngineTests.AudioTests
 
             message += "Time: " + _streamedSource.GetPlaybackPosition();
 
-            CTX.DrawTextAligned(message, Window.Width / 2, Window.Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
+            CTX.DrawTextAligned(message, Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
 
             CTX.SetDrawColor(1, 0, 0, 1);
             float amount = (float)(_streamedSource.GetPlaybackPosition() / _streamProvider.Duration);
-            float x = amount * Window.Width;
-            CTX.DrawLine(x, 0, x, Window.Height, 2, CapType.None);
+            float x = amount * Width;
+            CTX.DrawLine(x, 0, x, Height, 2, CapType.None);
 
             if(amount > 1)
             {
@@ -43,7 +43,7 @@ namespace AudioEngineTests.AudioTests
             }
         }
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
             _streamedSource.UpdateStream();
 

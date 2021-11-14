@@ -1,26 +1,26 @@
-﻿using MinimalAF.Logic;
+﻿using MinimalAF;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MinimalAF.Testing
 {
-    public class TestRunner : EntryPoint
+    public class TestRunner : Element
     {
 
-        public override void Start()
+        public override void OnStart()
         {
             
         }
 
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             
         }
 
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
             
         }

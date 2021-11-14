@@ -1,0 +1,211 @@
+﻿using MinimalAF.Audio;
+using MinimalAF.Datatypes;
+using MinimalAF.Rendering;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
+using System;
+using System.ComponentModel;
+using MinimalAF;
+
+namespace MinimalAF
+{
+    internal class OpenTKWindowWrapper : GameWindow
+    {
+        Element _rootElement;
+
+        double time = 0;
+        int renderFrames = 0;
+        int updateFrames = 0;
+        float _fps;
+        float _updateFps;
+
+        public int Height { get { return Size.Y; } }
+        public int Width { get { return Size.X; } }
+        public Rect2D Rect { get { return new Rect2D(0, 0, Width, Height); } }
+        public float CurrentFPS { get { return _fps; } }
+
+        public float CurrentUpdateFPS { get { return _updateFps; } }
+
+        public OpenTKWindowWrapper(Element rootElement)
+            : base(new GameWindowSettings
+            {
+                IsMultiThreaded = false
+            },
+            new NativeWindowSettings
+            {
+                StartVisible = false
+            })
+        {
+            _rootElement = rootElement;
+        }
+
+        public event Action<uint> TextInputEvent;
+
+        public event Action<float> MouseWheelVertical;
+
+        bool _init = false;
+
+        protected unsafe override void OnLoad()
+        {
+            base.OnLoad();
+
+            KeyDown += ProcessPhysicalKeyPress;
+            TextInput += ProcessCharTextInputs;
+            MouseWheel += WindowInstance_MouseWheel;
+
+            CTX.Init(Context);
+
+            AudioCTX.Init();
+
+            Input.HookToWindow(this);
+
+            _rootElement.Start();
+
+            _init = true;
+            ResizeAction();
+
+            IsVisible = true;
+
+            CTX.SwapBuffers();
+        }
+
+        private void WindowInstance_MouseWheel(MouseWheelEventArgs obj)
+        {
+            MouseWheelVertical?.Invoke(obj.OffsetY);
+        }
+
+        private void ProcessCharTextInputs(TextInputEventArgs obj)
+        {
+            Console.WriteLine("char input");
+            for (int i = 0; i < obj.AsString.Length; i++)
+            {
+                TextInputEvent?.Invoke(obj.AsString[i]);
+            }
+        }
+
+        private void ProcessPhysicalKeyPress(KeyboardKeyEventArgs obj)
+        {
+            KeyCode keyCode = (KeyCode)obj.Key;
+
+            if ((keyCode == KeyCode.Backspace)
+                || (keyCode == KeyCode.Enter)
+                || (keyCode == KeyCode.NumpadEnter)
+                || (keyCode == KeyCode.Tab))
+            {
+                Console.WriteLine("non-char input");
+                TextInputEvent?.Invoke(CharKeyMapping.KeyCodeToChar(keyCode));
+            }
+        }
+
+        protected override void OnUpdateFrame(FrameEventArgs args)
+        {
+            base.OnUpdateFrame(args);
+
+            Input.Update();
+            AudioCTX.Update();
+
+            Time._deltaTime = (float)args.Time;
+            _rootElement.Update();
+
+            TrackUpdateFPS(args);
+        }
+
+        private void TrackUpdateFPS(FrameEventArgs args)
+        {
+            TrackFPS(args);
+
+            updateFrames++;
+        }
+
+        private void TrackFPS(FrameEventArgs args)
+        {
+            time += args.Time;
+
+            if (time >= 1)
+            {
+                _fps = renderFrames / (float)time;
+                _updateFps = updateFrames / (float)time;
+
+                Console.WriteLine($"Render FPS: {_fps}, Update FPS: {updateFrames / time}");
+
+                time = 0;
+                renderFrames = 0;
+                updateFrames = 0;
+            }
+        }
+
+
+        protected override void OnRenderFrame(FrameEventArgs args)
+        {
+            base.OnRenderFrame(args);
+
+            CTX.Clear();
+
+            Time._deltaTime = (float)args.Time;
+            _rootElement.Render();
+
+            CTX.SwapBuffers();
+
+            renderFrames++;
+        }
+
+        void ResizeAction()
+        {
+            GL.Viewport(0, 0, Size.X, Size.Y);
+
+            _rootElement.Resize();
+
+            CTX.Viewport2D(Width, Height);
+        }
+
+
+        protected override void OnResize(ResizeEventArgs e)
+        {
+            if (!_init)
+                return;
+
+            base.OnResize(e);
+
+            ResizeAction();
+        }
+
+        protected override void OnMaximized(MaximizedEventArgs e)
+        {
+            ResizeAction();
+        }
+
+        //TODO: Find out why OnUnload() wasn't working
+        protected unsafe override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            Cleanup();
+
+            e.Cancel = false;
+        }
+
+        private unsafe void Cleanup()
+        {
+            _rootElement.Cleanup();
+
+            CTX.Dispose(true);
+            AudioCTX.Cleanup();
+        }
+
+        public void Maximize()
+        {
+            WindowState = WindowState.Maximized;
+        }
+
+        public void Fullscreen()
+        {
+            WindowState = WindowState.Fullscreen;
+        }
+
+        public void Unmaximize()
+        {
+            WindowState = WindowState.Normal;
+        }
+    }
+}

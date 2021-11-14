@@ -1,38 +1,35 @@
-﻿using MinimalAF.Logic;
+﻿using MinimalAF;
 using MinimalAF.Rendering;
 
 namespace MinimalAF.VisualTests
 {
-    public class TemplateForEntrypointProgram : EntryPoint
+    public class TemplateForEntrypointProgram : Element
     {
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "Window title goes here";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "Window title goes here";
 
             CTX.SetClearColor(0, 0, 0, 0);
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             //Rendering code goes here
         }
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
             //UI Events / input / other non-rendering update code goes here
         }
 
-        public override void Resize()
+        public override void OnResize()
         {
-            //Don't delete base.Resize()
-            base.Resize();
         }
 
-        public override void Cleanup()
+        public override void OnCleanup()
         {
-            //Don't delete base.Cleanup()
-            base.Cleanup();
         }
     }
 }

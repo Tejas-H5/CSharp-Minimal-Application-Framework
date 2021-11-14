@@ -1,20 +1,21 @@
 ﻿using MinimalAF.Audio;
 using MinimalAF.Datatypes;
-using MinimalAF.Logic;
+using MinimalAF;
 using MinimalAF.Rendering;
 using OpenTK.Mathematics;
 
 namespace MinimalAF.AudioTests
 {
-    public class PanningTest2 : EntryPoint
+    public class PanningTest2 : Element
     {
         AudioSourceOneShot _clackSound;
         AudioListener _listener;
 
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "Panning test 2";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "Panning test 2";
 
             CTX.SetClearColor(1, 1, 1, 1);
             CTX.SetCurrentFont("Consolas", 36);
@@ -29,9 +30,9 @@ namespace MinimalAF.AudioTests
         float listenerX, listenerZ;
         float prevListenerX, prevListenerZ;
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
-            timer += deltaTime;
+            timer += Time.DeltaTime;
             if (timer > 0.5f)
             {
                 timer = 0;
@@ -41,17 +42,17 @@ namespace MinimalAF.AudioTests
             prevListenerX = listenerX;
             prevListenerZ = listenerZ;
 
-            listenerX = 10 * ((Input.MouseX / Window.Width) - 0.5f);
-            listenerZ = 10 * ((Input.MouseY / Window.Height) - 0.5f);
+            listenerX = 10 * ((Input.MouseX / Width) - 0.5f);
+            listenerZ = 10 * ((Input.MouseY / Height) - 0.5f);
 
             _clackSound.Position = new Vector3(listenerX, 0, listenerZ);
-            _clackSound.Velocity = new Vector3((listenerX - prevListenerX) / (float)deltaTime, 0, (listenerZ - prevListenerZ) / (float)deltaTime);
+            _clackSound.Velocity = new Vector3((listenerX - prevListenerX) / Time.DeltaTime, 0, (listenerZ - prevListenerZ) / Time.DeltaTime);
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             CTX.SetDrawColor(0, 0, 0, 1);
-            CTX.DrawCircle(Window.Width / 2, Window.Height / 2, 20);
+            CTX.DrawCircle(Width / 2, Height / 2, 20);
 
 
             CTX.SetDrawColor(1, 0, 0, 1);

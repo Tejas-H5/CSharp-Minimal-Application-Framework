@@ -1,5 +1,5 @@
 ﻿using MinimalAF.Datatypes;
-using MinimalAF.Logic;
+using MinimalAF;
 using MinimalAF.Rendering;
 using MinimalAF.Util;
 using System;
@@ -8,17 +8,18 @@ using System.Drawing;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    public class PolylineSelfIntersectionAlgorithmTest : EntryPoint
+    public class PolylineSelfIntersectionAlgorithmTest : Element
     {
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "PolylineSelfIntersectionAlgorithmTest";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "PolylineSelfIntersectionAlgorithmTest";
             CTX.SetClearColor(1, 1, 1, 1);
             CTX.SetCurrentFont("Segoe UI", 24);
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             CTX.SetDrawColor(0, 0, 0, 1f);
             for (int i = 0; i < _points.Length; i++)
@@ -115,7 +116,7 @@ namespace MinimalAF.VisualTests.Rendering
 
         PointF[] _points = new PointF[4];
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
             if (Input.IsMouseClicked(MouseButton.Left))
             {

@@ -1,19 +1,20 @@
 ﻿using MinimalAF.Audio;
-using MinimalAF.Logic;
+using MinimalAF;
 using MinimalAF.Rendering;
 using System;
 using System.Text;
 
 namespace MinimalAF.AudioTests
 {
-    public class BasicWavPlayingTest : EntryPoint
+    public class BasicWavPlayingTest : Element
     {
         AudioSourceOneShot _clackSound;
 
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "Keyboard test";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "Keyboard test";
 
             CTX.SetClearColor(0, 0, 0, 0);
             CTX.SetCurrentFont("Consolas", 36);
@@ -42,11 +43,11 @@ namespace MinimalAF.AudioTests
             return sb.ToString();
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             CTX.SetDrawColor(1, 1, 1, 1);
 
-            CTX.DrawText("Press some keys:", Window.Width / 2, Window.Height / 2 + 200);
+            CTX.DrawText("Press some keys:", Width / 2, Height / 2 + 200);
 
             string newString = KeysToString(Input.CharactersDown);
             if (newString != oldString)
@@ -55,10 +56,10 @@ namespace MinimalAF.AudioTests
                 _clackSound.Play();
             }
 
-            CTX.DrawText(newString, Window.Width / 2, Window.Height / 2);
+            CTX.DrawText(newString, Width / 2, Height / 2);
         }
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
             if (Input.IsAnyKeyPressed)
             {

@@ -1,15 +1,16 @@
-﻿using MinimalAF.Logic;
+﻿using MinimalAF;
 using MinimalAF.Rendering;
 using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    public class StencilTest : EntryPoint
+    public class StencilTest : Element
     {
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "Stencil rendering test";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "Stencil rendering test";
 
             CTX.SetClearColor(0, 0, 0, 1);
             CTX.SetCurrentFont("Consolas", 24);
@@ -21,17 +22,17 @@ namespace MinimalAF.VisualTests.Rendering
 
         float _xPos = 0;
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             CTX.StartStencillingWithoutDrawing(true);
 
-            float barSize = MathF.Abs((Window.Height / 2 - 5) * MathF.Sin(_time / 4f));
-            CTX.DrawRect(0, Window.Height, Window.Width, Window.Height - barSize);
-            CTX.DrawRect(0, 0, Window.Width, barSize);
+            float barSize = MathF.Abs((Height / 2 - 5) * MathF.Sin(_time / 4f));
+            CTX.DrawRect(0, Height, Width, Height - barSize);
+            CTX.DrawRect(0, 0, Width, barSize);
 
             CTX.StartUsingStencil();
 
-            geometryAndTextTest.Render(deltaTime);
+            geometryAndTextTest.OnRender();
 
             CTX.LiftStencil();
 
@@ -48,30 +49,37 @@ namespace MinimalAF.VisualTests.Rendering
             CTX.LiftStencil();
         }
 
-        private static void DrawBlueRectangle(float size, float xPos)
+        private void DrawBlueRectangle(float size, float xPos)
         {
             CTX.SetTexture(null);
             CTX.SetDrawColor(0, 0, 1, 1);
-            CTX.DrawRect(Window.Width / 2 - size + xPos, Window.Height / 2 - size,
-                Window.Width / 2 + size + xPos, Window.Height / 2 + size);
+            CTX.DrawRect(Width / 2 - size + xPos, Height / 2 - size,
+                Width / 2 + size + xPos, Height / 2 + size);
         }
 
-        private static void DrawRedRectangle(float size, float xPos)
+        private void DrawRedRectangle(float size, float xPos)
         {
             CTX.SetTexture(null);
             CTX.SetDrawColor(1, 0, 0, 1);
-            CTX.DrawRect(Window.Width / 2 - size + xPos, Window.Height / 2 - size,
-                Window.Width / 2 + size + xPos, Window.Height / 2 + size);
+            CTX.DrawRect(Width / 2 - size + xPos, Height / 2 - size,
+                Width / 2 + size + xPos, Height / 2 + size);
         }
 
         float _time = 0;
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
-            _time += (float)deltaTime;
+            _time += (float)Time.DeltaTime;
 
-            geometryAndTextTest.Update(deltaTime);
+            geometryAndTextTest.OnUpdate();
             _xPos = 200 * MathF.Sin(_time / 2.0f);
+        }
+
+        public override void OnResize()
+        {
+            base.OnResize();
+
+            geometryAndTextTest.RectTransform.Copy(RectTransform);
         }
     }
 }

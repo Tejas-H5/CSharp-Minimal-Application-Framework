@@ -1,19 +1,20 @@
 ﻿using MinimalAF.Audio;
 using MinimalAF.Datatypes;
-using MinimalAF.Logic;
+using MinimalAF;
 using MinimalAF.Rendering;
 
 namespace MinimalAF.AudioTests
 {
-    public class PanningAndListenerDefaultsTest : EntryPoint
+    public class PanningAndListenerDefaultsTest : Element
     {
         AudioSourceOneShot _clackSound;
         AudioListener _listener;
 
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "PanningAndListenerDefaultsTest test";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "PanningAndListenerDefaultsTest test";
 
             CTX.SetClearColor(1, 1, 1, 1);
             CTX.SetCurrentFont("Consolas", 36);
@@ -27,25 +28,25 @@ namespace MinimalAF.AudioTests
         double timer = 0;
         float listenerX, listenerZ;
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
-            timer += deltaTime;
+            timer += Time.DeltaTime;
             if (timer > 0.5f)
             {
                 timer = 0;
                 _clackSound.Play();
             }
 
-            listenerX = 10 * ((Input.MouseX / Window.Width) - 0.5f);
-            listenerZ = 10 * ((Input.MouseY / Window.Height) - 0.5f);
+            listenerX = 10 * ((Input.MouseX / Width) - 0.5f);
+            listenerZ = 10 * ((Input.MouseY / Height) - 0.5f);
 
             _listener.SetPosition(listenerX, 0, listenerZ);
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             CTX.SetDrawColor(0, 0, 0, 1);
-            CTX.DrawCircle(Window.Width / 2, Window.Height / 2, 20);
+            CTX.DrawCircle(Width / 2, Height / 2, 20);
 
 
             CTX.SetDrawColor(1, 0, 0, 1);

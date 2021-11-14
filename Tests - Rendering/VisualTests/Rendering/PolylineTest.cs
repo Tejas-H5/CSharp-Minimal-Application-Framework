@@ -1,19 +1,20 @@
-﻿using MinimalAF.Logic;
+﻿using MinimalAF;
 using MinimalAF.Rendering;
 using System.Collections.Generic;
 using System.Drawing;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    public class PolylineTest : EntryPoint
+    public class PolylineTest : Element
     {
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "Polyline";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "Polyline";
 
-            Window.RenderFrequency = 120;
-            //Window.UpdateFrequency = 20;
+            w.RenderFrequency = 120;
+            //w.UpdateFrequency = 120; 20;
 
             CTX.SetClearColor(1, 1, 1, 1);
         }
@@ -24,9 +25,9 @@ namespace MinimalAF.VisualTests.Rendering
 
         double timer = 0;
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
-            timer += deltaTime;
+            timer += Time.DeltaTime;
 
             _points.Enqueue(new PointF(Input.MouseX, Input.MouseY));
             _times.Enqueue(timer);
@@ -38,7 +39,7 @@ namespace MinimalAF.VisualTests.Rendering
             }
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             if (_points.Count < 2)
                 return;

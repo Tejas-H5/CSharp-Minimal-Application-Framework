@@ -1,23 +1,44 @@
 ﻿using MinimalAF.Datatypes;
-using MinimalAF.Logic;
+using MinimalAF;
 using MinimalAF.Rendering;
 using MinimalAF.UI;
 
 namespace MinimalAF.VisualTests.UI
 {
-    public class UITextInputTest : EntryPoint
+    public class UITextInputTest : Container
     {
-        UIElement _root;
-        UIElement _textInputElement;
-
-
-        public override void Start()
+        public UITextInputTest()
         {
-            Window.Size = (800, 600);
-            Window.Title = "Text input ui element test";
+            Container[] rows = new Container[3];
 
-            Window.RenderFrequency = 120;
-            Window.UpdateFrequency = 120;
+            for(int i = 0; i < 3; i++)
+            {
+                Element[] rowElements = new Element[3];
+                for(int j = 0; j < 3; j++)
+                {
+                    rowElements[i] = new TextInput(
+                        new TextElement("", new Color4(0), "Comic Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j)
+                    )
+                    .Offsets(10);
+                }
+
+                rowElements[i] = new Container().InColumns(
+                    new float[] {0.33333f, 0.66666f},
+                    rowElements
+                );
+            }
+
+            this.SetChildren(rows);
+        }
+
+        public override void OnStart()
+        {
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "Text input ui element test";
+
+            w.RenderFrequency = 120;
+            w.UpdateFrequency = 120; 120;
 
             CTX.SetClearColor(1, 0, 0, 1);
 
@@ -36,30 +57,19 @@ namespace MinimalAF.VisualTests.UI
                     float lowerAnchorY = j / 3f;
                     float upperAnchorY = (j + 1f) / 3f;
 
-                    _root.AddChildren(
-                        _textInputElement = UICreator.CreateUIElement(
-                            new UIRect(new Color4(1), new Color4(0), 1),
-                            new UIRectHitbox(false),
-                            new UIMouseListener(),
-                            new UIText("", new Color4(0), "Comic Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
-                            new UIMouseFeedback(new Color4(0.7f), new Color4(0.5f)),
-                            new UITextStringInput(new StringProperty(""), true, false)
-                        )
-                        .Anchors(lowerAnchorX,lowerAnchorY,upperAnchorX,upperAnchorY)
-                        .Offsets(10)
-                    );
+
                 }
             }
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
-            _root.DrawIfVisible(deltaTime);
+            _root.Render(Time.DeltaTime);
         }
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
-            _root.Update(deltaTime);
+            _root.Update(Time.DeltaTime);
         }
 
         public override void Resize()

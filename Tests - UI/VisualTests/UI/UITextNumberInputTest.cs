@@ -1,22 +1,23 @@
 ﻿using MinimalAF.Datatypes;
-using MinimalAF.Logic;
+using MinimalAF;
 using MinimalAF.Rendering;
 using MinimalAF.UI;
 
 namespace MinimalAF.VisualTests.UI
 {
-    public class UITextNumberInputTest : EntryPoint
+    public class UITextNumberInputTest : Element
     {
-        UIElement _root;
-        UIElement _textInputElement;
+        Element _root;
+        Element _textInputElement;
 
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "Text input ui element test";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "Text input ui element test";
 
-            Window.RenderFrequency = 120;
-            Window.UpdateFrequency = 120;
+            w.RenderFrequency = 120;
+            w.UpdateFrequency = 120; 120;
 
             CTX.SetClearColor(1, 0, 0, 1);
 
@@ -39,7 +40,7 @@ namespace MinimalAF.VisualTests.UI
                             new UIRect(new Color4(1), new Color4(0), 1),
                             new UIRectHitbox(false),
                             new UIMouseListener(),
-                            new UIText("", new Color4(0), "Comic Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
+                            new TextElement("", new Color4(0), "Comic Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
                             new UIMouseFeedback(new Color4(0.7f), new Color4(0.5f)),
                             new UITextFloatInput(new FloatProperty(10, -30, 29.9f, 0.5f), false)
                         )
@@ -50,14 +51,14 @@ namespace MinimalAF.VisualTests.UI
             }
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
-            _root.DrawIfVisible(deltaTime);
+            _root.Render(Time.DeltaTime);
         }
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
-            _root.Update(deltaTime);
+            _root.Update(Time.DeltaTime);
         }
 
         public override void Resize()

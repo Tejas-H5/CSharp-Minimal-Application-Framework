@@ -1,93 +1,77 @@
 ﻿using MinimalAF.Datatypes;
-using MinimalAF.Logic;
+using MinimalAF;
 using MinimalAF.Rendering;
 using MinimalAF.UI;
 
 namespace MinimalAF.VisualTests.UI
 {
-    public class UILinearArrangeNestedTest : EntryPoint
+    public class UILinearArrangeNestedTest : Element
     {
-        UIElement _root;
-        UIElement _textInputElement;
+        Element _root;
+        Element _textInputElement;
 
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "xd lmao xdxdxd";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "xd lmao xdxdxd";
 
-            Window.RenderFrequency = 120;
-            Window.UpdateFrequency = 120;
+            w.RenderFrequency = 120;
+            w.UpdateFrequency = 120;
 
-            CTX.SetClearColor(1, 1, 1, 1);
+            //CTX.SetClearColor(1, 1, 1, 1);
 
-            _root = UICreator.CreateUIElement();
-            UIElement fitChildren = UICreator.CreateUIElement(
-                new UIGraphicsRaycaster()
-            ///new UIFitChildren(false, true, new Rect2D(10,10,10,10))
-            );
+            //_root = UICreator.CreateUIElement();
+            //Element fitChildren = UICreator.CreateUIElement(
+            //    new UIGraphicsRaycaster()
+            /////new UIFitChildren(false, true, new Rect2D(10,10,10,10))
+            //);
 
-            _root.AddChild(fitChildren);
+            //_root.AddChild(fitChildren);
 
-            UIElement linearArrange;
+            //Element linearArrange;
 
-            fitChildren
-            .AddChildren(
-                linearArrange = UICreator.CreateRectOutline(new Color4(0, 1))
-                .AddComponent(new UILinearArrangement(true, false, -1, 5))
-                .AnchorsX(0.25f, 0.75f)
-                .OffsetsX(10, 10)
-                .AnchoredPosCenterY(1f, 1f)
-                .PosSizeY(-10f, 1f)
-            );
+            //fitChildren
+            //.AddChildren(
+            //    linearArrange = UICreator.CreateRectOutline(new Color4(0, 1))
+            //    .AddComponent(new LinearArrangement(true, false, -1, 5))
+            //    .AnchorsX(0.25f, 0.75f)
+            //    .OffsetsX(10, 10)
+            //    .AnchoredPosCenterY(1f, 1f)
+            //    .PosSizeY(-10f, 1f)
+            //);
 
 
-            for (int i = 0; i < 2; i++)
-            {
-                UIElement linearArrange2;
+            //for (int i = 0; i < 2; i++)
+            //{
+            //    Element linearArrange2;
 
-                linearArrange
-                .AddChildren(
-                    linearArrange2 = UICreator.CreateRectOutline(new Color4(0, 1))
-                    .AddComponent(new UILinearArrangement(true, false, -1, 5))
-                    .AnchorsX(0, 1)
-                    .OffsetsX(10, 10)
-                    .AnchoredPosCenterY(1f, 1f)
-                    .PosSizeY(-10f, 1f)
-                );
+            //    linearArrange
+            //    .AddChildren(
+            //        linearArrange2 = UICreator.CreateRectOutline(new Color4(0, 1))
+            //        .AddComponent(new LinearArrangement(true, false, -1, 5))
+            //        .AnchorsX(0, 1)
+            //        .OffsetsX(10, 10)
+            //        .AnchoredPosCenterY(1f, 1f)
+            //        .PosSizeY(-10f, 1f)
+            //    );
 
-                //*
-                for (int j = 0; j < 5; j++)
-                {
-                    UIElement button;
-                    linearArrange2.AddChild(
-                        button = UICreator.CreateButton(j.ToString(), "Consolas", 10)
-                        .AnchoredPosCenterY(1, 1)
-                        .PosSizeY(0, 20)
-                    );
+            //    //*
+            //    for (int j = 0; j < 5; j++)
+            //    {
+            //        Element button;
+            //        linearArrange2.AddChild(
+            //            button = UICreator.CreateButton(j.ToString(), "Consolas", 10)
+            //            .AnchoredPosCenterY(1, 1)
+            //            .PosSizeY(0, 20)
+            //        );
 
-                    button.GetComponentOfType<UIMouseListener>().OnMousePressed += (MouseEventArgs e) => {
-                        button.PosSizeY(0, button.Rect.Height + 10);
-                    };
-                }
-                //*/
-            }
-        }
-
-        public override void Render(double deltaTime)
-        {
-            _root.DrawIfVisible(deltaTime);
-        }
-
-        public override void Update(double deltaTime)
-        {
-            _root.Update(deltaTime);
-        }
-
-        public override void Resize()
-        {
-            base.Resize();
-
-            _root.Resize();
+            //        button.GetComponentOfType<UIMouseListener>().OnMousePressed += (MouseEventArgs e) => {
+            //            button.PosSizeY(0, button.Rect.Height + 10);
+            //        };
+            //    }
+            //    //*/
+            //}
         }
     }
 }

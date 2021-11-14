@@ -1,33 +1,34 @@
-﻿using MinimalAF.Logic;
+﻿using MinimalAF;
 using MinimalAF.Rendering;
 using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    class ArcTest : EntryPoint
+    class ArcTest : Element
     {
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "Arc Test";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "Arc Test";
 
             CTX.SetClearColor(1, 1, 1, 1);
         }
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
         }
 
         float a;
         float b;
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             CTX.SetDrawColor(1, 0, 0, 0.5f);
 
-            float x0 = Window.Width / 2;
-            float y0 = Window.Height / 2;
-            float r = MathF.Min(Window.Height, Window.Width) * 0.45f;
+            float x0 = Rect.CenterX;
+            float y0 = Rect.CenterY;
+            float r = MathF.Min(Height, Width) * 0.45f;
 
             CTX.DrawArc(x0, y0, r, a, b);
 
@@ -36,11 +37,11 @@ namespace MinimalAF.VisualTests.Rendering
             DrawHand(x0, y0, r, b);
 
             CTX.SetDrawColor(0, 0, 0, 1);
-            CTX.DrawText($"Angle a: {a}", 0, Window.Height - 30);
-            CTX.DrawText($"Angle b: {b}", 0, Window.Height - 50);
+            CTX.DrawText($"Angle a: {a}", 0, Height - 30);
+            CTX.DrawText($"Angle b: {b}", 0, Height - 50);
 
-            a += (float)deltaTime;
-            b += (float)deltaTime * 2;
+            a += (float)Time.DeltaTime;
+            b += (float)Time.DeltaTime * 2;
         }
 
         private void DrawHand(float x0, float y0, float r, float angle)

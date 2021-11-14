@@ -1,5 +1,5 @@
 ﻿using MinimalAF.Datatypes;
-using MinimalAF.Logic;
+using MinimalAF;
 using MinimalAF.Rendering;
 using MinimalAF.Util;
 using OpenTK.Graphics.OpenGL;
@@ -8,15 +8,16 @@ using System.Drawing;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    public class FramebufferTest : EntryPoint
+    public class FramebufferTest : Element
     {
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "FramebufferTest";
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "FramebufferTest";
 
-            //Window.RenderFrequency = 120;
-            //Window.UpdateFrequency = 20;
+            //w.RenderFrequency = 120;
+            //w.UpdateFrequency = 120; 20;
 
             CTX.SetClearColor(1, 1, 1, 1);
         }
@@ -24,19 +25,19 @@ namespace MinimalAF.VisualTests.Rendering
 
         double timer = 0;
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
-            timer += deltaTime;
+            timer += Time.DeltaTime;
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             CTX.UseFramebufferTransparent(0);
 
             CTX.SetDrawColor(0, 0, 1, 1);
 
-            float wCX = Window.Width / 2;
-            float wCY = Window.Height / 2;
+            float wCX = Rect.CenterX;
+            float wCY = Rect.CenterY;
             DrawDualCirclesCenter(wCX, wCY);
             CTX.SetDrawColor(1, 1, 0, 1);
             CTX.DrawRect(wCX, wCY, wCX + 50, wCY + 25);
@@ -49,7 +50,7 @@ namespace MinimalAF.VisualTests.Rendering
                 "The part where the circles overlap must not be visible.\n" +
                 "There must be a small orange rectangle in the middle\n" +
                 "This text must be 0,0,0 black \n",
-                0, Window.Height - 20);
+                0, Height - 20);
 
             CTX.SetDrawColor(1, 0, 0, 1);
 
@@ -60,7 +61,7 @@ namespace MinimalAF.VisualTests.Rendering
             CTX.SetDrawColor(1, 1, 1, 0.5f);
             CTX.SetTextureToFramebuffer(0);
             
-            CTX.DrawRect(0, 0, Window.Width,Window.Height);
+            CTX.DrawRect(Left, Bottom, Width,Height);
 
             CTX.SetTexture(null);
 
@@ -73,17 +74,6 @@ namespace MinimalAF.VisualTests.Rendering
         {
             CTX.DrawCircle(x - 100, y - 100, 200);
             CTX.DrawCircle(x + 100, y + 100, 200);
-        }
-
-        private static void DrawDualCircles()
-        {
-            CTX.DrawCircle(300 - 100, 300 - 100, 200);
-            CTX.DrawCircle(300 + 100, 300 + 100, 200);
-        }
-
-        public override void Resize()
-        {
-            base.Resize();
         }
     }
 }

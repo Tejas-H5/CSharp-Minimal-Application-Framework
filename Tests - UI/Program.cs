@@ -1,4 +1,4 @@
-﻿using MinimalAF.Logic;
+﻿using MinimalAF;
 using MinimalAF.VisualTests.UI;
 
 namespace RenderingEngineVisualTests

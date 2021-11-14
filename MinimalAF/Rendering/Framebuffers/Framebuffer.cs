@@ -1,4 +1,4 @@
-﻿using MinimalAF.Logic;
+﻿using MinimalAF;
 using OpenTK.Graphics.OpenGL;
 using System;
 

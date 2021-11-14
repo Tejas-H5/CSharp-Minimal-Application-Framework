@@ -1,22 +1,23 @@
 ﻿using MinimalAF.Datatypes;
-using MinimalAF.Logic;
+using MinimalAF;
 using MinimalAF.Rendering;
 using OpenTK.Mathematics;
 using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    class TextureTest : EntryPoint
+    class TextureTest : Element
     {
         Texture _tex;
         Texture _tex2;
 
-        public override void Start()
+        public override void OnStart()
         {
-            Window.Size = (800, 600);
-            Window.Title = "Texture loading test";
-            //window.RenderFrequency = 60;
-            //window.UpdateFrequency = 120;
+            Window w = GetAncestor<Window>();
+            w.Size = (800, 600);
+            w.Title = "Texture loading test";
+            //w.RenderFrequency = 120; 60;
+            //w.UpdateFrequency = 120; 120;
 
             CTX.SetClearColor(0, 0, 0, 1);
 
@@ -28,21 +29,21 @@ namespace MinimalAF.VisualTests.Rendering
         }
 
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
-            t += (float)deltaTime;
+            t += (float)Time.DeltaTime;
         }
 
         float t = 0;
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
             CTX.SetDrawColor(1, 1, 1, 1);
 
             CTX.SetTexture(_tex);
-            CTX.DrawRect(20, 20, Window.Width / 2 - 20, Window.Height - 20);
+            CTX.DrawRect(20, 20, Width / 2 - 20, Height - 20);
 
-            Rect2D rect2 = new Rect2D(Window.Width / 2 + 20, 20, Window.Width - 20, Window.Height - 20);
+            Rect2D rect2 = new Rect2D(Width / 2 + 20, 20, Width - 20, Height - 20);
 
             CTX.PushMatrix(Matrix4.Transpose(Matrix4.CreateTranslation(rect2.CenterX, rect2.CenterY, 0)));
             CTX.PushMatrix(Matrix4.CreateRotationZ(t));

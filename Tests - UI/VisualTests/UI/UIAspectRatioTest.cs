@@ -6,7 +6,7 @@ using System;
 
 namespace MinimalAF.VisualTests.UI
 {
-    public class UIAspectRatioTest : Container
+    public class UIAspectRatioTest : Element
     {
         public UIAspectRatioTest()
             : base()

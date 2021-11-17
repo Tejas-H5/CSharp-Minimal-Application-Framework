@@ -7,7 +7,11 @@ using System.Drawing;
 
 namespace MinimalAF
 {
-    public static class ElementExtensions
+	/// <summary>
+	/// The reason why I am using extension methods is so that if we have a class T that inherits from Element,
+	/// and we call OffsetsX(whatever) on it, it will still return a type of T and not Element
+	/// </summary>
+    public static class ElementTransformExtensions
     {
         public static T OffsetsX<T>(this T element, float left, float right) where T : Element
         {

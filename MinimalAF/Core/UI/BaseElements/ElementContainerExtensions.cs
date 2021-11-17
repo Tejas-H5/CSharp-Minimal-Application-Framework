@@ -4,7 +4,10 @@ using System.Text;
 
 namespace MinimalAF
 {
-    public static class ContainerExtensions
+	/// <summary>
+	/// See <see cref="ElementTransformExtensions"/> to know why these are extension methods rather than normal methods.
+	/// </summary>
+	public static class ElementContainerExtensions
     {
 
         /// <summary>
@@ -30,7 +33,7 @@ namespace MinimalAF
 
         /// </c>
         /// </summary>
-        public static T TopSplit<T>(this T baseElement, float offset, Element upper, Element lower) where T : Container
+        public static T TopSplit<T>(this T baseElement, float offset, Element upper, Element lower) where T : Element
         {
             baseElement.SetChildren(
                 upper
@@ -48,7 +51,7 @@ namespace MinimalAF
         /// <summary>
         /// Same as TopSplit but from the bottom
         /// </summary>
-        public static T BottomSplit<T>(this T baseElement, float offset, Element upper, Element lower) where T : Container
+        public static T BottomSplit<T>(this T baseElement, float offset, Element upper, Element lower) where T : Element
         {
             baseElement.SetChildren(
                     lower
@@ -68,7 +71,7 @@ namespace MinimalAF
         /// <summary>
         /// Same as TopSplit but from the right
         /// </summary>
-        public static T RightSplit<T>(this T baseElement, float offset, Element left, Element right) where T : Container
+        public static T RightSplit<T>(this T baseElement, float offset, Element left, Element right) where T : Element
         {
             baseElement.SetChildren(
                     left
@@ -85,7 +88,7 @@ namespace MinimalAF
         /// <summary>
         /// Same as TopSplit but from the left
         /// </summary>
-        public static T LeftSplit<T>(this T baseElement, float offset, Element left, Element right) where T : Container
+        public static T LeftSplit<T>(this T baseElement, float offset, Element left, Element right) where T : Element
         {
             baseElement.SetChildren(
                     left
@@ -105,7 +108,7 @@ namespace MinimalAF
         /// <param name="columnOffsets">Set to null to get even anchoring</param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        public static T InColumns<T>(this T baseElement, float[] columnOffsets, params Element[] elements) where T:Container
+        public static T InColumns<T>(this T baseElement, float[] columnOffsets, params Element[] elements) where T:Element
         {
             return LinearAnchoring(baseElement, false, elements, columnOffsets);
         }
@@ -123,12 +126,12 @@ namespace MinimalAF
         /// <param name="rowOffsets">Set to null to get even anchoring</param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        public static T InRows<T>(this T baseElement, float[] rowOffsets, params Element[] elements) where T : Container
+        public static T InRows<T>(this T baseElement, float[] rowOffsets, params Element[] elements) where T : Element
         {
             return LinearAnchoring(baseElement, true, elements, rowOffsets);
         }
 
-        private static T LinearAnchoring<T>(this T baseElement, bool vertical, Element[] elements, float[] offsets = null) where T : Container
+        private static T LinearAnchoring<T>(this T baseElement, bool vertical, Element[] elements, float[] offsets = null) where T : Element
         {
             float previousAnchor = 0;
 
@@ -168,7 +171,7 @@ namespace MinimalAF
             return baseElement;
         }
 
-        public static T SetChildren<T>(this T baseElement, params Element[] children) where T : Container
+        public static T SetChildren<T>(this T baseElement, params Element[] children) where T : Element
         {
             baseElement.Children = children;
             return baseElement;

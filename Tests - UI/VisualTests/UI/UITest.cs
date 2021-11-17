@@ -6,7 +6,7 @@ using System;
 
 namespace MinimalAF.VisualTests.UI
 {
-    public class UITest : Container
+    public class UITest : Element
     {
         Panel GeneratePanel()
         {
@@ -15,21 +15,21 @@ namespace MinimalAF.VisualTests.UI
 
         public UITest()
         {
-            Container cont = this;
+            Element cont = this;
 
             float[] goldenRatioSplit = new float[] { 0.38196601125f };
 
             for (int i = 0; i < 5; i++)
             {
-                Container left = GeneratePanel();
-                Container right = GeneratePanel();
+                Element left = GeneratePanel();
+                Element right = GeneratePanel();
                 cont.InColumns(
                     goldenRatioSplit,
                     left, right
                 );
 
-                Container upper = GeneratePanel();
-                Container lower = GeneratePanel();
+                Element upper = GeneratePanel();
+                Element lower = GeneratePanel();
                 right.InRows(goldenRatioSplit,
                     upper, lower);
 

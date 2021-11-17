@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MinimalAF.VisualTests.UI
 {
-    public class OutlineRect : Container
+    public class OutlineRect : Element
     {
         Color4 _col;
         float _thickness;

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MinimalAF
 {
-    public class ClippingRectState : Container
+    public class ClippingRectState : Element
     {
         //Used to draw InverseStencil components to an infinite depth
         private static List<Rect2D> _stencilRectStack = new List<Rect2D>();

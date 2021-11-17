@@ -2,7 +2,7 @@
 
 namespace MinimalAF
 {
-    public class AspectRatioElement : Container
+    public class AspectRatioElement : Element
     {
         float _widthToHeight;
 

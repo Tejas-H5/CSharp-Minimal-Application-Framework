@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MinimalAF
 {
-    public class TextInput<T> : Container
+    public class TextInput<T> : Element
     {
         TextElement _textObject;
 

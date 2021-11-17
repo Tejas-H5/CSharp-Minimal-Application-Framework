@@ -10,7 +10,7 @@ namespace MinimalAF
     /// Only be getting this and modifying stuff if the element is a root-level element
     /// of your program.
     /// </summary>
-    public class Window : Container
+    public class Window : Element
     {
         OpenTKWindowWrapper _window;
 

@@ -10,7 +10,7 @@ namespace MinimalAF
     /// Then why is it called 'inverse stencil'? 
     /// because it sounds cool
     /// </summary>
-    public class ClippingRect : Container
+    public class ClippingRect : Element
     {
         public ClippingRect()
         {

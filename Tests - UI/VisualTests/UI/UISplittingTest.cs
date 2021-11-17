@@ -5,7 +5,7 @@ using MinimalAF;
 
 namespace MinimalAF.VisualTests.UI
 {
-    public class UISplittingTest : Container
+    public class UISplittingTest : Element
     {
         public UISplittingTest()
         {

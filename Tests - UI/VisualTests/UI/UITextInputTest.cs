@@ -5,13 +5,13 @@ using MinimalAF;
 
 namespace MinimalAF.VisualTests.UI
 {
-    public class UITextInputTest : Container
+    public class UITextInputTest : Element
     {
-        Container[] rows;
+        Element[] rows;
 
         public UITextInputTest()
         {
-            rows = new Container[3];
+            rows = new Element[3];
 
             for(int i = 0; i < 3; i++)
             {
@@ -30,7 +30,7 @@ namespace MinimalAF.VisualTests.UI
                     );
                 }
 
-                rows[i] = new Container().InColumns(
+                rows[i] = new Element().InColumns(
                     new float[] {0.33333f, 0.66666f},
                     rowElements
                 );

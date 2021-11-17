@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MinimalAF.VisualTests.UI
 {
-    public class Panel : Container
+    public class Panel : Element
     {
         Color4 _color, _hoverColor, _clickColor;
 

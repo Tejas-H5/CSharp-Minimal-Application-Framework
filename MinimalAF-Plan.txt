@@ -1,23 +1,8 @@
 TODO:
-	- Give UI a proper event system
-		- Only 1 thing may have 'keyboard focus'
-		- Only 1 thing may have 'mousewheel focus'
-		- Only 1 thing may have 'horizontal mousewheel focus'
-		- Only 1 thing may have 'mouse hover/click focus'
-		- we may need to be able to define more such events
-		- It can be an EventSink element that stores a bunch of events.
-		- We can update EventSink each frame, perhaps in EarlyUpdate
-		- We can do (Get<FocusTracker>().Get<MouseFocus>().ShouldDetect[EventType](this)) to check if we are able to respond to mouse events
-			- and then do the classic Input.Mouse.GetPressed() or whatever
-			- This would mean that ProcessEvents is gone though
-			- And we don't need early update. Rather, we can just figure out all the events, and then 
-				call base.Update() to update all the children
-
 	- Give Elements their own coordinate systems, and drawing capabilities.
-		- new element - GraphicalElement
-			- Stores what texture and color and font was last in use and applies it automatically, so that state has continuity
-			- all drawing is confined to UI coordinate system
-			- CTX becomes an internal class
+		- Give elements an ability to store the state of the drawing context
+		- Give elements the ability to apply a coordinate system of their choosing to the drawing
+		- make CTX internal
 
 	- Test harness that collates all unit tests
 		- An Attribute is used to mark tests

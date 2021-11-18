@@ -12,10 +12,6 @@ namespace MinimalAF
     /// </summary>
     public class ClippingRect : Element
     {
-        public ClippingRect()
-        {
-        }
-
         ClippingRectState _state;
 
         public override void OnStart()

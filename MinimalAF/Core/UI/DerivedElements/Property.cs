@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MinimalAF
 {
-    public class Property<T>
+    public class Property<T> 
     {
         T _value;
         Func<T, T> _validator;

@@ -10,7 +10,6 @@ namespace MinimalAF
     {
         TextElement _textObject;
 
-        bool _isTyping;
         bool _shouldClear;
         bool _endsTypingOnNewline = true;
 
@@ -19,6 +18,8 @@ namespace MinimalAF
 
         Property<T> _property;
         Func<string, T> _parser;
+
+		WindowKeyboardInput _keyboardInput;
 
         /// <summary>
         /// A text input that sets value to a property.
@@ -36,15 +37,21 @@ namespace MinimalAF
             );
 
             OnTextFinalized += OnTextFinalizedSelf;
-        }
+		}
 
-        public override void OnRender()
+		public override void OnStart()
+		{
+			_keyboardInput = GetAncestor<Window>().KeyboardInput;
+
+			base.OnStart();
+		}
+
+		public override void OnRender()
         {
-            if (_isTyping)
+            if (_keyboardInput.IsFocused(this))
             {
                 RenderCarat();
             }
-
 
             base.OnRender();
         }
@@ -59,7 +66,7 @@ namespace MinimalAF
 
         public override void OnUpdate()
         {
-            if(_isTyping)
+            if(_keyboardInput.IsFocused(this))
             {
                 if (Input.Mouse.IsPressed(MouseButton.Left))
                 {
@@ -76,31 +83,23 @@ namespace MinimalAF
 
                 TypeKeystrokes();
             }
+			else
+			{
+				CheckForMouseClick();
+			} 
 
             base.OnUpdate();
         }
 
-        public override bool ProcessEvents()
-        {
-            if (_isTyping)
-                return true;
-
-            return WaitForMouseClick();
-        }
-
-        private bool WaitForMouseClick()
+        private void CheckForMouseClick()
         {
             if (Input.Mouse.IsPressed(MouseButton.Left) && Input.Mouse.IsOver(Rect))
             {
-                _isTyping = true;
+                _keyboardInput.FocusElement(this);
 
                 if (_shouldClear)
                     _textObject.Text = "";
-
-                return true;
             }
-
-            return false;
         }
 
 
@@ -147,10 +146,11 @@ namespace MinimalAF
 
         protected void EndTyping()
         {
-            if (_isTyping)
+            if (_keyboardInput.IsFocused(this))
             {
-                _isTyping = false;
-                OnTextFinalized?.Invoke();
+				_keyboardInput.FocusElement(null);
+
+				OnTextFinalized?.Invoke();
             }
         }
 

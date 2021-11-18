@@ -4,8 +4,7 @@ using System.Text;
 
 namespace MinimalAF
 {
-	public abstract class InputEvent
-	{
-		public abstract void Update(Element root);
+	interface IWindowResource {
+		void Update();
 	}
 }

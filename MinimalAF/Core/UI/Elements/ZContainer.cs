@@ -4,27 +4,33 @@ namespace MinimalAF
 {
     public class ZContainer : Element
     {
-        private List<Element> _children = new List<Element>();
+        private List<Element> _stack = new List<Element>();
+
+		public ZContainer(Element child)
+		{
+			this.SetChildren(child);
+		}
 
         public void Push(Element el)
         {
-            _children.Add(el);
+            _stack.Add(el);
         }
 
         public void Pop(Element el)
         {
-            if (_children.Count == 0)
+			// Don't pop all elements
+            if (_stack.Count == 1)
                 return;
 
-            _children.RemoveAt(_children.Count - 1);
+            _stack.RemoveAt(_stack.Count - 1);
         }
 
-        public override bool ProcessEvents()
+        public override void OnUpdate()
         {
-            if (_children.Count < 1)
-                return false;
+            if (_stack.Count < 1)
+                return;
 
-            return _children[_children.Count - 1].ProcessEvents();
+            _stack[_stack.Count - 1].Update();
         }
     }
 }

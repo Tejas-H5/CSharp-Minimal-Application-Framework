@@ -20,8 +20,36 @@ namespace MinimalAF.VisualTests.UI
         }
 
         Color4 _drawColor;
+		WindowMouseInput _mouseInput;
 
-        public override void OnRender()
+		public override void OnStart()
+		{
+			_mouseInput = GetAncestor<Window>().MouseInput;
+
+			base.OnStart();
+		}
+
+		public override void OnUpdate()
+		{
+			base.OnUpdate();
+
+			_drawColor = _color;
+
+			if (_mouseInput.CheckAndHandleOver(this))
+			{
+				if (_mouseInput.CheckAndHandlePressed())
+				{
+					Console.WriteLine("Clicked");
+					_drawColor = _clickColor;
+				}
+				else
+				{
+					_drawColor = _hoverColor;
+				}
+			}
+		}
+
+		public override void OnRender()
         {
             CTX.SetDrawColor(new Color4(0,1));
             CTX.DrawRectOutline(1, Rect);
@@ -30,28 +58,6 @@ namespace MinimalAF.VisualTests.UI
             CTX.DrawRect(Rect);
 
             base.OnRender();
-        }
-
-
-        public override bool OnProcessEvents()
-        {
-            if (Input.Mouse.IsOver(Rect))
-            {
-                if (Input.Mouse.IsAnyDown)
-                {
-                    _drawColor = _clickColor;
-                }
-                else
-                {
-                    _drawColor = _hoverColor;
-                }
-
-                return true;
-            }
-
-
-            _drawColor = _color;
-            return false;
         }
     }
 }

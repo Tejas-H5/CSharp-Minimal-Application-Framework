@@ -38,6 +38,8 @@ namespace MinimalAF.VisualTests.UI
             w.UpdateFrequency = 120; 
 
             CTX.SetClearColor(0, 0, 0, 0);
-        }
+
+			base.OnStart();
+		}
     }
 }

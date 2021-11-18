@@ -174,6 +174,7 @@ namespace MinimalAF
         public static T SetChildren<T>(this T baseElement, params Element[] children) where T : Element
         {
             baseElement.Children = children;
+
             return baseElement;
         }
     }

@@ -146,6 +146,14 @@ namespace MinimalAF
         }
 
 
+		/// <summary>
+		/// <para>
+		/// Is called after this element hooks to the element tree.
+		/// </para>
+		/// <para>
+		/// Remember to call base.OnStart at some point to initialize the children
+		/// </para>
+		/// </summary>
 		public virtual void OnStart()
 		{
 			for (int i = 0; i < _children.Length; i++)
@@ -153,7 +161,6 @@ namespace MinimalAF
 				_children[i].Start();
 			}
 		}
-
 
 
 		/// <summary>

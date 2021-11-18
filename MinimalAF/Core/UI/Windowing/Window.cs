@@ -14,12 +14,30 @@ namespace MinimalAF
     {
         OpenTKWindowWrapper _window;
 
+		private IWindowResource[] _windowResources;
+		public readonly WindowMouseInput MouseInput;
+		public readonly WindowKeyboardInput KeyboardInput;
+
         public Window(Element child) 
         {
-            this.SetChildren(child);
-        }
+            this.SetChildren(
+				child
+			);
 
-        public void Run()
+			_windowResources = new IWindowResource[]
+			{
+				MouseInput = new WindowMouseInput(),
+			};
+
+			KeyboardInput = new WindowKeyboardInput();
+		}
+
+		public override void OnStart()
+		{
+			base.OnStart();
+		}
+
+		public void Run()
         {
             using (OpenTKWindowWrapper window = new OpenTKWindowWrapper(this))
             {
@@ -32,22 +50,6 @@ namespace MinimalAF
         public  Vector2i Size {
             get { return new Vector2i(_window.Size.X, _window.Size.Y); }
             set { _window.Size = new OpenTK.Mathematics.Vector2i(value.X, value.Y); }
-        }
-
-        Dictionary<Type, object> _resources = new Dictionary<Type, object>();
-
-        public void AddResource<T>(T resource) where T : class
-        {
-            Type tType = typeof(T);
-            if (_resources.ContainsKey(tType))
-                throw new Exception("This resource already exists");
-
-            _resources[tType] = resource;
-        }
-
-        public T GetResource<T>() where T : class
-        {
-            return _resources[typeof(T)] as T;
         }
 
         public  void Maximize() { _window.Maximize(); }
@@ -78,5 +80,15 @@ namespace MinimalAF
                 }
             }
         }
-    }
+
+		public override void OnUpdate()
+		{
+			foreach (IWindowResource ie in _windowResources)
+			{
+				ie.Update();
+			}
+
+			base.OnUpdate();
+		}
+	}
 }

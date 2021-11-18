@@ -13,7 +13,7 @@ namespace MinimalAF.VisualTests.Rendering
             w.Title = "Stencil rendering test";
 
             CTX.SetClearColor(0, 0, 0, 1);
-            CTX.SetCurrentFont("Consolas", 24);
+            CTX.Text.SetFont("Consolas", 24);
 
             geometryAndTextTest.Init();
         }
@@ -27,8 +27,8 @@ namespace MinimalAF.VisualTests.Rendering
             CTX.StartStencillingWithoutDrawing(true);
 
             float barSize = MathF.Abs((Height / 2 - 5) * MathF.Sin(_time / 4f));
-            CTX.DrawRect(0, Height, Width, Height - barSize);
-            CTX.DrawRect(0, 0, Width, barSize);
+            CTX.Rect.Draw(0, Height, Width, Height - barSize);
+            CTX.Rect.Draw(0, 0, Width, barSize);
 
             CTX.StartUsingStencil();
 
@@ -53,7 +53,7 @@ namespace MinimalAF.VisualTests.Rendering
         {
             CTX.SetTexture(null);
             CTX.SetDrawColor(0, 0, 1, 1);
-            CTX.DrawRect(Width / 2 - size + xPos, Height / 2 - size,
+            CTX.Rect.Draw(Width / 2 - size + xPos, Height / 2 - size,
                 Width / 2 + size + xPos, Height / 2 + size);
         }
 
@@ -61,7 +61,7 @@ namespace MinimalAF.VisualTests.Rendering
         {
             CTX.SetTexture(null);
             CTX.SetDrawColor(1, 0, 0, 1);
-            CTX.DrawRect(Width / 2 - size + xPos, Height / 2 - size,
+            CTX.Rect.Draw(Width / 2 - size + xPos, Height / 2 - size,
                 Width / 2 + size + xPos, Height / 2 + size);
         }
 

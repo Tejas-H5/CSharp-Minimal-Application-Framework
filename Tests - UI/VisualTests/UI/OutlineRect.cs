@@ -20,7 +20,7 @@ namespace MinimalAF.VisualTests.UI
         {
             CTX.SetDrawColor(_col);
 
-            CTX.DrawRectOutline(_thickness, Rect);
+            CTX.Rect.DrawOutline(_thickness, Rect);
 
             base.OnRender();
         }

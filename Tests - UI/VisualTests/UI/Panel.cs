@@ -52,10 +52,10 @@ namespace MinimalAF.VisualTests.UI
 		public override void OnRender()
         {
             CTX.SetDrawColor(new Color4(0,1));
-            CTX.DrawRectOutline(1, Rect);
+            CTX.Rect.DrawOutline(1, Rect);
 
             CTX.SetDrawColor(_drawColor);
-            CTX.DrawRect(Rect);
+            CTX.Rect.Draw(Rect);
 
             base.OnRender();
         }

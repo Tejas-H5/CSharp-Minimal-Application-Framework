@@ -1,6 +1,6 @@
 ﻿namespace MinimalAF.Rendering.ImmediateMode
 {
-    class NGonDrawer : GeometryDrawer
+	public class NGonDrawer : GeometryDrawer
     {
         IGeometryOutput _outputStream;
         bool _polygonBegun = false;
@@ -15,7 +15,7 @@
             _outputStream = outputStream;
         }
 
-        public void BeginNGon(Vertex v1, int n)
+        public void Begin(Vertex v1, int n)
         {
             if (n < 3)
                 n = 3;
@@ -30,7 +30,7 @@
             _polygonCount = 1;
         }
 
-        public void AppendToNGon(Vertex v)
+        public void Continue(Vertex v)
         {
             if (_polygonBegun == false)
             {
@@ -68,10 +68,9 @@
             _polygonCount = 2;
         }
 
-        public void EndNGon()
+        public void End()
         {
             _polygonBegun = false;
         }
-
     }
 }

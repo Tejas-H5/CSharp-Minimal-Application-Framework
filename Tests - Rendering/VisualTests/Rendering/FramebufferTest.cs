@@ -40,13 +40,13 @@ namespace MinimalAF.VisualTests.Rendering
             float wCY = Rect.CenterY;
             DrawDualCirclesCenter(wCX, wCY);
             CTX.SetDrawColor(1, 1, 0, 1);
-            CTX.DrawRect(wCX, wCY, wCX + 50, wCY + 25);
+            CTX.Rect.Draw(wCX, wCY, wCX + 50, wCY + 25);
 
             CTX.StopUsingFramebuffer();
 
             CTX.SetDrawColor(new Color4(0, 0, 0, 1));
-            CTX.SetCurrentFont("Consolas", 12);
-            CTX.DrawText("The red square must be fully visible under the circles.\n" +
+            CTX.Text.SetFont("Consolas", 12);
+            CTX.Text.Draw("The red square must be fully visible under the circles.\n" +
                 "The part where the circles overlap must not be visible.\n" +
                 "There must be a small orange rectangle in the middle\n" +
                 "This text must be 0,0,0 black \n",
@@ -57,23 +57,23 @@ namespace MinimalAF.VisualTests.Rendering
             float rectSize = 200;
 
 
-            CTX.DrawRect(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
+            CTX.Rect.Draw(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
             CTX.SetDrawColor(1, 1, 1, 0.5f);
             CTX.SetTextureToFramebuffer(0);
             
-            CTX.DrawRect(Left, Bottom, Width,Height);
+            CTX.Rect.Draw(Left, Bottom, Width,Height);
 
             CTX.SetTexture(null);
 
             CTX.SetDrawColor(0, 1, 0, 0.5f);
-            CTX.DrawRectOutline(10, wCX - 300, wCY - 300, wCX + 300, wCY + 300);
+            CTX.Rect.DrawOutline(10, wCX - 300, wCY - 300, wCX + 300, wCY + 300);
         }
 
 
         private static void DrawDualCirclesCenter(float x, float y)
         {
-            CTX.DrawCircle(x - 100, y - 100, 200);
-            CTX.DrawCircle(x + 100, y + 100, 200);
+            CTX.Circle.Draw(x - 100, y - 100, 200);
+            CTX.Circle.Draw(x + 100, y + 100, 200);
         }
     }
 }

@@ -55,6 +55,11 @@ namespace MinimalAF.Rendering
             UseCurrentTexture();
         }
 
+		public bool IsSameTexture(Texture texture)
+		{
+			return _currentTexture == texture && (!GlobalTextureHasChanged());
+		}
+
         public void UseCurrentTexture()
         {
             if (_currentTexture == null)

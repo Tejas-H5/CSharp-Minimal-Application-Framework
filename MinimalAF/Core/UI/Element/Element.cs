@@ -10,6 +10,8 @@ namespace MinimalAF
     {
 		static readonly Element[] NULL_ARRAY = new Element[0];
 
+		public virtual bool SingleChild => false;
+
         public bool IsVisibleNextFrame = true;
 
         protected RectTransform _rectTransform = new RectTransform();
@@ -24,7 +26,11 @@ namespace MinimalAF
 				return _children;
 			}
 			set {
+				if (SingleChild && _children.Length > 1)
+					throw new Exception("This element must only be given 1 child, possibly in the constructor.");
+
 				_children = value;
+
 				for (int i = 0; i < _children.Length; i++)
 				{
 					_children[i].Parent = this;

@@ -5,9 +5,9 @@ using System.Drawing;
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
-    class TextDrawer : IDisposable
+    public class TextDrawer : IDisposable
     {
-        QuadDrawer _quadDrawer;
+        RectangleDrawer _rectDrawer;
 
         FontManager _fontManager;
 
@@ -15,16 +15,16 @@ namespace MinimalAF.Rendering.ImmediateMode
             get { return _fontManager.ActiveFont; }
         }
 
-        public TextDrawer(QuadDrawer quadDrawer)
+        public TextDrawer(RectangleDrawer rectDrawer)
         {
-            _quadDrawer = quadDrawer;
+            _rectDrawer = rectDrawer;
 
             _fontManager = new FontManager();
-            SetCurrentFont("", -1);
+            SetFont("", -1);
         }
 
 
-        public void SetCurrentFont(string name, int size)
+        public void SetFont(string name, int size)
         {
             if (size < 0)
                 size = 12;
@@ -45,7 +45,18 @@ namespace MinimalAF.Rendering.ImmediateMode
             }
         }
 
-        public float GetCharWidth(char c)
+		public float GetWidth()
+		{
+			return GetWidth(' ');
+		}
+
+		public float GetHeight()
+		{
+			return GetWidth('|');
+		}
+
+
+		public float GetWidth(char c)
         {
             if (ActiveFont.FontAtlas.IsValidCharacter(c))
             {
@@ -66,12 +77,12 @@ namespace MinimalAF.Rendering.ImmediateMode
             return 0;
         }
 
-        public float GetCharHeight(char c)
+        public float GetHeight(char c)
         {
             return ActiveFont.FontAtlas.GetCharacterSize(c).Height;
         }
 
-        public SizeF GetCharSize(char c)
+        public SizeF GetSize(char c)
         {
             return ActiveFont.FontAtlas.GetCharacterSize(c);
         }
@@ -84,10 +95,6 @@ namespace MinimalAF.Rendering.ImmediateMode
         }
 
 
-        private Rect2D GetAtlasRect(char c)
-        {
-            return new Rect2D(0, 0, 0, 0);
-        }
 
         private float CaratPosX(float lineWidth, HorizontalAlignment hAlign)
         {
@@ -104,15 +111,15 @@ namespace MinimalAF.Rendering.ImmediateMode
 
         //TODO: IMPLEMENT tabs and newlines
         //And vertical/horizontal aiignment features
-        public PointF DrawTextAligned(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f)
+        public PointF Draw(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f)
         {
             PointF caratPos = new PointF(startX, startY);
 
             if (text == null)
                 return caratPos;
 
-            float textHeight = scale * CTX.GetStringHeight(text);
-            float charHeight = scale * CTX.GetCharHeight('|');
+            float textHeight = scale * GetHeight(text);
+            float charHeight = scale * GetHeight('|');
 
 
             switch (vAlign)
@@ -139,11 +146,11 @@ namespace MinimalAF.Rendering.ImmediateMode
                 else
                     lineEnd++;
 
-                float lineWidth = scale * GetStringWidth(text, lineStart, lineEnd);
+                float lineWidth = scale * GetWidth(text, lineStart, lineEnd);
 
                 caratPos.X = startX + CaratPosX(lineWidth, hAlign);
 
-                caratPos = CTX.DrawText(text, lineStart, lineEnd, caratPos.X, caratPos.Y, scale);
+                caratPos = Draw(text, lineStart, lineEnd, caratPos.X, caratPos.Y, scale);
 
                 lineStart = lineEnd;
             }
@@ -151,12 +158,12 @@ namespace MinimalAF.Rendering.ImmediateMode
             return caratPos;
         }
 
-        public PointF DrawText(string text, float startX, float startY, float scale = 1.0f)
+        public PointF Draw(string text, float startX, float startY, float scale = 1.0f)
         {
-            return DrawText(text, 0, text.Length, startX, startY, scale);
+            return Draw(text, 0, text.Length, startX, startY, scale);
         }
 
-        public PointF DrawText(string text, int start, int end, float startX, float startY, float scale)
+        public PointF Draw(string text, int start, int end, float startX, float startY, float scale)
         {
             CTX.SetTexture(ActiveFont.FontTexture);
 
@@ -180,7 +187,7 @@ namespace MinimalAF.Rendering.ImmediateMode
                     }
                 }
 
-                x += GetCharWidth(c);
+                x += GetWidth(c);
             }
 
             return new PointF(x, y);
@@ -188,10 +195,10 @@ namespace MinimalAF.Rendering.ImmediateMode
 
         private void DrawCharacter(float scale, float x, float y, char c)
         {
-            SizeF size = GetCharSize(c);
+            SizeF size = GetSize(c);
             Rect2D uv = ActiveFont.FontAtlas.GetCharacterUV(c);
 
-            _quadDrawer.DrawRect(new Rect2D(x, y, x + size.Width * scale, y + size.Height * scale), uv);
+            _rectDrawer.Draw(new Rect2D(x, y, x + size.Width * scale, y + size.Height * scale), uv);
         }
 
         public void Dispose()
@@ -199,12 +206,12 @@ namespace MinimalAF.Rendering.ImmediateMode
             _fontManager.Dispose();
         }
 
-        public float GetStringHeight(string s)
+        public float GetHeight(string s)
         {
-            return GetStringHeight(s, 0, s.Length);
+            return GetHeight(s, 0, s.Length);
         }
 
-        public float GetStringHeight(string s, int start, int end)
+        public float GetHeight(string s, int start, int end)
         {
             int numNewLines = 1;
 
@@ -214,16 +221,16 @@ namespace MinimalAF.Rendering.ImmediateMode
                     numNewLines++;
             }
 
-            return 2 + numNewLines * (GetCharHeight('|') + 2);
+            return 2 + numNewLines * (GetHeight('|') + 2);
         }
 
 
-        public float GetStringWidth(string s)
+        public float GetWidth(string s)
         {
-            return GetStringWidth(s, 0, s.Length);
+            return GetWidth(s, 0, s.Length);
         }
 
-        public float GetStringWidth(string s, int start, int end)
+        public float GetWidth(string s, int start, int end)
         {
             float maxWidth = 0;
             float width = 0;
@@ -236,7 +243,7 @@ namespace MinimalAF.Rendering.ImmediateMode
                     continue;
                 }
 
-                width += GetCharWidth(s[i]);
+                width += GetWidth(s[i]);
 
                 maxWidth = MathF.Max(width, maxWidth);
             }

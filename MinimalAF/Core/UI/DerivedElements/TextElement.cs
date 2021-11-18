@@ -45,7 +45,7 @@ namespace MinimalAF
             if (Text == null)
                 return;
 
-            CTX.SetCurrentFont(Font, FontSize);
+            CTX.Text.SetFont(Font, FontSize);
             CTX.SetDrawColor(TextColor);
 
             float startX = 0, startY = 0;
@@ -80,14 +80,14 @@ namespace MinimalAF
                     break;
             }
 
-            _caratPos = CTX.DrawTextAligned(Text, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
+            _caratPos = CTX.Text.Draw(Text, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
         }
 
         internal float TextWidth()
         {
             //TODO: set the current font
 
-            return CTX.GetStringWidth(Text);
+            return CTX.Text.GetWidth(Text);
         }
 
         public PointF GetCaratPos()
@@ -98,7 +98,7 @@ namespace MinimalAF
         public float GetCharacterHeight()
         {
             //TODO: set the current font
-            return CTX.GetCharHeight('|');
+            return CTX.Text.GetHeight('|');
         }
     }
 }

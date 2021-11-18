@@ -35,11 +35,11 @@ namespace AudioEngineTests.AudioTests
             CTX.SetDrawColor(1, 0, 0, 1);
             float amount = (float)(_streamedSource.GetPlaybackPosition() / _streamProvider.Duration);
             float x = amount * Width;
-            CTX.DrawLine(x, 0, x, Height, 2, CapType.None);
+            CTX.Line.Draw(x, 0, x, Height, 2, CapType.None);
 
             if(amount > 1)
             {
-                CTX.DrawText("Duration: " + _streamProvider.Duration, 0, 0);
+                CTX.Text.Draw("Duration: " + _streamProvider.Duration, 0, 0);
             }
         }
 

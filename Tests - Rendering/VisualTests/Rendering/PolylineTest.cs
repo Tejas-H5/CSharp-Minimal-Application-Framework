@@ -51,15 +51,15 @@ namespace MinimalAF.VisualTests.Rendering
             {
                 if (i == 0)
                 {
-                    CTX.BeginPolyLine(p.X, p.Y, 50, CapType.Circle);
+                    CTX.NLine.Begin(p.X, p.Y, 50, CapType.Circle);
                 }
                 else if(i == _points.Count - 1)
                 {
-                    CTX.EndPolyLine(p.X, p.Y);
+                    CTX.NLine.End(p.X, p.Y);
                 }
                 else
                 {
-                    CTX.AppendToPolyLine(p.X, p.Y);
+                    CTX.NLine.Continue(p.X, p.Y);
                 }
 
                 i++;

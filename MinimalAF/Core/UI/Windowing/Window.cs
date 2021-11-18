@@ -18,7 +18,9 @@ namespace MinimalAF
 		public readonly WindowMouseInput MouseInput;
 		public readonly WindowKeyboardInput KeyboardInput;
 
-        public Window(Element child) 
+		public override bool SingleChild => true;
+
+		public Window(Element child) 
         {
             this.SetChildren(
 				child

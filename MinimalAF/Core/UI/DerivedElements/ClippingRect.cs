@@ -52,7 +52,7 @@ namespace MinimalAF
         private static void StartInverseStencil(Rect2D r)
         {
             CTX.StartStencillingWithoutDrawing(inverseStencil: true);
-            CTX.DrawRect(r);
+            CTX.Rect.Draw(r);
             CTX.StartUsingStencil();
         }
     }

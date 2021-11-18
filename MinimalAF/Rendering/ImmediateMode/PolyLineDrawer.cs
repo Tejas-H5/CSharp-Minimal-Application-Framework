@@ -3,8 +3,8 @@ using System;
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
-    //TODO: add support for 3D lines if needed
-    class PolyLineDrawer : GeometryDrawer
+	//TODO: add support for 3D lines if needed
+	public class PolyLineDrawer : GeometryDrawer
     {
         IGeometryOutput _geometryOutput;
         LineDrawer _lineDrawer;
@@ -40,11 +40,11 @@ namespace MinimalAF.Rendering.ImmediateMode
         CapType _capType;
 
         //Can also be used to continue an unfinished polyline
-        public void BeginPolyLine(float x, float y, float thickness, CapType cap)
+        public void Begin(float x, float y, float thickness, CapType cap)
         {
             if (!_canStart)
             {
-                ContinuePolyline(x, y);
+                Continue(x, y);
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace MinimalAF.Rendering.ImmediateMode
         }
 
 
-        public void ContinuePolyline(float x, float y, bool useAverage = true)
+        public void Continue(float x, float y, bool useAverage = true)
         {
             float dirX, dirY, perpX, perpY;
             CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
@@ -200,11 +200,11 @@ namespace MinimalAF.Rendering.ImmediateMode
             _lastPerpY = perpY;
         }
 
-        public void EndPolyLine(float x, float y)
+        public void End(float x, float y)
         {
             if (!_canEnd)
             {
-                ContinuePolyline(x, y);
+                Continue(x, y);
                 return;
             }
 
@@ -218,8 +218,8 @@ namespace MinimalAF.Rendering.ImmediateMode
                 dirY = y - _lastLastY;
             }
 
-            ContinuePolyline(x, y);
-            ContinuePolyline(x + dirX, y + dirY, false);
+            Continue(x, y);
+            Continue(x + dirX, y + dirY, false);
 
             _lastX = x;
             _lastY = y;

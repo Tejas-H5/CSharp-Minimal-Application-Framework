@@ -16,7 +16,7 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "PolylineSelfIntersectionAlgorithmTest";
             CTX.SetClearColor(1, 1, 1, 1);
-            CTX.SetCurrentFont("Segoe UI", 24);
+            CTX.Text.SetFont("Segoe UI", 24);
         }
 
         public override void OnRender()
@@ -24,8 +24,8 @@ namespace MinimalAF.VisualTests.Rendering
             CTX.SetDrawColor(0, 0, 0, 1f);
             for (int i = 0; i < _points.Length; i++)
             {
-                CTX.DrawCircle(_points[i].X, _points[i].Y, 10);
-                CTX.DrawText(i.ToString(), _points[i].X + 20, _points[i].Y + 20);
+                CTX.Circle.Draw(_points[i].X, _points[i].Y, 10);
+                CTX.Text.Draw(i.ToString(), _points[i].X + 20, _points[i].Y + 20);
             }
 
             CTX.SetDrawColor(0, 0, 1, 0.5f);
@@ -37,10 +37,10 @@ namespace MinimalAF.VisualTests.Rendering
 
             float thickness = 200;
 
-            CTX.BeginPolyLine(p1.X, p1.Y, thickness, CapType.None);
-            CTX.AppendToPolyLine(p2.X, p2.Y);
-            CTX.AppendToPolyLine(p3.X, p3.Y);
-            CTX.EndPolyLine(p4.X, p4.Y);
+            CTX.NLine.Begin(p1.X, p1.Y, thickness, CapType.None);
+            CTX.NLine.Continue(p2.X, p2.Y);
+            CTX.NLine.Continue(p3.X, p3.Y);
+            CTX.NLine.End(p4.X, p4.Y);
 
 
             PointF lastPerp;
@@ -58,8 +58,8 @@ namespace MinimalAF.VisualTests.Rendering
 
             CTX.SetDrawColor(0, 1, 0, 1);
 
-            CTX.DrawLine(p1.X, p1.Y, p1.X + perp.X, p1.Y + perp.Y, 2, CapType.None);
-            CTX.DrawLine(p1.X, p1.Y, p1.X - perp.X, p1.Y - perp.Y, 2, CapType.None);
+            CTX.Line.Draw(p1.X, p1.Y, p1.X + perp.X, p1.Y + perp.Y, 2, CapType.None);
+            CTX.Line.Draw(p1.X, p1.Y, p1.X - perp.X, p1.Y - perp.Y, 2, CapType.None);
 
             return perp;
         }
@@ -98,12 +98,12 @@ namespace MinimalAF.VisualTests.Rendering
             else
                 CTX.SetDrawColor(1, 0, 0, 1);
 
-            CTX.DrawLine(p2.X, p2.Y, p2.X + perp.X, p2.Y + perp.Y, 2, CapType.None);
-            CTX.DrawLine(p2.X, p2.Y, p2.X - perp.X, p2.Y - perp.Y, 2, CapType.None);
+            CTX.Line.Draw(p2.X, p2.Y, p2.X + perp.X, p2.Y + perp.Y, 2, CapType.None);
+            CTX.Line.Draw(p2.X, p2.Y, p2.X - perp.X, p2.Y - perp.Y, 2, CapType.None);
 
             CTX.SetDrawColor(new Color4(0, 0.5f));
-            CTX.DrawLine(p1.X, p1.Y, p1.X + vec1.X, p1.Y + vec1.Y, 2, CapType.None);
-            CTX.DrawLine(p1.X, p1.Y, p1.X + vec2.X, p1.Y + vec2.Y, 2, CapType.None);
+            CTX.Line.Draw(p1.X, p1.Y, p1.X + vec1.X, p1.Y + vec1.Y, 2, CapType.None);
+            CTX.Line.Draw(p1.X, p1.Y, p1.X + vec2.X, p1.Y + vec2.Y, 2, CapType.None);
 
             return perp;
         }

@@ -20,7 +20,7 @@ namespace MinimalAF.AudioTests
             w.Title = "music and keyboard test";
 
             CTX.SetClearColor(0, 0, 0, 0);
-            CTX.SetCurrentFont("Consolas", 36);
+            CTX.Text.SetFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
             _clackSound = new AudioSourceOneShot(true, false, clip);
@@ -56,7 +56,7 @@ namespace MinimalAF.AudioTests
         {
             CTX.SetDrawColor(1, 1, 1, 1);
 
-            CTX.DrawText("Press some keys:", Width / 2, Height / 2 + 200);
+            CTX.Text.Draw("Press some keys:", Width / 2, Height / 2 + 200);
 
             string newString = KeysToString(Input.CharactersDown);
             if (newString != oldString)
@@ -65,7 +65,7 @@ namespace MinimalAF.AudioTests
                 _clackSound.Play();
             }
 
-            CTX.DrawText(newString, Width / 2, Height / 2);
+            CTX.Text.Draw(newString, Width / 2, Height / 2);
 
             //music
             CTX.SetDrawColor(1, 1, 1, 1);
@@ -83,11 +83,11 @@ namespace MinimalAF.AudioTests
             CTX.SetDrawColor(1, 0, 0, 1);
             float amount = (float)(_streamedSource.GetPlaybackPosition() / _streamProvider.Duration);
             float x = amount * Width;
-            CTX.DrawLine(x, 0, x, Height, 2, CapType.None);
+            CTX.Line.Draw(x, 0, x, Height, 2, CapType.None);
 
             if (amount > 1)
             {
-                CTX.DrawText("Duration: " + _streamProvider.Duration, 0, 0);
+                CTX.Text.Draw("Duration: " + _streamProvider.Duration, 0, 0);
             }
         }
 

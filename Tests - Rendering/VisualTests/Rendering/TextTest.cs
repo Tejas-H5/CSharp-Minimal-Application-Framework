@@ -18,7 +18,7 @@ namespace MinimalAF.VisualTests.Rendering
 
             CTX.SetClearColor(0, 0, 0, 0);
 
-            CTX.SetCurrentFont("Consolas", 24);
+            CTX.Text.SetFont("Consolas", 24);
 
             rain = new List<string>();
         }
@@ -39,11 +39,11 @@ namespace MinimalAF.VisualTests.Rendering
 
                 sb.Append(c);
 
-                totalLength += CTX.GetCharWidth(c);
+                totalLength += CTX.Text.GetWidth(c);
             }
 
             rain.Insert(0, sb.ToString());
-            if ((rain.Count - 2) * CTX.GetCharHeight() > Height)
+            if ((rain.Count - 2) * CTX.Text.GetHeight() > Height)
             {
                 rain.RemoveAt(rain.Count - 1);
             }
@@ -71,7 +71,7 @@ namespace MinimalAF.VisualTests.Rendering
 
             for (int i = 0; i < rain.Count; i++)
             {
-                CTX.DrawText(rain[i], 0, Height - CTX.GetCharHeight() * i);
+                CTX.Text.Draw(rain[i], 0, Height - CTX.Text.GetHeight() * i);
             }
 
             CTX.SetDrawColor(1, 0, 0, 1);

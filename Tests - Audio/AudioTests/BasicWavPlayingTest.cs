@@ -17,7 +17,7 @@ namespace MinimalAF.AudioTests
             w.Title = "Keyboard test";
 
             CTX.SetClearColor(0, 0, 0, 0);
-            CTX.SetCurrentFont("Consolas", 36);
+            CTX.Text.SetFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
             _clackSound = new AudioSourceOneShot(true, false, clip);
@@ -47,7 +47,7 @@ namespace MinimalAF.AudioTests
         {
             CTX.SetDrawColor(1, 1, 1, 1);
 
-            CTX.DrawText("Press some keys:", Width / 2, Height / 2 + 200);
+            CTX.Text.Draw("Press some keys:", Width / 2, Height / 2 + 200);
 
             string newString = KeysToString(Input.CharactersDown);
             if (newString != oldString)
@@ -56,7 +56,7 @@ namespace MinimalAF.AudioTests
                 _clackSound.Play();
             }
 
-            CTX.DrawText(newString, Width / 2, Height / 2);
+            CTX.Text.Draw(newString, Width / 2, Height / 2);
         }
 
         public override void OnUpdate()

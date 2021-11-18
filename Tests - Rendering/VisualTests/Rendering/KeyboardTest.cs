@@ -14,7 +14,7 @@ namespace RenderingEngineRenderingTests.VisualTests.Rendering
             w.Title = "Keyboard test";
 
             CTX.SetClearColor(0, 0, 0, 0);
-            CTX.SetCurrentFont("Consolas", 36);
+            CTX.Text.SetFont("Consolas", 36);
         }
 
         string KeysToString(string s)
@@ -37,9 +37,9 @@ namespace RenderingEngineRenderingTests.VisualTests.Rendering
         {
             CTX.SetDrawColor(1, 1, 1, 1);
 
-            CTX.DrawText("Press some keys:", Width / 2, Height / 2 + 200);
+            CTX.Text.Draw("Press some keys:", Width / 2, Height / 2 + 200);
 
-            CTX.DrawText(KeysToString(Input.Keyboard.CharactersDown), Width / 2, Height / 2);
+            CTX.Text.Draw(KeysToString(Input.Keyboard.CharactersDown), Width / 2, Height / 2);
         }
 
         public override void OnUpdate()

@@ -30,15 +30,15 @@ namespace MinimalAF.VisualTests.Rendering
             float y0 = Rect.CenterY;
             float r = MathF.Min(Height, Width) * 0.45f;
 
-            CTX.DrawArc(x0, y0, r, a, b);
+            CTX.Arc.Draw(x0, y0, r, a, b);
 
             CTX.SetDrawColor(0, 0, 0, 0.5f);
             DrawHand(x0, y0, r, a);
             DrawHand(x0, y0, r, b);
 
             CTX.SetDrawColor(0, 0, 0, 1);
-            CTX.DrawText($"Angle a: {a}", 0, Height - 30);
-            CTX.DrawText($"Angle b: {b}", 0, Height - 50);
+            CTX.Text.Draw($"Angle a: {a}", 0, Height - 30);
+            CTX.Text.Draw($"Angle b: {b}", 0, Height - 50);
 
             a += (float)Time.DeltaTime;
             b += (float)Time.DeltaTime * 2;
@@ -46,7 +46,7 @@ namespace MinimalAF.VisualTests.Rendering
 
         private void DrawHand(float x0, float y0, float r, float angle)
         {
-            CTX.DrawLine(x0, y0, x0 + r * MathF.Sin(angle), y0 + r * MathF.Cos(angle), 15f, CapType.Circle);
+            CTX.Line.Draw(x0, y0, x0 + r * MathF.Sin(angle), y0 + r * MathF.Cos(angle), 15f, CapType.Circle);
         }
     }
 }

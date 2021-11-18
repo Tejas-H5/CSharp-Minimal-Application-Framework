@@ -15,7 +15,7 @@ namespace MinimalAF.VisualTests.Rendering
 
             CTX.SetClearColor(0, 0, 0, 0);
 
-            CTX.SetCurrentFont("Consolas", 24);
+            CTX.Text.SetFont("Consolas", 24);
         }
 
 

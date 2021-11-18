@@ -18,7 +18,7 @@ namespace MinimalAF.AudioTests
             w.Title = "Panning test 2";
 
             CTX.SetClearColor(1, 1, 1, 1);
-            CTX.SetCurrentFont("Consolas", 36);
+            CTX.Text.SetFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
             _clackSound = new AudioSourceOneShot(false, false, clip);
@@ -52,11 +52,11 @@ namespace MinimalAF.AudioTests
         public override void OnRender()
         {
             CTX.SetDrawColor(0, 0, 0, 1);
-            CTX.DrawCircle(Width / 2, Height / 2, 20);
+            CTX.Circle.Draw(Width / 2, Height / 2, 20);
 
 
             CTX.SetDrawColor(1, 0, 0, 1);
-            CTX.DrawCircle(Input.Mouse.X, Input.Mouse.Y, 20);
+            CTX.Circle.Draw(Input.Mouse.X, Input.Mouse.Y, 20);
             CTX.DrawTextAligned("source is here (" + listenerX + "," + listenerZ + ")", Input.Mouse.X, Input.Mouse.Y, HorizontalAlignment.Center, VerticalAlignment.Bottom);
         }
     }

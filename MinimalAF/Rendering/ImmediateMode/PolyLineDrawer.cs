@@ -7,11 +7,9 @@ namespace MinimalAF.Rendering.ImmediateMode
 	public class PolyLineDrawer : GeometryDrawer
     {
         IGeometryOutput _geometryOutput;
-        LineDrawer _lineDrawer;
 
-        public PolyLineDrawer(LineDrawer lineDrawer, IGeometryOutput geometryOutput)
+        public PolyLineDrawer(IGeometryOutput geometryOutput)
         {
-            _lineDrawer = lineDrawer;
             _geometryOutput = geometryOutput;
         }
 
@@ -117,7 +115,7 @@ namespace MinimalAF.Rendering.ImmediateMode
 
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
-            _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
+            CTX.Line.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
         }
 
         private void MoveLineSegmentInDirectionOf(float x, float y, bool averageAngle = true)
@@ -228,10 +226,10 @@ namespace MinimalAF.Rendering.ImmediateMode
 
             if(_count == 1)
             {
-                _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
+                CTX.Line.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
             }
 
-            _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle + MathF.PI);
+            CTX.Line.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle + MathF.PI);
 
             _canStart = true;
         }

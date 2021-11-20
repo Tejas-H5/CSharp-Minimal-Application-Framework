@@ -88,19 +88,15 @@ namespace MinimalAF.Rendering
 			_meshOutputStream = new MeshOutputStream(4096, 4 * 4096);
 
 			_triangle = new TriangleDrawer(_meshOutputStream);
-			_quad = new QuadDrawer(_meshOutputStream);
 			_nGon = new NGonDrawer(_meshOutputStream);
+			_quad = new QuadDrawer(_meshOutputStream);
+			_nLine = new PolyLineDrawer(_meshOutputStream);
 
-			_line = new LineDrawer(Quad, Arc);
-			_rect = new RectangleDrawer(Quad);
-			_circle = new CircleDrawer(Arc);
-
-			_textDrawer = new TextDrawer(Rect);
-
-			_nLine = new PolyLineDrawer(Line, _meshOutputStream);
-			_line.SetPolylineDrawer(_nLine);
-
-			_arc = new ArcDrawer(NGon, _nLine, circleEdgeLength: 5, maxCircleEdgeCount: 32);
+			_line = new LineDrawer();
+			_arc = new ArcDrawer(circleEdgeLength: 5, maxCircleEdgeCount: 32);
+			_rect = new RectangleDrawer();
+			_circle = new CircleDrawer();
+			_textDrawer = new TextDrawer();
 		}
 
 		public static Color4 GetClearColor()
@@ -197,7 +193,13 @@ namespace MinimalAF.Rendering
             _solidShader.CurrentColor = col;
         }
 
-        public static void SetTexture(Texture texture)
+		public static Texture GetTexture()
+		{
+			return _textureManager.CurrentTexture();
+		}
+
+
+		public static void SetTexture(Texture texture)
         {
             if (_textureManager.IsSameTexture(texture))
                 return;

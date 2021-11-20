@@ -8,8 +8,9 @@ namespace MinimalAF.Rendering.ImmediateMode
     public class TriangleDrawer : GeometryDrawer
     {
         IGeometryOutput _outputStream;
+		PolyLineDrawer _outlineDrawer;
 
-        public TriangleDrawer(IGeometryOutput outputStream)
+		public TriangleDrawer(IGeometryOutput outputStream)
         {
             _outputStream = outputStream;
         }
@@ -37,12 +38,12 @@ namespace MinimalAF.Rendering.ImmediateMode
                );
         }
 
-        public void Draw(float thickness, float x0, float y0, float x1, float y1, float x2, float y2)
+        public void DrawOutline(float thickness, float x0, float y0, float x1, float y1, float x2, float y2)
         {
-            _outlineDrawer.Begin(x0, y0, thickness, CapType.None);
-            _outlineDrawer.Continue(x1, y1);
-            _outlineDrawer.Continue(x2, y2);
-            _outlineDrawer.End(x0, y0);
+            CTX.NLine.Begin(x0, y0, thickness, CapType.None);
+            CTX.NLine.Continue(x1, y1);
+            CTX.NLine.Continue(x2, y2);
+            CTX.NLine.End(x0, y0);
         }
     }
 }

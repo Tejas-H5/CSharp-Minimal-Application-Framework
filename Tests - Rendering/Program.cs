@@ -10,11 +10,10 @@ namespace RenderingEngineVisualTests
         {
             Element[] tests =
             {
+                new FramebufferTest(),
                 new GeometryAndTextTest(),
                 new StencilTest(),
-                new FramebufferTest(),
                 new TextureTest(),
-                new PolylineSelfIntersectionAlgorithmTest(),
                 new PolylineSelfIntersectionAlgorithmTest(),
                 new PolylineTest(),
                 new KeyboardTest(),

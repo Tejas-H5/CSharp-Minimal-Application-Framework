@@ -6,32 +6,29 @@ namespace MinimalAF.Rendering.ImmediateMode
 {
 	public class CircleDrawer : GeometryDrawer
 	{
-		ArcDrawer _arcDrawer;
-
-		public CircleDrawer(ArcDrawer drawer)
+		public CircleDrawer()
 		{
-			_arcDrawer = drawer;
 		}
 
 
 		public void Draw(float x0, float y0, float r, int edges)
 		{
-			_arcDrawer.Draw(x0, y0, r, 0, MathF.PI * 2, edges);
+			CTX.Arc.Draw(x0, y0, r, 0, MathF.PI * 2, edges);
 		}
 
 		public void Draw(float x0, float y0, float r)
 		{
-			_arcDrawer.Draw(x0, y0, r, 0, MathF.PI * 2);
+			CTX.Arc.Draw(x0, y0, r, 0, MathF.PI * 2);
 		}
 
 		public void DrawOutline(float thickness, float x0, float y0, float r, int edges)
 		{
-			_arcDrawer.DrawOutline(thickness, x0, y0, r, 0, MathF.PI * 2, edges);
+			CTX.Arc.DrawOutline(thickness, x0, y0, r, 0, MathF.PI * 2, edges);
 		}
 
 		public void DrawOutline(float thickness, float x0, float y0, float r)
 		{
-			_arcDrawer.DrawOutline(thickness, x0, y0, r, 0, MathF.PI * 2);
+			CTX.Arc.DrawOutline(thickness, x0, y0, r, 0, MathF.PI * 2);
 		}
 	}
 }

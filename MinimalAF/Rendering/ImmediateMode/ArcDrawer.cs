@@ -4,16 +4,13 @@ namespace MinimalAF.Rendering.ImmediateMode
 {
 	public class ArcDrawer : GeometryDrawer
     {
-        NGonDrawer _ngonDrawer;
         int _circleEdgeLength;
         int _maxCircleEdgeCount;
 
-        public ArcDrawer(NGonDrawer ngonDrawer, PolyLineDrawer outlineDrawer, int circleEdgeLength, int maxCircleEdgeCount)
+        public ArcDrawer(int circleEdgeLength, int maxCircleEdgeCount)
         {
-            _ngonDrawer = ngonDrawer;
-            _circleEdgeLength = circleEdgeLength;
+			_circleEdgeLength = circleEdgeLength;
             _maxCircleEdgeCount = maxCircleEdgeCount;
-			SetPolylineDrawer(outlineDrawer);
         }
 
 
@@ -45,17 +42,17 @@ namespace MinimalAF.Rendering.ImmediateMode
 
             float deltaAngle = (endAngle - startAngle) / edgeCount;
 
-            _ngonDrawer.Begin(new Vertex(xCenter, yCenter, 0), edgeCount + 2);
+            CTX.NGon.Begin(new Vertex(xCenter, yCenter, 0), edgeCount + 2);
 
             for (float angle = startAngle; angle < endAngle + deltaAngle - 0.001f; angle += deltaAngle)
             {
                 float X = xCenter + radius * MathF.Sin(angle);
                 float Y = yCenter + radius * MathF.Cos(angle);
 
-                _ngonDrawer.Continue(new Vertex(X, Y, 0));
+                CTX.NGon.Continue(new Vertex(X, Y, 0));
             }
 
-            _ngonDrawer.End();
+            CTX.NGon.End();
         }
 
 
@@ -82,16 +79,16 @@ namespace MinimalAF.Rendering.ImmediateMode
 
                 if (first)
                 {
-                    _outlineDrawer.Begin(X, Y, thickness, CapType.None);
+                    CTX.NLine.Begin(X, Y, thickness, CapType.None);
                     first = false;
                 }
                 else if (angle + deltaAngle < endAngle + 0.00001f)
                 {
-                    _outlineDrawer.Continue(X, Y);
+                    CTX.NLine.Continue(X, Y);
                 }
                 else
                 {
-                    _outlineDrawer.End(X, Y);
+                    CTX.NLine.End(X, Y);
                 }
             }
         }

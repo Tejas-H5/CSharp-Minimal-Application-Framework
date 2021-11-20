@@ -1,9 +1,8 @@
-﻿using MinimalAF;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 
 namespace MinimalAF.VisualTests
 {
-    public class TemplateForEntrypointProgram : Element
+	public class TemplateForEntrypointProgram : Element
     {
         public override void OnStart()
         {

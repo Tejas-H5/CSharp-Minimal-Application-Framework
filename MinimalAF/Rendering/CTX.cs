@@ -4,18 +4,17 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace MinimalAF.Rendering
 {
-    //TODO: Extend this to draw meshes and other retained geometry
+	//TODO: Extend this to draw meshes and other retained geometry
 	//TODO: Full refactor
 
-    /// <summary>
-    /// CTX is short for RenderContext. Because this will be typed a LOT, I have opted for
-    /// a shorter name even though it is contrary to principles of 'clean code'
-    /// </summary>
-    public static class CTX
+	/// <summary>
+	/// CTX is short for RenderContext. Because this will be typed a LOT, I have opted for
+	/// a shorter name even though it is contrary to principles of 'clean code'
+	/// </summary>
+	public static class CTX
     {
 		//Composition
 		public static TriangleDrawer Triangle => _triangle;

@@ -2,10 +2,10 @@
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
-    // It's like a stringbuilder, but for an OpenGL mesh
-    // And with slightly different intentions.
-    // When fillrate isn't a bottleneck, this is a great optimization
-    public class TriangleDrawer
+	// It's like a stringbuilder, but for an OpenGL mesh
+	// And with slightly different intentions.
+	// When fillrate isn't a bottleneck, this is a great optimization
+	public class TriangleDrawer
     {
         IGeometryOutput _outputStream;
 

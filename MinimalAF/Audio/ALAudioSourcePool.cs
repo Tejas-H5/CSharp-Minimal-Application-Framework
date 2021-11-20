@@ -1,11 +1,8 @@
-﻿using OpenTK.Audio.OpenAL;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace MinimalAF.Audio
 {
-    internal static class ALAudioSourcePool
+	internal static class ALAudioSourcePool
     {
         const int MAX_AUDIO_SOURCES = 256;
         private static Stack<OpenALSource> _allAvailableOpenALSources = new Stack<OpenALSource>();

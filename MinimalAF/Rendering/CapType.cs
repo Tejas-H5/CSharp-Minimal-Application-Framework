@@ -1,9 +1,9 @@
 ﻿namespace MinimalAF.Rendering
 {
-    /// <summary>
-    /// Defines how the ending cap of a line should look.
-    /// </summary>
-    public enum CapType
+	/// <summary>
+	/// Defines how the ending cap of a line should look.
+	/// </summary>
+	public enum CapType
     {
         None,
         Circle

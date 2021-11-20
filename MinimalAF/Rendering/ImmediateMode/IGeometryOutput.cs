@@ -1,6 +1,6 @@
 ﻿namespace MinimalAF.Rendering.ImmediateMode
 {
-    public interface IGeometryOutput
+	public interface IGeometryOutput
     {
         uint AddVertex(Vertex v);
         void MakeTriangle(uint v1, uint v2, uint v3);

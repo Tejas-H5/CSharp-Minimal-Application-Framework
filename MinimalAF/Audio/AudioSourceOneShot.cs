@@ -1,20 +1,18 @@
-﻿using OpenTK.Audio.OpenAL;
-
-namespace MinimalAF.Audio
+﻿namespace MinimalAF.Audio
 {
-    /// <summary>
-    /// Use this one to load and play small sound effects. 
-    /// Despite the name, the audio may be looped
-    /// 
-    /// Advantages:
-    ///     - relatively easy to use, no audio updating subroutines/threads need to be implemented to use this
-    ///     
-    /// Disadvantages:
-    ///     - Cannot play procedurally generated audio or anything that must be streamed from somewhere
-    ///         - No support for custom signal processing effect chains as a consequence of this
-    ///         - this use case requires AudioSourceStreamed
-    /// </summary>
-    public class AudioSourceOneShot : AudioSource
+	/// <summary>
+	/// Use this one to load and play small sound effects. 
+	/// Despite the name, the audio may be looped
+	/// 
+	/// Advantages:
+	///     - relatively easy to use, no audio updating subroutines/threads need to be implemented to use this
+	///     
+	/// Disadvantages:
+	///     - Cannot play procedurally generated audio or anything that must be streamed from somewhere
+	///         - No support for custom signal processing effect chains as a consequence of this
+	///         - this use case requires AudioSourceStreamed
+	/// </summary>
+	public class AudioSourceOneShot : AudioSource
     {
         AudioClipOneShot _clip;
         float _pausedTime = 0;

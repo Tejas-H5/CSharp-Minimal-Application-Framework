@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace MinimalAF.Util
 {
-    public static class MathUtilPF
+	public static class MathUtilPF
     {
         public static PointF Lerp(PointF a, PointF b, float t)
         {

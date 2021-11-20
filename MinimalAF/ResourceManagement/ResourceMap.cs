@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MinimalAF.ResourceManagement
 {
-    public static class ResourceMap<T>
+	public static class ResourceMap<T>
     {
         private static Dictionary<string, T> _resourceCache = new Dictionary<string, T>();
 

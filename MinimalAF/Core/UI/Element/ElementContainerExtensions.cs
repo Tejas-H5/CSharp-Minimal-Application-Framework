@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MinimalAF
+﻿namespace MinimalAF
 {
 	/// <summary>
 	/// See <see cref="ElementTransformExtensions"/> to know why these are extension methods rather than normal methods.

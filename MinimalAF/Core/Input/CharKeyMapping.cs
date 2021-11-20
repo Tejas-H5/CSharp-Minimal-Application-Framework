@@ -1,6 +1,6 @@
 ﻿namespace MinimalAF
 {
-    public static class CharKeyMapping
+	public static class CharKeyMapping
     {
         public static bool IsLetter(char c)
         {

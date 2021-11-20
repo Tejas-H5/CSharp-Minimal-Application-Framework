@@ -1,14 +1,8 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF;
-using MinimalAF.Rendering;
-using MinimalAF.Util;
-using OpenTK.Graphics.OpenGL;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using MinimalAF.Rendering;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    public class FramebufferTest : Element
+	public class FramebufferTest : Element
     {
         public override void OnStart()
         {

@@ -1,12 +1,10 @@
 ﻿using MinimalAF.Rendering;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace MinimalAF
 {
-    public class TextInput<T> : Element
+	public class TextInput<T> : Element
     {
         TextElement _textObject;
 

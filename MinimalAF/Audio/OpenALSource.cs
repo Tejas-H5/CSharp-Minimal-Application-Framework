@@ -4,12 +4,12 @@ using System;
 
 namespace MinimalAF.Audio
 {
-    /// <summary>
-    /// A wrapper for OpenAL's audio source.
-    /// Only a finite number of these classes may be created as determined by the OpenAL
-    /// that is operating on a particular machine, so the factory pattern has been used
-    /// </summary>
-    internal class OpenALSource : IDisposable
+	/// <summary>
+	/// A wrapper for OpenAL's audio source.
+	/// Only a finite number of these classes may be created as determined by the OpenAL
+	/// that is operating on a particular machine, so the factory pattern has been used
+	/// </summary>
+	internal class OpenALSource : IDisposable
     {
         private int _alSourceId;
         internal int ALSourceID {

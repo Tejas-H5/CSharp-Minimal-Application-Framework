@@ -1,8 +1,6 @@
-﻿using MinimalAF.Datatypes;
-
-namespace MinimalAF
+﻿namespace MinimalAF
 {
-    public class AspectRatioElement : Element
+	public class AspectRatioElement : Element
     {
         float _widthToHeight;
 

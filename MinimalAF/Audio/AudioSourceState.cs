@@ -2,7 +2,7 @@
 
 namespace MinimalAF.Audio
 {
-    public enum AudioSourceState
+	public enum AudioSourceState
     {
         Initial = ALSourceState.Initial,
         Playing = ALSourceState.Playing,

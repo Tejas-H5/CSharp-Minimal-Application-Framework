@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RenderingEngineRenderingTests.VisualTests.Rendering
 {
-    public class KeyboardTest : Element
+	public class KeyboardTest : Element
     {
         public override void OnStart()
         {

@@ -1,10 +1,9 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.Util;
+﻿using MinimalAF.Util;
 using System;
 
 namespace MinimalAF
 {
-    public class MouseInputManager
+	public class MouseInputManager
     {
         OpenTKWindowWrapper _window;
 

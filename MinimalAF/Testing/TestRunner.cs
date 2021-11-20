@@ -1,11 +1,6 @@
-﻿using MinimalAF;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MinimalAF.Testing
+﻿namespace MinimalAF.Testing
 {
-    public class TestRunner : Element
+	public class TestRunner : Element
     {
 
         public override void OnStart()

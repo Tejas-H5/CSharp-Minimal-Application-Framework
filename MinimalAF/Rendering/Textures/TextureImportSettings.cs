@@ -2,7 +2,7 @@
 
 namespace MinimalAF.Rendering
 {
-    public enum FilteringType
+	public enum FilteringType
     {
         NearestNeighbour,
         Bilinear

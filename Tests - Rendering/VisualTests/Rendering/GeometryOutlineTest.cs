@@ -1,10 +1,9 @@
-﻿using MinimalAF;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    class GeometryOutlineTest : Element
+	class GeometryOutlineTest : Element
     {
         public override void OnStart()
         {

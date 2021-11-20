@@ -4,7 +4,7 @@ using RenderingEngineRenderingTests.VisualTests.Rendering;
 
 namespace RenderingEngineVisualTests
 {
-    class Program
+	class Program
     {
         static void Main(string[] args)
         {

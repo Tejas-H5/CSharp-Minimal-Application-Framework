@@ -2,7 +2,7 @@
 
 namespace MinimalAF.Util
 {
-    public static class MathUtilM4
+	public static class MathUtilM4
     {
         public static Matrix4 Translation(float x, float y, float z = 0)
         {

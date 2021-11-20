@@ -1,9 +1,8 @@
-﻿using MinimalAF;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    class TextFontAtlasText : Element
+	class TextFontAtlasText : Element
     {
         public override void OnStart()
         {

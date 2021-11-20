@@ -1,12 +1,8 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System;
 
 namespace MinimalAF
 {
-    public partial class Element
+	public partial class Element
     {
 		static readonly Element[] NULL_ARRAY = new Element[0];
 

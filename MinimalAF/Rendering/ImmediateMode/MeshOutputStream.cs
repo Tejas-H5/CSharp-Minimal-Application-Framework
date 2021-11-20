@@ -2,7 +2,7 @@
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
-    public class MeshOutputStream : IGeometryOutput, IDisposable
+	public class MeshOutputStream : IGeometryOutput, IDisposable
     {
         private Mesh _backingMesh;
         private uint _currentVertexIndex = 0;

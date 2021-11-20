@@ -1,10 +1,9 @@
-﻿using MinimalAF;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    public class StencilTest : Element
+	public class StencilTest : Element
     {
         public override void OnStart()
         {

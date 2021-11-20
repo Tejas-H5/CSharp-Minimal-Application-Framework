@@ -5,10 +5,10 @@ using System.Drawing.Imaging;
 
 namespace MinimalAF.Rendering
 {
-    // Initially Taken from https://github.com/opentk/LearnOpenTK/blob/master/Common/Texture.cs
-    // And then modified
-    // A helper class, much like Shader, meant to simplify loading textures.
-    public class Texture : IDisposable
+	// Initially Taken from https://github.com/opentk/LearnOpenTK/blob/master/Common/Texture.cs
+	// And then modified
+	// A helper class, much like Shader, meant to simplify loading textures.
+	public class Texture : IDisposable
     {
         int _handle;
         private int _height;

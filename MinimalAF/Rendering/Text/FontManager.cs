@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace MinimalAF.Rendering.Text
 {
-    public class FontAtlasTexture
+	public class FontAtlasTexture
     {
         FontAtlas _fontAtlas;
         Texture _fontTexture;

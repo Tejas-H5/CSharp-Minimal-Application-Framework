@@ -1,9 +1,4 @@
-﻿using MinimalAF.Datatypes;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MinimalAF
+﻿namespace MinimalAF
 {
 	public class WindowMouseInput : IWindowResource
 	{

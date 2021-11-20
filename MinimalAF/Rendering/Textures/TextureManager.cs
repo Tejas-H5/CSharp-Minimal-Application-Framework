@@ -3,8 +3,8 @@ using System.Drawing;
 
 namespace MinimalAF.Rendering
 {
-    //TODO: implement multiple units if needed
-    class TextureManager : IDisposable
+	//TODO: implement multiple units if needed
+	class TextureManager : IDisposable
     {
         Texture _currentTexture = null;
 

@@ -2,13 +2,13 @@
 
 namespace MinimalAF.Audio
 {
-    /// <summary>
-    /// Should only be used by one audio source at a time, otherwise multiple sources
-    /// will be advancing the stream forward so the audio will not play correctly.
-    /// 
-    /// Multiple AudioClipStreamed instances can however point to the same AudioData.
-    /// </summary>
-    public class AudioClipStream : IAudioStreamProvider
+	/// <summary>
+	/// Should only be used by one audio source at a time, otherwise multiple sources
+	/// will be advancing the stream forward so the audio will not play correctly.
+	/// 
+	/// Multiple AudioClipStreamed instances can however point to the same AudioData.
+	/// </summary>
+	public class AudioClipStream : IAudioStreamProvider
     {
         AudioData _data;
         int _cursor = 0;

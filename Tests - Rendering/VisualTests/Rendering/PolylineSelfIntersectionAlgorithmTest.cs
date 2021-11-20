@@ -1,14 +1,10 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using MinimalAF.Util;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    public class PolylineSelfIntersectionAlgorithmTest : Element
+	public class PolylineSelfIntersectionAlgorithmTest : Element
     {
         public override void OnStart()
         {

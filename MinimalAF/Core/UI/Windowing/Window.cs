@@ -1,16 +1,13 @@
-﻿using MinimalAF.Datatypes;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF
 {
-    /// <summary>
-    /// Only be getting this and modifying stuff if the element is a root-level element
-    /// of your program.
-    /// </summary>
-    public class Window : Element
+	/// <summary>
+	/// Only be getting this and modifying stuff if the element is a root-level element
+	/// of your program.
+	/// </summary>
+	public class Window : Element
     {
         OpenTKWindowWrapper _window;
 

@@ -1,16 +1,14 @@
 ﻿using MinimalAF.Audio;
-using MinimalAF.Datatypes;
 using MinimalAF.Rendering;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using System;
 using System.ComponentModel;
-using MinimalAF;
 
 namespace MinimalAF
 {
-    internal class OpenTKWindowWrapper : GameWindow
+	internal class OpenTKWindowWrapper : GameWindow
     {
         Element _rootElement;
 

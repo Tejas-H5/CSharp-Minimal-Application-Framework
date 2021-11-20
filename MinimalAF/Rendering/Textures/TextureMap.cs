@@ -2,7 +2,7 @@
 
 namespace MinimalAF.Rendering
 {
-    public static class TextureMap
+	public static class TextureMap
     {
         public static Texture LoadTexture(string name, string path, TextureImportSettings settings)
         {

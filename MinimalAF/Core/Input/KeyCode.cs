@@ -2,11 +2,11 @@
 
 namespace MinimalAF
 {
-    /// <summary>
-    /// Currently implemented with the same values as OpenTK.Keys under the hood,
-    /// so OpenTK.Keys may be cast into a KeyCode.
-    /// </summary>
-    public enum KeyCode
+	/// <summary>
+	/// Currently implemented with the same values as OpenTK.Keys under the hood,
+	/// so OpenTK.Keys may be cast into a KeyCode.
+	/// </summary>
+	public enum KeyCode
     {
         Unknown = Keys.Unknown,
         Space = Keys.Space,

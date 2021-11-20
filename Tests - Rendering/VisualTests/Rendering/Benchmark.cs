@@ -1,11 +1,10 @@
-﻿using MinimalAF;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
-    class Benchmark : Element
+	//Performs a binary search to see the max number of random lines that can be drawn for 60FPS
+	class Benchmark : Element
     {
         private int _lineThiccness;
         public Benchmark(int thickness)

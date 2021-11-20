@@ -1,17 +1,16 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.Util;
+﻿using MinimalAF.Util;
 using System;
 using System.Drawing;
 
 namespace MinimalAF
 {
-    /// <summary>
-    /// Inspired by Unity, because I liked using it and I missed it when I went to other frameworks.
-    /// I don't know if this is exactly how they implemented it though.
-    /// 
-    /// Doesn't matter, I am sticking with this one for now as it suits my needs more.
-    /// </summary>
-    public class RectTransform
+	/// <summary>
+	/// Inspired by Unity, because I liked using it and I missed it when I went to other frameworks.
+	/// I don't know if this is exactly how they implemented it though.
+	/// 
+	/// Doesn't matter, I am sticking with this one for now as it suits my needs more.
+	/// </summary>
+	public class RectTransform
     {
         Rect2D _rect;
         Rect2D _absoluteOffset;

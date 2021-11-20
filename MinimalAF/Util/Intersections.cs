@@ -1,9 +1,8 @@
-﻿using MinimalAF.Datatypes;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace MinimalAF
 {
-    public static class Intersections
+	public static class Intersections
     {
         public static bool IsInsideRect(PointF p, Rect2D a)
         {

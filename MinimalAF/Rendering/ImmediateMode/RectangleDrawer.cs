@@ -1,9 +1,4 @@
-﻿using MinimalAF.Datatypes;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MinimalAF.Rendering.ImmediateMode
+﻿namespace MinimalAF.Rendering.ImmediateMode
 {
 	public class RectangleDrawer
 	{

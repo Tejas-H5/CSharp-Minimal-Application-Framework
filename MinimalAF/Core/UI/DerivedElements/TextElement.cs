@@ -1,11 +1,9 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using System.Drawing;
 
 namespace MinimalAF
 {
-    public class TextElement : Element
+	public class TextElement : Element
     {
         public Color4 TextColor { get; set; }
         public string Text { get; set; } = "";

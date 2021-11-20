@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace MinimalAF.Rendering
 {
-    [StructLayout(LayoutKind.Sequential)]
+	[StructLayout(LayoutKind.Sequential)]
     public struct Vertex
     {
         public Vertex(float x, float y, float z)

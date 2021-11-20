@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace MinimalAF.Audio
 {
-    /// <summary>
-    /// Merely an AudioData that has been loaded into an OpenAL buffer.
-    /// 
-    /// Currently I have chosen to only support Mono16 and Stereo16 formats for simplicity
-    /// </summary>
-    public class AudioClipOneShot : IDisposable
+	/// <summary>
+	/// Merely an AudioData that has been loaded into an OpenAL buffer.
+	/// 
+	/// Currently I have chosen to only support Mono16 and Stereo16 formats for simplicity
+	/// </summary>
+	public class AudioClipOneShot : IDisposable
     {
         private int _ALBuffer = -1;
         internal int ALBuffer {

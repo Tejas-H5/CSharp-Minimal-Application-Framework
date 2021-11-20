@@ -1,16 +1,15 @@
-﻿using MinimalAF;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using System;
 
 namespace MinimalAF.Rendering
 {
-    /// <summary>
-    /// Will be used later to implement post-processing, 3D UI, render passes,
-    /// transparency in overlapping meshes and more
-    /// 
-    /// TODO: Make resizeing this more memory efficient
-    /// </summary>
-    public class Framebuffer : IDisposable
+	/// <summary>
+	/// Will be used later to implement post-processing, 3D UI, render passes,
+	/// transparency in overlapping meshes and more
+	/// 
+	/// TODO: Make resizeing this more memory efficient
+	/// </summary>
+	public class Framebuffer : IDisposable
     {
         int _width=-1, _height=-1;
 

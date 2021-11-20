@@ -2,7 +2,7 @@
 
 namespace MinimalAF
 {
-    public struct Rect2D
+	public struct Rect2D
     {
         public float X0;
         public float Y0;

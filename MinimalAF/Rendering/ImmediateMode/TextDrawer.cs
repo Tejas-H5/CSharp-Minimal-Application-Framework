@@ -1,11 +1,10 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.Rendering.Text;
+﻿using MinimalAF.Rendering.Text;
 using System;
 using System.Drawing;
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
-    public class TextDrawer : IDisposable
+	public class TextDrawer : IDisposable
     {
         FontManager _fontManager;
 

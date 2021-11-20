@@ -4,15 +4,15 @@ using System.Collections.Generic;
 
 namespace MinimalAF.Audio
 {
-    /// <summary>
-    /// Class that enables audio.
-    /// The following only applies if you are using this code outside of Minimal Application Framework:
-    /// 
-    /// Needs to be Initialized with Init(),
-    /// Updated every frame with Update(),
-    /// and disposed of when the program is done with Cleanup().
-    /// </summary>
-    public static class AudioCTX
+	/// <summary>
+	/// Class that enables audio.
+	/// The following only applies if you are using this code outside of Minimal Application Framework:
+	/// 
+	/// Needs to be Initialized with Init(),
+	/// Updated every frame with Update(),
+	/// and disposed of when the program is done with Cleanup().
+	/// </summary>
+	public static class AudioCTX
     {
         private static ALDevice _device;
         private static ALContext _context;

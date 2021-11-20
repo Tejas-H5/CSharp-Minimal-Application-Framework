@@ -2,7 +2,7 @@
 
 namespace MinimalAF.Util
 {
-    public static class MathUtilF
+	public static class MathUtilF
     {
         public static float Snap(float x, float snapVal)
         {

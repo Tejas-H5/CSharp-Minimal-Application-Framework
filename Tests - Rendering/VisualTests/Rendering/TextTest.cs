@@ -1,12 +1,11 @@
-﻿using MinimalAF;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    class TextTest : Element
+	class TextTest : Element
     {
         List<string> rain;
 

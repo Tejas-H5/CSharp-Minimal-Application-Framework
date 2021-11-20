@@ -1,11 +1,8 @@
-﻿using MinimalAF.Datatypes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace MinimalAF
 {
-    public class ClippingRectState : Element
+	public class ClippingRectState : Element
     {
         //Used to draw InverseStencil components to an infinite depth
         private static List<Rect2D> _stencilRectStack = new List<Rect2D>();

@@ -2,7 +2,7 @@
 
 namespace MinimalAF.Audio
 {
-    public static class AudioMap
+	public static class AudioMap
     {
         public static AudioData LoadAudio(string name, string path, AudioDataImportSettings settings)
         {

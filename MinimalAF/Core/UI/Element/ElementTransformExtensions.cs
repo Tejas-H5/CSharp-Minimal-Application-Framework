@@ -1,17 +1,10 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF;
-using MinimalAF.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-
-namespace MinimalAF
+﻿namespace MinimalAF
 {
 	/// <summary>
 	/// The reason why I am using extension methods is so that if we have a class T that inherits from Element,
 	/// and we call OffsetsX(whatever) on it, it will still return a type of T and not Element
 	/// </summary>
-    public static class ElementTransformExtensions
+	public static class ElementTransformExtensions
     {
         public static T OffsetsX<T>(this T element, float left, float right) where T : Element
         {

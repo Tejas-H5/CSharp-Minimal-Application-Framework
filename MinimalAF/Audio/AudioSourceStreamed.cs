@@ -3,22 +3,22 @@ using System;
 
 namespace MinimalAF.Audio
 {
-    //https://indiegamedev.net/2020/02/25/the-complete-guide-to-openal-with-c-part-2-streaming-audio/ as a reference
+	//https://indiegamedev.net/2020/02/25/the-complete-guide-to-openal-with-c-part-2-streaming-audio/ as a reference
 
-    /// <summary>
-    /// Use this to play larger audio files, or for playing generated/streamed audio
-    /// 
-    /// Advantages:
-    ///     - Can play streamed audio, which can be provided from any custom implementation of the IAudioStreamProvider interface
-    ///     - doesn't create large OpenAL buffers
-    ///     - can be used to implement audio playback with custom effects
-    ///     
-    /// Disadvantages:
-    ///     - OpenAL Buffers need to be constantly spooled with the UpdateStream() function every 'frame', 
-    ///     either on the main thread or in a seperate one. Using several of these in a single 
-    ///     program might be compute intensive. It could also be absolutely fine, I have yet to do any benchmarking and such
-    /// </summary>
-    public class AudioSourceStreamed : AudioSource
+	/// <summary>
+	/// Use this to play larger audio files, or for playing generated/streamed audio
+	/// 
+	/// Advantages:
+	///     - Can play streamed audio, which can be provided from any custom implementation of the IAudioStreamProvider interface
+	///     - doesn't create large OpenAL buffers
+	///     - can be used to implement audio playback with custom effects
+	///     
+	/// Disadvantages:
+	///     - OpenAL Buffers need to be constantly spooled with the UpdateStream() function every 'frame', 
+	///     either on the main thread or in a seperate one. Using several of these in a single 
+	///     program might be compute intensive. It could also be absolutely fine, I have yet to do any benchmarking and such
+	/// </summary>
+	public class AudioSourceStreamed : AudioSource
     {
         const int NUM_BUFFERS = 4;
         const int BUFFER_SIZE = 65536; // 32kb of data in each buffer

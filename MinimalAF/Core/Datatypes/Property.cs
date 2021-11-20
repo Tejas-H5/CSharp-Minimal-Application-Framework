@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF
 {
-    public class Property<T> 
+	public class Property<T> 
     {
         T _value;
         Func<T, T> _validator;
+
+		public event Action<T> OnChanged;
 
         /// <summary>
         /// The validation function may constrain the value of T by returning something, or throw an exception, 
@@ -19,6 +19,15 @@ namespace MinimalAF
             _validator = validator;
         }
 
+		public void Set(T value)
+		{
+			Value = value;
+			OnChanged?.Invoke(Value);
+		}
+
+		/// <summary>
+		/// To invoke OnChanged, use Set(value) instead of assigning here
+		/// </summary>
         public T Value
         {
             get {

@@ -3,7 +3,7 @@ using System;
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
-    public class ImmediateModeShader : IDisposable
+	public class ImmediateModeShader : IDisposable
     {
         Shader _shader;
         public Shader Shader { get { return _shader; } }

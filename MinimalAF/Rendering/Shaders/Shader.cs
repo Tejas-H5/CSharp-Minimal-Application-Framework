@@ -6,9 +6,9 @@ using System.IO;
 
 namespace MinimalAF.Rendering
 {
-    //Taken from https://github.com/opentk/LearnOpenTK/blob/master/Common/Shader.cs
-    //The destructor code was modified to be more like https://docs.microsoft.com/en-us/dotnet/api/system.idisposable.dispose?view=net-5.0
-    public class Shader
+	//Taken from https://github.com/opentk/LearnOpenTK/blob/master/Common/Shader.cs
+	//The destructor code was modified to be more like https://docs.microsoft.com/en-us/dotnet/api/system.idisposable.dispose?view=net-5.0
+	public class Shader
     {
         public readonly int Handle;
 

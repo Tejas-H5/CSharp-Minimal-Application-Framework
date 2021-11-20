@@ -2,7 +2,7 @@
 
 namespace MinimalAF.Audio
 {
-    public class AudioListener
+	public class AudioListener
     {
         public float Gain { get; set; } = 1;
         public float EfxMetersPerUnit { get; set; } = 1;

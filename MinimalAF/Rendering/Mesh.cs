@@ -3,7 +3,7 @@ using System;
 
 namespace MinimalAF.Rendering
 {
-    public class Mesh : IDisposable
+	public class Mesh : IDisposable
     {
         Vertex[] _vertices;
         uint[] _indices;

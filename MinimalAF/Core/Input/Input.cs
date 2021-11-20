@@ -1,6 +1,6 @@
 ﻿namespace MinimalAF
 {
-    public enum MouseButton
+	public enum MouseButton
     {
         Left,
         Right,

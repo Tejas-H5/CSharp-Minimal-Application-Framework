@@ -1,5 +1,4 @@
-﻿using MinimalAF.Datatypes;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 
 namespace MinimalAF.Rendering.ImmediateMode
 {

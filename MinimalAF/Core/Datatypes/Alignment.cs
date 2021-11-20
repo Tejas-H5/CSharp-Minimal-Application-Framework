@@ -1,6 +1,6 @@
 ﻿namespace MinimalAF
 {
-    public enum VerticalAlignment
+	public enum VerticalAlignment
     {
         Bottom, Center, Top
     }

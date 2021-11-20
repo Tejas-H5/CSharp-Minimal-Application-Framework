@@ -1,5 +1,4 @@
-﻿using MinimalAF.Datatypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -8,8 +7,8 @@ using System.IO;
 
 namespace MinimalAF.Rendering.Text
 {
-    //taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
-    public class FontImportSettings
+	//taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
+	public class FontImportSettings
     {
         public static string Text = "GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);";
 

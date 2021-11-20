@@ -1,11 +1,8 @@
 ﻿using OpenTK.Audio.OpenAL;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF.Audio
 {
-    internal static class ALAudioListener
+	internal static class ALAudioListener
     {
         private static AudioListener _currentSelectedListener;
         public static AudioListener CurrentSelectedInstance {

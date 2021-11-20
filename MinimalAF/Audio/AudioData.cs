@@ -1,16 +1,15 @@
-﻿using MinimalAF.Datatypes;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using OpenTK.Audio.OpenAL;
 using System;
 
 namespace MinimalAF.Audio
 {
-    /// <summary>
-    /// Represents audio as an array of shorts.
-    /// 
-    /// Overrides GetHashCode to be a constant ID, so this can be used as a HashMap/Dictionary key
-    /// </summary>
-    public class AudioData
+	/// <summary>
+	/// Represents audio as an array of shorts.
+	/// 
+	/// Overrides GetHashCode to be a constant ID, so this can be used as a HashMap/Dictionary key
+	/// </summary>
+	public class AudioData
     {
         private static int _nextAudioDataID = 1;
         public int ID;

@@ -1,11 +1,10 @@
-﻿using MinimalAF;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using System.Collections.Generic;
 using System.Drawing;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    public class PolylineTest : Element
+	public class PolylineTest : Element
     {
         public override void OnStart()
         {

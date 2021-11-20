@@ -2,7 +2,7 @@
 
 namespace MinimalAF
 {
-    public class ZContainer : Element
+	public class ZContainer : Element
     {
         private List<Element> _stack = new List<Element>();
 		public override bool SingleChild => true;

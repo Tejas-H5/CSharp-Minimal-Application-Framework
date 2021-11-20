@@ -1,12 +1,10 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using OpenTK.Mathematics;
 using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    class TextureTest : Element
+	class TextureTest : Element
     {
         Texture _tex;
         Texture _tex2;

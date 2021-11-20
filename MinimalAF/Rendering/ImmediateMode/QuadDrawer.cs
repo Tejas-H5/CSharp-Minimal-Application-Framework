@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
-	public class QuadDrawer : GeometryDrawer
+	public class QuadDrawer
     {
         IGeometryOutput _outputStream;
 

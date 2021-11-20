@@ -49,7 +49,8 @@ namespace MinimalAF.VisualTests.Rendering
             CTX.Text.Draw("The red square must be fully visible under the circles.\n" +
                 "The part where the circles overlap must not be visible.\n" +
                 "There must be a small orange rectangle in the middle\n" +
-                "This text must be 0,0,0 black \n",
+				"It must all be inside the green square\n" +
+				"This text must be 0,0,0 black \n",
                 0, Height - 20);
 
             CTX.SetDrawColor(1, 0, 0, 1);

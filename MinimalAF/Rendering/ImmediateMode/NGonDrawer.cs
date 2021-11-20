@@ -1,6 +1,6 @@
 ﻿namespace MinimalAF.Rendering.ImmediateMode
 {
-	public class NGonDrawer : GeometryDrawer
+	public class NGonDrawer
     {
         IGeometryOutput _outputStream;
         bool _polygonBegun = false;

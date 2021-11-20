@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
-	public class RectangleDrawer : GeometryDrawer
+	public class RectangleDrawer
 	{
 		public RectangleDrawer()
 		{

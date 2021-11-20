@@ -2,7 +2,7 @@
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
-	public class ArcDrawer : GeometryDrawer
+	public class ArcDrawer
     {
         int _circleEdgeLength;
         int _maxCircleEdgeCount;

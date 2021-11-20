@@ -4,7 +4,7 @@ using System;
 namespace MinimalAF.Rendering.ImmediateMode
 {
 	//TODO: add support for 3D lines if needed
-	public class PolyLineDrawer : GeometryDrawer
+	public class PolyLineDrawer
     {
         IGeometryOutput _geometryOutput;
 

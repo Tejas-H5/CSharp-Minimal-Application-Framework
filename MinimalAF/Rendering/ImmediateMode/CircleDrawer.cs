@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
-	public class CircleDrawer : GeometryDrawer
+	public class CircleDrawer
 	{
 		public CircleDrawer()
 		{

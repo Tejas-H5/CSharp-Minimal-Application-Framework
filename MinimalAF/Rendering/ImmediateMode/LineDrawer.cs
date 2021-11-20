@@ -2,7 +2,7 @@
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
-	public class LineDrawer : GeometryDrawer
+	public class LineDrawer
     {
 		public LineDrawer()
         {

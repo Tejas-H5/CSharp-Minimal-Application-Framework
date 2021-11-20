@@ -1,4 +1,4 @@
-﻿namespace MinimalAF.Datatypes
+﻿namespace MinimalAF
 {
     public enum VerticalAlignment
     {

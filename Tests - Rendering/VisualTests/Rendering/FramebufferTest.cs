@@ -44,7 +44,7 @@ namespace MinimalAF.VisualTests.Rendering
 
             CTX.StopUsingFramebuffer();
 
-            CTX.SetDrawColor(new Color4(0, 0, 0, 1));
+            CTX.SetDrawColor(Color4.RGBA(0, 0, 0, 1));
             CTX.Text.SetFont("Consolas", 12);
             CTX.Text.Draw("The red square must be fully visible under the circles.\n" +
                 "The part where the circles overlap must not be visible.\n" +

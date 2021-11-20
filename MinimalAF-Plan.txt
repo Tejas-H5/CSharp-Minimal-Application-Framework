@@ -1,13 +1,9 @@
+
+
 Refactoring:
 	- Move datatypes to where they are needed. Make them Core if they are cross-cutting
 
-	- Enough with this wrapper pattern in CTX and Input.
-		- rather than CTX.DrawRectangle, do 
-			CTX.Rectangle.Draw();
-			
-			So we have far less code to maintain
-
-	- use System.Drawing.Color rather than Color4, because it has a lot more presets
+	- Figure out some way to use System.Drawing.Color because it has a lot more builtin colors
 
 TODO:
 	- Give Elements their own coordinate systems, and drawing capabilities.
@@ -27,6 +23,12 @@ Done so far:
 	- Seperate app config and window management from Rendering and updating code. 
 		- Move all drawing code into UIElement
 		- Split UIElement into multiple files, since it will be big
+
+	- Enough with this wrapper pattern in CTX and Input.
+		- rather than CTX.DrawRectangle, do 
+			CTX.Rectangle.Draw();
+			
+			So I have far less code to maintain
 
 
 Later:

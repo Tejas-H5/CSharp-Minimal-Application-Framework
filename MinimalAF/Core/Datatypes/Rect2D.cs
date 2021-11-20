@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MinimalAF.Datatypes
+namespace MinimalAF
 {
     public struct Rect2D
     {

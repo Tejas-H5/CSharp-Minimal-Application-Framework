@@ -1,12 +1,10 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.Rendering.ImmediateMode;
+﻿using MinimalAF.Rendering.ImmediateMode;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Color4 = MinimalAF.Datatypes.Color4;
 
 namespace MinimalAF.Rendering
 {
@@ -76,7 +74,7 @@ namespace MinimalAF.Rendering
 			_viewMatrix = Matrix4.Identity;
 			_projectionMatrix = Matrix4.Identity;
 			_modelMatrices = new List<Matrix4>();
-			_clearColor = new Color4(0, 0);
+			_clearColor = Color4.VA(0, 0);
 
 			_disposed = false; // To detect redundant calls to Dispose()
 			Console.WriteLine("Context initialized");
@@ -106,7 +104,7 @@ namespace MinimalAF.Rendering
 
         public static void SetClearColor(float r, float g, float b, float a)
         {
-            _clearColor = new Color4(r, g, b, a);
+            _clearColor = Color4.RGBA(r, g, b, a);
         }
 
 
@@ -179,7 +177,7 @@ namespace MinimalAF.Rendering
 
         public static void SetDrawColor(float r, float g, float b, float a)
         {
-            Color4 col = new Color4(r, g, b, a);
+            Color4 col = Color4.RGBA(r, g, b, a);
             SetDrawColor(col);
         }
 
@@ -356,7 +354,7 @@ namespace MinimalAF.Rendering
         public static void UseFramebufferTransparent(int index)
         {
             Color4 prevClearColor = _clearColor;
-            _clearColor = new Color4(0, 0, 0, 0);
+            _clearColor = Color4.RGBA(0, 0, 0, 0);
 
             UseFramebuffer(index);
 

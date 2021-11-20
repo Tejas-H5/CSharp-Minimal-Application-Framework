@@ -3,7 +3,6 @@ using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Color4 = MinimalAF.Datatypes.Color4;
 
 namespace MinimalAF.Rendering
 {

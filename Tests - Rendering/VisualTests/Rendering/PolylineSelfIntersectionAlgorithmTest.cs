@@ -101,7 +101,7 @@ namespace MinimalAF.VisualTests.Rendering
             CTX.Line.Draw(p2.X, p2.Y, p2.X + perp.X, p2.Y + perp.Y, 2, CapType.None);
             CTX.Line.Draw(p2.X, p2.Y, p2.X - perp.X, p2.Y - perp.Y, 2, CapType.None);
 
-            CTX.SetDrawColor(new Color4(0, 0.5f));
+            CTX.SetDrawColor(Color4.VA(0, 0.5f));
             CTX.Line.Draw(p1.X, p1.Y, p1.X + vec1.X, p1.Y + vec1.Y, 2, CapType.None);
             CTX.Line.Draw(p1.X, p1.Y, p1.X + vec2.X, p1.Y + vec2.Y, 2, CapType.None);
 

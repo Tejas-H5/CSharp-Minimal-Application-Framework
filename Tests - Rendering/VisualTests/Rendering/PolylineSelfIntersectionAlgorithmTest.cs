@@ -1,6 +1,8 @@
 ﻿using MinimalAF.Rendering;
 using MinimalAF.Util;
 using System.Drawing;
+using OpenTK.Graphics.OpenGL;
+
 
 namespace MinimalAF.VisualTests.Rendering
 {
@@ -24,7 +26,10 @@ namespace MinimalAF.VisualTests.Rendering
                 CTX.Text.Draw(i.ToString(), _points[i].X + 20, _points[i].Y + 20);
             }
 
-            CTX.SetDrawColor(0, 0, 1, 0.5f);
+			int fbbinding = GL.GetInteger(GetPName.DrawFramebufferBinding);
+			int readfbbinding = GL.GetInteger(GetPName.ReadFramebufferBinding);
+
+			CTX.SetDrawColor(0, 0, 1, 0.5f);
 
             PointF p1 = _points[0];
             PointF p2 = _points[1];

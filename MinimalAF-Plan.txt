@@ -1,15 +1,7 @@
-
-
-Refactoring:
-	- Move datatypes to where they are needed. Make them Core if they are cross-cutting
-
-	- Figure out some way to use System.Drawing.Color because it has a lot more builtin colors
-
 TODO:
 	- Give Elements their own coordinate systems, and drawing capabilities.
-		- Give elements an ability to store the state of the drawing context
-		- Give elements the ability to apply a coordinate system of their choosing to the drawing
-		- make CTX internal
+		- Elements will need an ability to store the state of the drawing context
+		- make CTX internal, and all drawing handled by Element
 
 	- Test harness that collates all unit tests
 		- An Attribute is used to mark tests
@@ -17,7 +9,13 @@ TODO:
 		
 		- Add dynamic compilation in future
 			- This feature may be quite hard
-
+			
+	- Start using Scissor instead of stencil
+			
+	- Add HSV to Color4
+	
+	- Move to Silk.Net
+		- Need to get codebase to an acceptable point where I can do this
 
 Done so far:
 	- Seperate app config and window management from Rendering and updating code. 
@@ -29,7 +27,12 @@ Done so far:
 			CTX.Rectangle.Draw();
 			
 			So I have far less code to maintain
-
+			
+	- Move datatypes to where they are needed. Make them Core if they are cross-cutting
+		- Removed useless/bad datastructures
+	
+	- Figure out some way to use System.Drawing.Color because it has a lot more builtin colors
+		- added all named colors from wikipedia
 
 Later:
  

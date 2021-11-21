@@ -64,8 +64,6 @@ namespace MinimalAF
             ResizeAction();
 
             IsVisible = true;
-
-            CTX.SwapBuffers();
         }
 
         private void WindowInstance_MouseWheel(MouseWheelEventArgs obj)
@@ -141,20 +139,21 @@ namespace MinimalAF
             CTX.Clear();
 
             Time._deltaTime = (float)args.Time;
+
+
+			CTX.Viewport2D(Rect);
             _rootElement.Render();
 
-            CTX.SwapBuffers();
+			CTX.SwapBuffers();
 
             renderFrames++;
         }
 
         void ResizeAction()
         {
-            GL.Viewport(0, 0, Size.X, Size.Y);
-
             _rootElement.Resize();
 
-            CTX.Viewport2D(Width, Height);
+			CTX.Viewport2D(Rect);
         }
 
 

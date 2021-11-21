@@ -10,16 +10,16 @@ namespace RenderingEngineVisualTests
         {
             Element[] tests =
             {
+                new PolylineSelfIntersectionAlgorithmTest(),
+                new ArcTest(),
                 new FramebufferTest(),
                 new GeometryAndTextTest(),
                 new StencilTest(),
                 new TextureTest(),
-                new PolylineSelfIntersectionAlgorithmTest(),
                 new PolylineTest(),
                 new KeyboardTest(),
                 new Benchmark(5),
                 new GeometryOutlineTest(),
-                new ArcTest(),
                 new TextTest(),
             };
 

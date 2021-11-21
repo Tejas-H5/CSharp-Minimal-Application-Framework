@@ -35,11 +35,12 @@ namespace MinimalAF.Rendering
         public static ArcDrawer _arc;
         public static CircleDrawer _circle;
         public static LineDrawer _line;
+		private static TextDrawer _textDrawer;
+
+        private static MeshOutputStream _meshOutputStream;
 
         private static ImmediateModeShader _solidShader;
-        private static MeshOutputStream _meshOutputStream;
         private static TextureManager _textureManager;
-		private static TextDrawer _textDrawer;
 
 		//Here solely for the SwapBuffers function
 		private static IGLFWGraphicsContext _glContext;
@@ -74,6 +75,20 @@ namespace MinimalAF.Rendering
 			_projectionMatrix = Matrix4.Identity;
 			_modelMatrices = new List<Matrix4>();
 			_clearColor = Color4.VA(0, 0);
+
+
+
+			GL.Enable(EnableCap.Blend);
+			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
+			GL.Enable(EnableCap.StencilTest);
+			GL.StencilFunc(StencilFunction.Equal, 0, 0xFF);
+
+			GL.Enable(EnableCap.DepthTest);
+			//TODO: change this to DepthFunction.Less for viewport3D
+			GL.DepthFunc(DepthFunction.Lequal);
+
+
 
 			_disposed = false; // To detect redundant calls to Dispose()
 			Console.WriteLine("Context initialized");
@@ -113,7 +128,7 @@ namespace MinimalAF.Rendering
             GL.ClearColor(_clearColor.R, _clearColor.G, _clearColor.B, _clearColor.A);
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
-        }
+		}
 
 
         internal static void Flush()
@@ -124,12 +139,10 @@ namespace MinimalAF.Rendering
         internal static void SwapBuffers()
         {
             Flush();
-
-            _glContext.SwapBuffers();
-            
+            StopUsingFramebuffer();
             FlushTransformMatrices();
 
-            StopUsingFramebuffer();
+            _glContext.SwapBuffers();
         }
 
         private static void FlushTransformMatrices()
@@ -141,37 +154,30 @@ namespace MinimalAF.Rendering
             _solidShader.UpdateTransformUniforms();
         }
 
-        /// <summary>
-        /// Initializes the viewport to 2D mode, and generates a coordinate system with 
-        /// width and height as the width and height, and bottom-left being zero.
-        /// 
-        /// It also enables transparency when drawing, which may not be desireable in 3D
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        public static void Viewport2D(int width, int height)
+		/// <summary>
+		/// Initializes the viewport to 2D mode, and generates a coordinate system with 
+		/// width and height as the width and height, and bottom-left being zero.
+		/// 
+		/// It also enables transparency when drawing, which may not be desireable in 3D
+		/// </summary>
+		public static void Viewport2D(Rect2D screenRect)
         {
-            _width = width;
-            _height = height;
+            _width = (int)screenRect.Width;
+            _height = (int)screenRect.Height;
 
-            _projectionMatrix = Matrix4.Identity;
+
+			//GL.Enable(EnableCap.ScissorTest);
+			//GL.Scissor((int)screenRect.X0, (int)screenRect.Y0, _width, _height);
+			GL.Viewport((int)screenRect.X0, (int)screenRect.Y0, (int)screenRect.X1, (int)screenRect.Y1);
+
+			_projectionMatrix = Matrix4.Identity;
             _viewMatrix = Matrix4.Identity;
 
             Matrix4 translation = Matrix4.CreateTranslation(-1, -1, 0);
             translation.Transpose();
             _viewMatrix *= translation;
 
-            _viewMatrix *= Matrix4.CreateScale(2.0f / width, 2.0f / height, 1);
-
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-
-            GL.Enable(EnableCap.StencilTest);
-            GL.StencilFunc(StencilFunction.Equal, 0, 0xFF);
-
-            GL.Enable(EnableCap.DepthTest);
-            //TODO: change this to DepthFunction.Less for viewport3D
-            GL.DepthFunc(DepthFunction.Lequal);
+            _viewMatrix *= Matrix4.CreateScale(2.0f / _width, 2.0f / _height, 1);
         }
 
         public static void SetDrawColor(float r, float g, float b, float a)

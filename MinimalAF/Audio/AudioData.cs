@@ -54,12 +54,6 @@ namespace MinimalAF.Audio
             get => _rawData.Length / Channels;
         }
 
-
-        public Slice<short> GetChannel(int c)
-        {
-            return new Slice<short>(_rawData, c, _rawData.Length - _channels + c + 1, _channels);
-        }
-
         public double SampleToSeconds(int sample)
         {
             return sample / (double)SampleRate;

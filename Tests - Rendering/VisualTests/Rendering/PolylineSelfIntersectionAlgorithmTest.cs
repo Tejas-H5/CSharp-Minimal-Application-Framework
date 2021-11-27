@@ -1,7 +1,6 @@
 ﻿using MinimalAF.Rendering;
 using MinimalAF.Util;
 using System.Drawing;
-using OpenTK.Graphics.OpenGL;
 
 
 namespace MinimalAF.VisualTests.Rendering
@@ -10,7 +9,7 @@ namespace MinimalAF.VisualTests.Rendering
     {
         public override void OnStart()
         {
-            Window w = GetAncestor<Window>();
+            WindowElement w = GetAncestor<WindowElement>();
             w.Size = (800, 600);
             w.Title = "PolylineSelfIntersectionAlgorithmTest";
             CTX.SetClearColor(1, 1, 1, 1);
@@ -25,9 +24,6 @@ namespace MinimalAF.VisualTests.Rendering
                 CTX.Circle.Draw(_points[i].X, _points[i].Y, 10);
                 CTX.Text.Draw(i.ToString(), _points[i].X + 20, _points[i].Y + 20);
             }
-
-			int fbbinding = GL.GetInteger(GetPName.DrawFramebufferBinding);
-			int readfbbinding = GL.GetInteger(GetPName.ReadFramebufferBinding);
 
 			CTX.SetDrawColor(0, 0, 1, 0.5f);
 

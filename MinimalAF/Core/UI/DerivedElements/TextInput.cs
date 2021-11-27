@@ -39,7 +39,7 @@ namespace MinimalAF
 
 		public override void OnStart()
 		{
-			_keyboardInput = GetAncestor<Window>().KeyboardInput;
+			_keyboardInput = GetAncestor<WindowElement>().KeyboardInput;
 
 			base.OnStart();
 		}

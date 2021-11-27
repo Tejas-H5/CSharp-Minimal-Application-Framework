@@ -1,12 +1,12 @@
-﻿using OpenTK.Audio.OpenAL;
+﻿using Silk.NET.OpenAL;
 
 namespace MinimalAF.Audio
 {
 	public enum AudioSourceState
     {
-        Initial = ALSourceState.Initial,
-        Playing = ALSourceState.Playing,
-        Paused = ALSourceState.Paused,
-        Stopped = ALSourceState.Stopped
+        Initial = SourceState.Initial,
+        Playing = SourceState.Playing,
+        Paused = SourceState.Paused,
+        Stopped = SourceState.Stopped
     }
 }

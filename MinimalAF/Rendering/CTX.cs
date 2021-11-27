@@ -1,9 +1,9 @@
 ﻿using MinimalAF.Rendering.ImmediateMode;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
-using OpenTK.Windowing.Desktop;
+using Silk.NET.Core.Contexts;
+using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace MinimalAF.Rendering
 {
@@ -43,14 +43,17 @@ namespace MinimalAF.Rendering
         private static TextureManager _textureManager;
 
 		//Here solely for the SwapBuffers function
-		private static IGLFWGraphicsContext _glContext;
+		private static IGLContext _glContext;
+		public static GL GL => _gl;
+
+		private static GL _gl;
 
 		// Actual state info
 		private static int _width, _height;
         private static bool _disposed; // To detect redundant calls to Dispose()
-        private static Matrix4 _viewMatrix;
-        private static Matrix4 _projectionMatrix;
-        private static List<Matrix4> _modelMatrices;
+        private static Matrix4x4 _viewMatrix;
+        private static Matrix4x4 _projectionMatrix;
+        private static List<Matrix4x4> _modelMatrices;
         private static Color4 _clearColor;
         private static Dictionary<int, Framebuffer> _framebufferList;
 
@@ -61,21 +64,22 @@ namespace MinimalAF.Rendering
 
 		}
 
-        internal static void Init(IGLFWGraphicsContext context)
+        internal static void Init(IGLContextSource context)
 		{
 			InitDrawers();
 
-			_glContext = context;
+			_glContext = context.GLContext;
+			_gl = GL.GetApi(_glContext);
+
 			_solidShader = new ImmediateModeShader();
 			_solidShader.Use();
 			_textureManager = new TextureManager();
 			_framebufferList = new Dictionary<int, Framebuffer>();
 
-			_viewMatrix = Matrix4.Identity;
-			_projectionMatrix = Matrix4.Identity;
-			_modelMatrices = new List<Matrix4>();
+			_viewMatrix = Matrix4x4.Identity;
+			_projectionMatrix = Matrix4x4.Identity;
+			_modelMatrices = new List<Matrix4x4>();
 			_clearColor = Color4.VA(0, 0);
-
 
 
 			GL.Enable(EnableCap.Blend);
@@ -148,7 +152,7 @@ namespace MinimalAF.Rendering
         private static void FlushTransformMatrices()
         {
             _modelMatrices.Clear();
-            _solidShader.ModelMatrix = Matrix4.Identity;
+            _solidShader.ModelMatrix = Matrix4x4.Identity;
             _solidShader.ViewMatrix = _viewMatrix;
             _solidShader.ProjectionMatrix = _projectionMatrix;
             _solidShader.UpdateTransformUniforms();
@@ -168,16 +172,16 @@ namespace MinimalAF.Rendering
 
 			//GL.Enable(EnableCap.ScissorTest);
 			//GL.Scissor((int)screenRect.X0, (int)screenRect.Y0, _width, _height);
-			GL.Viewport((int)screenRect.X0, (int)screenRect.Y0, (int)screenRect.X1, (int)screenRect.Y1);
+			GL.Viewport((int)screenRect.X0, (int)screenRect.Y0, (uint)screenRect.X1, (uint)screenRect.Y1);
 
-			_projectionMatrix = Matrix4.Identity;
-            _viewMatrix = Matrix4.Identity;
+			_projectionMatrix = Matrix4x4.Identity;
+            _viewMatrix = Matrix4x4.Identity;
 
-            Matrix4 translation = Matrix4.CreateTranslation(-1, -1, 0);
-            translation.Transpose();
+            Matrix4x4 translation = Matrix4x4.CreateTranslation(-1, -1, 0);
+            translation = Matrix4x4.Transpose(translation);
             _viewMatrix *= translation;
 
-            _viewMatrix *= Matrix4.CreateScale(2.0f / _width, 2.0f / _height, 1);
+            _viewMatrix *= Matrix4x4.CreateScale(2.0f / _width, 2.0f / _height, 1);
         }
 
         public static void SetDrawColor(float r, float g, float b, float a)
@@ -212,7 +216,7 @@ namespace MinimalAF.Rendering
             _textureManager.SetTexture(texture);
         }
 
-        public static void PushMatrix(Matrix4 mat)
+        public static void PushMatrix(Matrix4x4 mat)
         {
             Flush();
 
@@ -240,7 +244,7 @@ namespace MinimalAF.Rendering
 
             if (_modelMatrices.Count == 0)
             {
-                _solidShader.ModelMatrix = Matrix4.Identity;
+                _solidShader.ModelMatrix = Matrix4x4.Identity;
             }
             else
             {

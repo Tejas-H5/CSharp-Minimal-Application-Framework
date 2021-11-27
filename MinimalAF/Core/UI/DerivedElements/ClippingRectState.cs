@@ -20,7 +20,7 @@ namespace MinimalAF
             {
                 return _stencilRectStack[_stencilRectStack.Count - 1];
             }
-            return GetAncestor<Window>().Rect;
+            return GetAncestor<WindowElement>().Rect;
         }
 
         public void PushRect(Rect2D rect)

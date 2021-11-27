@@ -15,7 +15,7 @@ namespace MinimalAF.AudioTests
 
         public override void OnStart()
         {
-            Window w = GetAncestor<Window>();
+            WindowElement w = GetAncestor<WindowElement>();
             w.Size = (800, 600);
             w.Title = "music and keyboard test";
 

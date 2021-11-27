@@ -1,5 +1,4 @@
-﻿using OpenTK.Audio.OpenAL;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace MinimalAF.Audio
@@ -34,7 +33,7 @@ namespace MinimalAF.Audio
 
         private AudioClipOneShot(AudioData audioData)
         {
-            AudioCTX.ALCall(out _ALBuffer, () => { return AL.GenBuffer(); });
+            AudioCTX.ALCall(out _ALBuffer, () => { return AudioCTX.AL.GenBuffer(); });
 
             short[] data = audioData.RawData;
             int sampleRate = audioData.SampleRate;
@@ -42,11 +41,11 @@ namespace MinimalAF.Audio
 
             if (channels == 1)
             {
-                AL.BufferData(_ALBuffer, ALFormat.Mono16, data, sampleRate);
+                AudioCTX.AL.BufferData(_ALBuffer, BufferFormat.Mono16, data, sampleRate);
             }
             else
             {
-                AL.BufferData(_ALBuffer, ALFormat.Stereo16, data, sampleRate);
+                AudioCTX.AL.BufferData(_ALBuffer, BufferFormat.Stereo16, data, sampleRate);
             }
 
             Data = audioData;
@@ -76,7 +75,7 @@ namespace MinimalAF.Audio
 
                 Data = null;
                 //also detatch from source if possible
-                AL.DeleteBuffer(_ALBuffer);
+                AudioCTX.AL.DeleteBuffer(_ALBuffer);
 
                 disposedValue = true;
             }

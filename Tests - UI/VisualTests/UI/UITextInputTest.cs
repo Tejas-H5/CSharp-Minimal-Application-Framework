@@ -1,7 +1,4 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF;
-using MinimalAF.Rendering;
-using MinimalAF;
+﻿using MinimalAF.Rendering;
 
 namespace MinimalAF.VisualTests.UI
 {
@@ -50,12 +47,12 @@ namespace MinimalAF.VisualTests.UI
 
         public override void OnStart()
         {
-            Window w = GetAncestor<Window>();
+            WindowElement w = GetAncestor<WindowElement>();
             w.Size = (800, 600);
             w.Title = "Text input ui element test";
 
             w.RenderFrequency = 120;
-            w.UpdateFrequency = 120;
+            w.UpdatesPerSecond = 120;
 
             CTX.SetClearColor(1, 1, 1, 1);
 

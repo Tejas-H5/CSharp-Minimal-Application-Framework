@@ -1,4 +1,4 @@
-﻿using OpenTK.Audio.OpenAL;
+﻿using Silk.NET.OpenAL;
 
 namespace MinimalAF.Audio
 {
@@ -20,7 +20,7 @@ namespace MinimalAF.Audio
         double PlaybackPosition { get; set; }
         double Duration { get; }
 
-        ALFormat Format { get; }
+		BufferFormat Format { get; }
         int SampleRate { get; }
         int Channels { get; }
     }

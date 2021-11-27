@@ -6,7 +6,7 @@ namespace MinimalAF.VisualTests
     {
         public override void OnStart()
         {
-            Window w = GetAncestor<Window>();
+            WindowElement w = GetAncestor<WindowElement>();
             w.Size = (800, 600);
             w.Title = "Window title goes here";
 

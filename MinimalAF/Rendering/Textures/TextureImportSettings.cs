@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using Silk.NET.OpenGL;
 
 namespace MinimalAF.Rendering
 {
@@ -20,7 +20,7 @@ namespace MinimalAF.Rendering
         public FilteringType Filtering = FilteringType.Bilinear;
         public ClampingType Clamping = ClampingType.Repeat;
 
-        internal PixelInternalFormat InternalFormat = PixelInternalFormat.Rgba;
+        internal InternalFormat InternalFormat = InternalFormat.Rgba;
         internal PixelFormat PixelFormatType = PixelFormat.Bgra;
     }
 }

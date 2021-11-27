@@ -1,4 +1,4 @@
-﻿using OpenTK.Windowing.GraphicsLibraryFramework;
+﻿using Silk.NET.Input;
 using System.Text;
 
 namespace MinimalAF
@@ -7,7 +7,7 @@ namespace MinimalAF
     {
         const string KEYBOARD_CHARS = "\t\b\n `1234567890-=qwertyuiop[]asdfghjkl;'\\zxcvbnm,./";
 
-        OpenTKWindowWrapper _window;
+        IInputContext _input;
 
         bool[] _prevKeyStates = new bool[(int)KeyCode.LastKey];
         bool[] _keyStates = new bool[(int)KeyCode.LastKey];
@@ -35,17 +35,44 @@ namespace MinimalAF
             _charactersTypedSB.Append((char)c);
         }
 
-        internal void Hook(OpenTKWindowWrapper window)
+        internal void Hook(IInputContext input)
         {
-            _window = window;
-            _window.TextInputEvent += OnWindowTextInput;
+			_input = input;
+
+            for(int i = 0; i < _input.Keyboards.Count; i++)
+			{
+				var keyboard = _input.Keyboards[i];
+
+				keyboard.KeyDown += OnKeyDown;
+				keyboard.KeyUp += OnKeyUp;
+			}
         }
 
-        internal void Unhook()
-        {
-            if (_window != null)
-                _window.TextInputEvent -= OnWindowTextInput;
-        }
+		internal void Unhook()
+		{
+			if (_input != null)
+			{
+				for (int i = 0; i < _input.Keyboards.Count; i++)
+				{
+					var keyboard = _input.Keyboards[i];
+
+					keyboard.KeyDown -= OnKeyDown;
+					keyboard.KeyUp -= OnKeyUp;
+				}
+			}
+		}
+
+
+		private void OnKeyUp(IKeyboard arg1, Key key, int repeats)
+		{
+			_keyStates[(int)key] = false;
+		}
+
+		private void OnKeyDown(IKeyboard arg1, Key key, int repeats)
+		{
+			_keyStates[(int)key] = true;
+		}
+
 
         public bool IsPressed(KeyCode key)
         {
@@ -146,20 +173,14 @@ namespace MinimalAF
             _charactersTyped = _charactersTypedSB.ToString();
             _charactersTypedSB.Clear();
 
-            bool[] temp = _prevKeyStates;
-            _prevKeyStates = _keyStates;
-            _keyStates = temp;
+			for (int i = 0; i < _keyStates.Length - 1; i++)
+			{
+				_prevKeyStates[i] = _keyStates[i];
+			}
 
             for (int i = 0; i < _keyStates.Length - 1; i++)
             {
                 KeyCode key = (KeyCode)i;
-
-
-                //This is where we use openTK
-                _keyStates[i] = _window.KeyboardState.IsKeyDown((Keys)key);
-
-
-                _anyKeyDown = _anyKeyDown || _keyStates[i];
 
                 bool pressed = (!_prevKeyStates[i] && _keyStates[i]);
                 bool released = (_prevKeyStates[i] && !_keyStates[i]);

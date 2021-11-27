@@ -1,8 +1,8 @@
-﻿using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Silk.NET.OpenGL;
+using System.Numerics;
 
 namespace MinimalAF.Rendering
 {
@@ -10,7 +10,7 @@ namespace MinimalAF.Rendering
 	//The destructor code was modified to be more like https://docs.microsoft.com/en-us/dotnet/api/system.idisposable.dispose?view=net-5.0
 	public class Shader
     {
-        public readonly int Handle;
+        public readonly uint Handle;
 
         private readonly Dictionary<string, int> _uniformLocations;
 
@@ -38,11 +38,11 @@ namespace MinimalAF.Rendering
 
             var shaderSource = vertexSource;
 
-            // GL.CreateShader will create an empty shader (obviously). The ShaderType enum denotes which type of shader will be created.
-            var vertexShader = GL.CreateShader(ShaderType.VertexShader);
+            // CTX.GL.CreateShader will create an empty shader (obviously). The ShaderType enum denotes which type of shader will be created.
+            var vertexShader = CTX.GL.CreateShader(ShaderType.VertexShader);
 
-            // Now, bind the GLSL source code
-            GL.ShaderSource(vertexShader, shaderSource);
+			// Now, bind the GLSL source code
+			CTX.GL.ShaderSource(vertexShader, shaderSource);
 
             // And then compile
             CompileShader(vertexShader);
@@ -50,77 +50,77 @@ namespace MinimalAF.Rendering
 
             shaderSource = fragSource;
 
-            var fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(fragmentShader, shaderSource);
+            var fragmentShader = CTX.GL.CreateShader(ShaderType.FragmentShader);
+            CTX.GL.ShaderSource(fragmentShader, shaderSource);
             CompileShader(fragmentShader);
 
-            // These two shaders must then be merged into a shader program, which can then be used by OpenGL.
+            // These two shaders must then be merged into a shader program, which can then be used by OpenCTX.GL.
             // To do this, create a program...
-            Handle = GL.CreateProgram();
+            Handle = CTX.GL.CreateProgram();
 
             // Attach both shaders...
-            GL.AttachShader(Handle, vertexShader);
-            GL.AttachShader(Handle, fragmentShader);
+            CTX.GL.AttachShader(Handle, vertexShader);
+            CTX.GL.AttachShader(Handle, fragmentShader);
 
             // And then link them together.
             LinkProgram(Handle);
 
             // When the shader program is linked, it no longer needs the individual shaders attacked to it; the compiled code is copied into the shader program.
             // Detach them, and then delete them.
-            GL.DetachShader(Handle, vertexShader);
-            GL.DetachShader(Handle, fragmentShader);
-            GL.DeleteShader(fragmentShader);
-            GL.DeleteShader(vertexShader);
+            CTX.GL.DetachShader(Handle, vertexShader);
+            CTX.GL.DetachShader(Handle, fragmentShader);
+            CTX.GL.DeleteShader(fragmentShader);
+            CTX.GL.DeleteShader(vertexShader);
 
             // The shader is now ready to go, but first, we're going to cache all the shader uniform locations.
             // Querying this from the shader is very slow, so we do it once on initialization and reuse those values
             // later.
 
             // First, we have to get the number of active uniforms in the shader.
-            GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
+            CTX.GL.GetProgram(Handle, ProgramPropertyARB.ActiveUniforms, out var numberOfUniforms);
 
             // Next, allocate the dictionary to hold the locations.
             _uniformLocations = new Dictionary<string, int>();
 
             // Loop over all the uniforms,
-            for (var i = 0; i < numberOfUniforms; i++)
+            for (uint i = 0; i < numberOfUniforms; i++)
             {
                 // get the name of this uniform,
-                var key = GL.GetActiveUniform(Handle, i, out _, out _);
+                var key = CTX.GL.GetActiveUniform(Handle, i, out _, out _);
 
                 // get the location,
-                var location = GL.GetUniformLocation(Handle, key);
+                var location = CTX.GL.GetUniformLocation(Handle, key);
 
                 // and then add it to the dictionary.
                 _uniformLocations.Add(key, location);
             }
         }
 
-        private static void CompileShader(int shader)
+        private static void CompileShader(uint shader)
         {
             // Try to compile the shader
-            GL.CompileShader(shader);
+            CTX.GL.CompileShader(shader);
 
             // Check for compilation errors
-            GL.GetShader(shader, ShaderParameter.CompileStatus, out var code);
-            if (code != (int)All.True)
+            CTX.GL.GetShader(shader, ShaderParameterName.CompileStatus, out var code);
+            if (code != (int)GLEnum.True)
             {
-                // We can use `GL.GetShaderInfoLog(shader)` to get information about the error.
-                var infoLog = GL.GetShaderInfoLog(shader);
+                // We can use `CTX.GL.GetShaderInfoLog(shader)` to get information about the error.
+                var infoLog = CTX.GL.GetShaderInfoLog(shader);
                 throw new Exception($"Error occurred whilst compiling Shader({shader}).\n\n{infoLog}");
             }
         }
 
-        private static void LinkProgram(int program)
+        private static void LinkProgram(uint program)
         {
             // We link the program
-            GL.LinkProgram(program);
+            CTX.GL.LinkProgram(program);
 
             // Check for linking errors
-            GL.GetProgram(program, GetProgramParameterName.LinkStatus, out var code);
-            if (code != (int)All.True)
+            CTX.GL.GetProgram(program, ProgramPropertyARB.LinkStatus, out var code);
+            if (code != (int)GLEnum.True)
             {
-                // We can use `GL.GetProgramInfoLog(program)` to get information about the error.
+                // We can use `CTX.GL.GetProgramInfoLog(program)` to get information about the error.
                 throw new Exception($"Error occurred whilst linking Program({program})");
             }
         }
@@ -128,14 +128,14 @@ namespace MinimalAF.Rendering
         // A wrapper function that enables the shader program.
         public void Use()
         {
-            GL.UseProgram(Handle);
+            CTX.GL.UseProgram(Handle);
         }
 
         // The shader sources provided with this project use hardcoded layout(location)-s. If you want to do it dynamically,
         // you can omit the layout(location=X) lines in the vertex shader, and use this in VertexAttribPointer instead of the hardcoded values.
         public int GetAttribLocation(string attribName)
         {
-            return GL.GetAttribLocation(Handle, attribName);
+            return CTX.GL.GetAttribLocation(Handle, attribName);
         }
 
 
@@ -154,8 +154,8 @@ namespace MinimalAF.Rendering
         /// <param name="data">The data to set</param>
         public void SetInt(int location, int data)
         {
-            GL.UseProgram(Handle);
-            GL.Uniform1(location, data);
+            CTX.GL.UseProgram(Handle);
+            CTX.GL.Uniform1(location, data);
         }
 
         /// <summary>
@@ -165,12 +165,12 @@ namespace MinimalAF.Rendering
         /// <param name="data">The data to set</param>
         public void SetFloat(int location, float data)
         {
-            GL.UseProgram(Handle);
-            GL.Uniform1(location, data);
+            CTX.GL.UseProgram(Handle);
+            CTX.GL.Uniform1(location, data);
         }
 
         /// <summary>
-        /// Set a uniform Matrix4 on this shader
+        /// Set a uniform Matrix4x4 on this shader
         /// </summary>
         /// <param name="name">The name of the uniform</param>
         /// <param name="data">The data to set</param>
@@ -179,10 +179,10 @@ namespace MinimalAF.Rendering
         ///   The matrix is transposed before being sent to the shader.
         ///   </para>
         /// </remarks>
-        public void SetMatrix4(int location, Matrix4 data)
+        public unsafe void SetMatrix4x4(int location, Matrix4x4 data)
         {
-            GL.UseProgram(Handle);
-            GL.UniformMatrix4(location, true, ref data);
+            CTX.GL.UseProgram(Handle);
+            CTX.GL.UniformMatrix4(location, 1, false, (float*) &data);
         }
 
         /// <summary>
@@ -192,8 +192,8 @@ namespace MinimalAF.Rendering
         /// <param name="data">The data to set</param>
         public void SetVector3(int location, Vector3 data)
         {
-            GL.UseProgram(Handle);
-            GL.Uniform3(location, data);
+            CTX.GL.UseProgram(Handle);
+            CTX.GL.Uniform3(location, data);
         }
 
         /// <summary>
@@ -203,8 +203,8 @@ namespace MinimalAF.Rendering
         /// <param name="data">The data to set</param>
         public void SetVector4(int location, Vector4 data)
         {
-            GL.UseProgram(Handle);
-            GL.Uniform4(location, data);
+            CTX.GL.UseProgram(Handle);
+            CTX.GL.Uniform4(location, data);
         }
 
 
@@ -216,8 +216,8 @@ namespace MinimalAF.Rendering
         /// <param name="data">The data to set</param>
         public void SetVector4(int location, Color4 data)
         {
-            GL.UseProgram(Handle);
-            GL.Uniform4(location, new Vector4(data.R, data.G, data.B, data.A));
+            CTX.GL.UseProgram(Handle);
+            CTX.GL.Uniform4(location, new Vector4(data.R, data.G, data.B, data.A));
         }
 
 
@@ -227,7 +227,7 @@ namespace MinimalAF.Rendering
             if (disposed)
                 return;
 
-            GL.DeleteProgram(Handle);
+            CTX.GL.DeleteProgram(Handle);
             Console.WriteLine("Shader destructed");
 
             disposed = true;

@@ -1,6 +1,7 @@
 ﻿using NAudio.Wave;
-using OpenTK.Audio.OpenAL;
 using System;
+using Silk.NET.OpenAL;
+using Silk.NET.OpenAL.Attributes;
 
 namespace MinimalAF.Audio
 {
@@ -29,9 +30,9 @@ namespace MinimalAF.Audio
         private int _sampleRate;
         private int _channels;
         private int _len;
-        private ALFormat _format;
+        private BufferFormat _format;
 
-        public ALFormat Format {
+        public BufferFormat Format {
             get { return _format; }
         }
 
@@ -81,11 +82,11 @@ namespace MinimalAF.Audio
 
             if (_channels == 2)
             {
-                _format = ALFormat.Stereo16;
+                _format = BufferFormat.Stereo16;
             }
             else
             {
-                _format = ALFormat.Stereo8;
+                _format = BufferFormat.Stereo8;
             }
         }
 

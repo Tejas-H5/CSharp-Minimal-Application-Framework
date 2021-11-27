@@ -1,5 +1,5 @@
-﻿using OpenTK.Audio.OpenAL;
-using System;
+﻿using System;
+using Silk.NET.OpenAL;
 
 namespace MinimalAF.Audio
 {
@@ -193,7 +193,7 @@ namespace MinimalAF.Audio
 
         private void CreateALBuffer(int bufferIndex)
         {
-            _buffers[bufferIndex] = AL.GenBuffer();
+            _buffers[bufferIndex] = AudioCTX.AL.GenBuffer();
         }
 
         private void SendTempDataToBuffer(int alBuffer, int count)
@@ -201,7 +201,7 @@ namespace MinimalAF.Audio
             if (_streamProvider == null)
                 return;
 
-            ALFormat format = ALFormat.Mono16;
+            BufferFormat format = BufferFormat.Mono16;
             int sampleRate = 44100;
             if (_streamProvider != null)
             {
@@ -209,7 +209,7 @@ namespace MinimalAF.Audio
                 sampleRate = _streamProvider.SampleRate;
             }
 
-            AL.BufferData(alBuffer, format, new Span<short>(_tempBuffer, 0, count), sampleRate);
+            AudioCTX.AL.BufferData(alBuffer, format, new Span<short>(_tempBuffer, 0, count), sampleRate);
         }
 
         private void ClearTempData()

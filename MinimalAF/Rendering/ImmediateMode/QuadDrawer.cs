@@ -1,6 +1,4 @@
-﻿using OpenTK.Mathematics;
-
-namespace MinimalAF.Rendering.ImmediateMode
+﻿namespace MinimalAF.Rendering.ImmediateMode
 {
 	public class QuadDrawer
     {

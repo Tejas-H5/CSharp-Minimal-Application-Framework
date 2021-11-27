@@ -1,5 +1,5 @@
-﻿using OpenTK.Mathematics;
-using System;
+﻿using System;
+using Silk.NET.Maths;
 
 namespace MinimalAF
 {
@@ -7,9 +7,9 @@ namespace MinimalAF
 	/// Only be getting this and modifying stuff if the element is a root-level element
 	/// of your program.
 	/// </summary>
-	public class Window : Element
+	public class WindowElement : Element
     {
-        OpenTKWindowWrapper _window;
+        OpenGLWindowWrapper _window;
 
 		private IWindowResource[] _windowResources;
 		public readonly WindowMouseInput MouseInput;
@@ -17,7 +17,7 @@ namespace MinimalAF
 
 		public override bool SingleChild => true;
 
-		public Window(Element child) 
+		public WindowElement(Element child) 
         {
             this.SetChildren(
 				child
@@ -38,7 +38,7 @@ namespace MinimalAF
 
 		public void Run()
         {
-            using (OpenTKWindowWrapper window = new OpenTKWindowWrapper(this))
+            using (OpenGLWindowWrapper window = new OpenGLWindowWrapper(this))
             {
                 _window = window;
                 window.Run();
@@ -46,9 +46,9 @@ namespace MinimalAF
             _window = null;
         }
 
-        public  Vector2i Size {
-            get { return new Vector2i(_window.Size.X, _window.Size.Y); }
-            set { _window.Size = new OpenTK.Mathematics.Vector2i(value.X, value.Y); }
+        public Vector2D<int> Size {
+            get { return new Vector2D<int>(_window.Size.X, _window.Size.Y); }
+            set { _window.Size = value; }
         }
 
         public  void Maximize() { _window.Maximize(); }
@@ -59,10 +59,10 @@ namespace MinimalAF
         new public int Height { get { return _window.Height; } }
         public override Rect2D GetParentRect() { return Rect; }
         new public Rect2D Rect { get { return _window.Rect; } }
-        public  float CurrentFPS { get { return _window.CurrentFPS; } }
-        public  float CurrentUpdateFPS { get { return _window.CurrentUpdateFPS; } }
-        public  double UpdateFrequency { get { return _window.UpdateFrequency; } set { _window.UpdateFrequency = value; } }
-        public  double RenderFrequency { get { return _window.RenderFrequency; } set { _window.RenderFrequency = value; } }
+        public  float CurrentFPS { get { return _window.MeasuredRenderFPS; } }
+        public  float CurrentUpdateFPS { get { return _window.MeasuredUpdateFPS; } }
+        public  double UpdatesPerSecond { get { return _window.UpdatesPerSecond; } set { _window.UpdatesPerSecond = value; } }
+        public  double RendersPerSecond { get { return _window.RendersPerSecond; } set { _window.RendersPerSecond = value; } }
         public  string ClipboardString { get { return _window.ClipboardString; } set { _window.ClipboardString = value; } }
 
         internal  event Action<float> MouseWheel {

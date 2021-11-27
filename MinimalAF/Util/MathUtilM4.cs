@@ -1,6 +1,4 @@
-﻿using OpenTK.Mathematics;
-
-namespace MinimalAF.Util
+﻿namespace MinimalAF.Util
 {
 	public static class MathUtilM4
     {

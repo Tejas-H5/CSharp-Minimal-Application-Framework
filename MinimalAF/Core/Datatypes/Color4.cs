@@ -1,4 +1,6 @@
-﻿namespace MinimalAF
+﻿using System.Numerics;
+
+namespace MinimalAF
 {
 	/// <summary>
 	/// OpenTK's Color4 has a float constructor as well as an int constructor
@@ -22,9 +24,9 @@
             A = a;
         }
 
-        public static implicit operator OpenTK.Mathematics.Color4(Color4 value)
+        public static implicit operator Vector4(Color4 value)
         {
-            return new OpenTK.Mathematics.Color4(value.R, value.G, value.B, value.A);
+            return new Vector4(value.R, value.G, value.B, value.A);
         }
 
 		/// <summary>

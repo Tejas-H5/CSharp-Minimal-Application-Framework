@@ -1,5 +1,4 @@
-﻿using OpenTK.Mathematics;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace MinimalAF.Rendering
 {

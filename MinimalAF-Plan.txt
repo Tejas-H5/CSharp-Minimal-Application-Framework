@@ -1,3 +1,11 @@
+Doing:
+	- Move to Silk.Net
+		- Mainly because Viewport and Scissor weren't workign with OpenTK, and they are somewhat essential
+		- and it looks like theyve made a bunch of other good changes
+		
+		- I dont like how they've done some of the stuff, but it seems like most of it will just work with minimal effort
+
+
 TODO:
 	- Give Elements their own coordinate systems, and drawing capabilities.
 		- Elements will need an ability to store the state of the drawing context
@@ -14,8 +22,7 @@ TODO:
 			
 	- Add HSV to Color4
 	
-	- Move to Silk.Net
-		- Need to get codebase to an acceptable point where I can do this
+	
 
 Done so far:
 	- Seperate app config and window management from Rendering and updating code. 

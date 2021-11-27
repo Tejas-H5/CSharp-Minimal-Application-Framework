@@ -1,4 +1,6 @@
-﻿namespace MinimalAF
+﻿using Silk.NET.Input;
+
+namespace MinimalAF
 {
 	public enum MouseButton
     {
@@ -18,13 +20,13 @@
             _keyboardManager = new KeyboardInputManager();
         }
 
-        internal static void HookToWindow(OpenTKWindowWrapper window)
+        internal static void Hook(OpenGLWindowWrapper window, IInputContext inputContext)
         {
             _mouseInputManager.Unhook();
             _keyboardManager.Unhook();
 
-            _mouseInputManager.Hook(window);
-            _keyboardManager.Hook(window);
+            _mouseInputManager.Hook(window, inputContext);
+            _keyboardManager.Hook(inputContext);
         }
 
         internal static void Update()

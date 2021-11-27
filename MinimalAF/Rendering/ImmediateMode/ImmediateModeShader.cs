@@ -1,5 +1,5 @@
-﻿using OpenTK.Mathematics;
-using System;
+﻿using System;
+using System.Numerics;
 
 namespace MinimalAF.Rendering.ImmediateMode
 {
@@ -8,9 +8,9 @@ namespace MinimalAF.Rendering.ImmediateMode
         Shader _shader;
         public Shader Shader { get { return _shader; } }
 
-        public Matrix4 ProjectionMatrix { get => _projectionMatrix; set => _projectionMatrix = value; }
-        public Matrix4 ViewMatrix { get => _viewMatrix; set => _viewMatrix = value; }
-        public Matrix4 ModelMatrix { get => _modelMatrix; set => _modelMatrix = value; }
+        public Matrix4x4 ProjectionMatrix { get => _projectionMatrix; set => _projectionMatrix = value; }
+        public Matrix4x4 ViewMatrix { get => _viewMatrix; set => _viewMatrix = value; }
+        public Matrix4x4 ModelMatrix { get => _modelMatrix; set => _modelMatrix = value; }
         public Color4 CurrentColor {
             get {
                 return _currentColor;
@@ -26,9 +26,9 @@ namespace MinimalAF.Rendering.ImmediateMode
         int _modelUniformLocation;
         int _colorUniformLocation;
 
-        Matrix4 _projectionMatrix = Matrix4.Identity;
-        Matrix4 _viewMatrix = Matrix4.Identity;
-        Matrix4 _modelMatrix = Matrix4.Identity;
+        Matrix4x4 _projectionMatrix = Matrix4x4.Identity;
+        Matrix4x4 _viewMatrix = Matrix4x4.Identity;
+        Matrix4x4 _modelMatrix = Matrix4x4.Identity;
         Color4 _currentColor;
 
         public ImmediateModeShader()
@@ -69,23 +69,23 @@ namespace MinimalAF.Rendering.ImmediateMode
             _projectionUniformLocation = _shader.Loc("projection");
             _viewUniformLocation = _shader.Loc("view");
 
-            _projectionMatrix = Matrix4.Identity;
-            _viewMatrix = Matrix4.Identity;
-            _modelMatrix = Matrix4.Identity;
+            _projectionMatrix = Matrix4x4.Identity;
+            _viewMatrix = Matrix4x4.Identity;
+            _modelMatrix = Matrix4x4.Identity;
 
             UpdateTransformUniforms();
         }
 
         public void UpdateTransformUniforms()
         {
-            _shader.SetMatrix4(_projectionUniformLocation, _projectionMatrix);
-            _shader.SetMatrix4(_viewUniformLocation, _viewMatrix);
-            _shader.SetMatrix4(_modelUniformLocation, _modelMatrix);
+            _shader.SetMatrix4x4(_projectionUniformLocation, _projectionMatrix);
+            _shader.SetMatrix4x4(_viewUniformLocation, _viewMatrix);
+            _shader.SetMatrix4x4(_modelUniformLocation, _modelMatrix);
         }
 
         public void UpdateModel()
         {
-            _shader.SetMatrix4(_modelUniformLocation, _modelMatrix);
+            _shader.SetMatrix4x4(_modelUniformLocation, _modelMatrix);
         }
 
         public void Use()

@@ -21,7 +21,7 @@ namespace RenderingEngineVisualTests
 
             foreach (Element entryPoint in tests)
             {
-                new Window(entryPoint).Run();
+                new WindowElement(entryPoint).Run();
             }
         }
     }

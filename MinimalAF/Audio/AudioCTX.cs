@@ -1,6 +1,7 @@
-﻿using OpenTK.Audio.OpenAL;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Silk.NET.OpenAL;
+using Silk.NET.OpenAL.Extensions;
 
 namespace MinimalAF.Audio
 {
@@ -12,13 +13,16 @@ namespace MinimalAF.Audio
 	/// Updated every frame with Update(),
 	/// and disposed of when the program is done with Cleanup().
 	/// </summary>
-	public static class AudioCTX
+	public static unsafe class AudioCTX
     {
-        private static ALDevice _device;
-        private static ALContext _context;
+        private static Device* _device;
+        private static Context* _context;
+
+		public static AL AL => _al;
+		private static AL _al;
 
 
-        public static unsafe void Init()
+		public static unsafe void Init()
         {
             InitializeOpenAL();
             ALAudioSourcePool.Init();
@@ -33,19 +37,21 @@ namespace MinimalAF.Audio
 
         public static void Cleanup()
         {
-            if (_context != ALContext.Null)
-            {
-                ALC.MakeContextCurrent(ALContext.Null);
-                ALC.DestroyContext(_context);
-            }
-            _context = ALContext.Null;
+			var alc = ALContext.GetApi();
 
-            if (_device != ALDevice.Null)
+			if (_context != null)
             {
-                ALC.CloseDevice(_device);
+				alc.MakeContextCurrent(null);
+                alc.DestroyContext(_context);
+            }
+            _context = null;
+
+            if (_device != null)
+            {
+                alc.CloseDevice(_device);
             }
 
-            _device = ALDevice.Null;
+            _device = null;
 
             AudioMap.UnloadAllCachedAudio();
 
@@ -55,61 +61,68 @@ namespace MinimalAF.Audio
 
         private static unsafe void InitializeOpenAL()
         {
-            _device = ALC.OpenDevice(null);
+			var alc = ALContext.GetApi();
+			_al = AL.GetApi();
 
-            if (!ALCall(out _context, () => { return ALC.CreateContext(_device, (int*)null); }))
-            {
-                Console.WriteLine("Error: Could not create audio context");
-                return;
-            }
+            _device = alc.OpenDevice(null);
 
-            bool contextMadeCurrent = false;
-            if (!ALCall(out contextMadeCurrent, () => { return ALC.MakeContextCurrent(_context); }) || !contextMadeCurrent)
-            {
-                Console.WriteLine("Error: Could not make audio context current");
-                return;
-            }
+			if (_device == null)
+			{
+				Console.WriteLine("Could not create audio device");
+				return;
+			}
 
-            ALC.MakeContextCurrent(_context);
+			_context = alc.CreateContext(_device, null);
 
-            var version = AL.Get(ALGetString.Version);
-            var vendor = AL.Get(ALGetString.Vendor);
-            var renderer = AL.Get(ALGetString.Renderer);
+			if(_context == null)
+			{
+				Console.WriteLine("Could not create audio context");
+				return;
+			}
 
-            if (version == null || vendor == null || renderer == null)
+			alc.MakeContextCurrent(_context);
+
+			alc.GetError(_device);
+
+
+            var version = _al.GetStateProperty(StateString.Version);
+            var vendor = _al.GetStateProperty(StateString.Vendor);
+			var renderer = _al.GetStateProperty(StateString.Renderer);
+
+			if (version == null || vendor == null || renderer == null)
             {
                 Console.Write("OpenAL Version, vendor or renderer were null. Audio Engine was unable to initialize.");
             }
             else
             {
-                Console.WriteLine("Audio powered by OpenAL v" + version + " from" + vendor + " rendered with " + renderer);
+                Console.WriteLine("Audio from Silk.Net/OpenAL v" + version + " from" + vendor + " rendered with " + renderer);
             }
         }
 
 
         internal static bool ALCheckErrors()
         {
-            ALError error = AL.GetError();
+            AudioError error = AudioCTX.AL.GetError();
 
-            if (error != ALError.NoError)
+            if (error != AudioError.NoError)
             {
                 string message = "***ERROR***\n";
 
                 switch (error)
                 {
-                    case ALError.InvalidName:
+                    case AudioError.InvalidName:
                         message += "AL_INVALID_NAME: a bad name (ID) was passed to an OpenAL function";
                         break;
-                    case ALError.InvalidEnum:
+                    case AudioError.InvalidEnum:
                         message += "AL_INVALID_ENUM: an invalid enum value was passed to an OpenAL function";
                         break;
-                    case ALError.InvalidValue:
+                    case AudioError.InvalidValue:
                         message += "AL_INVALID_VALUE: an invalid value was passed to an OpenAL function";
                         break;
-                    case ALError.InvalidOperation:
+                    case AudioError.InvalidOperation:
                         message += "AL_INVALID_OPERATION: the requested operation is not valid";
                         break;
-                    case ALError.OutOfMemory:
+                    case AudioError.OutOfMemory:
                         message += "AL_OUT_OF_MEMORY: the requested operation resulted in OpenAL running out of memory";
                         break;
                     default:
@@ -133,26 +146,6 @@ namespace MinimalAF.Audio
         {
             res = method();
             return ALCheckErrors();
-        }
-
-        private static IEnumerable<string> ALGetDevices()
-        {
-            IEnumerable<string> devices = null;
-            if (!ALCall(out devices,
-                () => { return ALC.GetStringList(GetEnumerationStringList.CaptureDeviceSpecifier); }))
-                return null;
-
-            return devices;
-        }
-
-        public static IEnumerable<string> GetAllDevices()
-        {
-            return ALGetDevices();
-        }
-
-        public static void SetDeviceListener(string name)
-        {
-            ALC.OpenDevice(name);
         }
 
     }

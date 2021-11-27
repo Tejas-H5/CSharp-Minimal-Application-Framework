@@ -24,7 +24,7 @@ namespace MinimalAF.VisualTests.UI
 
 		public override void OnStart()
 		{
-			_mouseInput = GetAncestor<Window>().MouseInput;
+			_mouseInput = GetAncestor<WindowElement>().MouseInput;
 
 			base.OnStart();
 		}

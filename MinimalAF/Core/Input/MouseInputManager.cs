@@ -1,14 +1,18 @@
 ﻿using MinimalAF.Util;
+using Silk.NET.Input;
 using System;
 
 namespace MinimalAF
 {
 	public class MouseInputManager
     {
-        OpenTKWindowWrapper _window;
+		OpenGLWindowWrapper _window;
+        IInputContext _input;
 
         int _incomingWheelNotches = 0;
         int _wheelNotches = 0;
+
+		float _x = 0, _y = 0, _Px = 0, _Py = 0, _deltaX = 0, _deltaY = 0;
 
         bool[] _prevMouseButtonStates = new bool[3];
         bool[] _mouseButtonStates = new bool[3];
@@ -50,11 +54,14 @@ namespace MinimalAF
             }
         }
 
-        public float X { get { return _window.MouseState.Position.X; } }
-        public float Y { get { return _window.Height - _window.MouseState.Position.Y; } }
+        public float X { get { return _x; } }
+        public float Y { get { return _y; } }
 
-        public float XDelta { get { return _window.MouseState.Delta.X; } }
-        public float YDelta { get { return _window.MouseState.Delta.Y; } }
+		public float PreviousX { get { return _Px; } }
+		public float PreviousY { get { return _Py; } }
+
+		public float XDelta { get { return _deltaX; } }
+        public float YDelta { get { return _deltaY; } }
 
         public float DragStartX { get { return _dragStartX; } }
         public float DragStartY { get { return _dragStartY; } }
@@ -66,42 +73,86 @@ namespace MinimalAF
 
         internal MouseInputManager() { }
 
-        private void OnWindowMouseWheel(OpenTK.Windowing.Common.MouseWheelEventArgs obj)
-        {
-            if (obj.OffsetY < 0)
-            {
-                _incomingWheelNotches -= 1;
-            }
-            else if (obj.OffsetY > 0)
-            {
-                _incomingWheelNotches += 1;
-            }
-        }
-
         public bool IsOver(Rect2D rect)
         {
             return Intersections.IsInsideRect(X, Y, rect);
         }
 
-        internal void Hook(OpenTKWindowWrapper window)
+        internal void Hook(OpenGLWindowWrapper window, IInputContext input)
         {
-            _window = window;
-            _window.MouseWheel += OnWindowMouseWheel;
+			_window = window;
+            _input = input;
+
+			for(int i = 0; i < _input.Mice.Count; i++)
+			{
+				var mouse = _input.Mice[i];
+				mouse.MouseUp += OnMouseUp;
+				mouse.MouseDown += OnMouseDown;
+				mouse.MouseMove += OnMouseMove;
+				mouse.Scroll += OnMouseScroll;
+			}
         }
 
-        internal void Unhook()
+		private void OnMouseScroll(IMouse arg1, ScrollWheel scrollWheel)
+		{
+			if (scrollWheel.Y < 0)
+			{
+				_incomingWheelNotches -= 1;
+			}
+			else if (scrollWheel.Y > 0)
+			{
+				_incomingWheelNotches += 1;
+			}
+		}
+
+		private void OnMouseMove(IMouse arg1, System.Numerics.Vector2 pos)
+		{
+			_x = pos.X;
+			_y = pos.Y;
+		}
+
+		private void OnMouseUp(IMouse arg1, Silk.NET.Input.MouseButton arg2)
+		{
+			_mouseButtonStates[(int)arg2] = false;
+		}
+
+		private void OnMouseDown(IMouse arg1, Silk.NET.Input.MouseButton arg2)
+		{
+			_mouseButtonStates[(int)arg2] = true;
+		}
+
+		internal void Unhook()
         {
-            if (_window != null)
-                _window.MouseWheel -= OnWindowMouseWheel;
+            if (_input != null)
+			{
+				for (int i = 0; i < _input.Mice.Count; i++)
+				{
+					var mouse = _input.Mice[i];
+					mouse.MouseUp -= OnMouseUp;
+					mouse.MouseDown -= OnMouseDown;
+					mouse.MouseMove -= OnMouseMove;
+					mouse.Scroll -= OnMouseScroll;
+				}
+			}
         }
 
 
-        private void SwapInputBuffers()
+        private void MoveCurrentStateToPreviousState()
         {
-            bool[] temp = _prevMouseButtonStates;
-            _prevMouseButtonStates = _mouseButtonStates;
-            _mouseButtonStates = temp;
-        }
+			for(int i = 0; i < _prevMouseButtonStates.Length; i++)
+			{
+				_prevMouseButtonStates[i] = _mouseButtonStates[i];
+			}
+
+			_wasDragging = IsDragging;
+			_wasAnyHeld = _isAnyHeld;
+			_wasAnyDown = _anyDown;
+
+			_anyDown = false;
+			_startedDragging = false;
+			_anyClicked = false;
+			_anyReleased = false;
+		}
 
         public bool IsPressed(MouseButton b)
         {
@@ -164,18 +215,24 @@ namespace MinimalAF
 
         public void Update()
         {
-            SwapInputBuffers();
+            MoveCurrentStateToPreviousState();
 
             UpdateMousewheelNotches();
 
             UpdatePressedStates();
 
-            UpdateDragDeltas();
+            UpdateDeltas();
         }
 
-        private void UpdateDragDeltas()
+        private void UpdateDeltas()
         {
-            if (!_isAnyHeld)
+			_deltaX = _x - _Px;
+			_deltaY = _y - _Py;
+
+			_Px = _x;
+			_Py = _y;
+
+			if (!_isAnyHeld)
             {
                 _dragCancelled = false;
             }
@@ -192,23 +249,9 @@ namespace MinimalAF
 
         private void UpdatePressedStates()
         {
-            _wasDragging = IsDragging;
-            _wasAnyHeld = _isAnyHeld;
-            _wasAnyDown = _anyDown;
-
-            _anyDown = false;
-            _startedDragging = false;
-            _anyClicked = false;
-            _anyReleased = false;
-
             for (int i = 0; i < _mouseButtonStates.Length; i++)
             {
-                _mouseButtonStates[i] = _window.MouseState.IsButtonDown(
-                        (OpenTK.Windowing.GraphicsLibraryFramework.MouseButton)i
-                    );
-
                 _anyDown = _anyDown || _mouseButtonStates[i];
-
                 _anyClicked = _anyClicked || (!_prevMouseButtonStates[i] && _mouseButtonStates[i]);
                 _anyReleased = _anyReleased || (_prevMouseButtonStates[i] && !_mouseButtonStates[i]);
             }

@@ -108,7 +108,19 @@ namespace MinimalAF
             }
         }
 
-        public void OffsetsX(float left, float right)
+		public float AbsCenterX {
+			get {
+				return Rect.X0 + NormalizedCenter.X * Rect.Width;
+			}
+		}
+
+		public float AbsCenterY {
+			get {
+				return Rect.Y0 + NormalizedCenter.Y * Rect.Height;
+			}
+		}
+
+		public void OffsetsX(float left, float right)
         {
             _absoluteOffset.X0 = left;
             _absoluteOffset.X1 = right;

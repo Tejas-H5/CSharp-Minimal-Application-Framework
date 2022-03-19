@@ -18,8 +18,8 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Rendering Engine Line benchmark";
 
-            ClearColor = Color4.RGBA(1, 1, 1, 1);
-            CTX.Text.SetFont("Consolas", 24);
+           SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetFont("Consolas", 24);
         }
 
         Random rand = new Random(1);
@@ -36,7 +36,7 @@ namespace MinimalAF.VisualTests.Rendering
 
         public override void OnRender()
         {
-            CTX.SetDrawColor(1, 0, 0, 0.1f);
+            SetDrawColor(1, 0, 0, 0.1f);
 
             for (int i = 0; i < amount; i++)
             {
@@ -46,13 +46,13 @@ namespace MinimalAF.VisualTests.Rendering
                 float x2 = Left + (float)rand.NextDouble() * Width;
                 float y2 = Bottom + (float)rand.NextDouble() * Height;
 
-                CTX.Line.Draw(x1, y1, x2, y2, _lineThiccness, CapType.Circle);
+                Line(x1, y1, x2, y2, _lineThiccness, CapType.Circle);
             }
 
             double FPS = frames / time;
-            CTX.SetDrawColor(0, 0, 0, 1f);
-            CTX.Text.Draw($"FPS: {FPS.ToString("0.000")}", Left + 10, Bottom + Height - 50);
-            CTX.Text.Draw($"Lines drawn: {amount}", Left + 10, Bottom + Height - 100);
+            SetDrawColor(0, 0, 0, 1f);
+            Text($"FPS: {FPS.ToString("0.000")}", Left + 10, Bottom + Height - 50);
+            Text($"Lines drawn: {amount}", Left + 10, Bottom + Height - 100);
 
             time += Time.DeltaTime;
             frames++;

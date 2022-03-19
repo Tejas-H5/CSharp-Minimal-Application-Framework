@@ -11,22 +11,24 @@ namespace MinimalAF.VisualTests.Rendering
         Texture _tex;
 		TextTest _textTest;
 
-        public override void OnStart()
-        {
-            Window w = GetAncestor<Window>();
-            w.Size(800, 600);
-            w.Title("Text and geometry test");
-            w.ClearColor(Color4.RGBA(0, 0, 0, 0));
+		public override void OnStart()
+		{
+			Window w = GetAncestor<Window>();
+			w.Size = (800, 600);
+			w.Title = "Text and geometry test"; 
 
-            Font("Consolas", 24);
+		    SetClearColor(Color4.RGBA(0, 0, 0, 0));
 
+            SetFont("Consolas", 24);
 			_textTest = new TextTest();
-
 			Init();
 
-			this.Children(_textTest);
-
+			this.SetChildren(_textTest);
 			base.OnStart();
+
+
+            // remove when we start using OnMount
+			w.Title = "Text and geometry test"; 
 		}
 
         public void Init()
@@ -52,10 +54,10 @@ namespace MinimalAF.VisualTests.Rendering
         {
 			base.OnRender();
 
-            Texture(null);
+            SetTexture(null);
             Arc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f), a, MathF.PI * 2 + a, 6);
 
-            Texture(_tex);
+			SetTexture(_tex);
             //RenderingContext.DrawFilledArc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f)/2f, a/2f, MathF.PI * 2 + a/2f, 6);
 
             Rect(VW(0.5f) - 50, VH(0.5f) - 50, VW(0.5f) + 50, VH(0.5f) + 50);

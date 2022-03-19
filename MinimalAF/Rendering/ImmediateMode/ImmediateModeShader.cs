@@ -40,7 +40,6 @@ namespace MinimalAF.Rendering.ImmediateMode
 		public ImmediateModeShader()
 			: base(vertSource, fragSource)
         {
-            UpdateTransformUniforms();
         }
 
 		public Color4 Color { get => _color; set {

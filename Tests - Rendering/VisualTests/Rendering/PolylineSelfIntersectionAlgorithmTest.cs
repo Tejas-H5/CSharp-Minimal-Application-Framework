@@ -13,23 +13,23 @@ namespace MinimalAF.VisualTests.Rendering
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "PolylineSelfIntersectionAlgorithmTest";
-            ClearColor = Color4.RGBA(1, 1, 1, 1);
-            CTX.Text.SetFont("Segoe UI", 24);
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetFont("Segoe UI", 24);
         }
 
         public override void OnRender()
         {
-            CTX.SetDrawColor(0, 0, 0, 1f);
+            SetDrawColor(0, 0, 0, 1f);
             for (int i = 0; i < _points.Length; i++)
             {
-                CTX.Circle.Draw(_points[i].X, _points[i].Y, 10);
-                CTX.Text.Draw(i.ToString(), _points[i].X + 20, _points[i].Y + 20);
+                Circle(_points[i].X, _points[i].Y, 10);
+                Text(i.ToString(), _points[i].X + 20, _points[i].Y + 20);
             }
 
 			int fbbinding = GL.GetInteger(GetPName.DrawFramebufferBinding);
 			int readfbbinding = GL.GetInteger(GetPName.ReadFramebufferBinding);
 
-			CTX.SetDrawColor(0, 0, 1, 0.5f);
+			SetDrawColor(0, 0, 1, 0.5f);
 
             PointF p1 = _points[0];
             PointF p2 = _points[1];
@@ -38,10 +38,10 @@ namespace MinimalAF.VisualTests.Rendering
 
             float thickness = 200;
 
-            CTX.NLine.Begin(p1.X, p1.Y, thickness, CapType.None);
-            CTX.NLine.Continue(p2.X, p2.Y);
-            CTX.NLine.Continue(p3.X, p3.Y);
-            CTX.NLine.End(p4.X, p4.Y);
+            StartPolyLine(p1.X, p1.Y, thickness, CapType.None);
+            ContinuePolyLine(p2.X, p2.Y);
+            ContinuePolyLine(p3.X, p3.Y);
+            EndPolyLine(p4.X, p4.Y);
 
 
             PointF lastPerp;
@@ -53,14 +53,14 @@ namespace MinimalAF.VisualTests.Rendering
             DrawAlgorithmDebug();
         }
 
-        private static PointF DrawFirstPerpendicular(PointF p1, PointF p2, float thickness)
+        private PointF DrawFirstPerpendicular(PointF p1, PointF p2, float thickness)
         {
             PointF perp = CalculatePerpVector(p1, p2, thickness);
 
-            CTX.SetDrawColor(0, 1, 0, 1);
+            SetDrawColor(0, 1, 0, 1);
 
-            CTX.Line.Draw(p1.X, p1.Y, p1.X + perp.X, p1.Y + perp.Y, 2, CapType.None);
-            CTX.Line.Draw(p1.X, p1.Y, p1.X - perp.X, p1.Y - perp.Y, 2, CapType.None);
+            Line(p1.X, p1.Y, p1.X + perp.X, p1.Y + perp.Y, 2, CapType.None);
+            Line(p1.X, p1.Y, p1.X - perp.X, p1.Y - perp.Y, 2, CapType.None);
 
             return perp;
         }
@@ -75,7 +75,7 @@ namespace MinimalAF.VisualTests.Rendering
             return perp;
         }
 
-        private static PointF DrawAndDebugPerpendicular(PointF p1, PointF p2, PointF p3, PointF lastPerp, float thickness)
+        private PointF DrawAndDebugPerpendicular(PointF p1, PointF p2, PointF p3, PointF lastPerp, float thickness)
         {
             PointF perp1 = CalculatePerpVector(p1, p2, thickness);
             PointF perp2 = CalculatePerpVector(p2, p3, thickness);
@@ -95,16 +95,16 @@ namespace MinimalAF.VisualTests.Rendering
             bool isSelfIntersecting = (dotp1 < 0 || dotp2 < 0);
 
             if (!isSelfIntersecting)
-                CTX.SetDrawColor(0, 1, 0, 1);
+                SetDrawColor(0, 1, 0, 1);
             else
-                CTX.SetDrawColor(1, 0, 0, 1);
+                SetDrawColor(1, 0, 0, 1);
 
-            CTX.Line.Draw(p2.X, p2.Y, p2.X + perp.X, p2.Y + perp.Y, 2, CapType.None);
-            CTX.Line.Draw(p2.X, p2.Y, p2.X - perp.X, p2.Y - perp.Y, 2, CapType.None);
+            Line(p2.X, p2.Y, p2.X + perp.X, p2.Y + perp.Y, 2, CapType.None);
+            Line(p2.X, p2.Y, p2.X - perp.X, p2.Y - perp.Y, 2, CapType.None);
 
-            CTX.SetDrawColor(Color4.VA(0, 0.5f));
-            CTX.Line.Draw(p1.X, p1.Y, p1.X + vec1.X, p1.Y + vec1.Y, 2, CapType.None);
-            CTX.Line.Draw(p1.X, p1.Y, p1.X + vec2.X, p1.Y + vec2.Y, 2, CapType.None);
+            SetDrawColor(Color4.VA(0, 0.5f));
+            Line(p1.X, p1.Y, p1.X + vec1.X, p1.Y + vec1.Y, 2, CapType.None);
+            Line(p1.X, p1.Y, p1.X + vec2.X, p1.Y + vec2.Y, 2, CapType.None);
 
             return perp;
         }

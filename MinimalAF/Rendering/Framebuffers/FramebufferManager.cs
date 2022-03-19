@@ -70,7 +70,7 @@ namespace MinimalAF.Rendering
 			return _framebufferList[framebufferIndex].Texture;
 		}
 
-		public void SetTexture(int framebufferIndex)
+		public void UseTexture(int framebufferIndex)
 		{
 			Texture t = GetTexture(framebufferIndex);
 			if (t == null)

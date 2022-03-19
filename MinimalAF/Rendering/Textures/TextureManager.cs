@@ -43,14 +43,9 @@ namespace MinimalAF.Rendering
             Set(null);
         }
 
-        public bool IsCurrentTexture(Texture texture)
-        {
-            return (_currentTexture == texture);
-        }
-
         public void Set(Texture texture)
         {
-			if (IsSameTexture(texture))
+			if (!TextureHasChanged(texture))
 				return;
 
 			CTX.Flush();
@@ -60,9 +55,9 @@ namespace MinimalAF.Rendering
 			UseCurrentTexture();
         }
 
-		public bool IsSameTexture(Texture texture)
+		public bool TextureHasChanged(Texture texture)
 		{
-			return _currentTexture == texture && (!GlobalTextureHasChanged());
+			return _currentTexture != texture || GlobalTextureHasChanged();
 		}
 
         private void UseCurrentTexture()

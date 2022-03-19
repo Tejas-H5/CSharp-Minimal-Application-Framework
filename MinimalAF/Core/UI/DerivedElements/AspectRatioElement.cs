@@ -11,7 +11,7 @@
 
         public override void OnResize()
         {
-            Rect2D parentRect = _parent.Rect;
+            Rect2D parentRect = _parent.RectTransform.Rect;
 
             float wantedWidth = parentRect.Height * _widthToHeight;
             bool shouldDriveHeight = wantedWidth > parentRect.Width;

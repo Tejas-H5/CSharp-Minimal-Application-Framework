@@ -17,8 +17,12 @@ namespace MinimalAF
 		protected bool _isVisible = true;
 
 		protected Element[] _children;
+		private Color4 _clearColor;
 
-		protected Color4 ClearColor;
+		protected void SetClearColor(Color4 value)
+		{
+			_clearColor = value;
+		}
 
 		public Element[] Children {
 			get {
@@ -129,8 +133,9 @@ namespace MinimalAF
 				return;
 			}
 
-			CTX.SetRect(Rect);
-
+			CTX.SetRect(RectTransform.Rect);
+			CTX.SetClearColor(_clearColor.R, _clearColor.G, _clearColor.B, _clearColor.A);
+			CTX.Texture.Set(null);
 			OnRender();
 		}
 
@@ -215,6 +220,8 @@ namespace MinimalAF
 				_children[i].Resize();
 			}
 		}
+
+		
 		public virtual void OnCleanup()
 		{
 			for (int i = 0; i < _children.Length; i++)

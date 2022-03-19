@@ -31,7 +31,7 @@
 			if (HoverHandled)
 				return false;
 
-			if (Input.Mouse.IsOver(element.Rect))
+			if (Input.Mouse.IsOver(element.RectTransform.Rect))
 			{
 				HoverHandled = true;
 				return true;

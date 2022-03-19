@@ -51,13 +51,13 @@ namespace MinimalAF
             switch (VerticalAlignment)
             {
                 case VerticalAlignment.Bottom:
-                    startY = Rect.Bottom;
+                    startY = RectTransform.Rect.Bottom;
                     break;
                 case VerticalAlignment.Center:
-                    startY = Rect.CenterY;
+                    startY = RectTransform.Rect.CenterY;
                     break;
                 case VerticalAlignment.Top:
-                    startY = Rect.Top;
+                    startY = RectTransform.Rect.Top;
                     break;
                 default:
                     break;
@@ -66,13 +66,13 @@ namespace MinimalAF
             switch (HorizontalAlignment)
             {
                 case HorizontalAlignment.Left:
-                    startX = Rect.Left;
+                    startX = RectTransform.Rect.Left;
                     break;
                 case HorizontalAlignment.Center:
-                    startX = Rect.CenterX;
+                    startX = RectTransform.Rect.CenterX;
                     break;
                 case HorizontalAlignment.Right:
-                    startX = Rect.Right;
+                    startX = RectTransform.Rect.Right;
                     break;
                 default:
                     break;
@@ -85,7 +85,7 @@ namespace MinimalAF
         {
             //TODO: set the current font
 
-            return CTX.Text.GetWidth(Text);
+            return GetStringWidth(Text);
         }
 
         public PointF GetCaratPos()

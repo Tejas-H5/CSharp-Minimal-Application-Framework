@@ -25,36 +25,17 @@ namespace MinimalAF.Rendering
 		public readonly int Handle;
 
 		private readonly Dictionary<string, int> _uniformLocations;
-		private static Matrix4 _viewMatrix = Matrix4.Identity;
-		private static Matrix4 _projectionMatrix = Matrix4.Identity;
-		private static Matrix4 _modelMatrix = Matrix4.Identity;
 
-		int _projectionUniformLocation;
-		int _viewUniformLocation;
-		int _modelUniformLocation;
+		private static Matrix4[] _matrices = new Matrix4[CTX.NUM_MATRICES];
+		private static int[] _matrixUniforms = new int[CTX.NUM_MATRICES];
 
-
-		public Matrix4 ProjectionMatrix {
-			get => _projectionMatrix;
-			set {
-				_projectionMatrix = value;
-				SetMatrix4(_projectionUniformLocation, _projectionMatrix);
-			}
-		}
-		public Matrix4 ViewMatrix {
-			get => _viewMatrix;
-			set {
-				_viewMatrix = value;
-				SetMatrix4(_viewUniformLocation, _viewMatrix);
-			}
+		public Matrix4 GetMatrix(int matrix) {
+			return _matrices[matrix];
 		}
 
-		public Matrix4 ModelMatrix {
-			get => _modelMatrix; 
-			set {
-				_modelMatrix = value;
-				SetMatrix4(_modelUniformLocation, _modelMatrix);
-			}
+		public void SetMatrix(int matrix, Matrix4 value) {
+			_matrices[matrix] = value;
+			SetMatrix4(_matrixUniforms[matrix], value);
 		}
 
 		public Shader(ShaderFiles files)
@@ -97,15 +78,19 @@ namespace MinimalAF.Rendering
 			for (var i = 0; i < numberOfUniforms; i++)
 			{
 				var key = GL.GetActiveUniform(Handle, i, out _, out _);
-
 				var location = GL.GetUniformLocation(Handle, key);
-
 				_uniformLocations.Add(key, location);
 			}
 
-			_modelUniformLocation = Loc("model");
-			_projectionUniformLocation = Loc("projection");
-			_viewUniformLocation = Loc("view");
+			_matrixUniforms[CTX.MODEL_MATRIX] = Loc("model");
+			_matrixUniforms[CTX.PROJECTION_MATRIX] = Loc("projection");
+			_matrixUniforms[CTX.VIEW_MATRIX] = Loc("view");
+
+			for(int i = 0; i < _matrices.Length; i++) {
+				_matrices[i] = Matrix4.Identity;
+			}
+
+            UpdateTransformUniforms();
 
 			InitShader();
 		}
@@ -114,14 +99,14 @@ namespace MinimalAF.Rendering
 
 		public void UpdateTransformUniforms()
 		{
-			SetMatrix4(_projectionUniformLocation, _projectionMatrix);
-			SetMatrix4(_viewUniformLocation, _viewMatrix);
-			SetMatrix4(_modelUniformLocation, _modelMatrix);
+			SetMatrix4(_matrixUniforms[CTX.PROJECTION_MATRIX], _matrices[CTX.PROJECTION_MATRIX]);
+			SetMatrix4(_matrixUniforms[CTX.VIEW_MATRIX], _matrices[CTX.VIEW_MATRIX]);
+			SetMatrix4(_matrixUniforms[CTX.MODEL_MATRIX], _matrices[CTX.MODEL_MATRIX]);
 		}
 
 		public void UpdateModel()
 		{
-			SetMatrix4(_modelUniformLocation, _modelMatrix);
+			SetMatrix4(_matrixUniforms[CTX.MODEL_MATRIX], _matrices[CTX.MODEL_MATRIX]);
 		}
 
 		private static void CompileShader(int shader)

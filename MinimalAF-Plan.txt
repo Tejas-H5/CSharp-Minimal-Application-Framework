@@ -11,13 +11,23 @@ TODO:
 					- make all drawing classes internal static
 						- remove references to them in ctx
 							- Don't do this. We made those classes, so that we can reuse them in a procedural mesh generation context.
-					-* copy-paste all the calls into a seperate element partial class. it is mainly for syntactic sugar.
-					-* change all getters and setters to be like Jquery where its like method() is a getter and method(value) is a setter
+					- copy-paste all the calls into a seperate element partial class. it is mainly for syntactic sugar.
+						- view, model, projection matriceis need to be put into an array so that the PushMatrix code can be cleaned up
+					- fix tests
+					- change all getters and setters to be like Jquery where its like method() is a getter and method(value) is a setter
+						- terrible idea. Only do this for methods that invoke drawing related sideeffects or set things elsewhere rather than just raw getters and setters, we should still use Get and Set for state retrieval
+					
 			-* input needs to be relative to a rect, and should be invokeable in the same way as those other things
 			-* clipping needs to be toggleable
 				-* remove setRect
 			
-		
+			
+			-* switch brackets back to method() {
+			
+			-* remove OnStart, replace it with OnMount, OnDismount like REACT, also makes more sense logically speaking
+			
+			-* Allow elements to define their internal unit width and height with
+				SetWidthUnits and SetHeightUnits (100 by default). then we can use VW and VH to get some percentage of that distance. then if my code is drawing osu coordinates, I can do SetHeightunits(600) and then do all my calls normally. 
 
 	-* fix UI API to be able to recalculate itself based on size and not at initialization, so we can do different layouts based on different sizes/aspect ratios etc
 

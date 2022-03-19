@@ -13,8 +13,8 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Keyboard test";
 
-            ClearColor = Color4.RGBA(0, 0, 0, 0);
-            CTX.Text.SetFont("Consolas", 36);
+           SetClearColor(Color4.RGBA(0, 0, 0, 0));
+            SetFont("Consolas", 36);
         }
 
         string KeysToString(string s)
@@ -35,11 +35,11 @@ namespace MinimalAF.VisualTests.Rendering
 
         public override void OnRender()
         {
-            CTX.SetDrawColor(1, 1, 1, 1);
+            SetDrawColor(1, 1, 1, 1);
 
-            CTX.Text.Draw("Press some keys:", Width / 2, Height / 2 + 200);
+            Text("Press some keys:", Width / 2, Height / 2 + 200);
 
-            CTX.Text.Draw(KeysToString(Input.Keyboard.CharactersDown), Width / 2, Height / 2);
+            Text(KeysToString(Input.Keyboard.CharactersDown), Width / 2, Height / 2);
         }
 
         public override void OnUpdate()

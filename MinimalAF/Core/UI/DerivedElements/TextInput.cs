@@ -68,7 +68,7 @@ namespace MinimalAF
             {
                 if (Input.Mouse.IsPressed(MouseButton.Left))
                 {
-                    if (!Input.Mouse.IsOver(Rect))
+                    if (!Input.Mouse.IsOver(RectTransform.Rect))
                     {
                         EndTyping();
                     }
@@ -91,7 +91,7 @@ namespace MinimalAF
 
         private void CheckForMouseClick()
         {
-            if (Input.Mouse.IsPressed(MouseButton.Left) && Input.Mouse.IsOver(Rect))
+            if (Input.Mouse.IsPressed(MouseButton.Left) && Input.Mouse.IsOver(RectTransform.Rect))
             {
                 _keyboardInput.FocusElement(this);
 

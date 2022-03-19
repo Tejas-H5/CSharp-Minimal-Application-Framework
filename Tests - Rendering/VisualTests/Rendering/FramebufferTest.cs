@@ -13,7 +13,7 @@ namespace MinimalAF.VisualTests.Rendering
             //w.RenderFrequency = 120;
             //w.UpdateFrequency = 120; 20;
 
-            ClearColor = Color4.RGBA(1, 1, 1, 1);
+           SetClearColor(Color4.RGBA(1, 1, 1, 1));
         }
 
 
@@ -26,49 +26,49 @@ namespace MinimalAF.VisualTests.Rendering
 
         public override void OnRender()
         {
-            CTX.Framebuffer.UseTransparent(0);
+            UseTransparentFramebuffer(0);
 
-            CTX.SetDrawColor(0, 0, 1, 1);
+            SetDrawColor(0, 0, 1, 1);
 
-            float wCX = Rect.CenterX;
-            float wCY = Rect.CenterY;
+            float wCX = VW(0.5f);
+            float wCY = VH(0.5f);
             DrawDualCirclesCenter(wCX, wCY);
-            CTX.SetDrawColor(1, 1, 0, 1);
-            CTX.Rect.Draw(wCX, wCY, wCX + 50, wCY + 25);
+            SetDrawColor(1, 1, 0, 1);
+            Rect(wCX, wCY, wCX + 50, wCY + 25);
 
-            CTX.Framebuffer.StopUsing();
+            StopUsingFramebuffer();
 
-            CTX.SetDrawColor(Color4.RGBA(0, 0, 0, 1));
-            CTX.Text.SetFont("Consolas", 12);
-            CTX.Text.Draw("The red square must be fully visible under the circles.\n" +
+            SetDrawColor(Color4.RGBA(0, 0, 0, 1));
+            SetFont("Consolas", 12);
+            Text("The red square must be fully visible under the circles.\n" +
                 "The part where the circles overlap must not be visible.\n" +
                 "There must be a small orange rectangle in the middle\n" +
 				"It must all be inside the green square\n" +
 				"This text must be 0,0,0 black \n",
                 0, Height - 20);
 
-            CTX.SetDrawColor(1, 0, 0, 1);
+            SetDrawColor(1, 0, 0, 1);
 
             float rectSize = 200;
 
 
-            CTX.Rect.Draw(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
-            CTX.SetDrawColor(1, 1, 1, 0.5f);
-            CTX.Texture.Set(CTX.Framebuffer.GetTexture(0));
+            Rect(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
+            SetDrawColor(1, 1, 1, 0.5f);
+            SetTexture(GetFramebufferTexture(0));
             
-            CTX.Rect.Draw(Left, Bottom, Width,Height);
+            Rect(Left, Bottom, Width,Height);
 
-            CTX.Texture.Set(null);
+            SetTexture(null);
 
-            CTX.SetDrawColor(0, 1, 0, 0.5f);
-            CTX.Rect.DrawOutline(10, wCX - 300, wCY - 300, wCX + 300, wCY + 300);
+            SetDrawColor(0, 1, 0, 0.5f);
+            RectOutline(10, wCX - 300, wCY - 300, wCX + 300, wCY + 300);
         }
 
 
-        private static void DrawDualCirclesCenter(float x, float y)
+        private void DrawDualCirclesCenter(float x, float y)
         {
-            CTX.Circle.Draw(x - 100, y - 100, 200);
-            CTX.Circle.Draw(x + 100, y + 100, 200);
+            Circle(x - 100, y - 100, 200);
+            Circle(x + 100, y + 100, 200);
         }
     }
 }

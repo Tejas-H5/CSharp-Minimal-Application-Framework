@@ -8,131 +8,92 @@ using System.Collections.Generic;
 namespace MinimalAF.Rendering
 {
 	/// <summary>
-	/// CTX is short for RenderContext. Because this will be typed a LOT, I have opted for
-	/// a shorter name even though a static class like this is contrary to principles of 'clean code'
+	/// CTX is short for RenderContext.
+	/// It no longer needs to be short, we can rename to RenderContext later, or even turn this into an object and then a 
+	/// singleton
 	/// </summary>
-	public static class CTX
+	internal static class CTX
 	{
+		public const int MODEL_MATRIX = 0;
+		public const int VIEW_MATRIX = 1;
+		public const int PROJECTION_MATRIX = 2;
+		public const int NUM_MATRICES = 3;
+
 		//Here solely for the SwapBuffers function
 		private static IGLFWGraphicsContext _glContext;
 
 		private static int _contextWidth, _contextHeight;
 		private static Rect2D _currentScreenRect;
 
-		public static Rect2D CurrentScreenRect {
+		internal static Rect2D CurrentScreenRect {
 			get => _currentScreenRect;
 		}
 
-		public static int ContextWidth {
+		internal static int ContextWidth {
 			get => _contextWidth;
 			set => _contextWidth = value;
 		}
 
-		public static int ContextHeight {
+		internal static int ContextHeight {
 			get => _contextHeight;
-			internal set => _contextHeight = value;
+			set => _contextHeight = value;
 		}
 
 		private static bool _disposed; // To detect redundant calls to Dispose()
-		public static Color4 ClearColor;
-
+		internal static Color4 ClearColor;
 
 		//Composition
-		public static TriangleDrawer Triangle => _triangle;
-		public static QuadDrawer Quad => _quad;
-		public static RectangleDrawer Rect => _rect;
-		public static NGonDrawer NGon => _nGon;
-		public static PolyLineDrawer NLine => _nLine;
-		public static ArcDrawer Arc => _arc;
-		public static CircleDrawer Circle => _circle;
-		public static LineDrawer Line => _line;
-		public static TextDrawer Text => _textDrawer;
-		public static TextureManager Texture => _textureManager;
-		public static FramebufferManager Framebuffer => _framebufferManager;
+		internal static TriangleDrawer Triangle => _triangle;
+		internal static QuadDrawer Quad => _quad;
+		internal static RectangleDrawer Rect => _rect;
+		internal static NGonDrawer NGon => _nGon;
+		internal static PolyLineDrawer NLine => _nLine;
+		internal static ArcDrawer Arc => _arc;
+		internal static CircleDrawer Circle => _circle;
+		internal static LineDrawer Line => _line;
+		internal static TextDrawer Text => _textDrawer;
+		internal static TextureManager Texture => _textureManager;
+		internal static FramebufferManager Framebuffer => _framebufferManager;
 
-		public static TriangleDrawer _triangle;
-		public static QuadDrawer _quad;
-		public static RectangleDrawer _rect;
-		public static NGonDrawer _nGon;
-		public static PolyLineDrawer _nLine;
-		public static ArcDrawer _arc;
-		public static CircleDrawer _circle;
-		public static LineDrawer _line;
+		internal static TriangleDrawer _triangle;
+		internal static QuadDrawer _quad;
+		internal static RectangleDrawer _rect;
+		internal static NGonDrawer _nGon;
+		internal static PolyLineDrawer _nLine;
+		internal static ArcDrawer _arc;
+		internal static CircleDrawer _circle;
+		internal static LineDrawer _line;
 		private static TextDrawer _textDrawer;
 		private static MeshOutputStream _meshOutputStream;
 		private static ImmediateModeShader _solidShader;
 		private static TextureManager _textureManager;
 		private static FramebufferManager _framebufferManager;
 
-		public static Matrix4 ViewMatrix {
-			get => _solidShader.ViewMatrix;
-			set {
-				Flush();
-				_solidShader.ViewMatrix = value;
-			}
+		internal static Matrix4 GetMatrix(int matrix) {
+			return _solidShader.GetMatrix(matrix);
 		}
 
-		public static Matrix4 ModelMatrix {
-			get => _solidShader.ModelMatrix;
-			set {
-				Flush();
-				_solidShader.ModelMatrix = value;
-			}
+		internal static void SetMatrix(int matrix, Matrix4 value) {
+			Flush();
+			_solidShader.SetMatrix(matrix, value);
 		}
 
-		public static Matrix4 ProjectionMatrix {
-			get => _solidShader.ProjectionMatrix;
-			set {
-				Flush();
-				_solidShader.ProjectionMatrix = value;
-			}
-		}
-
-		public struct ViewMatrixPush : IDisposable
+		internal struct MatrixPush : IDisposable
 		{
-			Matrix4 oldMatrix;
+			Matrix4 oldValue;
+			int matrix;
 
-			public ViewMatrixPush(Matrix4 matrix)
+			internal MatrixPush(int matrix, Matrix4 value)
 			{
-				this.oldMatrix = ModelMatrix;
-				ViewMatrix = matrix;
+				this.oldValue = GetMatrix(matrix);
+				this.matrix = matrix;
+
+				SetMatrix(matrix, value);
 			}
 
 			public void Dispose()
 			{
-				ViewMatrix = oldMatrix;
-			}
-		}
-
-		private struct ModelMatrixPush : IDisposable
-		{
-			Matrix4 oldMatrix;
-
-			public ModelMatrixPush(Matrix4 matrix)
-			{
-				this.oldMatrix = ModelMatrix;
-				ModelMatrix = matrix;
-			}
-
-			public void Dispose()
-			{
-				ModelMatrix = oldMatrix;
-			}
-		}
-
-		private struct ProjectionMatrixPush : IDisposable
-		{
-			Matrix4 oldMatrix;
-
-			public ProjectionMatrixPush(Matrix4 matrix)
-			{
-				this.oldMatrix = ModelMatrix;
-				ProjectionMatrix = matrix;
-			}
-
-			public void Dispose()
-			{
-				ProjectionMatrix = oldMatrix;
+				SetMatrix(matrix, oldValue);
 			}
 		}
 
@@ -140,13 +101,10 @@ namespace MinimalAF.Rendering
 		/// There is no corresponding PopMatrix method.
 		/// Instead, put this inside a using statement.
         ///
-        /// <para>
-        /// If you want to multiply the previous matrix, you will need to do that yourself.
-        /// </para>
 		/// </summary>
-		public static IDisposable PushMatrix(Matrix4 matrix)
+		internal static IDisposable PushMatrix(int matrix, Matrix4 value)
 		{
-			return new ModelMatrixPush(matrix);
+			return new MatrixPush(matrix, value);
 		}
 
 
@@ -180,7 +138,6 @@ namespace MinimalAF.Rendering
 
 		private static void InitDrawers()
 		{
-			// Order matters
 			_meshOutputStream = new MeshOutputStream(4096, 4 * 4096);
 
 			_triangle = new TriangleDrawer(_meshOutputStream);
@@ -195,18 +152,18 @@ namespace MinimalAF.Rendering
 			_textDrawer = new TextDrawer();
 		}
 
-		public static Color4 GetClearColor()
+		internal static Color4 GetClearColor()
 		{
 			return ClearColor;
 		}
 
-		public static void SetClearColor(float r, float g, float b, float a)
+		internal static void SetClearColor(float r, float g, float b, float a)
 		{
 			ClearColor = Color4.RGBA(r, g, b, a);
 		}
 
 
-		public static void Clear()
+		internal static void Clear()
 		{
 			GL.StencilMask(1);
 			GL.ClearColor(ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A);
@@ -214,7 +171,7 @@ namespace MinimalAF.Rendering
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
 		}
 
-		public static void Clear(Color4 col)
+		internal static void Clear(Color4 col)
 		{
 			ClearColor = col;
 			Clear();
@@ -230,7 +187,7 @@ namespace MinimalAF.Rendering
 		{
 			Flush();
 			_framebufferManager.StopUsing();
-			ModelMatrix = Matrix4.Identity;
+			SetMatrix(MODEL_MATRIX, Matrix4.Identity);
 			_glContext.SwapBuffers();
 		}
 
@@ -258,7 +215,7 @@ namespace MinimalAF.Rendering
 		///		void Perspective3D(Matrix4 cameraPosition, ...cameraSettings) {}
 		/// </code>
 		/// </summary>
-		public static void SetViewport(Rect2D screenRect)
+		internal static void SetViewport(Rect2D screenRect)
 		{
 			screenRect = screenRect.Rectify();
 
@@ -266,13 +223,13 @@ namespace MinimalAF.Rendering
 			SetScissor(screenRect);
 		}
 
-		public static void SetScissor(Rect2D screenRect)
+		internal static void SetScissor(Rect2D screenRect)
 		{
 			GL.Scissor((int)screenRect.X0, (int)screenRect.Y0, (int)screenRect.Width, (int)screenRect.Height);
 			GL.Enable(EnableCap.ScissorTest);
 		}
 
-		public static void SetRect(Rect2D screenRect)
+		internal static void SetRect(Rect2D screenRect)
 		{
 			Flush();
 			SetScissor(screenRect);
@@ -280,7 +237,7 @@ namespace MinimalAF.Rendering
 			_currentScreenRect = screenRect;
 		}
 
-		public static void Cartesian2D(float width, float height, float offsetX = 0, float offsetY = 0)
+		internal static void Cartesian2D(float width, float height, float offsetX = 0, float offsetY = 0)
 		{
 			Matrix4 projectionMatrix = Matrix4.Identity;
 
@@ -294,18 +251,18 @@ namespace MinimalAF.Rendering
 			viewMatrix *= scale;
 			viewMatrix *= translation;
 
-			ViewMatrix = viewMatrix;
-			ProjectionMatrix = projectionMatrix;
+			SetMatrix(VIEW_MATRIX, viewMatrix);
+			SetMatrix(PROJECTION_MATRIX, projectionMatrix);
 		}
 
 
-		public static void SetDrawColor(float r, float g, float b, float a)
+		internal static void SetDrawColor(float r, float g, float b, float a)
 		{
 			Color4 col = Color4.RGBA(r, g, b, a);
 			SetDrawColor(col);
 		}
 
-		public static void SetDrawColor(Color4 col)
+		internal static void SetDrawColor(Color4 col)
 		{
 			if (_solidShader.Color.Equals(col))
 				return;
@@ -321,7 +278,7 @@ namespace MinimalAF.Rendering
 		/// </summary>
 		/// <param name="inverseStencil">If this parameter is set to true, the buffer will be cleared to 1s and
 		/// we will be drawing 0s to the stencil buffer, and vice versa.</param>
-		public static void StartStencillingWhileDrawing(bool inverseStencil = false)
+		internal static void StartStencillingWhileDrawing(bool inverseStencil = false)
 		{
 			StartStencilling(true, inverseStencil);
 		}
@@ -331,7 +288,7 @@ namespace MinimalAF.Rendering
 		/// </summary>
 		/// <param name="inverseStencil">If this parameter is set to true, the buffer will be cleared to 1s and
 		/// we will be drawing 0s to the stencil buffer, and vice versa.</param>
-		public static void StartStencillingWithoutDrawing(bool inverseStencil = false)
+		internal static void StartStencillingWithoutDrawing(bool inverseStencil = false)
 		{
 			StartStencilling(false, inverseStencil);
 		}
@@ -376,7 +333,7 @@ namespace MinimalAF.Rendering
 		/// 
 		/// Pixels in the stencil buffer that were set to 1 will not be drawn to.
 		/// </summary>
-		public static void StartUsingStencil()
+		internal static void StartUsingStencil()
 		{
 			Flush();
 
@@ -385,7 +342,7 @@ namespace MinimalAF.Rendering
 			GL.StencilMask(0);
 		}
 
-		public static void LiftStencil()
+		internal static void LiftStencil()
 		{
 			Flush();
 
@@ -395,7 +352,7 @@ namespace MinimalAF.Rendering
 
 		#region IDisposable Support
 
-		internal static void Dispose(bool disposing)
+		public static void Dispose(bool disposing)
 		{
 			if (!_disposed)
 			{

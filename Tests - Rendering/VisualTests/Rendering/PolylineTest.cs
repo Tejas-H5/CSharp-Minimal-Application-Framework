@@ -15,7 +15,7 @@ namespace MinimalAF.VisualTests.Rendering
 			w.RenderFrequency = 120;
 			//w.UpdateFrequency = 120; 20;
 
-			ClearColor = Color4.RGBA(1, 1, 1, 1);
+		SetClearColor(Color4.RGBA(1, 1, 1, 1));
 		}
 
 		Queue<PointF> _points = new Queue<PointF>();
@@ -43,26 +43,26 @@ namespace MinimalAF.VisualTests.Rendering
 			if (_points.Count < 2)
 				return;
 
-			CTX.SetDrawColor(1,1,1,1);
-			CTX.Text.Draw("Polyline test", 0, Height, HorizontalAlignment.Left, VerticalAlignment.Top);
+			SetDrawColor(1,1,1,1);
+			Text("Polyline test", 0, Height, HorizontalAlignment.Left, VerticalAlignment.Top);
 
 
-			CTX.SetDrawColor(0, 0, 1, 0.5f);
+			SetDrawColor(0, 0, 1, 0.5f);
 
 			int i = 0;
 			foreach (PointF p in _points)
 			{
 				if (i == 0)
 				{
-					CTX.NLine.Begin(p.X, p.Y, 50, CapType.Circle);
+					StartPolyLine(p.X, p.Y, 50, CapType.Circle);
 				}
 				else if (i == _points.Count - 1)
 				{
-					CTX.NLine.End(p.X, p.Y);
+					EndPolyLine(p.X, p.Y);
 				}
 				else
 				{
-					CTX.NLine.Continue(p.X, p.Y);
+					ContinuePolyLine(p.X, p.Y);
 				}
 
 				i++;

@@ -47,7 +47,7 @@ namespace MinimalAF.Rendering.ImmediateMode
 
 		public float GetHeight()
 		{
-			return GetWidth('|');
+			return GetHeight('|');
 		}
 
 
@@ -89,8 +89,6 @@ namespace MinimalAF.Rendering.ImmediateMode
             }
         }
 
-
-
         private float CaratPosX(float lineWidth, HorizontalAlignment hAlign)
         {
             switch (hAlign)
@@ -113,7 +111,7 @@ namespace MinimalAF.Rendering.ImmediateMode
             if (text == null)
                 return caratPos;
 
-            float textHeight = scale * GetHeight(text);
+            float textHeight = scale * GetStringHeight(text);
             float charHeight = scale * GetHeight('|');
 
 
@@ -141,7 +139,7 @@ namespace MinimalAF.Rendering.ImmediateMode
                 else
                     lineEnd++;
 
-                float lineWidth = scale * GetWidth(text, lineStart, lineEnd);
+                float lineWidth = scale * GetStringWidth(text, lineStart, lineEnd);
 
                 caratPos.X = startX + CaratPosX(lineWidth, hAlign);
 
@@ -205,49 +203,25 @@ namespace MinimalAF.Rendering.ImmediateMode
             _fontManager.Dispose();
         }
 
-        public float GetHeight(string s)
+        public float GetStringHeight(string s)
         {
-            return GetHeight(s, 0, s.Length);
+            return GetStringHeight(s, 0, s.Length);
         }
 
-        public float GetHeight(string s, int start, int end)
+        public float GetStringHeight(string s, int start, int end)
         {
-            int numNewLines = 1;
-
-            for (int i = start; i < end; i++)
-            {
-                if (s[i] == '\n')
-                    numNewLines++;
-            }
-
-            return 2 + numNewLines * (GetHeight('|') + 2);
+            return _fontManager.GetStringHeight(s, start, end);
         }
 
 
-        public float GetWidth(string s)
+        public float GetStringWidth(string s)
         {
-            return GetWidth(s, 0, s.Length);
+            return GetStringWidth(s, 0, s.Length);
         }
 
-        public float GetWidth(string s, int start, int end)
+        public float GetStringWidth(string s, int start, int end)
         {
-            float maxWidth = 0;
-            float width = 0;
-
-            for (int i = start; i < end; i++)
-            {
-                if (s[i] == '\n')
-                {
-                    width = 0;
-                    continue;
-                }
-
-                width += GetWidth(s[i]);
-
-                maxWidth = MathF.Max(width, maxWidth);
-            }
-
-            return maxWidth;
+            return _fontManager.GetStringWidth(s, start, end);
         }
     }
 }

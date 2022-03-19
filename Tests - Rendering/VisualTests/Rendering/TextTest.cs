@@ -15,9 +15,9 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Matrix rain test";
 
-            ClearColor = Color4.RGBA(0, 0, 0, 0);
+           SetClearColor(Color4.RGBA(0, 0, 0, 0));
 
-            CTX.Text.SetFont("Consolas", 24);
+            SetFont("Consolas", 24);
 
             rain = new List<string>();
         }
@@ -39,11 +39,11 @@ namespace MinimalAF.VisualTests.Rendering
 
                 sb.Append(c);
 
-                totalLength += CTX.Text.GetWidth(c);
+                totalLength += GetCharWidth(c);
             }
 
             rain.Insert(0, sb.ToString());
-            if ((rain.Count - 2) * CTX.Text.GetHeight() > Height)
+            if ((rain.Count - 2) * GetCharHeight() > Height)
             {
                 rain.RemoveAt(rain.Count - 1);
             }
@@ -67,14 +67,14 @@ namespace MinimalAF.VisualTests.Rendering
         {
 
 
-            CTX.SetDrawColor(0, 1, 0, 0.8f);
+            SetDrawColor(0, 1, 0, 0.8f);
 
             for (int i = 0; i < rain.Count; i++)
             {
-                CTX.Text.Draw(rain[i], 0, Height - CTX.Text.GetHeight() * i);
+                Text(rain[i], 0, Height - GetCharHeight() * i);
             }
 
-            CTX.SetDrawColor(1, 0, 0, 1);
+            SetDrawColor(1, 0, 0, 1);
 
         }
     }

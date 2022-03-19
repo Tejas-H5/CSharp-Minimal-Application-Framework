@@ -28,7 +28,7 @@ namespace MinimalAF
 
         private void PushStencil()
         {
-            _state.PushRect(_parent.Rect);
+            _state.PushRect(_parent.RectTransform.Rect);
 
             StartInverseStencil(_state.PeekRect());
         }

@@ -10,7 +10,7 @@ namespace MinimalAF.VisualTests
             w.Size = (800, 600);
             w.Title = "Window title goes here";
 
-            ClearColor = Color4.RGBA(0, 0, 0, 0);
+			SetClearColor(Color4.RGBA(0, 0, 0, 0));
         }
 
         public override void OnRender()

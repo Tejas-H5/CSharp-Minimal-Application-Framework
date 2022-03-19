@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MinimalAF.ResourceManagement
-{
-	public static class ResourceMap<T>
-    {
+namespace MinimalAF.ResourceManagement {
+    public static class ResourceMap<T> {
         private static Dictionary<string, T> _resourceCache = new Dictionary<string, T>();
 
-        public static void LoadResource<TLoadSettings>(string name, string path, TLoadSettings loadSettings, Func<string, TLoadSettings, T> loadingFunction)
-        {
+        public static void LoadResource<TLoadSettings>(string name, string path, TLoadSettings loadSettings, Func<string, TLoadSettings, T> loadingFunction) {
             if (_resourceCache.ContainsKey(name))
                 return;
 
@@ -18,16 +15,14 @@ namespace MinimalAF.ResourceManagement
         }
 
         //TODO: return a pink texture or similar
-        public static T GetResource(string name)
-        {
+        public static T GetResource(string name) {
             if (!_resourceCache.ContainsKey(name))
                 return default;
 
             return _resourceCache[name];
         }
 
-        public static void UnloadResource(string name)
-        {
+        public static void UnloadResource(string name) {
             if (!_resourceCache.ContainsKey(name))
                 return;
 
@@ -35,22 +30,18 @@ namespace MinimalAF.ResourceManagement
             _resourceCache.Remove(name);
         }
 
-        public static void UnloadResources()
-        {
-            foreach (var item in _resourceCache)
-            {
+        public static void UnloadResources() {
+            foreach (var item in _resourceCache) {
                 UnloadResource(item.Value);
             }
 
             _resourceCache.Clear();
         }
 
-        private static void UnloadResource(T resource)
-        {
+        private static void UnloadResource(T resource) {
             IDisposable unmanagedResource = resource as IDisposable;
 
-            if (unmanagedResource != null)
-            {
+            if (unmanagedResource != null) {
                 unmanagedResource.Dispose();
             }
         }

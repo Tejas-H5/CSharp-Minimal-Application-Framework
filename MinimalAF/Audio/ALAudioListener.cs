@@ -1,9 +1,7 @@
 ﻿using OpenTK.Audio.OpenAL;
 
-namespace MinimalAF.Audio
-{
-	internal static class ALAudioListener
-    {
+namespace MinimalAF.Audio {
+    internal static class ALAudioListener {
         private static AudioListener _currentSelectedListener;
         public static AudioListener CurrentSelectedInstance {
             get {
@@ -14,25 +12,21 @@ namespace MinimalAF.Audio
             }
         }
 
-        public static void Update()
-        {
+        public static void Update() {
             SendCurrentListenerDataToOpenAL();
         }
 
-        public static void Cleanup()
-        {
+        public static void Cleanup() {
             CurrentSelectedInstance = null;
         }
 
 
-        public static void SetCurrentListener(AudioListener instance)
-        {
+        public static void SetCurrentListener(AudioListener instance) {
             _currentSelectedListener = instance;
             SendCurrentListenerDataToOpenAL();
         }
 
-        private static void SendCurrentListenerDataToOpenAL()
-        {
+        private static void SendCurrentListenerDataToOpenAL() {
             if (_currentSelectedListener == null)
                 return;
 

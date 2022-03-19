@@ -1,29 +1,22 @@
-﻿namespace MinimalAF
-{
-	public class AspectRatioElement : Element
-    {
+﻿namespace MinimalAF {
+    public class AspectRatioElement : Element {
         float _widthToHeight;
 
-        public AspectRatioElement(float widthToHeight)
-        {
+        public AspectRatioElement(float widthToHeight) {
             _widthToHeight = widthToHeight;
         }
 
-        public override void OnResize()
-        {
+        public override void OnResize() {
             Rect2D parentRect = _parent.RectTransform.Rect;
 
             float wantedWidth = parentRect.Height * _widthToHeight;
             bool shouldDriveHeight = wantedWidth > parentRect.Width;
 
-            if (shouldDriveHeight)
-            {
+            if (shouldDriveHeight) {
                 float wantedHeight = parentRect.Width * (1.0f / _widthToHeight);
 
                 RectTransform.SetHeight(wantedHeight);
-            }
-            else
-            {
+            } else {
                 RectTransform.SetWidth(wantedWidth);
             }
         }

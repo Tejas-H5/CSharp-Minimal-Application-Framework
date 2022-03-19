@@ -2,25 +2,23 @@
 using System;
 using System.Drawing;
 
-namespace MinimalAF.Rendering.ImmediateMode
-{
-	public class TextDrawer : IDisposable
-    {
+namespace MinimalAF.Rendering.ImmediateMode {
+    public class TextDrawer : IDisposable {
         FontManager _fontManager;
 
         public FontAtlasTexture ActiveFont {
-            get { return _fontManager.ActiveFont; }
+            get {
+                return _fontManager.ActiveFont;
+            }
         }
 
-        public TextDrawer()
-        {
+        public TextDrawer() {
             _fontManager = new FontManager();
             SetFont("", -1);
         }
 
 
-        public void SetFont(string name, int size)
-        {
+        public void SetFont(string name, int size) {
             if (size < 0)
                 size = 12;
 
@@ -40,29 +38,24 @@ namespace MinimalAF.Rendering.ImmediateMode
             }
         }
 
-		public float GetWidth()
-		{
-			return GetWidth(' ');
-		}
+        public float GetWidth() {
+            return GetWidth(' ');
+        }
 
-		public float GetHeight()
-		{
-			return GetHeight('|');
-		}
+        public float GetHeight() {
+            return GetHeight('|');
+        }
 
 
-		public float GetWidth(char c)
-        {
-            if (ActiveFont.FontAtlas.IsValidCharacter(c))
-            {
+        public float GetWidth(char c) {
+            if (ActiveFont.FontAtlas.IsValidCharacter(c)) {
                 return ActiveFont.FontAtlas.GetCharacterSize(c).Width;
             }
 
 
             float spaceWidth = ActiveFont.FontAtlas.GetCharacterSize('|').Width;
 
-            switch (c)
-            {
+            switch (c) {
                 case ' ':
                     return spaceWidth;
                 case '\t':
@@ -72,13 +65,11 @@ namespace MinimalAF.Rendering.ImmediateMode
             return 0;
         }
 
-        public float GetHeight(char c)
-        {
+        public float GetHeight(char c) {
             return ActiveFont.FontAtlas.GetCharacterSize(c).Height;
         }
 
-        public SizeF GetSize(char c)
-        {
+        public SizeF GetSize(char c) {
             return ActiveFont.FontAtlas.GetCharacterSize(c);
         }
 
@@ -89,10 +80,8 @@ namespace MinimalAF.Rendering.ImmediateMode
             }
         }
 
-        private float CaratPosX(float lineWidth, HorizontalAlignment hAlign)
-        {
-            switch (hAlign)
-            {
+        private float CaratPosX(float lineWidth, HorizontalAlignment hAlign) {
+            switch (hAlign) {
                 case HorizontalAlignment.Center:
                     return -lineWidth / 2f;
                 case HorizontalAlignment.Right:
@@ -104,8 +93,7 @@ namespace MinimalAF.Rendering.ImmediateMode
 
         //TODO: IMPLEMENT tabs and newlines
         //And vertical/horizontal aiignment features
-        public PointF Draw(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f)
-        {
+        public PointF Draw(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f) {
             PointF caratPos = new PointF(startX, startY);
 
             if (text == null)
@@ -115,8 +103,7 @@ namespace MinimalAF.Rendering.ImmediateMode
             float charHeight = scale * GetHeight('|');
 
 
-            switch (vAlign)
-            {
+            switch (vAlign) {
                 case VerticalAlignment.Bottom:
                     caratPos.Y = startY + textHeight - charHeight;
                     break;
@@ -131,8 +118,7 @@ namespace MinimalAF.Rendering.ImmediateMode
             int lineStart = 0;
             int lineEnd = 0;
 
-            while (lineEnd < text.Length)
-            {
+            while (lineEnd < text.Length) {
                 lineEnd = text.IndexOf('\n', lineStart);
                 if (lineEnd == -1)
                     lineEnd = text.Length;
@@ -151,32 +137,25 @@ namespace MinimalAF.Rendering.ImmediateMode
             return caratPos;
         }
 
-        public PointF Draw(string text, float startX, float startY, float scale = 1.0f)
-        {
+        public PointF Draw(string text, float startX, float startY, float scale = 1.0f) {
             return Draw(text, 0, text.Length, startX, startY, scale);
         }
 
-        public PointF Draw(string text, int start, int end, float startX, float startY, float scale)
-        {
-			Texture previousTexture = CTX.Texture.Get();
+        public PointF Draw(string text, int start, int end, float startX, float startY, float scale) {
+            Texture previousTexture = CTX.Texture.Get();
 
             CTX.Texture.Set(ActiveFont.FontTexture);
 
             float x = startX;
             float y = startY;
 
-            for (int i = start; i < end; i++)
-            {
+            for (int i = start; i < end; i++) {
                 char c = text[i];
 
-                if (ActiveFont.FontAtlas.IsValidCharacter(c))
-                {
+                if (ActiveFont.FontAtlas.IsValidCharacter(c)) {
                     DrawCharacter(scale, x, y, c);
-                }
-                else
-                {
-                    if (c == '\n')
-                    {
+                } else {
+                    if (c == '\n') {
                         x = startX;
                         y -= ActiveFont.FontAtlas.CharHeight + 2;
                     }
@@ -185,42 +164,36 @@ namespace MinimalAF.Rendering.ImmediateMode
                 x += GetWidth(c);
             }
 
-			CTX.Texture.Set(previousTexture);
+            CTX.Texture.Set(previousTexture);
 
-			return new PointF(x, y);
+            return new PointF(x, y);
         }
 
-        private void DrawCharacter(float scale, float x, float y, char c)
-        {
+        private void DrawCharacter(float scale, float x, float y, char c) {
             SizeF size = GetSize(c);
             Rect2D uv = ActiveFont.FontAtlas.GetCharacterUV(c);
 
             CTX.Rect.Draw(new Rect2D(x, y, x + size.Width * scale, y + size.Height * scale), uv);
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             _fontManager.Dispose();
         }
 
-        public float GetStringHeight(string s)
-        {
+        public float GetStringHeight(string s) {
             return GetStringHeight(s, 0, s.Length);
         }
 
-        public float GetStringHeight(string s, int start, int end)
-        {
+        public float GetStringHeight(string s, int start, int end) {
             return _fontManager.GetStringHeight(s, start, end);
         }
 
 
-        public float GetStringWidth(string s)
-        {
+        public float GetStringWidth(string s) {
             return GetStringWidth(s, 0, s.Length);
         }
 
-        public float GetStringWidth(string s, int start, int end)
-        {
+        public float GetStringWidth(string s, int start, int end) {
             return _fontManager.GetStringWidth(s, start, end);
         }
     }

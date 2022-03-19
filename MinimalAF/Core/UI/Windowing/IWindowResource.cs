@@ -1,6 +1,5 @@
-﻿namespace MinimalAF
-{
-	interface IWindowResource {
-		void Update();
-	}
+﻿namespace MinimalAF {
+    interface IWindowResource {
+        void Update();
+    }
 }

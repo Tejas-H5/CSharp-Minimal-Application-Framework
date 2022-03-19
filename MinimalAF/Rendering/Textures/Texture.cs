@@ -3,13 +3,11 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace MinimalAF.Rendering
-{
-	// Initially Taken from https://github.com/opentk/LearnOpenTK/blob/master/Common/Texture.cs
-	// And then modified
-	// A helper class, much like Shader, meant to simplify loading textures.
-	public class Texture : IDisposable
-    {
+namespace MinimalAF.Rendering {
+    // Initially Taken from https://github.com/opentk/LearnOpenTK/blob/master/Common/Texture.cs
+    // And then modified
+    // A helper class, much like Shader, meant to simplify loading textures.
+    public class Texture : IDisposable {
         int _handle;
         private int _height;
         private int _width;
@@ -40,16 +38,12 @@ namespace MinimalAF.Rendering
         }
 
         //TODO: replace boolean with TextureImportSettings class if needed
-        public static Texture LoadFromFile(string path, TextureImportSettings settings)
-        {
+        public static Texture LoadFromFile(string path, TextureImportSettings settings) {
             Bitmap image;
 
-            try
-            {
+            try {
                 image = new Bitmap(path);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Console.Write(e.Message);
                 throw (e);
                 //return null;
@@ -59,15 +53,13 @@ namespace MinimalAF.Rendering
         }
 
 
-        public Texture(int width, int height, TextureImportSettings settings)
-        {
+        public Texture(int width, int height, TextureImportSettings settings) {
             Init(width, height, (IntPtr)null, settings);
         }
 
 
         //TODO: implement this
-        internal void Resize(int width, int height)
-        {
+        internal void Resize(int width, int height) {
             BindTextureHandle();
             SendImageDataToOpenGL(width, height, (IntPtr)null, _importSettings);
             SendTextureParamsToOpenGL(_importSettings);
@@ -75,8 +67,7 @@ namespace MinimalAF.Rendering
             TextureManager.SetCurrentTextureChangedFlag();
         }
 
-        public Texture(Bitmap image, TextureImportSettings settings)
-        {
+        public Texture(Bitmap image, TextureImportSettings settings) {
             var data = image.LockBits(
                 new Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly,
@@ -88,8 +79,7 @@ namespace MinimalAF.Rendering
             image.UnlockBits(data);
         }
 
-        private void Init(int width, int height, IntPtr data, TextureImportSettings settings)
-        {
+        private void Init(int width, int height, IntPtr data, TextureImportSettings settings) {
             _handle = GL.GenTexture();
             _importSettings = settings;
 
@@ -100,15 +90,13 @@ namespace MinimalAF.Rendering
             TextureManager.SetCurrentTextureChangedFlag();
         }
 
-        private void BindTextureHandle()
-        {
+        private void BindTextureHandle() {
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, _handle);
         }
 
 
-        private void SendImageDataToOpenGL(int width, int height, IntPtr data, TextureImportSettings settings)
-        {
+        private void SendImageDataToOpenGL(int width, int height, IntPtr data, TextureImportSettings settings) {
             _width = width;
             _height = height;
 
@@ -123,8 +111,7 @@ namespace MinimalAF.Rendering
                             data);
         }
 
-        private static void SendTextureParamsToOpenGL(TextureImportSettings settings)
-        {
+        private static void SendTextureParamsToOpenGL(TextureImportSettings settings) {
             TextureMinFilter minFilter;
             TextureMagFilter magFilter;
 
@@ -138,10 +125,8 @@ namespace MinimalAF.Rendering
         }
 
 
-        private static void SetAppropriateFilter(TextureImportSettings settings, out TextureMinFilter minFilter, out TextureMagFilter magFilter)
-        {
-            switch (settings.Filtering)
-            {
+        private static void SetAppropriateFilter(TextureImportSettings settings, out TextureMinFilter minFilter, out TextureMagFilter magFilter) {
+            switch (settings.Filtering) {
                 case FilteringType.NearestNeighbour:
                     minFilter = TextureMinFilter.Nearest;
                     magFilter = TextureMagFilter.Nearest;
@@ -153,8 +138,7 @@ namespace MinimalAF.Rendering
             }
         }
 
-        public void Use(TextureUnit unit)
-        {
+        public void Use(TextureUnit unit) {
             GL.ActiveTexture(unit);
             GL.BindTexture(TextureTarget.Texture2D, Handle);
         }
@@ -162,12 +146,9 @@ namespace MinimalAF.Rendering
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
+        protected virtual void Dispose(bool disposing) {
+            if (!disposedValue) {
+                if (disposing) {
                     // Don't forget to dispose of the texture too!
                     GL.BindTexture(TextureTarget.Texture2D, 0);
                     GL.DeleteTexture(Handle);
@@ -180,13 +161,11 @@ namespace MinimalAF.Rendering
             }
         }
 
-        ~Texture()
-        {
+        ~Texture() {
             Dispose(false);
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }

@@ -1,84 +1,75 @@
 ﻿using MinimalAF.Rendering;
 using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace MinimalAF
-{
-	public partial class Element
-	{
-		protected void SetDrawColor(float r, float g, float b, float a)
-		{
-			CTX.SetDrawColor(r, g, b, a);
-		}
+namespace MinimalAF {
+    public partial class Element {
+        protected void SetDrawColor(float r, float g, float b, float a) {
+            CTX.SetDrawColor(r, g, b, a);
+        }
 
-		protected void SetDrawColor(Color4 col)
-		{
-			SetDrawColor(col.R, col.G, col.B, col.A);
-		}
-		
-		protected Texture GetTexture() {
-			return CTX.Texture.Get();
-		}
+        protected void SetDrawColor(Color4 col) {
+            SetDrawColor(col.R, col.G, col.B, col.A);
+        }
 
-		protected void SetTexture(Texture texture) {
-			CTX.Texture.Set(texture);
-		}
+        protected Texture GetTexture() {
+            return CTX.Texture.Get();
+        }
 
-		protected void SetFont(string name, int size) {
-			CTX.Text.SetFont(name, size);
-		}
-		
-		public float GetStringHeight(string s) {
-			return CTX.Text.GetStringHeight(s);
-		}
+        protected void SetTexture(Texture texture) {
+            CTX.Texture.Set(texture);
+        }
 
-		public float GetStringHeight(string s, int start, int end) {
-			return CTX.Text.GetStringHeight(s, start, end);
-		}
+        protected void SetFont(string name, int size) {
+            CTX.Text.SetFont(name, size);
+        }
 
-		public float GetStringWidth(string s) {
-			return CTX.Text.GetStringWidth(s);
-		}
+        public float GetStringHeight(string s) {
+            return CTX.Text.GetStringHeight(s);
+        }
 
-		public float GetStringWidth(string s, int start, int end) {
-			return CTX.Text.GetStringWidth(s, start, end);
-		}
+        public float GetStringHeight(string s, int start, int end) {
+            return CTX.Text.GetStringHeight(s, start, end);
+        }
 
-		public float GetCharWidth(char c) {
-			return CTX.Text.GetWidth(c);
-		}
+        public float GetStringWidth(string s) {
+            return CTX.Text.GetStringWidth(s);
+        }
 
-		public float GetCharHeight(char c) {
-			return CTX.Text.GetHeight(c);
-		}
+        public float GetStringWidth(string s, int start, int end) {
+            return CTX.Text.GetStringWidth(s, start, end);
+        }
 
-		public float GetCharWidth() {
-			return CTX.Text.GetWidth();
-		}
+        public float GetCharWidth(char c) {
+            return CTX.Text.GetWidth(c);
+        }
 
-		public float GetCharHeight() {
-			return CTX.Text.GetHeight();
-		}
+        public float GetCharHeight(char c) {
+            return CTX.Text.GetHeight(c);
+        }
 
-		public IDisposable PushMatrix(Matrix4 value) {
-			return CTX.PushMatrix(CTX.MODEL_MATRIX, value);
-		}
+        public float GetCharWidth() {
+            return CTX.Text.GetWidth();
+        }
 
-		public Matrix4 GetModelMatrix()
-		{
-			return CTX.GetMatrix(CTX.MODEL_MATRIX);
-		}
+        public float GetCharHeight() {
+            return CTX.Text.GetHeight();
+        }
 
-		public Matrix4 GetViewMatrix()
-		{
-			return CTX.GetMatrix(CTX.VIEW_MATRIX);
-		}
+        public IDisposable PushMatrix(Matrix4 value) {
+            return CTX.PushMatrix(CTX.MODEL_MATRIX, value);
+        }
 
-		public Matrix4 GeProjectionMatrix()
-		{
-			return CTX.GetMatrix(CTX.PROJECTION_MATRIX);
-		}
-	}
+        public Matrix4 GetModelMatrix() {
+            return CTX.GetMatrix(CTX.MODEL_MATRIX);
+        }
+
+        public Matrix4 GetViewMatrix() {
+            return CTX.GetMatrix(CTX.VIEW_MATRIX);
+        }
+
+        public Matrix4 GeProjectionMatrix() {
+            return CTX.GetMatrix(CTX.PROJECTION_MATRIX);
+        }
+    }
 }

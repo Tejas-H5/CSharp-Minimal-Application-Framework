@@ -1,15 +1,12 @@
 ﻿using OpenTK.Mathematics;
 
-namespace MinimalAF.Audio
-{
-	public abstract class AudioSource
-    {
+namespace MinimalAF.Audio {
+    public abstract class AudioSource {
         private static int _nextAudioSourceID = 1;
 
 
         public int SourceID = -1;
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             return SourceID;
         }
 
@@ -28,8 +25,7 @@ namespace MinimalAF.Audio
         public Vector3 Velocity { get; set; } = Vector3.Zero;
         public Vector3 Direction { get; set; } = Vector3.Zero;
 
-        protected AudioSource(bool relative = false, bool looping = false)
-        {
+        protected AudioSource(bool relative = false, bool looping = false) {
             SourceID = _nextAudioSourceID;
             _nextAudioSourceID++;
         }
@@ -43,8 +39,7 @@ namespace MinimalAF.Audio
         public abstract double GetPlaybackPosition();
         public abstract void SetPlaybackPosition(double pos);
 
-        public AudioSourceState GetSourceState()
-        {
+        public AudioSourceState GetSourceState() {
             OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
             if (alSource == null)
                 return AudioSourceState.Stopped;

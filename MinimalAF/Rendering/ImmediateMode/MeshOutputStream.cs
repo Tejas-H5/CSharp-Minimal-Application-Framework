@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace MinimalAF.Rendering.ImmediateMode
-{
-	public class MeshOutputStream : IGeometryOutput, IDisposable
-    {
+namespace MinimalAF.Rendering.ImmediateMode {
+    public class MeshOutputStream : IGeometryOutput, IDisposable {
         private Mesh _backingMesh;
         private uint _currentVertexIndex = 0;
         private uint _currentIndexIndex = 0;
@@ -16,32 +14,27 @@ namespace MinimalAF.Rendering.ImmediateMode
             }
         }
 
-        public Vertex GetVertex(uint i)
-        {
+        public Vertex GetVertex(uint i) {
             return _backingMesh.Vertices[i];
         }
 
-        public uint GetIndex(uint i)
-        {
+        public uint GetIndex(uint i) {
             return _backingMesh.Indices[i];
         }
 
-        public MeshOutputStream(int vertexBufferSize, int indexBufferSize)
-        {
+        public MeshOutputStream(int vertexBufferSize, int indexBufferSize) {
             vertexBufferSize /= 3;
             vertexBufferSize *= 3;
 
             _backingMesh = new Mesh(new Vertex[vertexBufferSize], new uint[indexBufferSize], stream: true);
         }
 
-        public uint AddVertex(Vertex v)
-        {
+        public uint AddVertex(Vertex v) {
             _backingMesh.Vertices[_currentVertexIndex] = v;
             return _currentVertexIndex++;
         }
 
-        public void MakeTriangle(uint v1, uint v2, uint v3)
-        {
+        public void MakeTriangle(uint v1, uint v2, uint v3) {
             _backingMesh.Indices[_currentIndexIndex] = v1;
             _backingMesh.Indices[_currentIndexIndex + 1] = v2;
             _backingMesh.Indices[_currentIndexIndex + 2] = v3;
@@ -49,12 +42,11 @@ namespace MinimalAF.Rendering.ImmediateMode
             _currentIndexIndex += 3;
         }
 
-        public void Flush()
-        {
+        public void Flush() {
             if (_currentIndexIndex == 0)
                 return;
 
-			// actually draw what we have so far
+            // actually draw what we have so far
             _backingMesh.UpdateBuffers(_currentVertexIndex, _currentIndexIndex);
             _backingMesh.Draw();
 
@@ -64,11 +56,9 @@ namespace MinimalAF.Rendering.ImmediateMode
             _currentIndexIndex = 0;
         }
 
-        public bool FlushIfRequired(int numIncomingVerts, int numIncomingIndices)
-        {
+        public bool FlushIfRequired(int numIncomingVerts, int numIncomingIndices) {
             if (_currentIndexIndex + numIncomingIndices >= _backingMesh.Indices.Length ||
-                    _currentVertexIndex + numIncomingVerts >= _backingMesh.Vertices.Length)
-            {
+                    _currentVertexIndex + numIncomingVerts >= _backingMesh.Vertices.Length) {
                 Flush();
                 return true;
             }
@@ -76,18 +66,15 @@ namespace MinimalAF.Rendering.ImmediateMode
             return false;
         }
 
-        public uint CurrentV()
-        {
+        public uint CurrentV() {
             return _currentVertexIndex;
         }
 
-        public uint CurrentI()
-        {
+        public uint CurrentI() {
             return _currentIndexIndex;
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             _backingMesh.Dispose();
         }
     }

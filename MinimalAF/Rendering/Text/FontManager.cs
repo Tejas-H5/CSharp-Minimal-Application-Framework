@@ -2,25 +2,29 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace MinimalAF.Rendering.Text
-{
-	public class FontAtlasTexture
-    {
+namespace MinimalAF.Rendering.Text {
+    public class FontAtlasTexture {
         FontAtlas _fontAtlas;
         Texture _fontTexture;
 
-        public FontAtlasTexture(FontAtlas fontAtlas, Texture fontTexture)
-        {
+        public FontAtlasTexture(FontAtlas fontAtlas, Texture fontTexture) {
             _fontAtlas = fontAtlas;
             _fontTexture = fontTexture;
         }
 
-        public FontAtlas FontAtlas { get { return _fontAtlas; } }
-        public Texture FontTexture { get { return _fontTexture; } }
+        public FontAtlas FontAtlas {
+            get {
+                return _fontAtlas;
+            }
+        }
+        public Texture FontTexture {
+            get {
+                return _fontTexture;
+            }
+        }
     }
 
-    public class FontManager : IDisposable
-    {
+    public class FontManager : IDisposable {
         FontAtlasTexture _activeFont;
 
         public FontAtlasTexture ActiveFont {
@@ -37,36 +41,29 @@ namespace MinimalAF.Rendering.Text
             }
         }
 
-        private static string GenerateKey(string fontName, int fontSize)
-        {
+        private static string GenerateKey(string fontName, int fontSize) {
             return fontName + fontSize.ToString();
         }
 
-        public void SetCurrentFont(string fontName, int fontSize)
-        {
-            if (string.IsNullOrEmpty(fontName))
-            {
+        public void SetCurrentFont(string fontName, int fontSize) {
+            if (string.IsNullOrEmpty(fontName)) {
                 fontName = SystemFonts.DefaultFont.Name;
             }
 
-            if (fontSize <= 0)
-            {
+            if (fontSize <= 0) {
                 fontSize = 12;
             }
 
             string key = GenerateKey(fontName, fontSize);
-            if (!_allLoadedFonts.ContainsKey(key))
-            {
+            if (!_allLoadedFonts.ContainsKey(key)) {
                 FontAtlas atlas = FontAtlas.CreateFontAtlas(
-                        new FontImportSettings
-                        {
+                        new FontImportSettings {
                             FontName = fontName,
                             FontSize = fontSize
                         }
                     );
 
-                if (atlas == null)
-                {
+                if (atlas == null) {
                     SetCurrentFont("", fontSize);
                     _allLoadedFonts[key] = _activeFont;
                     return;
@@ -80,17 +77,14 @@ namespace MinimalAF.Rendering.Text
         }
 
 
-        public float GetStringHeight(string s)
-        {
+        public float GetStringHeight(string s) {
             return GetStringHeight(s, 0, s.Length);
         }
 
-        public float GetStringHeight(string s, int start, int end)
-        {
+        public float GetStringHeight(string s, int start, int end) {
             int numNewLines = 1;
 
-            for (int i = start; i < end; i++)
-            {
+            for (int i = start; i < end; i++) {
                 if (s[i] == '\n')
                     numNewLines++;
             }
@@ -99,20 +93,16 @@ namespace MinimalAF.Rendering.Text
         }
 
 
-        public float GetStringWidth(string s)
-        {
+        public float GetStringWidth(string s) {
             return GetStringWidth(s, 0, s.Length);
         }
 
-        public float GetStringWidth(string s, int start, int end)
-        {
+        public float GetStringWidth(string s, int start, int end) {
             float maxWidth = 0;
             float width = 0;
 
-            for (int i = start; i < end; i++)
-            {
-                if (s[i] == '\n')
-                {
+            for (int i = start; i < end; i++) {
+                if (s[i] == '\n') {
                     width = 0;
                     continue;
                 }
@@ -138,18 +128,15 @@ namespace MinimalAF.Rendering.Text
             }
         }
 
-        public float GetCharWidth(char c)
-        {
-            if (_activeFont.FontAtlas.IsValidCharacter(c))
-            {
+        public float GetCharWidth(char c) {
+            if (_activeFont.FontAtlas.IsValidCharacter(c)) {
                 return _activeFont.FontAtlas.GetCharacterSize(c).Width;
             }
 
 
             float spaceWidth = _activeFont.FontAtlas.GetCharacterSize('|').Width;
 
-            switch (c)
-            {
+            switch (c) {
                 case ' ':
                     return spaceWidth;
                 case '\t':
@@ -159,20 +146,16 @@ namespace MinimalAF.Rendering.Text
             return 0;
         }
 
-        public float GetCharHeight(char c)
-        {
+        public float GetCharHeight(char c) {
             return _activeFont.FontAtlas.GetCharacterSize(c).Height;
         }
 
-        public SizeF GetCharSize(char c)
-        {
+        public SizeF GetCharSize(char c) {
             return _activeFont.FontAtlas.GetCharacterSize(c);
         }
 
-        public void Dispose()
-        {
-            foreach (var item in _allLoadedFonts)
-            {
+        public void Dispose() {
+            foreach (var item in _allLoadedFonts) {
                 item.Value.FontTexture.Dispose();
             }
         }

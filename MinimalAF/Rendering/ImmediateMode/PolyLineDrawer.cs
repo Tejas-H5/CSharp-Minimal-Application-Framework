@@ -1,15 +1,12 @@
 ﻿using MinimalAF.Util;
 using System;
 
-namespace MinimalAF.Rendering.ImmediateMode
-{
-	//TODO: add support for 3D lines if needed
-	public class PolyLineDrawer
-    {
+namespace MinimalAF.Rendering.ImmediateMode {
+    //TODO: add support for 3D lines if needed
+    public class PolyLineDrawer {
         IGeometryOutput _geometryOutput;
 
-        public PolyLineDrawer(IGeometryOutput geometryOutput)
-        {
+        public PolyLineDrawer(IGeometryOutput geometryOutput) {
             _geometryOutput = geometryOutput;
         }
 
@@ -38,10 +35,8 @@ namespace MinimalAF.Rendering.ImmediateMode
         CapType _capType;
 
         //Can also be used to continue an unfinished polyline
-        public void Begin(float x, float y, float thickness, CapType cap)
-        {
-            if (!_canStart)
-            {
+        public void Begin(float x, float y, float thickness, CapType cap) {
+            if (!_canStart) {
                 Continue(x, y);
                 return;
             }
@@ -56,8 +51,7 @@ namespace MinimalAF.Rendering.ImmediateMode
         }
 
 
-        public void Continue(float x, float y, bool useAverage = true)
-        {
+        public void Continue(float x, float y, bool useAverage = true) {
             float dirX, dirY, perpX, perpY;
             CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
 
@@ -67,12 +61,9 @@ namespace MinimalAF.Rendering.ImmediateMode
                 return;
 
 
-            if (_count == 1)
-            {
+            if (_count == 1) {
                 StartLineSegment(x, y);
-            }
-            else
-            {
+            } else {
                 MoveLineSegmentInDirectionOf(x, y, useAverage);
             }
 
@@ -84,8 +75,7 @@ namespace MinimalAF.Rendering.ImmediateMode
             _count++;
         }
 
-        private void CalculateLineParameters(float x, float y, out float dirX, out float dirY, out float perpX, out float perpY)
-        {
+        private void CalculateLineParameters(float x, float y, out float dirX, out float dirY, out float perpX, out float perpY) {
             dirX = x - _lastX;
             dirY = y - _lastY;
 
@@ -95,8 +85,7 @@ namespace MinimalAF.Rendering.ImmediateMode
             perpY = _thickness * dirX / mag;
         }
 
-        private void StartLineSegment(float x, float y)
-        {
+        private void StartLineSegment(float x, float y) {
             float dirX, dirY, perpX, perpY;
             CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
 
@@ -118,25 +107,21 @@ namespace MinimalAF.Rendering.ImmediateMode
             CTX.Line.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
         }
 
-        private void MoveLineSegmentInDirectionOf(float x, float y, bool averageAngle = true)
-        {
+        private void MoveLineSegmentInDirectionOf(float x, float y, bool averageAngle = true) {
             float dirX, dirY, perpX, perpY;
             CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
 
 
             float perpUsedX, perpUsedY;
 
-            if (averageAngle)
-            {
+            if (averageAngle) {
                 perpUsedX = (perpX + _lastPerpX) / 2f;
                 perpUsedY = (perpY + _lastPerpY) / 2f;
 
                 float mag = MathUtilF.Mag(perpUsedX, perpUsedY);
                 perpUsedX = _thickness * perpUsedX / mag;
                 perpUsedY = _thickness * perpUsedY / mag;
-            }
-            else
-            {
+            } else {
                 perpUsedX = perpX;
                 perpUsedY = perpY;
             }
@@ -145,8 +130,7 @@ namespace MinimalAF.Rendering.ImmediateMode
             Vertex v3 = new Vertex(_lastX + perpUsedX, _lastY + perpUsedY, 0);
             Vertex v4 = new Vertex(_lastX - perpUsedX, _lastY - perpUsedY, 0);
 
-            if (_geometryOutput.FlushIfRequired(4, 6))
-            {
+            if (_geometryOutput.FlushIfRequired(4, 6)) {
                 _lastV1 = _geometryOutput.AddVertex(_lastV1Vert);
                 _lastV2 = _geometryOutput.AddVertex(_lastV2Vert);
             }
@@ -163,25 +147,19 @@ namespace MinimalAF.Rendering.ImmediateMode
             bool v3IsArtifacting = ((vec1X * lastDirX + vec1Y * lastDirY) > 0);
             bool v4IsArtifacting = ((vec2X * lastDirX + vec2Y * lastDirY) > 0);
 
-            if(v3IsArtifacting || v4IsArtifacting)
-            {
-                if (v3IsArtifacting)
-                {
+            if (v3IsArtifacting || v4IsArtifacting) {
+                if (v3IsArtifacting) {
                     _lastV4 = _geometryOutput.AddVertex(v4);
                     _geometryOutput.MakeTriangle(_lastV1, _lastV2, _lastV4);
                     _lastV2 = _lastV4;
                     _lastV2Vert = v4;
-                }
-                else if (v4IsArtifacting)
-                {
+                } else if (v4IsArtifacting) {
                     _lastV3 = _geometryOutput.AddVertex(v3);
                     _geometryOutput.MakeTriangle(_lastV1, _lastV2, _lastV3);
                     _lastV1 = _lastV3;
                     _lastV1Vert = v3;
                 }
-            }
-            else
-            {
+            } else {
                 _lastV3 = _geometryOutput.AddVertex(v3);
                 _lastV4 = _geometryOutput.AddVertex(v4);
 
@@ -198,10 +176,8 @@ namespace MinimalAF.Rendering.ImmediateMode
             _lastPerpY = perpY;
         }
 
-        public void End(float x, float y)
-        {
-            if (!_canEnd)
-            {
+        public void End(float x, float y) {
+            if (!_canEnd) {
                 Continue(x, y);
                 return;
             }
@@ -210,8 +186,7 @@ namespace MinimalAF.Rendering.ImmediateMode
             float dirY = y - _lastY;
 
             float mag = MathUtilF.Mag(dirX, dirY);
-            if(mag < 0.001f)
-            {
+            if (mag < 0.001f) {
                 dirX = x - _lastLastX;
                 dirY = y - _lastLastY;
             }
@@ -224,8 +199,7 @@ namespace MinimalAF.Rendering.ImmediateMode
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
 
-            if(_count == 1)
-            {
+            if (_count == 1) {
                 CTX.Line.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
             }
 
@@ -238,8 +212,7 @@ namespace MinimalAF.Rendering.ImmediateMode
         /// <summary>
         /// Use very carefully.
         /// </summary>
-        public void DisableEnding()
-        {
+        public void DisableEnding() {
             _canEnd = false;
             _canStart = false;
         }
@@ -247,8 +220,7 @@ namespace MinimalAF.Rendering.ImmediateMode
         /// <summary>
         /// Use very carefully.
         /// </summary>
-        public void EnableEnding()
-        {
+        public void EnableEnding() {
             _canEnd = true;
         }
     }

@@ -1,7 +1,5 @@
-﻿namespace MinimalAF.Rendering.ImmediateMode
-{
-	public class NGonDrawer
-    {
+﻿namespace MinimalAF.Rendering.ImmediateMode {
+    public class NGonDrawer {
         IGeometryOutput _outputStream;
         bool _polygonBegun = false;
         uint _polygonFirst;
@@ -10,13 +8,11 @@
         Vertex _firstVertex;
         Vertex _secondVertex;
 
-        public NGonDrawer(IGeometryOutput outputStream)
-        {
+        public NGonDrawer(IGeometryOutput outputStream) {
             _outputStream = outputStream;
         }
 
-        public void Begin(Vertex v1, int n)
-        {
+        public void Begin(Vertex v1, int n) {
             if (n < 3)
                 n = 3;
 
@@ -30,22 +26,18 @@
             _polygonCount = 1;
         }
 
-        public void Continue(Vertex v)
-        {
-            if (_polygonBegun == false)
-            {
+        public void Continue(Vertex v) {
+            if (_polygonBegun == false) {
                 return;
             }
 
-            if (_polygonCount == 1)
-            {
+            if (_polygonCount == 1) {
                 AppendSecondVertexToNGon(v);
                 return;
             }
 
 
-            if (_outputStream.FlushIfRequired(1, 3))
-            {
+            if (_outputStream.FlushIfRequired(1, 3)) {
                 _polygonFirst = _outputStream.AddVertex(_firstVertex);
                 _polygonSecond = _outputStream.AddVertex(_secondVertex);
             }
@@ -60,16 +52,14 @@
             _secondVertex = v;
         }
 
-        private void AppendSecondVertexToNGon(Vertex v)
-        {
+        private void AppendSecondVertexToNGon(Vertex v) {
             _polygonSecond = _outputStream.AddVertex(v);
             _secondVertex = v;
 
             _polygonCount = 2;
         }
 
-        public void End()
-        {
+        public void End() {
             _polygonBegun = false;
         }
     }

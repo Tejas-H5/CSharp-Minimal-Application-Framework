@@ -2,10 +2,8 @@
 using System;
 using System.Drawing;
 
-namespace MinimalAF
-{
-	public class TextInput<T> : Element
-    {
+namespace MinimalAF {
+    public class TextInput<T> : Element {
         TextElement _textObject;
 
         bool _shouldClear;
@@ -17,14 +15,13 @@ namespace MinimalAF
         Property<T> _property;
         Func<string, T> _parser;
 
-		WindowKeyboardInput _keyboardInput;
+        WindowKeyboardInput _keyboardInput;
 
         /// <summary>
         /// A text input that sets value to a property.
         /// If the parsing function throws an exception, the property is never set.
         /// </summary>
-        public TextInput(TextElement child, Property<T> property, Func<string,T> parser, bool endsTypingOnNewline = true)
-        {
+        public TextInput(TextElement child, Property<T> property, Func<string, T> parser, bool endsTypingOnNewline = true) {
             _textObject = child;
             _property = property;
             _parser = parser;
@@ -35,64 +32,51 @@ namespace MinimalAF
             );
 
             OnTextFinalized += OnTextFinalizedSelf;
-		}
+        }
 
-		public override void OnStart()
-		{
-			_keyboardInput = GetAncestor<Window>().KeyboardInput;
+        public override void OnStart() {
+            _keyboardInput = GetAncestor<Window>().KeyboardInput;
 
-			base.OnStart();
-		}
+            base.OnStart();
+        }
 
-		public override void OnRender()
-        {
-            if (_keyboardInput.IsFocused(this))
-            {
+        public override void OnRender() {
+            if (_keyboardInput.IsFocused(this)) {
                 RenderCarat();
             }
 
             base.OnRender();
         }
 
-        private void RenderCarat()
-        {
+        private void RenderCarat() {
             PointF caratPos = _textObject.GetCaratPos();
             float height = _textObject.GetCharacterHeight();
             CTX.SetDrawColor(_textObject.TextColor);
             CTX.Rect.Draw(caratPos.X, caratPos.Y, caratPos.X + 2, caratPos.Y + height);
         }
 
-        public override void OnUpdate()
-        {
-            if(_keyboardInput.IsFocused(this))
-            {
-                if (Input.Mouse.IsPressed(MouseButton.Left))
-                {
-                    if (!Input.Mouse.IsOver(RectTransform.Rect))
-                    {
+        public override void OnUpdate() {
+            if (_keyboardInput.IsFocused(this)) {
+                if (Input.Mouse.IsPressed(MouseButton.Left)) {
+                    if (!Input.Mouse.IsOver(RectTransform.Rect)) {
                         EndTyping();
                     }
                 }
 
-                if (Input.Keyboard.IsPressed(KeyCode.Escape))
-                {
+                if (Input.Keyboard.IsPressed(KeyCode.Escape)) {
                     EndTyping();
                 }
 
                 TypeKeystrokes();
+            } else {
+                CheckForMouseClick();
             }
-			else
-			{
-				CheckForMouseClick();
-			} 
 
             base.OnUpdate();
         }
 
-        private void CheckForMouseClick()
-        {
-            if (Input.Mouse.IsPressed(MouseButton.Left) && Input.Mouse.IsOver(RectTransform.Rect))
-            {
+        private void CheckForMouseClick() {
+            if (Input.Mouse.IsPressed(MouseButton.Left) && Input.Mouse.IsOver(RectTransform.Rect)) {
                 _keyboardInput.FocusElement(this);
 
                 if (_shouldClear)
@@ -101,33 +85,25 @@ namespace MinimalAF
         }
 
 
-        private bool TypeKeystrokes()
-        {
+        private bool TypeKeystrokes() {
             bool changed = false;
             string typed = Input.Keyboard.CharactersTyped;
-            for (int i = 0; i < typed.Length; i++)
-            {
-                if (typed[i] == '\b')
-                {
-                    if (_textObject.Text.Length > 0)
-                    {
+            for (int i = 0; i < typed.Length; i++) {
+                if (typed[i] == '\b') {
+                    if (_textObject.Text.Length > 0) {
                         _textObject.Text = _textObject.Text.Substring(0, _textObject.Text.Length - 1);
                     }
-                }
-                else
-                {
+                } else {
                     _textObject.Text += typed[i];
                 }
 
                 changed = true;
             }
 
-            if (changed)
-            {
+            if (changed) {
                 string s = _textObject.Text;
 
-                if (s.Length > 0 && s[s.Length - 1] == '\n')
-                {
+                if (s.Length > 0 && s[s.Length - 1] == '\n') {
                     if (_endsTypingOnNewline)
                         return true;
 
@@ -142,13 +118,11 @@ namespace MinimalAF
         }
 
 
-        protected void EndTyping()
-        {
-            if (_keyboardInput.IsFocused(this))
-            {
-				_keyboardInput.FocusElement(null);
+        protected void EndTyping() {
+            if (_keyboardInput.IsFocused(this)) {
+                _keyboardInput.FocusElement(null);
 
-				OnTextFinalized?.Invoke();
+                OnTextFinalized?.Invoke();
             }
         }
 
@@ -156,15 +130,11 @@ namespace MinimalAF
         /// What happens when you accept the input that you entered.
         /// The defocusing will not happen here
         /// </summary>
-        protected void OnTextFinalizedSelf()
-        {
-            try
-            {
+        protected void OnTextFinalizedSelf() {
+            try {
                 _property.Value = _parser(_textObject.Text);
-            }
-            catch (Exception e)
-            {
-                
+            } catch (Exception e) {
+
             }
 
             _textObject.Text = _property.Value.ToString();

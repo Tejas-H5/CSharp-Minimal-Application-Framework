@@ -1,24 +1,30 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System;
 
-namespace MinimalAF.Rendering
-{
-	/// <summary>
-	/// Will be used later to implement post-processing, 3D UI, render passes,
-	/// transparency in overlapping meshes and more
-	/// 
-	/// TODO: Make resizeing this more memory efficient
-	/// </summary>
-	public class Framebuffer : IDisposable
-    {
-        int _width=-1, _height=-1;
+namespace MinimalAF.Rendering {
+    /// <summary>
+    /// Will be used later to implement post-processing, 3D UI, render passes,
+    /// transparency in overlapping meshes and more
+    /// 
+    /// TODO: Make resizeing this more memory efficient
+    /// </summary>
+    public class Framebuffer : IDisposable {
+        int _width = -1, _height = -1;
 
         //int _backingWidth = 0, _backingHeight = 0;
 
         bool _init = false;
 
-        public int Width { get { return _width; } }
-        public int Height { get { return _height; } }
+        public int Width {
+            get {
+                return _width;
+            }
+        }
+        public int Height {
+            get {
+                return _height;
+            }
+        }
 
         int _fbo;
 
@@ -33,8 +39,7 @@ namespace MinimalAF.Rendering
 
         int _renderBufferObject;
 
-        public Framebuffer(int width, int height, TextureImportSettings textureSettings)
-        {
+        public Framebuffer(int width, int height, TextureImportSettings textureSettings) {
             _textureSettings = textureSettings;
             /*
             new TextureImportSettings
@@ -58,8 +63,7 @@ namespace MinimalAF.Rendering
         /// Reallocates a Texture2D and a renderbuffer under the hood
         /// if the current dimensions are different.
         /// </summary>
-        public void ResizeIfRequired(int width, int height)
-        {
+        public void ResizeIfRequired(int width, int height) {
             if (_width == width && _height == height)
                 return;
 
@@ -81,20 +85,17 @@ namespace MinimalAF.Rendering
             UnbindFrameBuffer();
         }
 
-        private static void UnbindFrameBuffer()
-        {
+        private static void UnbindFrameBuffer() {
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
 
-        private void ReallocateTexture(int width, int height)
-        {
+        private void ReallocateTexture(int width, int height) {
             _textureObject.Resize(width, height);
             GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0,
                 TextureTarget.Texture2D, _textureObject.Handle, 0);
         }
 
-        private void ReallocateRenderbuffer(int width, int height)
-        {
+        private void ReallocateRenderbuffer(int width, int height) {
             GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, _renderBufferObject);
             GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, width, height);
             GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment,
@@ -103,25 +104,19 @@ namespace MinimalAF.Rendering
             GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
         }
 
-        private void BindFrameBuffer()
-        {
+        private void BindFrameBuffer() {
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, _fbo);
         }
 
-        private static void ValidateFrameBuffer()
-        {
-            if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) == FramebufferErrorCode.FramebufferComplete)
-            {
+        private static void ValidateFrameBuffer() {
+            if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) == FramebufferErrorCode.FramebufferComplete) {
                 Console.WriteLine("new framebuffer lets go");
-            }
-            else
-            {
+            } else {
                 throw new Exception("message to dev: Pls fix");
             }
         }
 
-        public void Bind()
-        {
+        public void Bind() {
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, _fbo);
         }
 
@@ -129,12 +124,9 @@ namespace MinimalAF.Rendering
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
+        protected virtual void Dispose(bool disposing) {
+            if (!disposedValue) {
+                if (disposing) {
                     // TODO: dispose managed state (managed objects).
                 }
 
@@ -146,26 +138,22 @@ namespace MinimalAF.Rendering
             }
         }
 
-        public void Use()
-        {
+        public void Use() {
             BindFrameBuffer();
         }
 
-        public void StopUsing()
-        {
+        public void StopUsing() {
             UnbindFrameBuffer();
         }
 
         // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        ~Framebuffer()
-        {
+        ~Framebuffer() {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(false);
         }
 
         // This code added to correctly implement the disposable pattern.
-        public void Dispose()
-        {
+        public void Dispose() {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
             // TODO: uncomment the following line if the finalizer is overridden above.

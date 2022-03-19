@@ -1,35 +1,36 @@
 ﻿using MinimalAF.Rendering;
 using System.Drawing;
 
-namespace MinimalAF
-{
-	public class TextElement : Element
-    {
-        public Color4 TextColor { get; set; }
+namespace MinimalAF {
+    public class TextElement : Element {
+        public Color4 TextColor {
+            get; set;
+        }
         public string Text { get; set; } = "";
 
         public string Font { get; set; } = "";
         public int FontSize { get; set; } = -1;
 
-        public VerticalAlignment VerticalAlignment { get; set; }
-        public HorizontalAlignment HorizontalAlignment { get; set; }
+        public VerticalAlignment VerticalAlignment {
+            get; set;
+        }
+        public HorizontalAlignment HorizontalAlignment {
+            get; set;
+        }
 
 
         private PointF _caratPos = new PointF();
 
         public TextElement(string text, Color4 textColor)
-            : this(text, textColor, "", -1, VerticalAlignment.Bottom, HorizontalAlignment.Left)
-        {
+            : this(text, textColor, "", -1, VerticalAlignment.Bottom, HorizontalAlignment.Left) {
 
         }
 
         public TextElement(string text, Color4 textColor, VerticalAlignment vAlign, HorizontalAlignment hAlign)
-            : this(text, textColor, "", -1, vAlign, hAlign)
-        {
+            : this(text, textColor, "", -1, vAlign, hAlign) {
         }
 
-        public TextElement(string text, Color4 textColor, string fontName, int fontSize, VerticalAlignment vAlign, HorizontalAlignment hAlign)
-        {
+        public TextElement(string text, Color4 textColor, string fontName, int fontSize, VerticalAlignment vAlign, HorizontalAlignment hAlign) {
             TextColor = textColor;
             Text = text;
             VerticalAlignment = vAlign;
@@ -38,8 +39,7 @@ namespace MinimalAF
             FontSize = fontSize;
         }
 
-        public override void OnRender()
-        {
+        public override void OnRender() {
             if (Text == null)
                 return;
 
@@ -48,8 +48,7 @@ namespace MinimalAF
 
             float startX = 0, startY = 0;
 
-            switch (VerticalAlignment)
-            {
+            switch (VerticalAlignment) {
                 case VerticalAlignment.Bottom:
                     startY = RectTransform.Rect.Bottom;
                     break;
@@ -63,8 +62,7 @@ namespace MinimalAF
                     break;
             }
 
-            switch (HorizontalAlignment)
-            {
+            switch (HorizontalAlignment) {
                 case HorizontalAlignment.Left:
                     startX = RectTransform.Rect.Left;
                     break;
@@ -81,20 +79,17 @@ namespace MinimalAF
             _caratPos = CTX.Text.Draw(Text, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
         }
 
-        internal float TextWidth()
-        {
+        internal float TextWidth() {
             //TODO: set the current font
 
             return GetStringWidth(Text);
         }
 
-        public PointF GetCaratPos()
-        {
+        public PointF GetCaratPos() {
             return _caratPos;
         }
 
-        public float GetCharacterHeight()
-        {
+        public float GetCharacterHeight() {
             //TODO: set the current font
             return CTX.Text.GetHeight('|');
         }

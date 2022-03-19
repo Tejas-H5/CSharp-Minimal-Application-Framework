@@ -1,15 +1,11 @@
 ﻿using System;
 
-namespace MinimalAF.Rendering.ImmediateMode
-{
-	public class LineDrawer
-    {
-		public LineDrawer()
-        {
+namespace MinimalAF.Rendering.ImmediateMode {
+    public class LineDrawer {
+        public LineDrawer() {
         }
 
-        public void Draw(float x0, float y0, float x1, float y1, float thickness, CapType cap)
-        {
+        public void Draw(float x0, float y0, float x1, float y1, float thickness, CapType cap) {
             thickness /= 2;
 
             float dirX = x1 - x0;
@@ -33,8 +29,7 @@ namespace MinimalAF.Rendering.ImmediateMode
             DrawCap(x1, y1, thickness, cap, startAngle + MathF.PI);
         }
 
-        public void DrawOutline(float outlineThickness, float x0, float y0, float x1, float y1, float thickness, CapType cap)
-        {
+        public void DrawOutline(float outlineThickness, float x0, float y0, float x1, float y1, float thickness, CapType cap) {
             thickness /= 2;
 
             float dirX = x1 - x0;
@@ -64,12 +59,9 @@ namespace MinimalAF.Rendering.ImmediateMode
         }
 
 
-        public void DrawCap(float x0, float y0, float radius, CapType cap, float startAngle)
-        {
-            switch (cap)
-            {
-                case CapType.Circle:
-                    {
+        public void DrawCap(float x0, float y0, float radius, CapType cap, float startAngle) {
+            switch (cap) {
+                case CapType.Circle: {
                         DrawCircleCap(x0, y0, radius, startAngle);
                         break;
                     }
@@ -79,16 +71,13 @@ namespace MinimalAF.Rendering.ImmediateMode
         }
 
 
-        public void DrawCircleCap(float x0, float y0, float thickness, float angle)
-        {
+        public void DrawCircleCap(float x0, float y0, float thickness, float angle) {
             CTX.Arc.Draw(x0, y0, thickness, angle, angle + MathF.PI);
         }
 
 
-        public void DrawCapOutline(float outlineThickness, float x0, float y0, float radius, CapType cap, float startAngle)
-        {
-            switch (cap)
-            {
+        public void DrawCapOutline(float outlineThickness, float x0, float y0, float radius, CapType cap, float startAngle) {
+            switch (cap) {
                 case CapType.Circle:
                     DrawCircleCapOutline(outlineThickness, x0, y0, radius, startAngle);
                     break;
@@ -98,13 +87,11 @@ namespace MinimalAF.Rendering.ImmediateMode
             }
         }
 
-        public void DrawDefaultCapOutline(float thickness, float x0, float y0, float radius, float angle)
-        {
+        public void DrawDefaultCapOutline(float thickness, float x0, float y0, float radius, float angle) {
             CTX.Arc.DrawOutline(thickness, x0, y0, radius, angle, angle + MathF.PI, 1);
         }
 
-        public void DrawCircleCapOutline(float thickness, float x0, float y0, float radius, float angle)
-        {
+        public void DrawCircleCapOutline(float thickness, float x0, float y0, float radius, float angle) {
             CTX.Arc.DrawOutline(thickness, x0, y0, radius, angle, angle + MathF.PI);
         }
     }

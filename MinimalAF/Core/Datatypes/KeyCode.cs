@@ -1,13 +1,11 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace MinimalAF
-{
-	/// <summary>
-	/// Currently implemented with the same values as OpenTK.Keys under the hood,
-	/// so OpenTK.Keys may be cast into a KeyCode.
-	/// </summary>
-	public enum KeyCode
-    {
+namespace MinimalAF {
+    /// <summary>
+    /// Currently implemented with the same values as OpenTK.Keys under the hood,
+    /// so OpenTK.Keys may be cast into a KeyCode.
+    /// </summary>
+    public enum KeyCode {
         Unknown = Keys.Unknown,
         Space = Keys.Space,
         Apostrophe = Keys.Apostrophe,
@@ -127,26 +125,26 @@ namespace MinimalAF
         RightAlt = Keys.RightAlt,
         RightSuper = Keys.RightSuper,
         Menu = Keys.Menu,
-		/// <summary>
-		/// The last <i>real</i> key. there are still virtual keys like Shift, Control, Alt, and Any that will
-		/// be used to check some combination of real inputs, but their state isn't really stored
-		/// </summary>
+        /// <summary>
+        /// The last <i>real</i> key. there are still virtual keys like Shift, Control, Alt, and Any that will
+        /// be used to check some combination of real inputs, but their state isn't really stored
+        /// </summary>
         LastKey = Keys.LastKey,
         /// <summary>
 		/// Checks against any key
 		/// </summary>
 		Any = Keys.LastKey + 1,
-		/// <summary>
-		/// Checks against left or right shift
-		/// </summary>
+        /// <summary>
+        /// Checks against left or right shift
+        /// </summary>
         Shift,
-		/// <summary>
-		/// Checks against left or right control
-		/// </summary>
+        /// <summary>
+        /// Checks against left or right control
+        /// </summary>
         Control,
-		/// <summary>
-		/// Checks against left or right alt
-		/// </summary>
+        /// <summary>
+        /// Checks against left or right alt
+        /// </summary>
         Alt
     }
 }

@@ -1,31 +1,32 @@
 ﻿using OpenTK.Audio.OpenAL;
 
-namespace MinimalAF.Audio
-{
-	/// <summary>
-	/// Should only be used by one audio source at a time, otherwise multiple sources
-	/// will be advancing the stream forward so the audio will not play correctly.
-	/// 
-	/// Multiple AudioClipStreamed instances can however point to the same AudioData.
-	/// </summary>
-	public class AudioClipStream : IAudioStreamProvider
-    {
+namespace MinimalAF.Audio {
+    /// <summary>
+    /// Should only be used by one audio source at a time, otherwise multiple sources
+    /// will be advancing the stream forward so the audio will not play correctly.
+    /// 
+    /// Multiple AudioClipStreamed instances can however point to the same AudioData.
+    /// </summary>
+    public class AudioClipStream : IAudioStreamProvider {
         AudioData _data;
         int _cursor = 0;
 
         /// <summary>
         /// Can the playback position go negative?
         /// </summary>
-        public bool UseSlackAtBegining { get; set; }
+        public bool UseSlackAtBegining {
+            get; set;
+        }
 
         /// <summary>
         /// Can the playback position go past the end?
         /// (However, the stream will still stop playing)
         /// </summary>
-        public bool UseSlackAtEnd { get; set; }
+        public bool UseSlackAtEnd {
+            get; set;
+        }
 
-        public AudioClipStream(AudioData data)
-        {
+        public AudioClipStream(AudioData data) {
             _data = data;
         }
 
@@ -40,8 +41,7 @@ namespace MinimalAF.Audio
             }
         }
 
-        private void ConstrainSlack()
-        {
+        private void ConstrainSlack() {
             if (!UseSlackAtBegining && _cursor < 0)
                 _cursor = 0;
 
@@ -57,16 +57,13 @@ namespace MinimalAF.Audio
 
         public int Channels => _data.Channels;
 
-        public int AdvanceStream(short[] outputBuffer, int dataToWrite)
-        {
-            if(_cursor < 0)
-            {
+        public int AdvanceStream(short[] outputBuffer, int dataToWrite) {
+            if (_cursor < 0) {
                 int zeroesToWrite = -_cursor;
                 if (zeroesToWrite > dataToWrite)
                     zeroesToWrite = dataToWrite;
 
-                for(int i = 0; i < zeroesToWrite; i++)
-                {
+                for (int i = 0; i < zeroesToWrite; i++) {
                     outputBuffer[i] = 0;
                 }
 
@@ -83,13 +80,11 @@ namespace MinimalAF.Audio
             if (dataLeft <= 0)
                 return 0;
 
-            if (dataToWrite > dataLeft)
-            {
+            if (dataToWrite > dataLeft) {
                 dataToWrite = dataLeft;
             }
 
-            for (int i = 0; i < dataToWrite; i++)
-            {
+            for (int i = 0; i < dataToWrite; i++) {
                 outputBuffer[i] = _data.RawData[_cursor + i];
             }
 

@@ -2,46 +2,39 @@
 using System;
 using System.Collections.Generic;
 
-namespace MinimalAF.Audio
-{
-	/// <summary>
-	/// Class that enables audio.
-	/// The following only applies if you are using this code outside of Minimal Application Framework:
-	/// 
-	/// Needs to be Initialized with Init(),
-	/// Updated every frame with Update(),
-	/// and disposed of when the program is done with Cleanup().
-	/// </summary>
-	public static class AudioCTX
-    {
+namespace MinimalAF.Audio {
+    /// <summary>
+    /// Class that enables audio.
+    /// The following only applies if you are using this code outside of Minimal Application Framework:
+    /// 
+    /// Needs to be Initialized with Init(),
+    /// Updated every frame with Update(),
+    /// and disposed of when the program is done with Cleanup().
+    /// </summary>
+    public static class AudioCTX {
         private static ALDevice _device;
         private static ALContext _context;
 
 
-        public static unsafe void Init()
-        {
+        public static unsafe void Init() {
             InitializeOpenAL();
             ALAudioSourcePool.Init();
         }
 
 
-        public static void Update()
-        {
+        public static void Update() {
             ALAudioListener.Update();
             ALAudioSourcePool.Update();
         }
 
-        public static void Cleanup()
-        {
-            if (_context != ALContext.Null)
-            {
+        public static void Cleanup() {
+            if (_context != ALContext.Null) {
                 ALC.MakeContextCurrent(ALContext.Null);
                 ALC.DestroyContext(_context);
             }
             _context = ALContext.Null;
 
-            if (_device != ALDevice.Null)
-            {
+            if (_device != ALDevice.Null) {
                 ALC.CloseDevice(_device);
             }
 
@@ -53,19 +46,16 @@ namespace MinimalAF.Audio
             ALAudioListener.Cleanup();
         }
 
-        private static unsafe void InitializeOpenAL()
-        {
+        private static unsafe void InitializeOpenAL() {
             _device = ALC.OpenDevice(null);
 
-            if (!ALCall(out _context, () => { return ALC.CreateContext(_device, (int*)null); }))
-            {
+            if (!ALCall(out _context, () => { return ALC.CreateContext(_device, (int*)null); })) {
                 Console.WriteLine("Error: Could not create audio context");
                 return;
             }
 
             bool contextMadeCurrent = false;
-            if (!ALCall(out contextMadeCurrent, () => { return ALC.MakeContextCurrent(_context); }) || !contextMadeCurrent)
-            {
+            if (!ALCall(out contextMadeCurrent, () => { return ALC.MakeContextCurrent(_context); }) || !contextMadeCurrent) {
                 Console.WriteLine("Error: Could not make audio context current");
                 return;
             }
@@ -76,27 +66,21 @@ namespace MinimalAF.Audio
             var vendor = AL.Get(ALGetString.Vendor);
             var renderer = AL.Get(ALGetString.Renderer);
 
-            if (version == null || vendor == null || renderer == null)
-            {
+            if (version == null || vendor == null || renderer == null) {
                 Console.Write("OpenAL Version, vendor or renderer were null. Audio Engine was unable to initialize.");
-            }
-            else
-            {
+            } else {
                 Console.WriteLine("Audio powered by OpenAL v" + version + " from" + vendor + " rendered with " + renderer);
             }
         }
 
 
-        internal static bool ALCheckErrors()
-        {
+        internal static bool ALCheckErrors() {
             ALError error = AL.GetError();
 
-            if (error != ALError.NoError)
-            {
+            if (error != ALError.NoError) {
                 string message = "***ERROR***\n";
 
-                switch (error)
-                {
+                switch (error) {
                     case ALError.InvalidName:
                         message += "AL_INVALID_NAME: a bad name (ID) was passed to an OpenAL function";
                         break;
@@ -123,20 +107,17 @@ namespace MinimalAF.Audio
             return true;
         }
 
-        internal static bool ALCall(Action method)
-        {
+        internal static bool ALCall(Action method) {
             method();
             return ALCheckErrors();
         }
 
-        internal static bool ALCall<T>(out T res, Func<T> method)
-        {
+        internal static bool ALCall<T>(out T res, Func<T> method) {
             res = method();
             return ALCheckErrors();
         }
 
-        private static IEnumerable<string> ALGetDevices()
-        {
+        private static IEnumerable<string> ALGetDevices() {
             IEnumerable<string> devices = null;
             if (!ALCall(out devices,
                 () => { return ALC.GetStringList(GetEnumerationStringList.CaptureDeviceSpecifier); }))
@@ -145,13 +126,11 @@ namespace MinimalAF.Audio
             return devices;
         }
 
-        public static IEnumerable<string> GetAllDevices()
-        {
+        public static IEnumerable<string> GetAllDevices() {
             return ALGetDevices();
         }
 
-        public static void SetDeviceListener(string name)
-        {
+        public static void SetDeviceListener(string name) {
             ALC.OpenDevice(name);
         }
 

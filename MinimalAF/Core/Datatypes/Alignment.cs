@@ -1,12 +1,9 @@
-﻿namespace MinimalAF
-{
-	public enum VerticalAlignment
-    {
+﻿namespace MinimalAF {
+    public enum VerticalAlignment {
         Bottom, Center, Top
     }
 
-    public enum HorizontalAlignment
-    {
+    public enum HorizontalAlignment {
         Left, Center, Right
     }
 }

@@ -15,7 +15,7 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Matrix rain test";
 
-            CTX.SetClearColor(0, 0, 0, 0);
+            ClearColor = Color4.RGBA(0, 0, 0, 0);
 
             CTX.Text.SetFont("Consolas", 24);
 
@@ -32,7 +32,8 @@ namespace MinimalAF.VisualTests.Rendering
             while (totalLength < Width)
             {
                 int character = rand.Next(0, 512);
-                char c = (char)character;
+				//int character = rand.Next(0, 144697);
+				char c = (char)character;
                 if (character > 126)
                     c = ' ';
 

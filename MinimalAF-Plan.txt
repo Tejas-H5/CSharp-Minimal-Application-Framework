@@ -1,47 +1,33 @@
+------------
+
 TODO:
-	- Give Elements their own coordinate systems, and drawing capabilities.
-		- Elements will need an ability to store the state of the drawing context
-		- make CTX internal, and all drawing handled by Element
-
-	- Test harness that collates all unit tests
-		- An Attribute is used to mark tests
-			- This feature may be quite easy
+	-> Give Elements their own coordinate systems, and drawing capabilities. Elements should be able to work anywhere in the subtree.
+		- If they are all grounding themselves using Width and Height, I should just be able to give them a different width and height (Happens automatically so I dont have to do anything really), and make the offset based on the screen position. Then use a GLScissor to constrain the drawing. Can still work with 3D cause of viewports.
 		
-		- Add dynamic compilation in future
-			- This feature may be quite hard
+		- It kinda works, I just need to get the stencilling to work.
+		-> make input work no matter where the rect is
+			-> drawing needs to be relative to a rect
+				-> We shouldnt need to do any calls to CTX. we should just be able to do Rect() from inside the class. may also be helpful to be able to do VW() and VH()
+					-> make all drawing classes internal static
+						-> remove references to them in ctx
+					-* copy-paste all the calls into a seperate element partial class. it is mainly for syntactic sugar.
+					-* change all getters and setters to be like Jquery where its like method() is a getter and method(value) is a setter
+					
+					
+					
+			-* input needs to be relative to a rect, and should be invokeable in the same way as those other things
+			-* clipping needs to be toggleable
+				-* remove setRect
 			
-	- Start using Scissor instead of stencil
-			
-	- Add HSV to Color4
-	
-	- Move to Silk.Net
-		- Need to get codebase to an acceptable point where I can do this
+		
 
-Done so far:
-	- Seperate app config and window management from Rendering and updating code. 
-		- Move all drawing code into UIElement
-		- Split UIElement into multiple files, since it will be big
+	-* fix UI API to be able to recalculate itself based on size and not at initialization, so we can do different layouts based on different sizes/aspect ratios etc
 
-	- Enough with this wrapper pattern in CTX and Input.
-		- rather than CTX.DrawRectangle, do 
-			CTX.Rectangle.Draw();
-			
-			So I have far less code to maintain
-			
-	- Move datatypes to where they are needed. Make them Core if they are cross-cutting
-		- Removed useless/bad datastructures
-	
-	- Figure out some way to use System.Drawing.Color because it has a lot more builtin colors
-		- added all named colors from wikipedia
-
-Later:
- 
+	-* 3D immediate and non-immediate support
+		
 	- Framebuffer optimization
 		- texture buffer resizing [Texture.cs ln 68]
 			- currently created with new() each time
-
-	- Custom render pipelines
-		- boils down to rendering the same scene and all differently
 
 	- implement Disposable for Audiosource and 	possibly other classes
 		since they are now pooled
@@ -50,7 +36,27 @@ Later:
 		- find rare memory corruption that may now be fixed
 		
 	- Strip down CTX class. Alot of useless stuff there imo
+		
+	-* Test harness that collates all unit tests
+		-* Create An Attribute is used to mark tests
+		-* Create a subprogram that can aggregate and show all unit tests
+					
+	-* Add dynamic compilation
+		-* find that ms doc page about c# dynamic compilation
+			
+	-* Add HSV to Color4
 
-Later later:
-
-	- C# dynamic compilation	
+Done so far:
+	- Seperate app config and window management from Rendering and updating code. 
+		- Move all drawing code into UIElement
+		- Split UIElement into multiple files, since it will be big
+	- Enough with this wrapper pattern in CTX and Input.
+		- rather than CTX.DrawRectangle, do 
+			CTX.Rectangle.Draw();
+			So I have far less code to maintain
+			
+	- Move datatypes to where they are needed. Make them Core if they are cross-cutting
+		- Removed useless/bad datastructures
+	
+	- Figure out some way to use System.Drawing.Color because it has a lot more builtin colors
+		- added all named colors from wikipedia

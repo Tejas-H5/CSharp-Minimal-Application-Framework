@@ -21,7 +21,7 @@ namespace MinimalAF.VisualTests.UI
 
 			base.OnStart();
 
-			//CTX.SetClearColor(1, 1, 1, 1);
+			//ClearColor = Color4.RGBA(1, 1, 1, 1);
 
 			//_root = UICreator.CreateUIElement();
 			//Element fitChildren = UICreator.CreateUIElement(

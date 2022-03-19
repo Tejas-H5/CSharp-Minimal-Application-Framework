@@ -3,8 +3,8 @@ using System.Drawing;
 
 namespace MinimalAF.Rendering
 {
-	//TODO: implement multiple units if needed
-	class TextureManager : IDisposable
+	//TODO: implement multiple texture units if needed
+	public class TextureManager : IDisposable
     {
         Texture _currentTexture = null;
 
@@ -23,7 +23,7 @@ namespace MinimalAF.Rendering
             return _globalTextureChanged;
         }
 
-        public Texture CurrentTexture()
+        public Texture Get()
         {
             return _currentTexture;
         }
@@ -40,7 +40,7 @@ namespace MinimalAF.Rendering
 
             _nullTexture = new Texture(white1x1, new TextureImportSettings { });
 
-            SetTexture(null);
+            Set(null);
         }
 
         public bool IsCurrentTexture(Texture texture)
@@ -48,11 +48,16 @@ namespace MinimalAF.Rendering
             return (_currentTexture == texture);
         }
 
-        public void SetTexture(Texture texture)
+        public void Set(Texture texture)
         {
+			if (IsSameTexture(texture))
+				return;
+
+			CTX.Flush();
+
             _currentTexture = texture;
 
-            UseCurrentTexture();
+			UseCurrentTexture();
         }
 
 		public bool IsSameTexture(Texture texture)
@@ -60,7 +65,7 @@ namespace MinimalAF.Rendering
 			return _currentTexture == texture && (!GlobalTextureHasChanged());
 		}
 
-        public void UseCurrentTexture()
+        private void UseCurrentTexture()
         {
             if (_currentTexture == null)
             {

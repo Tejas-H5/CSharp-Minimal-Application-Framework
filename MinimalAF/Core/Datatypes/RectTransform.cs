@@ -17,7 +17,10 @@ namespace MinimalAF
         Rect2D _normalizedAnchoring;
         PointF _normalizedCenter;
 
-        public RectTransform() { }
+        public RectTransform() {
+			Anchors(new Rect2D(0, 0, 1, 1));
+			Offsets(new Rect2D(0, 0, 0, 0));
+		}
 
         public RectTransform(RectTransform other)
         {

@@ -11,7 +11,7 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Triangle";
 
-            CTX.SetClearColor(1, 1, 1, 1);
+            ClearColor = Color4.RGBA(1, 1, 1, 1);
         }
 
 

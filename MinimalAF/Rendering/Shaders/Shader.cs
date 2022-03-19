@@ -6,242 +6,261 @@ using System.IO;
 
 namespace MinimalAF.Rendering
 {
+	public struct ShaderFiles
+	{
+		public string VertPath, FragPath;
+
+		public ShaderFiles(string vertPath, string fragPath)
+		{
+			VertPath = vertPath;
+			FragPath = fragPath;
+		}
+	}
+
+
 	//Taken from https://github.com/opentk/LearnOpenTK/blob/master/Common/Shader.cs
 	//The destructor code was modified to be more like https://docs.microsoft.com/en-us/dotnet/api/system.idisposable.dispose?view=net-5.0
-	public class Shader
-    {
-        public readonly int Handle;
+	public abstract class Shader
+	{
+		public readonly int Handle;
 
-        private readonly Dictionary<string, int> _uniformLocations;
+		private readonly Dictionary<string, int> _uniformLocations;
+		private static Matrix4 _viewMatrix = Matrix4.Identity;
+		private static Matrix4 _projectionMatrix = Matrix4.Identity;
+		private static Matrix4 _modelMatrix = Matrix4.Identity;
 
-        public static Shader FromFile(string vertPath, string fragPath)
-        {
-            // Load vertex shader and compile
-            var vertSource = File.ReadAllText(vertPath);
-            // We do the same for the fragment shader
-            var fragSource = File.ReadAllText(fragPath);
-
-            return new Shader(vertSource, fragSource);
-        }
-
-        // This is how you create a simple shader.
-        // Shaders are written in GLSL, which is a language very similar to C in its semantics.
-        // The GLSL source is compiled *at runtime*, so it can optimize itself for the graphics card it's currently being used on.
-        // A commented example of GLSL can be found in shader.vert
-        public Shader(string vertexSource, string fragSource)
-        {
-            // There are several different types of shaders, but the only two you need for basic rendering are the vertex and fragment shaders.
-            // The vertex shader is responsible for moving around vertices, and uploading that data to the fragment shader.
-            //   The vertex shader won't be too important here, but they'll be more important later.
-            // The fragment shader is responsible for then converting the vertices to "fragments", which represent all the data OpenGL needs to draw a pixel.
-            //   The fragment shader is what we'll be using the most here.
-
-            var shaderSource = vertexSource;
-
-            // GL.CreateShader will create an empty shader (obviously). The ShaderType enum denotes which type of shader will be created.
-            var vertexShader = GL.CreateShader(ShaderType.VertexShader);
-
-            // Now, bind the GLSL source code
-            GL.ShaderSource(vertexShader, shaderSource);
-
-            // And then compile
-            CompileShader(vertexShader);
+		int _projectionUniformLocation;
+		int _viewUniformLocation;
+		int _modelUniformLocation;
 
 
-            shaderSource = fragSource;
+		public Matrix4 ProjectionMatrix {
+			get => _projectionMatrix;
+			set {
+				_projectionMatrix = value;
+				SetMatrix4(_projectionUniformLocation, _projectionMatrix);
+			}
+		}
+		public Matrix4 ViewMatrix {
+			get => _viewMatrix;
+			set {
+				_viewMatrix = value;
+				SetMatrix4(_viewUniformLocation, _viewMatrix);
+			}
+		}
 
-            var fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(fragmentShader, shaderSource);
-            CompileShader(fragmentShader);
+		public Matrix4 ModelMatrix {
+			get => _modelMatrix; 
+			set {
+				_modelMatrix = value;
+				SetMatrix4(_modelUniformLocation, _modelMatrix);
+			}
+		}
 
-            // These two shaders must then be merged into a shader program, which can then be used by OpenGL.
-            // To do this, create a program...
-            Handle = GL.CreateProgram();
+		public Shader(ShaderFiles files)
+			: this(File.ReadAllText(files.VertPath), File.ReadAllText(files.FragPath))
+		{
+		}
 
-            // Attach both shaders...
-            GL.AttachShader(Handle, vertexShader);
-            GL.AttachShader(Handle, fragmentShader);
+		public Shader(string vertexSource, string fragSource)
+		{
+			var shaderSource = vertexSource;
 
-            // And then link them together.
-            LinkProgram(Handle);
+			var vertexShader = GL.CreateShader(ShaderType.VertexShader);
 
-            // When the shader program is linked, it no longer needs the individual shaders attacked to it; the compiled code is copied into the shader program.
-            // Detach them, and then delete them.
-            GL.DetachShader(Handle, vertexShader);
-            GL.DetachShader(Handle, fragmentShader);
-            GL.DeleteShader(fragmentShader);
-            GL.DeleteShader(vertexShader);
+			GL.ShaderSource(vertexShader, shaderSource);
 
-            // The shader is now ready to go, but first, we're going to cache all the shader uniform locations.
-            // Querying this from the shader is very slow, so we do it once on initialization and reuse those values
-            // later.
+			CompileShader(vertexShader);
 
-            // First, we have to get the number of active uniforms in the shader.
-            GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
+			shaderSource = fragSource;
 
-            // Next, allocate the dictionary to hold the locations.
-            _uniformLocations = new Dictionary<string, int>();
+			var fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+			GL.ShaderSource(fragmentShader, shaderSource);
+			CompileShader(fragmentShader);
 
-            // Loop over all the uniforms,
-            for (var i = 0; i < numberOfUniforms; i++)
-            {
-                // get the name of this uniform,
-                var key = GL.GetActiveUniform(Handle, i, out _, out _);
+			Handle = GL.CreateProgram();
 
-                // get the location,
-                var location = GL.GetUniformLocation(Handle, key);
+			GL.AttachShader(Handle, vertexShader);
+			GL.AttachShader(Handle, fragmentShader);
 
-                // and then add it to the dictionary.
-                _uniformLocations.Add(key, location);
-            }
-        }
+			LinkProgram(Handle);
 
-        private static void CompileShader(int shader)
-        {
-            // Try to compile the shader
-            GL.CompileShader(shader);
+			GL.DetachShader(Handle, vertexShader);
+			GL.DetachShader(Handle, fragmentShader);
+			GL.DeleteShader(fragmentShader);
+			GL.DeleteShader(vertexShader);
 
-            // Check for compilation errors
-            GL.GetShader(shader, ShaderParameter.CompileStatus, out var code);
-            if (code != (int)All.True)
-            {
-                // We can use `GL.GetShaderInfoLog(shader)` to get information about the error.
-                var infoLog = GL.GetShaderInfoLog(shader);
-                throw new Exception($"Error occurred whilst compiling Shader({shader}).\n\n{infoLog}");
-            }
-        }
+			GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
 
-        private static void LinkProgram(int program)
-        {
-            // We link the program
-            GL.LinkProgram(program);
+			_uniformLocations = new Dictionary<string, int>();
 
-            // Check for linking errors
-            GL.GetProgram(program, GetProgramParameterName.LinkStatus, out var code);
-            if (code != (int)All.True)
-            {
-                // We can use `GL.GetProgramInfoLog(program)` to get information about the error.
-                throw new Exception($"Error occurred whilst linking Program({program})");
-            }
-        }
+			for (var i = 0; i < numberOfUniforms; i++)
+			{
+				var key = GL.GetActiveUniform(Handle, i, out _, out _);
 
-        // A wrapper function that enables the shader program.
-        public void Use()
-        {
-            GL.UseProgram(Handle);
-        }
+				var location = GL.GetUniformLocation(Handle, key);
 
-        // The shader sources provided with this project use hardcoded layout(location)-s. If you want to do it dynamically,
-        // you can omit the layout(location=X) lines in the vertex shader, and use this in VertexAttribPointer instead of the hardcoded values.
-        public int GetAttribLocation(string attribName)
-        {
-            return GL.GetAttribLocation(Handle, attribName);
-        }
+				_uniformLocations.Add(key, location);
+			}
 
+			_modelUniformLocation = Loc("model");
+			_projectionUniformLocation = Loc("projection");
+			_viewUniformLocation = Loc("view");
 
-        /// <summary>
-        /// A micro-optimization that can be used to reduce hashmap lookups by getting the location just once
-        /// </summary>
-        public int Loc(string name)
-        {
-            return _uniformLocations[name];
-        }
+			InitShader();
+		}
 
-        /// <summary>
-        /// Set a uniform int on this shader.
-        /// </summary>
-        /// <param name="name">The name of the uniform</param>
-        /// <param name="data">The data to set</param>
-        public void SetInt(int location, int data)
-        {
-            GL.UseProgram(Handle);
-            GL.Uniform1(location, data);
-        }
+		protected abstract void InitShader();
 
-        /// <summary>
-        /// Set a uniform float on this shader.
-        /// </summary>
-        /// <param name="name">The name of the uniform</param>
-        /// <param name="data">The data to set</param>
-        public void SetFloat(int location, float data)
-        {
-            GL.UseProgram(Handle);
-            GL.Uniform1(location, data);
-        }
+		public void UpdateTransformUniforms()
+		{
+			SetMatrix4(_projectionUniformLocation, _projectionMatrix);
+			SetMatrix4(_viewUniformLocation, _viewMatrix);
+			SetMatrix4(_modelUniformLocation, _modelMatrix);
+		}
 
-        /// <summary>
-        /// Set a uniform Matrix4 on this shader
-        /// </summary>
-        /// <param name="name">The name of the uniform</param>
-        /// <param name="data">The data to set</param>
-        /// <remarks>
-        ///   <para>
-        ///   The matrix is transposed before being sent to the shader.
-        ///   </para>
-        /// </remarks>
-        public void SetMatrix4(int location, Matrix4 data)
-        {
-            GL.UseProgram(Handle);
-            GL.UniformMatrix4(location, true, ref data);
-        }
+		public void UpdateModel()
+		{
+			SetMatrix4(_modelUniformLocation, _modelMatrix);
+		}
 
-        /// <summary>
-        /// Set a uniform Vector3 on this shader.
-        /// </summary>
-        /// <param name="name">The name of the uniform</param>
-        /// <param name="data">The data to set</param>
-        public void SetVector3(int location, Vector3 data)
-        {
-            GL.UseProgram(Handle);
-            GL.Uniform3(location, data);
-        }
+		private static void CompileShader(int shader)
+		{
+			GL.CompileShader(shader);
 
-        /// <summary>
-        /// Set a uniform Vector4 on this shader.
-        /// </summary>
-        /// <param name="name">The name of the uniform</param>
-        /// <param name="data">The data to set</param>
-        public void SetVector4(int location, Vector4 data)
-        {
-            GL.UseProgram(Handle);
-            GL.Uniform4(location, data);
-        }
+			GL.GetShader(shader, ShaderParameter.CompileStatus, out var code);
+			if (code != (int)All.True)
+			{
+				var infoLog = GL.GetShaderInfoLog(shader);
+				throw new Exception($"Error occurred whilst compiling Shader({shader}).\n\n{infoLog}");
+			}
+		}
+
+		private static void LinkProgram(int program)
+		{
+			GL.LinkProgram(program);
+
+			GL.GetProgram(program, GetProgramParameterName.LinkStatus, out var code);
+			if (code != (int)All.True)
+			{
+				throw new Exception($"Error occurred whilst linking Program({program})");
+			}
+		}
+
+		public void Use()
+		{
+			GL.UseProgram(Handle);
+		}
+
+		public int GetAttribLocation(string attribName)
+		{
+			return GL.GetAttribLocation(Handle, attribName);
+		}
 
 
-        /// <summary>
-        /// Set a uniform Color4 on this shader.
-        /// Same as SetVector4 under the hood
-        /// </summary>
-        /// <param name="name">The name of the uniform</param>
-        /// <param name="data">The data to set</param>
-        public void SetVector4(int location, Color4 data)
-        {
-            GL.UseProgram(Handle);
-            GL.Uniform4(location, new Vector4(data.R, data.G, data.B, data.A));
-        }
+		/// <summary>
+		/// A micro-optimization that can be used to reduce hashmap lookups by getting the location just once
+		/// </summary>
+		protected int Loc(string name)
+		{
+			return _uniformLocations[name];
+		}
+
+		/// <summary>
+		/// Set a uniform int on this shader.
+		/// </summary>
+		/// <param name="name">The name of the uniform</param>
+		/// <param name="data">The data to set</param>
+		public void SetInt(int location, int data)
+		{
+			GL.UseProgram(Handle);
+			GL.Uniform1(location, data);
+		}
+
+		/// <summary>
+		/// Set a uniform float on this shader.
+		/// </summary>
+		/// <param name="name">The name of the uniform</param>
+		/// <param name="data">The data to set</param>
+		public void SetFloat(int location, float data)
+		{
+			GL.UseProgram(Handle);
+			GL.Uniform1(location, data);
+		}
+
+		/// <summary>
+		/// Set a uniform Matrix4 on this shader
+		/// </summary>
+		/// <param name="name">The name of the uniform</param>
+		/// <param name="data">The data to set</param>
+		/// <remarks>
+		///   <para>
+		///   The matrix is transposed before being sent to the shader.
+		///   </para>
+		/// </remarks>
+		public void SetMatrix4(int location, Matrix4 data)
+		{
+			GL.UseProgram(Handle);
+			GL.UniformMatrix4(location, true, ref data);
+		}
+
+		/// <summary>
+		/// Set a uniform Vector3 on this shader.
+		/// </summary>
+		/// <param name="name">The name of the uniform</param>
+		/// <param name="data">The data to set</param>
+		public void SetVector3(int location, Vector3 data)
+		{
+			GL.UseProgram(Handle);
+			GL.Uniform3(location, data);
+		}
+
+		/// <summary>
+		/// Set a uniform Vector4 on this shader.
+		/// </summary>
+		/// <param name="name">The name of the uniform</param>
+		/// <param name="data">The data to set</param>
+		public void SetVector4(int location, Vector4 data)
+		{
+			GL.UseProgram(Handle);
+			GL.Uniform4(location, data);
+		}
 
 
-        private bool disposed = false;
-        public virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-                return;
+		/// <summary>
+		/// Set a uniform Color4 on this shader.
+		/// Same as SetVector4 under the hood
+		/// </summary>
+		/// <param name="name">The name of the uniform</param>
+		/// <param name="data">The data to set</param>
+		public void SetVector4(int location, Color4 data)
+		{
+			GL.UseProgram(Handle);
+			GL.Uniform4(location, new Vector4(data.R, data.G, data.B, data.A));
+		}
 
-            GL.DeleteProgram(Handle);
-            Console.WriteLine("Shader destructed");
 
-            disposed = true;
-        }
+		private bool disposed = false;
+		public virtual void Dispose(bool disposing)
+		{
+			if (disposed)
+				return;
 
-        ~Shader()
-        {
-            Dispose(false);
-        }
+			GL.DeleteProgram(Handle);
+			Console.WriteLine("Shader destructed");
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-    }
+			disposed = true;
+		}
+
+		~Shader()
+		{
+			Dispose(false);
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+	}
 }

@@ -134,26 +134,30 @@ namespace MinimalAF
 
         protected override void OnRenderFrame(FrameEventArgs args)
         {
+            Time._deltaTime = (float)args.Time;
+			CTX.ContextWidth = Width;
+			CTX.ContextHeight = Height;
+
             base.OnRenderFrame(args);
 
-            CTX.Clear();
+			CTX.SetViewport(Rect);
+			CTX.Clear();
 
-            Time._deltaTime = (float)args.Time;
+			CTX.Cartesian2D(Width, Height);
 
+			_rootElement.Render();
 
-			CTX.Viewport2D(Rect);
-            _rootElement.Render();
 
 			CTX.SwapBuffers();
 
-            renderFrames++;
+			renderFrames++;
         }
 
         void ResizeAction()
         {
             _rootElement.Resize();
 
-			CTX.Viewport2D(Rect);
+			CTX.SetViewport(Rect);
         }
 
 

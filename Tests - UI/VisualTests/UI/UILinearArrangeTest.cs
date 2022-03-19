@@ -20,7 +20,7 @@ namespace MinimalAF.VisualTests.UI
             w.RenderFrequency = 120;
             w.UpdateFrequency = 120; 
 
-            CTX.SetClearColor(1, 0, 0, 1);
+            ClearColor = Color4.RGBA(1, 0, 0, 1);
 
 			base.OnStart();
 			//_root = UICreator.CreatePanel(new Color4(1))

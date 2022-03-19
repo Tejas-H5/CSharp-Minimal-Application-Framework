@@ -18,7 +18,7 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Rendering Engine Line benchmark";
 
-            CTX.SetClearColor(1, 1, 1, 1);
+            ClearColor = Color4.RGBA(1, 1, 1, 1);
             CTX.Text.SetFont("Consolas", 24);
         }
 

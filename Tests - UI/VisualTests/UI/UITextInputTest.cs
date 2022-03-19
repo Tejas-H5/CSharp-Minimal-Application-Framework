@@ -55,7 +55,7 @@ namespace MinimalAF.VisualTests.UI
             w.RenderFrequency = 120;
             w.UpdateFrequency = 120;
 
-            CTX.SetClearColor(1, 1, 1, 1);
+            ClearColor = Color4.RGBA(1, 1, 1, 1);
 
 			base.OnStart();
 		}

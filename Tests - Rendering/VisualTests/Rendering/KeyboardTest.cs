@@ -3,7 +3,7 @@ using MinimalAF.Rendering;
 using System;
 using System.Text;
 
-namespace RenderingEngineRenderingTests.VisualTests.Rendering
+namespace MinimalAF.VisualTests.Rendering
 {
 	public class KeyboardTest : Element
     {
@@ -13,7 +13,7 @@ namespace RenderingEngineRenderingTests.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Keyboard test";
 
-            CTX.SetClearColor(0, 0, 0, 0);
+            ClearColor = Color4.RGBA(0, 0, 0, 0);
             CTX.Text.SetFont("Consolas", 36);
         }
 

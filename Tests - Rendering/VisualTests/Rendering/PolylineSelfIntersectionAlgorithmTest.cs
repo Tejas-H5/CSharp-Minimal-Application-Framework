@@ -13,7 +13,7 @@ namespace MinimalAF.VisualTests.Rendering
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "PolylineSelfIntersectionAlgorithmTest";
-            CTX.SetClearColor(1, 1, 1, 1);
+            ClearColor = Color4.RGBA(1, 1, 1, 1);
             CTX.Text.SetFont("Segoe UI", 24);
         }
 

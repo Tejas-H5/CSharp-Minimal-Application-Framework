@@ -1,6 +1,4 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using MinimalAF;
 using System;
 
@@ -10,7 +8,7 @@ namespace MinimalAF.VisualTests.UI
     {
         Panel GeneratePanel()
         {
-            return new Panel(new Color4(0, 0.1f), new Color4(0, 0, 1, 0.5f), new Color4(1,1,1,1));
+            return new Panel(Color4.VA(0, 0.1f), Color4.RGBA(0, 0, 1, 0.5f), Color4.RGBA(1,1,1,1));
         }
 
         public UITest()
@@ -62,7 +60,7 @@ namespace MinimalAF.VisualTests.UI
 
             w.RenderFrequency = 120;
 
-            CTX.SetClearColor(1, 1, 1, 1);
+            ClearColor = Color4.RGBA(1, 1, 1, 1);
 
 			base.OnStart();
         }

@@ -9,19 +9,25 @@ namespace MinimalAF.VisualTests.Rendering
     {
         List<string> rain = new List<string>();
         Texture _tex;
+		TextTest _textTest;
 
         public override void OnStart()
         {
             Window w = GetAncestor<Window>();
-            w.Size = (800, 600);
-            w.Title = "Text and geometry test";
+            w.Size(800, 600);
+            w.Title("Text and geometry test");
+            w.ClearColor(Color4.RGBA(0, 0, 0, 0));
 
-            CTX.SetClearColor(0, 0, 0, 0);
+            Font("Consolas", 24);
 
-            CTX.Text.SetFont("Consolas", 24);
+			_textTest = new TextTest();
 
-            Init();
-        }
+			Init();
+
+			this.Children(_textTest);
+
+			base.OnStart();
+		}
 
         public void Init()
         {
@@ -33,64 +39,26 @@ namespace MinimalAF.VisualTests.Rendering
             _tex = TextureMap.GetTexture("placeholder");
         }
 
-        StringBuilder sb = new StringBuilder();
-        Random rand = new Random();
-        void PushGibberish()
-        {
-            sb.Clear();
-
-            float totalLength = 0;
-            while (totalLength < Width)
-            {
-                int character = rand.Next(0, 512);
-                char c = (char)character;
-                if (character > 126)
-                    c = ' ';
-
-                sb.Append(c);
-
-                totalLength += CTX.Text.GetWidth(c);
-            }
-
-            rain.Insert(0, sb.ToString());
-            if ((rain.Count - 2) * CTX.Text.GetHeight('|') > Height)
-            {
-                rain.RemoveAt(rain.Count - 1);
-            }
-        }
-
         double timer = 0;
         public override void OnUpdate()
         {
-            //*
-            timer += Time.DeltaTime;
             a += (float)Time.DeltaTime;
-            if (timer < 0.05)
-                return;
-            //*/
-            timer = 0;
 
-            PushGibberish();
-        }
+			base.OnUpdate();
+		}
 
         float a = 0;
         public override void OnRender()
         {
-            CTX.SetDrawColor(0, 1, 0, 0.8f);
-            CTX.SetTexture(null);
+			base.OnRender();
 
-            for (int i = 0; i < rain.Count; i++)
-            {
-                CTX.Text.Draw(rain[i], Left, Bottom + Height - CTX.Text.GetHeight('|') * i);
-            }
+            Texture(null);
+            Arc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f), a, MathF.PI * 2 + a, 6);
 
-
-            CTX.Arc.Draw(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f), a, MathF.PI * 2 + a, 6);
-
-            CTX.SetTexture(_tex);
+            Texture(_tex);
             //RenderingContext.DrawFilledArc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f)/2f, a/2f, MathF.PI * 2 + a/2f, 6);
 
-            CTX.Rect.Draw(Width / 2 - 50, Height / 2 - 50, Width / 2 + 50, Height / 2 + 50);
+            Rect(VW(0.5f) - 50, VH(0.5f) - 50, VW(0.5f) + 50, VH(0.5f) + 50);
 
             //RenderingContext.DrawRect(100,100,Width-100, Height-100);
         }

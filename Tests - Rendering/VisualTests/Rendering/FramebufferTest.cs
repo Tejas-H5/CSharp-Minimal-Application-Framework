@@ -13,7 +13,7 @@ namespace MinimalAF.VisualTests.Rendering
             //w.RenderFrequency = 120;
             //w.UpdateFrequency = 120; 20;
 
-            CTX.SetClearColor(1, 1, 1, 1);
+            ClearColor = Color4.RGBA(1, 1, 1, 1);
         }
 
 
@@ -26,7 +26,7 @@ namespace MinimalAF.VisualTests.Rendering
 
         public override void OnRender()
         {
-            CTX.UseFramebufferTransparent(0);
+            CTX.Framebuffer.UseTransparent(0);
 
             CTX.SetDrawColor(0, 0, 1, 1);
 
@@ -36,7 +36,7 @@ namespace MinimalAF.VisualTests.Rendering
             CTX.SetDrawColor(1, 1, 0, 1);
             CTX.Rect.Draw(wCX, wCY, wCX + 50, wCY + 25);
 
-            CTX.StopUsingFramebuffer();
+            CTX.Framebuffer.StopUsing();
 
             CTX.SetDrawColor(Color4.RGBA(0, 0, 0, 1));
             CTX.Text.SetFont("Consolas", 12);
@@ -54,11 +54,11 @@ namespace MinimalAF.VisualTests.Rendering
 
             CTX.Rect.Draw(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
             CTX.SetDrawColor(1, 1, 1, 0.5f);
-            CTX.SetTextureToFramebuffer(0);
+            CTX.Texture.Set(CTX.Framebuffer.GetTexture(0));
             
             CTX.Rect.Draw(Left, Bottom, Width,Height);
 
-            CTX.SetTexture(null);
+            CTX.Texture.Set(null);
 
             CTX.SetDrawColor(0, 1, 0, 0.5f);
             CTX.Rect.DrawOutline(10, wCX - 300, wCY - 300, wCX + 300, wCY + 300);

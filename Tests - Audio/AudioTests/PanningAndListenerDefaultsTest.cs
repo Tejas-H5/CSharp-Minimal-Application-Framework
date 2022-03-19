@@ -16,7 +16,7 @@ namespace MinimalAF.AudioTests
             w.Size = (800, 600);
             w.Title = "PanningAndListenerDefaultsTest test";
 
-            CTX.SetClearColor(1, 1, 1, 1);
+            ClearColor = Color4.RGBA(1, 1, 1, 1);
             CTX.Text.SetFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");

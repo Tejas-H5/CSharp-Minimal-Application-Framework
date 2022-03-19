@@ -16,7 +16,7 @@ namespace MinimalAF.AudioTests
             w.Size = (800, 600);
             w.Title = "Keyboard test";
 
-            CTX.SetClearColor(0, 0, 0, 0);
+            ClearColor = Color4.RGBA(0, 0, 0, 0);
             CTX.Text.SetFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");

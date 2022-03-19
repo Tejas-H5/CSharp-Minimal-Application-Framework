@@ -1,6 +1,5 @@
 ﻿using MinimalAF;
 using MinimalAF.VisualTests.Rendering;
-using RenderingEngineRenderingTests.VisualTests.Rendering;
 
 namespace RenderingEngineVisualTests
 {
@@ -10,17 +9,18 @@ namespace RenderingEngineVisualTests
         {
             Element[] tests =
             {
-                new PolylineSelfIntersectionAlgorithmTest(),
-                new ArcTest(),
-                new FramebufferTest(),
+                new TextureTest(),
                 new GeometryAndTextTest(),
                 new StencilTest(),
-                new TextureTest(),
-                new PolylineTest(),
-                new KeyboardTest(),
-                new Benchmark(5),
-                new GeometryOutlineTest(),
-                new TextTest(),
+				new NestingTest(),
+                //new TextTest(),
+                //new PolylineSelfIntersectionAlgorithmTest(),
+                //new ArcTest(),
+                //new FramebufferTest(),
+                //new PolylineTest(),
+                //new KeyboardTest(),
+                //new Benchmark(5),
+                //new GeometryOutlineTest(),
             };
 
 

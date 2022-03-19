@@ -160,9 +160,9 @@ namespace MinimalAF.Rendering.ImmediateMode
 
         public PointF Draw(string text, int start, int end, float startX, float startY, float scale)
         {
-			Texture previousTexture = CTX.GetTexture();
+			Texture previousTexture = CTX.Texture.Get();
 
-            CTX.SetTexture(ActiveFont.FontTexture);
+            CTX.Texture.Set(ActiveFont.FontTexture);
 
             float x = startX;
             float y = startY;
@@ -187,7 +187,7 @@ namespace MinimalAF.Rendering.ImmediateMode
                 x += GetWidth(c);
             }
 
-			CTX.SetTexture(previousTexture);
+			CTX.Texture.Set(previousTexture);
 
 			return new PointF(x, y);
         }

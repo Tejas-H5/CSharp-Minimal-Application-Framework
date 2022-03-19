@@ -1,28 +1,31 @@
 ﻿using System;
+using MinimalAF.Rendering;
 
 namespace MinimalAF
 {
 	public partial class Element
-    {
+	{
 		static readonly Element[] NULL_ARRAY = new Element[0];
 
 		public virtual bool SingleChild => false;
 
-        public bool IsVisibleNextFrame = true;
+		public bool IsVisibleNextFrame = true;
 
-        protected RectTransform _rectTransform = new RectTransform();
-        protected Element _parent = null;
-        protected bool _shouldResize = true;
-        protected bool _isVisible = true;
+		protected RectTransform _rectTransform = new RectTransform();
+		protected Element _parent = null;
+		protected bool _shouldResize = true;
+		protected bool _isVisible = true;
 
 		protected Element[] _children;
+
+		protected Color4 ClearColor;
 
 		public Element[] Children {
 			get {
 				return _children;
 			}
 			set {
-				if (SingleChild && _children.Length > 1)
+				if (SingleChild && _children != null && _children.Length > 1)
 					throw new Exception("This element must only be given 1 child, possibly in the constructor.");
 
 				_children = value;
@@ -35,35 +38,39 @@ namespace MinimalAF
 		}
 
 		public Element Parent {
-            get {
-                return _parent;
-            }
-            set {
-                _parent = value;
-                _shouldResize = true;
-            }
-        }
+			get {
+				return _parent;
+			}
+			set {
+				_parent = value;
+				_shouldResize = true;
+			}
+		}
 
-        public bool IsVisible {
-            get { return _isVisible; }
-            set {
-                _isVisible = value;
-                IsVisibleNextFrame = value;
+		public bool IsVisible {
+			get { return _isVisible; }
+			set {
+				_isVisible = value;
+				IsVisibleNextFrame = value;
 
-                if (_parent != null)
-                {
-                    _parent.Resize();
-                }
-            }
-        }
+				if (_parent != null)
+				{
+					_parent.Resize();
+				}
+			}
+		}
+
+		public bool Clipping { get; set; } = true;
 
 
 		public Element()
-        {
-            RectTransform.Anchors(new Rect2D(0, 0, 1, 1));
-            RectTransform.Offsets(new Rect2D(0, 0, 0, 0));
+		{
+			Children = NULL_ARRAY;
+		}
 
-			_children = NULL_ARRAY;
+		public Element(Element[] children)
+		{
+			Children = children;
 		}
 
 
@@ -97,55 +104,57 @@ namespace MinimalAF
 		}
 
 		public void Update()
-        {
-            bool shouldBeVisible = IsVisible;
-            IsVisible = IsVisibleNextFrame;
+		{
+			bool shouldBeVisible = IsVisible;
+			IsVisible = IsVisibleNextFrame;
 
-            if (!shouldBeVisible)
-            {
-                return;
-            }
+			if (!shouldBeVisible)
+			{
+				return;
+			}
 
-            if (_shouldResize)
-            {
-                _shouldResize = false;
-                Resize();
-            }
+			if (_shouldResize)
+			{
+				_shouldResize = false;
+				Resize();
+			}
 
-            OnUpdate();
-        }
+			OnUpdate();
+		}
 
-        public void Render()
-        {
-            if (!IsVisible)
-            {
-                return;
-            }
+		public void Render()
+		{
+			if (!IsVisible)
+			{
+				return;
+			}
 
-            OnRender();
-        }
+			CTX.SetRect(Rect);
 
-        public void Start()
-        {
-            OnStart();
-        }
+			OnRender();
+		}
 
-        public void Cleanup()
-        {
-            OnCleanup();
-        }
+		public void Start()
+		{
+			OnStart();
+		}
 
-        public void UpdateRect()
-        {
-            _rectTransform.UpdateRectFromOffset(GetParentRect());
-        }
+		public void Cleanup()
+		{
+			OnCleanup();
+		}
 
-        internal void Resize()
-        {
-            UpdateRect();
+		public void UpdateRect()
+		{
+			_rectTransform.UpdateRectFromOffset(GetParentRect());
+		}
 
-            OnResize();
-        }
+		internal void Resize()
+		{
+			UpdateRect();
+
+			OnResize();
+		}
 
 
 		/// <summary>
@@ -169,8 +178,9 @@ namespace MinimalAF
 		/// The update cycle that runs every frame.
 		/// Frequency is controlled by the window configuration's UpdateFrequency
 		/// 
-		/// If this element is UI, event processing like mouse clicks and keyboard input
-		/// should be processed in <see cref="ProcessEvents"/>
+		/// /// <para>
+		/// Remember to call base.OnUpdate at some point to update the children
+		/// </para>
 		/// </summary>
 		public virtual void OnUpdate()
 		{

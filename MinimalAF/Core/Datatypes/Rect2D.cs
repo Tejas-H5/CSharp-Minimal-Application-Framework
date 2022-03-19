@@ -90,6 +90,11 @@ namespace MinimalAF
             return !(left == right);
         }
 
+		public string Representation()
+		{
+			return "Rect {" + X0 + ", " + X0 + ", " + X1 + ", " + Y1 + "}";
+		}
+
         public Rect2D Intersect(Rect2D other)
         {
             return new Rect2D(

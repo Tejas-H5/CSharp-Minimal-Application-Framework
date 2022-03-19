@@ -11,10 +11,13 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Stencil rendering test";
 
-            CTX.SetClearColor(0, 0, 0, 1);
+            ClearColor = Color4.RGBA(0,0,0,0);
             CTX.Text.SetFont("Consolas", 24);
 
-            geometryAndTextTest.Init();
+			this.SetChildren(geometryAndTextTest);
+
+			base.OnStart();
+
         }
 
         GeometryAndTextTest geometryAndTextTest = new GeometryAndTextTest();
@@ -23,7 +26,10 @@ namespace MinimalAF.VisualTests.Rendering
 
         public override void OnRender()
         {
-            CTX.StartStencillingWithoutDrawing(true);
+			CTX.SetDrawColor(1, 1, 1, 1);
+			CTX.Text.Draw("Stencil test", 0, Height, HorizontalAlignment.Left, VerticalAlignment.Top);
+
+			CTX.StartStencillingWithoutDrawing(true);
 
             float barSize = MathF.Abs((Height / 2 - 5) * MathF.Sin(_time / 4f));
             CTX.Rect.Draw(0, Height, Width, Height - barSize);
@@ -31,7 +37,7 @@ namespace MinimalAF.VisualTests.Rendering
 
             CTX.StartUsingStencil();
 
-            geometryAndTextTest.OnRender();
+			base.OnRender();
 
             CTX.LiftStencil();
 
@@ -50,7 +56,7 @@ namespace MinimalAF.VisualTests.Rendering
 
         private void DrawBlueRectangle(float size, float xPos)
         {
-            CTX.SetTexture(null);
+            CTX.Texture.Set(null);
             CTX.SetDrawColor(0, 0, 1, 1);
             CTX.Rect.Draw(Width / 2 - size + xPos, Height / 2 - size,
                 Width / 2 + size + xPos, Height / 2 + size);
@@ -58,7 +64,7 @@ namespace MinimalAF.VisualTests.Rendering
 
         private void DrawRedRectangle(float size, float xPos)
         {
-            CTX.SetTexture(null);
+            CTX.Texture.Set(null);
             CTX.SetDrawColor(1, 0, 0, 1);
             CTX.Rect.Draw(Width / 2 - size + xPos, Height / 2 - size,
                 Width / 2 + size + xPos, Height / 2 + size);
@@ -70,15 +76,8 @@ namespace MinimalAF.VisualTests.Rendering
         {
             _time += (float)Time.DeltaTime;
 
-            geometryAndTextTest.OnUpdate();
-            _xPos = 200 * MathF.Sin(_time / 2.0f);
-        }
-
-        public override void OnResize()
-        {
-            base.OnResize();
-
-            geometryAndTextTest.RectTransform.Copy(RectTransform);
+			base.OnUpdate();
+			_xPos = 200 * MathF.Sin(_time / 2.0f);
         }
     }
 }

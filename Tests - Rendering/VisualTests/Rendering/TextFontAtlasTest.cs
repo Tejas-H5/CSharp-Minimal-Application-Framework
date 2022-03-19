@@ -12,7 +12,7 @@ namespace MinimalAF.VisualTests.Rendering
             //w.RenderFrequency = 120; 60;
             //w.UpdateFrequency = 120; 120;
 
-            CTX.SetClearColor(0, 0, 0, 0);
+            ClearColor = Color4.RGBA(0, 0, 0, 0);
 
             CTX.Text.SetFont("Consolas", 24);
         }

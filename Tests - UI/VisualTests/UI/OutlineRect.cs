@@ -10,7 +10,7 @@
         public override void OnRender() {
             SetDrawColor(_col);
 
-            RectOutline(_thickness, Rect);
+            RectOutline(_thickness, RectTransform.Rect);
 
             base.OnRender();
         }

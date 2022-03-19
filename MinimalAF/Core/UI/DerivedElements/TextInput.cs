@@ -57,8 +57,8 @@ namespace MinimalAF {
 
         public override void OnUpdate() {
             if (_keyboardInput.IsFocused(this)) {
-                if (Input.Mouse.IsPressed(MouseButton.Left)) {
-                    if (!Input.Mouse.IsOver(RectTransform.Rect)) {
+                if (MouseButtonIsPressed(MouseButton.Left)) {
+                    if (MouseOverSelf()) {
                         EndTyping();
                     }
                 }

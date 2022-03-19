@@ -5,7 +5,7 @@ TODO:
 		- If they are all grounding themselves using Width and Height, I should just be able to give them a different width and height (Happens automatically so I dont have to do anything really), and make the offset based on the screen position. Then use a GLScissor to constrain the drawing. Can still work with 3D cause of viewports.
 		
 		- It kinda works, I just need to get the stencilling to work.
-		-> make input work no matter where the rect is
+		- make input work no matter where the rect is
 			- drawing needs to be relative to a rect
 				- We shouldnt need to do any calls to CTX. we should just be able to do Rect() from inside the class. may also be helpful to be able to do VW() and VH()
 					- make all drawing classes internal static
@@ -17,8 +17,8 @@ TODO:
 					- change all getters and setters to be like Jquery where its like method() is a getter and method(value) is a setter
 						- terrible idea. Only do this for methods that invoke drawing related sideeffects or set things elsewhere rather than just raw getters and setters, we should still use Get and Set for state retrieval
 					
-			-> input needs to be relative to a rect, and should be invokeable in the same way as those other draw calls cause it looks nice
-				-> mouse input mainly. use the same syntactic sugar as the drawing API and add input methods directly to the class in a partial extension
+			- input needs to be relative to a rect, and should be invokeable in the same way as those other draw calls cause it looks nice
+				- mouse input mainly. use the same syntactic sugar as the drawing API and add input methods directly to the class in a partial extension
 					- Wrap the mouse X, Y to make it relative
 					- Remove all the redundant methods in the mouse, then copy those over too
 						- filter them as we transfer them to ElementInputExtensions
@@ -28,14 +28,36 @@ TODO:
 			
 			- switch brackets back to method() 
 				- add .editorconfig
-			-> fix all tests
-			-* remove OnStart, replace it with OnMount, OnDismount like REACT, also makes more sense logically speaking
-			-* Allow elements to define their internal unit width and height with
-				SetWidthUnits and SetHeightUnits (100 by default). then we can use VW and VH to get some percentage of that distance. then if my code is drawing osu coordinates, I can do SetHeightunits(600) and then do all my calls normally. 
 
-	-* fix UI API to calculate layout during OnResize and not in an initialization phase
+---- day 2
+			
+		-> Fix the UI Lifecycle functions
+			-* remove OnStart, replace it with OnMount, OnDismount like REACT, also makes more sense when logically reasoning about object lifetimes
+			-* fix UI API to calculate layout during OnResize and not in an initialization phase. This will allow us to have more flexibility with layout in future
+		-* Eliminate the need for all 'Screen space to world space' code for 2D rectangles in the UI tree (However if there is a 3D scene within one of those, that will need to implement something like that but that is none of our concern)
+			-* Allow elements to define an internal scale. Perhaps seperate ones for X and Y, or both at the same time. For instance, if we wanted the width of our UI to be 700 units, then we can say that WIDTH * unit = 700 => the unit is 700/WIDTH units per pixel. Something like SetUnitsPerPixel(700 / VW(1));
+				-* needs to be done in the resize function
+			And this can call SetUnitsPerPixelWidth(x) and ...Height(x);
+			And this can scale the projection matrix
+				-* Then we need UnitsWidth and UnitsHeight, since VW and VH won't cut it anymore
+		-* Recreate all UI If needed
+		-* fix all UI tests
+
+
+---- day 3
 
 	-* 3D immediate and non-immediate support
+	
+---- day 4
+	-* implement Disposable for Audiosource and 	possibly other classes
+		since they are now pooled
+		
+	-* Test harness that collates all unit tests
+		-* Create An Attribute is used to mark tests
+		-* Create a subprogram that can aggregate and show all unit tests
+		
+---- day 7
+		
 	-* clipping needs to be toggleable
 		-* remove setRect
 		
@@ -43,17 +65,12 @@ TODO:
 		- texture buffer resizing [Texture.cs ln 68]
 			- currently created with new() each time
 
-	- implement Disposable for Audiosource and 	possibly other classes
-		since they are now pooled
+	
 		
 	- Add unit tests for renderbuffer
 		- find rare memory corruption that may now be fixed
 		
 	- Strip down CTX class. Alot of useless stuff there imo
-		
-	-* Test harness that collates all unit tests
-		-* Create An Attribute is used to mark tests
-		-* Create a subprogram that can aggregate and show all unit tests
 					
 	-* Add dynamic compilation
 		-* find that ms doc page about c# dynamic compilation

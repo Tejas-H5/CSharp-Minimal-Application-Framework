@@ -13,14 +13,14 @@ namespace RenderingEngineVisualTests
                 new GeometryAndTextTest(),
                 new StencilTest(),
 				new NestingTest(),
-                //new TextTest(),
-                //new PolylineSelfIntersectionAlgorithmTest(),
-                //new ArcTest(),
-                //new FramebufferTest(),
-                //new PolylineTest(),
-                //new KeyboardTest(),
-                //new Benchmark(5),
-                //new GeometryOutlineTest(),
+                new TextTest(),
+                new PolylineSelfIntersectionAlgorithmTest(),
+                new ArcTest(),
+                new FramebufferTest(),
+                new PolylineTest(),
+                new KeyboardTest(),
+                new Benchmark(5),
+                new GeometryOutlineTest(),
             };
 
 

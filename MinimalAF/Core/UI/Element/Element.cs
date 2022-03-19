@@ -123,6 +123,7 @@ namespace MinimalAF
 				Resize();
 			}
 
+			CTX.SetRect(RectTransform.Rect);
 			OnUpdate();
 		}
 

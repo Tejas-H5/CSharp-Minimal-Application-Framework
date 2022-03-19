@@ -119,9 +119,9 @@ namespace MinimalAF.VisualTests.Rendering
 
         public override void OnUpdate()
         {
-            if (Input.Mouse.IsPressed(MouseButton.Left))
+            if (MouseButtonIsPressed(MouseButton.Left))
             {
-                _points[_currentPoint] = new PointF(Input.Mouse.X, Input.Mouse.Y);
+                _points[_currentPoint] = new PointF(MouseX, MouseY);
                 _currentPoint = (_currentPoint + 1) % _points.Length;
             }
         }

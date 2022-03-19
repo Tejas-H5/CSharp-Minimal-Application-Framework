@@ -55,6 +55,7 @@ namespace MinimalAF.VisualTests.Rendering
 			base.OnRender();
 
             SetTexture(null);
+            SetDrawColor(Color4.RGBA(0,1,0,0.5f));
             Arc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f), a, MathF.PI * 2 + a, 6);
 
 			SetTexture(_tex);

@@ -3,7 +3,7 @@ using System;
 
 namespace MinimalAF
 {
-	public class MouseInputManager
+	internal class MouseInputManager
     {
         OpenTKWindowWrapper _window;
 
@@ -19,8 +19,7 @@ namespace MinimalAF
         bool _wasAnyHeld = false;
         bool _isAnyHeld = false;
         bool _wasDragging = false;
-        bool _startedDragging = false;
-        bool _anyClicked = false;
+        bool _anyPressed = false;
         bool _anyReleased = false;
 
         float _dragStartX;
@@ -29,40 +28,38 @@ namespace MinimalAF
         float _dragDeltaY = 0;
         //Mainly used to tell if we started dragging or not, and 
         //not meant to be an accurate representation of total distance dragged
-        float _displacementStartX = 0;
-        float _displacementStartY = 0;
-        float _dragDisplacement = 0;
 
-        public float WheelNotches {
+        internal float WheelNotches {
             get { return _wheelNotches; }
         }
 
-        public bool[] ButtonStates { get { return _mouseButtonStates; } }
-        public bool[] PrevButtonStates { get { return _prevMouseButtonStates; } }
+        internal bool[] ButtonStates { get { return _mouseButtonStates; } }
+        internal bool[] PrevButtonStates { get { return _prevMouseButtonStates; } }
 
-        public bool IsAnyDown { get { return _anyDown; } }
-        public bool IsAnyPressed { get { return _anyClicked; } }
-        public bool IsAnyReleased { get { return _anyReleased; } }
+        internal bool IsAnyDown { get { return _anyDown; } }
+        internal bool IsAnyPressed { get { return _anyPressed; } }
+        internal bool IsAnyReleased { get { return _anyReleased; } }
 
-        public bool IsDragging {
+        internal bool IsDragging {
             get {
-                return (!_dragCancelled) && (_startedDragging || (_isAnyHeld && _wasAnyHeld && (_dragDisplacement > 1)));
+				return !_dragCancelled &&
+					_isAnyHeld &&
+					_wasAnyHeld &&
+					((MathF.Abs(XDelta) + MathF.Abs(YDelta)) > 1);
             }
         }
 
-        public float X { get { return _window.MouseState.Position.X; } }
-        public float Y { get { return _window.Height - _window.MouseState.Position.Y; } }
+        internal float X { get { return _window.MouseState.Position.X; } }
+        internal float Y { get { return _window.Height - _window.MouseState.Position.Y; } }
 
-        public float XDelta { get { return _window.MouseState.Delta.X; } }
-        public float YDelta { get { return _window.MouseState.Delta.Y; } }
+        internal float XDelta { get { return _window.MouseState.Delta.X; } }
+        internal float YDelta { get { return _window.MouseState.Delta.Y; } }
 
-        public float DragStartX { get { return _dragStartX; } }
-        public float DragStartY { get { return _dragStartY; } }
-        public float DragDeltaX { get { return _dragDeltaX; } }
-        public float DragDeltaY { get { return _dragDeltaY; } }
-        public float DragDisplacement { get { return _dragDisplacement; } }
-        public bool WasDragging { get { return _wasDragging; } }
-        public bool StartedDragging { get { return _startedDragging; } }
+        internal float DragStartX { get { return _dragStartX; } }
+        internal float DragStartY { get { return _dragStartY; } }
+        internal float DragDeltaX { get { return _dragDeltaX; } }
+        internal float DragDeltaY { get { return _dragDeltaY; } }
+        internal bool WasDragging { get { return _wasDragging; } }
 
         internal MouseInputManager() { }
 
@@ -71,7 +68,7 @@ namespace MinimalAF
             _incomingWheelNotches += obj.OffsetY;
         }
 
-        public bool IsOver(Rect2D rect)
+        internal bool IsOver(Rect2D rect)
         {
             return Intersections.IsInsideRect(X, Y, rect);
         }
@@ -96,27 +93,31 @@ namespace MinimalAF
             _mouseButtonStates = temp;
         }
 
-        public bool IsPressed(MouseButton b)
+        internal bool IsPressed(MouseButton b)
         {
+            if (b == MouseButton.Any)
+                return _anyPressed;
+
             return (!_prevMouseButtonStates[(int)b]) && _mouseButtonStates[(int)b];
         }
 
-        public bool IsReleased(MouseButton b)
+        internal bool IsReleased(MouseButton b)
         {
+            if (b == MouseButton.Any)
+                return _anyReleased;
+
             return _prevMouseButtonStates[(int)b] && (!_mouseButtonStates[(int)b]);
         }
 
-        public bool IsDown(MouseButton b)
+        internal bool IsDown(MouseButton b)
         {
+            if (b == MouseButton.Any)
+                return _anyPressed;
+
             return _mouseButtonStates[(int)b];
         }
 
-        public bool IsDownFor2PlusFrames(MouseButton b)
-        {
-            return _prevMouseButtonStates[(int)b] && _mouseButtonStates[(int)b];
-        }
-
-        public void CancelDrag()
+        internal void CancelDrag()
         {
             _dragCancelled = true;
             SetDragDeltas(_dragStartX, _dragStartY);
@@ -128,34 +129,15 @@ namespace MinimalAF
             _dragStartY = y;
             _dragDeltaX = 0;
             _dragDeltaY = 0;
-            _dragDisplacement = 0;
-            _displacementStartX = x;
-            _displacementStartY = y;
-            _startedDragging = true;
         }
 
         private void CalculateDragDeltas(float x, float y)
         {
             _dragDeltaY = y - _dragStartY;
             _dragDeltaX = x - _dragStartX;
-            _dragDisplacement = MathF.Min(_dragDisplacement + MathUtilF.Mag(x - _displacementStartX, y - _displacementStartY), 100);
-            _displacementStartX = x;
-            _displacementStartY = y;
         }
 
-
-        public void StartDrag(float x, float y)
-        {
-            _anyDown = true;
-            _wasAnyDown = true;
-            _isAnyHeld = true;
-            _wasAnyHeld = true;
-            _wasDragging = true;
-            SetDragDeltas(x, y);
-            CalculateDragDeltas(x, y);
-        }
-
-        public void Update()
+        internal void Update()
         {
             SwapInputBuffers();
 
@@ -190,8 +172,7 @@ namespace MinimalAF
             _wasAnyDown = _anyDown;
 
             _anyDown = false;
-            _startedDragging = false;
-            _anyClicked = false;
+            _anyPressed = false;
             _anyReleased = false;
 
             for (int i = 0; i < _mouseButtonStates.Length; i++)
@@ -202,7 +183,7 @@ namespace MinimalAF
 
                 _anyDown = _anyDown || _mouseButtonStates[i];
 
-                _anyClicked = _anyClicked || (!_prevMouseButtonStates[i] && _mouseButtonStates[i]);
+                _anyPressed = _anyPressed || (!_prevMouseButtonStates[i] && _mouseButtonStates[i]);
                 _anyReleased = _anyReleased || (_prevMouseButtonStates[i] && !_mouseButtonStates[i]);
             }
 

@@ -19,23 +19,20 @@ TODO:
 					
 			-> input needs to be relative to a rect, and should be invokeable in the same way as those other draw calls cause it looks nice
 				-> mouse input mainly. use the same syntactic sugar as the drawing API and add input methods directly to the class in a partial extension
-					-> Wrap the mouse movement to make it relative
-					-* Remove all the redundant methods in the mouse, then copy those over too
-						
+					- Wrap the mouse X, Y to make it relative
+					-> Remove all the redundant methods in the mouse, then copy those over too
+						- filter them as we transfer them to ElementInputExtensions
+					- do it all for keyboard input as well for consistency.
 					-* Create a unit test to test the mouse input
-					-* do the same with keyboard input as well for consistency.
 			-* clipping needs to be toggleable
 				-* remove setRect
-			
-			
-			-* switch brackets back to method() {
-			
+			-* switch brackets back to method() 
+				-* add .editorconfig
 			-* remove OnStart, replace it with OnMount, OnDismount like REACT, also makes more sense logically speaking
-			
 			-* Allow elements to define their internal unit width and height with
 				SetWidthUnits and SetHeightUnits (100 by default). then we can use VW and VH to get some percentage of that distance. then if my code is drawing osu coordinates, I can do SetHeightunits(600) and then do all my calls normally. 
 
-	-* fix UI API to be able to recalculate itself based on size and not at initialization, so we can do different layouts based on different sizes/aspect ratios etc
+	-* fix UI API to calculate layout during OnResize and not in an initialization phase
 
 	-* 3D immediate and non-immediate support
 		

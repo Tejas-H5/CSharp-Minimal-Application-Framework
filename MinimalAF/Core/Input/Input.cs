@@ -1,13 +1,7 @@
 ﻿namespace MinimalAF
 {
-	public enum MouseButton
-    {
-        Left,
-        Right,
-        Middle
-    }
 
-    public static class Input
+	internal static class Input
     {
         private static MouseInputManager _mouseInputManager;
         private static KeyboardInputManager _keyboardManager;
@@ -33,7 +27,7 @@
             _keyboardManager.Update();
         }
 
-        public static MouseInputManager Mouse {get{ return _mouseInputManager; }}
-        public static KeyboardInputManager Keyboard {get{ return _keyboardManager; }}
+        internal static MouseInputManager Mouse {get{ return _mouseInputManager; }}
+        internal static KeyboardInputManager Keyboard {get{ return _keyboardManager; }}
     }
 }

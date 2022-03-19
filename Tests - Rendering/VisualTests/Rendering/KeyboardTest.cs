@@ -23,7 +23,7 @@ namespace MinimalAF.VisualTests.Rendering
             for (int i = 0; i < s.Length; i++)
             {
                 char c = s[i];
-                if (Input.Keyboard.IsShiftDown)
+                if (KeyHeld(KeyCode.Shift))
                 {
                     c = char.ToUpper(c);
                 }
@@ -39,19 +39,19 @@ namespace MinimalAF.VisualTests.Rendering
 
             Text("Press some keys:", Width / 2, Height / 2 + 200);
 
-            Text(KeysToString(Input.Keyboard.CharactersDown), Width / 2, Height / 2);
+            Text(KeysToString(KeyboardCharactersHeld), Width / 2, Height / 2);
         }
 
         public override void OnUpdate()
         {
-            if (Input.Keyboard.IsAnyPressed)
+            if (KeyPressed(KeyCode.Any))
             {
-                Console.WriteLine("PRessed: " + Input.Keyboard.CharactersPressed);
+                Console.WriteLine("PRessed: " + KeyboardCharactersPressed);
             }
 
-            if (Input.Keyboard.IsAnyReleased)
+            if (KeyPressed(KeyCode.Any))
             {
-                Console.WriteLine("Released: " + Input.Keyboard.CharactersReleased);
+                Console.WriteLine("Released: " + KeyboardCharactersReleased);
             }
         }
     }

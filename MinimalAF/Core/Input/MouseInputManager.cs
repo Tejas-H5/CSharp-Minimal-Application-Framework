@@ -7,8 +7,8 @@ namespace MinimalAF
     {
         OpenTKWindowWrapper _window;
 
-        int _incomingWheelNotches = 0;
-        int _wheelNotches = 0;
+        float _incomingWheelNotches = 0;
+        float _wheelNotches = 0;
 
         bool[] _prevMouseButtonStates = new bool[3];
         bool[] _mouseButtonStates = new bool[3];
@@ -33,7 +33,7 @@ namespace MinimalAF
         float _displacementStartY = 0;
         float _dragDisplacement = 0;
 
-        public int WheelNotches {
+        public float WheelNotches {
             get { return _wheelNotches; }
         }
 
@@ -68,14 +68,7 @@ namespace MinimalAF
 
         private void OnWindowMouseWheel(OpenTK.Windowing.Common.MouseWheelEventArgs obj)
         {
-            if (obj.OffsetY < 0)
-            {
-                _incomingWheelNotches -= 1;
-            }
-            else if (obj.OffsetY > 0)
-            {
-                _incomingWheelNotches += 1;
-            }
+            _incomingWheelNotches += obj.OffsetY;
         }
 
         public bool IsOver(Rect2D rect)

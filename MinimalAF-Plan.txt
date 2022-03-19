@@ -17,7 +17,13 @@ TODO:
 					- change all getters and setters to be like Jquery where its like method() is a getter and method(value) is a setter
 						- terrible idea. Only do this for methods that invoke drawing related sideeffects or set things elsewhere rather than just raw getters and setters, we should still use Get and Set for state retrieval
 					
-			-> input needs to be relative to a rect, and should be invokeable in the same way as those other things
+			-> input needs to be relative to a rect, and should be invokeable in the same way as those other draw calls cause it looks nice
+				-> mouse input mainly. use the same syntactic sugar as the drawing API and add input methods directly to the class in a partial extension
+					-> Wrap the mouse movement to make it relative
+					-* Remove all the redundant methods in the mouse, then copy those over too
+						
+					-* Create a unit test to test the mouse input
+					-* do the same with keyboard input as well for consistency.
 			-* clipping needs to be toggleable
 				-* remove setRect
 			

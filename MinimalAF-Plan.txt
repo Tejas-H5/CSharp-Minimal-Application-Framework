@@ -6,8 +6,8 @@ TODO:
 		
 		- It kinda works, I just need to get the stencilling to work.
 		-> make input work no matter where the rect is
-			-> drawing needs to be relative to a rect
-				-> We shouldnt need to do any calls to CTX. we should just be able to do Rect() from inside the class. may also be helpful to be able to do VW() and VH()
+			- drawing needs to be relative to a rect
+				- We shouldnt need to do any calls to CTX. we should just be able to do Rect() from inside the class. may also be helpful to be able to do VW() and VH()
 					- make all drawing classes internal static
 						- remove references to them in ctx
 							- Don't do this. We made those classes, so that we can reuse them in a procedural mesh generation context.
@@ -17,7 +17,7 @@ TODO:
 					- change all getters and setters to be like Jquery where its like method() is a getter and method(value) is a setter
 						- terrible idea. Only do this for methods that invoke drawing related sideeffects or set things elsewhere rather than just raw getters and setters, we should still use Get and Set for state retrieval
 					
-			-* input needs to be relative to a rect, and should be invokeable in the same way as those other things
+			-> input needs to be relative to a rect, and should be invokeable in the same way as those other things
 			-* clipping needs to be toggleable
 				-* remove setRect
 			

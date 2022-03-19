@@ -1,23 +1,13 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF;
-using MinimalAF.Rendering;
-using MinimalAF;
-
-namespace MinimalAF.VisualTests.UI
-{
-    public class UITextNumberInputTest : Element
-    {
+﻿namespace MinimalAF.VisualTests.UI {
+    public class UITextNumberInputTest : Element {
         Element[] rows;
 
-        public UITextNumberInputTest()
-        {
+        public UITextNumberInputTest() {
             rows = new Element[3];
 
-            for (int i = 0; i < 3; i++)
-            {
+            for (int i = 0; i < 3; i++) {
                 Element[] rowElements = new Element[3];
-                for (int j = 0; j < 3; j++)
-                {
+                for (int j = 0; j < 3; j++) {
                     rowElements[j] = new TextInput<float>(
                         new TextElement("", new Color4(0), "Comic Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
                         new Property<float>(0.0f),
@@ -40,13 +30,11 @@ namespace MinimalAF.VisualTests.UI
             );
         }
 
-        public override void OnUpdate()
-        {
+        public override void OnUpdate() {
             base.OnUpdate();
         }
 
-        public override void OnStart()
-        {
+        public override void OnStart() {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "Text input ui element test";
@@ -54,9 +42,9 @@ namespace MinimalAF.VisualTests.UI
             w.RenderFrequency = 120;
             w.UpdateFrequency = 120;
 
-            ClearColor = Color4.RGBA(1, 1, 1, 1);
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
 
-			base.OnStart();
-		}
+            base.OnStart();
+        }
     }
 }

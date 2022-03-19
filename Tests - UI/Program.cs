@@ -1,12 +1,9 @@
 ﻿using MinimalAF;
 using MinimalAF.VisualTests.UI;
 
-namespace RenderingEngineVisualTests
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
+namespace RenderingEngineVisualTests {
+    class Program {
+        static void Main(string[] args) {
             Element[] tests =
             {
                 new UITest(),
@@ -19,8 +16,7 @@ namespace RenderingEngineVisualTests
             };
 
 
-            foreach (Element entryPoint in tests)
-            {
+            foreach (Element entryPoint in tests) {
                 new Window(entryPoint).Run();
             }
         }

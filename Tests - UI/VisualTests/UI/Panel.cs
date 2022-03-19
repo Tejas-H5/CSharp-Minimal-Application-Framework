@@ -1,17 +1,10 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
-namespace MinimalAF.VisualTests.UI
-{
-    public class Panel : Element
-    {
+namespace MinimalAF.VisualTests.UI {
+    public class Panel : Element {
         Color4 _color, _hoverColor, _clickColor;
 
-        public Panel(Color4 color, Color4 hoverColor, Color4 clickColor)
-        {
+        public Panel(Color4 color, Color4 hoverColor, Color4 clickColor) {
             _color = color;
             _drawColor = color;
 
@@ -20,42 +13,35 @@ namespace MinimalAF.VisualTests.UI
         }
 
         Color4 _drawColor;
-		WindowMouseInput _mouseInput;
+        WindowMouseInput _mouseInput;
 
-		public override void OnStart()
-		{
-			_mouseInput = GetAncestor<Window>().MouseInput;
+        public override void OnStart() {
+            _mouseInput = GetAncestor<Window>().MouseInput;
 
-			base.OnStart();
-		}
+            base.OnStart();
+        }
 
-		public override void OnUpdate()
-		{
-			base.OnUpdate();
+        public override void OnUpdate() {
+            base.OnUpdate();
 
-			_drawColor = _color;
+            _drawColor = _color;
 
-			if (_mouseInput.CheckAndHandleOver(this))
-			{
-				if (_mouseInput.CheckAndHandlePressed())
-				{
-					Console.WriteLine("Clicked");
-					_drawColor = _clickColor;
-				}
-				else
-				{
-					_drawColor = _hoverColor;
-				}
-			}
-		}
+            if (_mouseInput.CheckAndHandleOver(this)) {
+                if (_mouseInput.CheckAndHandlePressed()) {
+                    Console.WriteLine("Clicked");
+                    _drawColor = _clickColor;
+                } else {
+                    _drawColor = _hoverColor;
+                }
+            }
+        }
 
-		public override void OnRender()
-        {
-            CTX.SetDrawColor(new Color4(0,1));
-            CTX.Rect.DrawOutline(1, Rect);
+        public override void OnRender() {
+            SetDrawColor(new Color4(0, 1));
+            RectOutline(1, Rect);
 
-            CTX.SetDrawColor(_drawColor);
-            CTX.Rect.Draw(Rect);
+            SetDrawColor(_drawColor);
+            Rect(Rect);
 
             base.OnRender();
         }

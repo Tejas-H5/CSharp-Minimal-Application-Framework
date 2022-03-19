@@ -26,8 +26,9 @@ TODO:
 					- Create a visual test to test the mouse input, dragging in particular
 						- make it so you need to drag the polyline
 			
-			-* switch brackets back to method() 
-				-* add .editorconfig
+			- switch brackets back to method() 
+				- add .editorconfig
+			-> fix all tests
 			-* remove OnStart, replace it with OnMount, OnDismount like REACT, also makes more sense logically speaking
 			-* Allow elements to define their internal unit width and height with
 				SetWidthUnits and SetHeightUnits (100 by default). then we can use VW and VH to get some percentage of that distance. then if my code is drawing osu coordinates, I can do SetHeightunits(600) and then do all my calls normally. 

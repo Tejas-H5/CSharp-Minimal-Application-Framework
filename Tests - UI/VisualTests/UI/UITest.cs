@@ -1,24 +1,15 @@
-﻿using MinimalAF.Rendering;
-using MinimalAF;
-using System;
-
-namespace MinimalAF.VisualTests.UI
-{
-    public class UITest : Element
-    {
-        Panel GeneratePanel()
-        {
-            return new Panel(Color4.VA(0, 0.1f), Color4.RGBA(0, 0, 1, 0.5f), Color4.RGBA(1,1,1,1));
+﻿namespace MinimalAF.VisualTests.UI {
+    public class UITest : Element {
+        Panel GeneratePanel() {
+            return new Panel(Color4.VA(0, 0.1f), Color4.RGBA(0, 0, 1, 0.5f), Color4.RGBA(1, 1, 1, 1));
         }
 
-        public UITest()
-        {
+        public UITest() {
             Element cont = this;
 
             float[] goldenRatioSplit = new float[] { 0.38196601125f };
 
-            for (int i = 0; i < 5; i++)
-            {
+            for (int i = 0; i < 5; i++) {
                 Element left = GeneratePanel();
                 Element right = GeneratePanel();
                 cont.InColumns(
@@ -47,22 +38,20 @@ namespace MinimalAF.VisualTests.UI
             }
         }
 
-        public override void OnUpdate()
-        {
+        public override void OnUpdate() {
             base.OnUpdate();
         }
 
-        public override void OnStart()
-        {
+        public override void OnStart() {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "UI Test";
 
             w.RenderFrequency = 120;
 
-            ClearColor = Color4.RGBA(1, 1, 1, 1);
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
 
-			base.OnStart();
+            base.OnStart();
         }
     }
 }

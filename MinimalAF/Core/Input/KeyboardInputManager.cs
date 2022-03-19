@@ -48,11 +48,10 @@ namespace MinimalAF {
             if (key == KeyCode.Any) {
                 return _anyKeyPressed;
             }
-
-            return _keyStates[(int)key];
+            return (!WasHeld(key)) && (IsHeld(key));
         }
 
-        private bool WasPressed(KeyCode key) {
+        private bool WasHeld(KeyCode key) {
             return _prevKeyStates[(int)key];
         }
 
@@ -70,7 +69,7 @@ namespace MinimalAF {
                 return _anyKeyReleased;
             }
 
-            return WasPressed(key) && (!IsPressed(key));
+            return WasHeld(key) && (!IsHeld(key));
         }
 
         internal bool IsHeld(KeyCode key) {
@@ -87,7 +86,7 @@ namespace MinimalAF {
                 return _anyKeyHeld;
             }
 
-            return (!WasPressed(key)) && (IsPressed(key));
+            return _keyStates[(int)key];
         }
 
         internal string CharactersTyped {

@@ -1,14 +1,6 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF;
-using MinimalAF.Rendering;
-using MinimalAF;
-
-namespace MinimalAF.VisualTests.UI
-{
-    public class UISplittingTest : Element
-    {
-        public UISplittingTest()
-        {
+﻿namespace MinimalAF.VisualTests.UI {
+    public class UISplittingTest : Element {
+        public UISplittingTest() {
             Color4 col = new Color4(0, 1);
 
             this.SetChildren(
@@ -41,18 +33,17 @@ namespace MinimalAF.VisualTests.UI
             );
         }
 
-        public override void OnStart()
-        {
+        public override void OnStart() {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "Splitting test";
 
             w.RenderFrequency = 120;
-            w.UpdateFrequency = 120; 
+            w.UpdateFrequency = 120;
 
-            ClearColor = Color4.RGBA(1, 1, 1, 1);
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
 
-			base.OnStart();
-		}
+            base.OnStart();
+        }
     }
 }

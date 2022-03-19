@@ -8,13 +8,11 @@ TODO:
 		-> make input work no matter where the rect is
 			-> drawing needs to be relative to a rect
 				-> We shouldnt need to do any calls to CTX. we should just be able to do Rect() from inside the class. may also be helpful to be able to do VW() and VH()
-					-> make all drawing classes internal static
-						-> remove references to them in ctx
+					- make all drawing classes internal static
+						- remove references to them in ctx
+							- Don't do this. We made those classes, so that we can reuse them in a procedural mesh generation context.
 					-* copy-paste all the calls into a seperate element partial class. it is mainly for syntactic sugar.
 					-* change all getters and setters to be like Jquery where its like method() is a getter and method(value) is a setter
-					
-					
-					
 			-* input needs to be relative to a rect, and should be invokeable in the same way as those other things
 			-* clipping needs to be toggleable
 				-* remove setRect

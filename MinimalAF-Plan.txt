@@ -20,10 +20,11 @@ TODO:
 			-> input needs to be relative to a rect, and should be invokeable in the same way as those other draw calls cause it looks nice
 				-> mouse input mainly. use the same syntactic sugar as the drawing API and add input methods directly to the class in a partial extension
 					- Wrap the mouse X, Y to make it relative
-					-> Remove all the redundant methods in the mouse, then copy those over too
+					- Remove all the redundant methods in the mouse, then copy those over too
 						- filter them as we transfer them to ElementInputExtensions
 					- do it all for keyboard input as well for consistency.
-					-* Create a unit test to test the mouse input
+					-> Create a visual test to test the mouse input, dragging in particular
+						-> make it so you need to drag the polyline
 			-* clipping needs to be toggleable
 				-* remove setRect
 			-* switch brackets back to method() 

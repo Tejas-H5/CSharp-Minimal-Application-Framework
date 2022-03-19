@@ -38,5 +38,10 @@ namespace MinimalAF.Util
         {
             return MathF.Min(1, MathF.Max(value, 0));
         }
-    }
+
+		public static float Clamp(float value, float min, float max)
+		{
+			return MathF.Min(max, MathF.Max(value, min));
+		}
+	}
 }

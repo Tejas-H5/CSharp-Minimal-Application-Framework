@@ -5,10 +5,17 @@ namespace MinimalAF
 {
 	public partial class Element
 	{
+		/// <summary>
+		/// Shorthand for RectTransform.Height * amount
+		/// </summary>
 		public float VH(float amount)
 		{
 			return RectTransform.Height * amount;
 		}
+
+		/// <summary>
+		/// Shorthand for RectTransform.Width * amount
+		/// </summary>
 		public float VW(float amount)
 		{
 			return RectTransform.Width * amount;

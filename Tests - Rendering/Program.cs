@@ -9,6 +9,7 @@ namespace RenderingEngineVisualTests
         {
             Element[] tests =
             {
+                new PolylineTest(),
                 new TextureTest(),
                 new GeometryAndTextTest(),
                 new StencilTest(),
@@ -17,7 +18,6 @@ namespace RenderingEngineVisualTests
                 new PolylineSelfIntersectionAlgorithmTest(),
                 new ArcTest(),
                 new FramebufferTest(),
-                new PolylineTest(),
                 new KeyboardTest(),
                 new Benchmark(5),
                 new GeometryOutlineTest(),

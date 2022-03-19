@@ -22,8 +22,9 @@ namespace MinimalAF
 		public float MouseDragStartY => Input.Mouse.DragStartY;
 		public float MouseDragDeltaX => Input.Mouse.DragDeltaX;
 		public float MouseDragDeltaY => Input.Mouse.DragDeltaY;
-		public bool MouseWasDragging => Input.Mouse.WasDragging;
 		public bool MouseIsDragging => Input.Mouse.IsDragging;
+		public bool MouseStartedDragging => Input.Mouse.StartedDragging;
+		public bool MouseFinishedDragging => Input.Mouse.FinishedDragging;
 
 		public bool MouseButtonIsPressed(MouseButton b) {
 			return Input.Mouse.IsPressed(b);

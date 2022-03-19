@@ -23,10 +23,9 @@ TODO:
 					- Remove all the redundant methods in the mouse, then copy those over too
 						- filter them as we transfer them to ElementInputExtensions
 					- do it all for keyboard input as well for consistency.
-					-> Create a visual test to test the mouse input, dragging in particular
-						-> make it so you need to drag the polyline
-			-* clipping needs to be toggleable
-				-* remove setRect
+					- Create a visual test to test the mouse input, dragging in particular
+						- make it so you need to drag the polyline
+			
 			-* switch brackets back to method() 
 				-* add .editorconfig
 			-* remove OnStart, replace it with OnMount, OnDismount like REACT, also makes more sense logically speaking
@@ -36,6 +35,8 @@ TODO:
 	-* fix UI API to calculate layout during OnResize and not in an initialization phase
 
 	-* 3D immediate and non-immediate support
+	-* clipping needs to be toggleable
+		-* remove setRect
 		
 	- Framebuffer optimization
 		- texture buffer resizing [Texture.cs ln 68]

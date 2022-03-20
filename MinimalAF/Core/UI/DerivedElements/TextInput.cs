@@ -15,7 +15,7 @@ namespace MinimalAF {
         Property<T> _property;
         Func<string, T> _parser;
 
-        WindowKeyboardInput _uiState;
+        UIState _uiState;
 
         /// <summary>
         /// A text input that sets value to a property.
@@ -30,22 +30,16 @@ namespace MinimalAF {
             this.SetChildren(
                 _textObject
             );
-
-            OnTextFinalized += OnTextFinalizedSelf;
         }
 
         public override void OnMount() {
 			_uiState = GetResource<UIState>();
-
-            base.OnMount();
         }
 
         public override void OnRender() {
-            if (_uiState.IsFocused(this)) {
+            if (_uiState.CurrentlyFocused == this) {
                 RenderCarat();
             }
-
-            base.OnRender();
         }
 
         private void RenderCarat() {
@@ -56,88 +50,65 @@ namespace MinimalAF {
         }
 
         public override void OnUpdate() {
-            if (_uiState.IsFocused(this)) {
-                if (MouseButtonPressed(MouseButton.Left)) {
-                    if (MouseOverSelf()) {
-                        EndTyping();
-                    }
-                }
+			if (MouseButtonPressed(MouseButton.Any) && MouseOverSelf()) {
+				_uiState.CurrentlyFocused = this;
+			}
 
-                if (Input.Keyboard.IsPressed(KeyCode.Escape)) {
-                    EndTyping();
-                }
+			if (_uiState.CurrentlyFocused != this)
+				return;
 
-                TypeKeystrokes();
-            } else {
-                CheckForMouseClick();
-            }
 
-            base.OnUpdate();
-        }
-
-        private void CheckForMouseClick() {
-            if (Input.Mouse.IsPressed(MouseButton.Left) && Input.Mouse.IsOver(ScreenRect)) {
-				_uiState.FocusElement(this);
-
-                if (_shouldClear)
-                    _textObject.Text = "";
-            }
+			if (TypeKeystrokes() || Input.Keyboard.IsPressed(KeyCode.Escape)) {
+				EndTyping();
+			}
         }
 
 
         private bool TypeKeystrokes() {
-            bool changed = false;
             string typed = Input.Keyboard.CharactersTyped;
+			if (typed.Length == 0)
+				return false;
+
             for (int i = 0; i < typed.Length; i++) {
                 if (typed[i] == '\b') {
-                    if (_textObject.Text.Length > 0) {
-                        _textObject.Text = _textObject.Text.Substring(0, _textObject.Text.Length - 1);
+                    if (_textObject.String.Length > 0) {
+                        _textObject.String = _textObject.String.Substring(0, _textObject.String.Length - 1);
                     }
                 } else {
-                    _textObject.Text += typed[i];
+                    _textObject.String += typed[i];
                 }
 
-                changed = true;
             }
 
-            if (changed) {
-                string s = _textObject.Text;
+            string s = _textObject.String;
 
-                if (s.Length > 0 && s[s.Length - 1] == '\n') {
-                    if (_endsTypingOnNewline)
-                        return true;
+            if (s.Length > 0 && s[s.Length - 1] == '\n') {
+                _textObject.String = s.Substring(0, s.Length - 1);
 
-                    _textObject.Text = s.Substring(0, s.Length - 1);
-                    EndTyping();
-                }
-
-                OnTextChanged?.Invoke();
+				if (_endsTypingOnNewline)
+					return true;
             }
 
-            return true;
+            OnTextChanged?.Invoke();
+			return false;
         }
 
 
         protected void EndTyping() {
-            if (_uiState.IsFocused(this)) {
-				_uiState.FocusElement(null);
+			if (_uiState.CurrentlyFocused != this)
+				return;
 
-                OnTextFinalized?.Invoke();
-            }
-        }
+			_uiState.CurrentlyFocused = null;
 
-        /// <summary>
-        /// What happens when you accept the input that you entered.
-        /// The defocusing will not happen here
-        /// </summary>
-        protected void OnTextFinalizedSelf() {
-            try {
-                _property.Value = _parser(_textObject.Text);
-            } catch (Exception e) {
+			try {
+				_property.Value = _parser(_textObject.String);
+			} catch (Exception e) {
+				// validation error. 
+			}
 
-            }
+			_textObject.String = _property.Value.ToString();
 
-            _textObject.Text = _property.Value.ToString();
+			OnTextFinalized?.Invoke();
         }
     }
 }

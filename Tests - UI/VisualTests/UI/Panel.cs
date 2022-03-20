@@ -3,6 +3,7 @@
 namespace MinimalAF.VisualTests.UI {
     public class Panel : Element {
         Color4 _color, _hoverColor, _clickColor;
+        UIState _uiState;
 
         public Panel(Color4 color, Color4 hoverColor, Color4 clickColor) {
             _color = color;
@@ -14,7 +15,7 @@ namespace MinimalAF.VisualTests.UI {
         Color4 _drawColor;
 
         public override void OnMount() {
-            base.OnMount();
+            _uiState = GetResource<UIState>();
         }
 
         public override void OnUpdate() {
@@ -22,9 +23,8 @@ namespace MinimalAF.VisualTests.UI {
 
             _drawColor = _color;
 
-            if (MouseOverSelf() && MouseButtonPressed(MouseButton.Any)) {
-                if (_mouseInput.CheckAndHandlePressed()) {
-                    Console.WriteLine("Clicked");
+            if (MouseOverSelf()) {
+                if (MouseButtonPressed(MouseButton.Any)) {
                     _drawColor = _clickColor;
                 } else {
                     _drawColor = _hoverColor;
@@ -33,11 +33,11 @@ namespace MinimalAF.VisualTests.UI {
         }
 
         public override void OnRender() {
-            SetDrawColor(new Color4(0, 1));
-            RectOutline(1, Rect);
+            SetDrawColor(Color4.VA(0, 1));
+            RectOutline(1, RelativeRect);
 
             SetDrawColor(_drawColor);
-            Rect(Rect);
+            Rect(RelativeRect);
 
             base.OnRender();
         }

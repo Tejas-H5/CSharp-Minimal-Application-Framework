@@ -56,7 +56,7 @@ namespace MinimalAF.VisualTests.Rendering
             SetDrawColor(1, 1, 1, 0.5f);
             SetTexture(GetFramebufferTexture(0));
             
-            Rect(Left, Bottom, Width,Height);
+            Rect(0, 0, Width,Height);
 
             SetTexture(null);
 

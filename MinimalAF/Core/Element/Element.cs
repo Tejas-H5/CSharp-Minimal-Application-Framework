@@ -16,7 +16,13 @@ namespace MinimalAF {
 		protected Element[] _children;
 		private Color4 _clearColor;
 
-		public Rect ScreenRect;
+		/// <summary>
+        /// Don't use this for rendering, use RelativeRect instead
+        /// </summary>a
+		internal Rect ScreenRect;
+		
+		public Rect RelativeRect;
+
 		public Vector2 Pivot;
 
 		protected void SetClearColor(Color4 value) {
@@ -39,8 +45,9 @@ namespace MinimalAF {
 			}
 		}
 
-		public void SetChildren(params Element[] arr) {
+		public Element SetChildren(params Element[] arr) {
 			Children = arr;
+			return this;
 		}
 
 		public Element Parent {
@@ -178,6 +185,23 @@ namespace MinimalAF {
 			}
 
 			AfterLayout();
+
+			RecalculateScreenRects();
+		}
+
+		internal void RecalculateScreenRects() {
+			if (Parent == null) {
+				// will be overriden by root element
+				ScreenRect = GetParentRelativeRect();
+			} else {
+				ScreenRect = RelativeRect;
+				ScreenRect.X0 += Parent.ScreenRect.X0;
+				ScreenRect.Y0 += Parent.ScreenRect.Y0;
+			}
+
+			for (int i = 0; i < _children.Length; i++) {
+				_children[i].RecalculateScreenRects();
+			}
 		}
 
 
@@ -220,7 +244,8 @@ namespace MinimalAF {
 
 
 		/// <summary>
-		/// Recalculate an element's layout here using the parent's layout.
+        /// Use this to resize all children containers with the Layout methods.
+        /// Don't change this container's own rectangle, as you may be overriding changes done by parents
 		/// </summary>
 		public virtual void OnLayout() {
 
@@ -228,8 +253,8 @@ namespace MinimalAF {
 
 
 		/// <summary>
-		/// Recalculate an element's layout here based on the child's layout. This is how
-		/// you would implement auto-resizing to a child's content for example
+		/// Use this to arrange all children containers, and fix up this element's size
+		/// so that parent elements can arrange this
 		/// </summary>
 		public virtual void AfterLayout() {
 

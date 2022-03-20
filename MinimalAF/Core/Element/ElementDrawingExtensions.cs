@@ -7,17 +7,32 @@ namespace MinimalAF {
         /// Shorthand for RectTransform.Height * amount
         /// </summary>
         public float VH(float amount) {
-            return ScreenRect.Height * amount;
+            return RelativeRect.Height * amount;
         }
 
         /// <summary>
         /// Shorthand for RectTransform.Width * amount
         /// </summary>
         public float VW(float amount) {
-            return ScreenRect.Width * amount;
+            return RelativeRect.Width * amount;
         }
 
-        public void UseFramebuffer(int index) {
+		/// <summary>
+		/// Shorthand for VH((float)amount)
+		/// </summary>
+		public float VH(double amount) {
+			return VH((float)amount);
+		}
+
+		/// <summary>
+		/// Shorthand for VW((float)amount)
+		/// </summary>
+		public float VW(double amount) {
+			return VW((float)amount);
+		}
+
+
+		public void UseFramebuffer(int index) {
             CTX.Framebuffer.Use(index);
         }
 

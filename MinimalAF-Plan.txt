@@ -48,7 +48,31 @@ TODO:
 							- Remove unity inspired RectTransform. It may actually be hindering us rather than helping us. 
 								- replace it with layout methods. Right now we are doing this with anchors, but we don't need to. 
 									- renamed Rect2D to Rect. Rects can only be 2D lol so its redundant you see (nerd emoji)
-						-> Start going through the tests one by one and fixing them
+				-> Start going through the tests one by one and fixing them
+					-> the layout logic is still wack. if elemetns are driving their children's layout, it doesnt matter because the recursion will just undo those changes. Also, if the window moves alittle, should every single object really update it's layout ?
+						- also, every rectangle is going to be relative to the previous rectangle. 
+						
+New layouting algorithm:
+Imagine: rectangle with several textboxes whose width match the rectangle but they are arranged vertically on after the other. This algorithm should work for scaling of this rectangle:
+
+	1) scale rectangle, trigger update in all children
+	2) expand all children to fill all directions
+	3) expand the text within to fill all directions, recalculate it
+	4) make the text to have the same dimensions as the strign width and height
+	5) Arrange chldren
+	
+it looks kinad recursive:
+fill parent
+	fill-parent
+		recalc text
+	fit-to-text-size
+arrange-children
+
+So then in OnLayout, parents calculate child sizes, and then in AfterLayout, each item is arranging it's child objects and then fixing up their sizes for the parent to arrange them.
+						
+				-> get code compiling, and fix issues
+						
+				-* Make a unit test with two columns and cards, and we can drag+drop the cards amongst the columns and between them
 									
 		-* Eliminate the need for all 'Screen space to world space' code for 2D rectangles in the UI tree (However if there is a 3D scene within one of those, that will need to implement something like that but that is none of our concern)
 			-* Allow elements to define an internal scale. Perhaps seperate ones for X and Y, or both at the same time. For instance, if we wanted the width of our UI to be 700 units, then we can say that WIDTH * unit = 700 => the unit is 700/WIDTH units per pixel. Something like SetUnitsPerPixel(700 / VW(1));

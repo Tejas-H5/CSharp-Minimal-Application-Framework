@@ -158,7 +158,6 @@ namespace MinimalAF {
 
         void ResizeAction() {
             _rootElement.UpdateLayout();
-
             CTX.SetViewport(Rect);
         }
 

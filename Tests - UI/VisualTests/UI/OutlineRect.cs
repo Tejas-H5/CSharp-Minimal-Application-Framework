@@ -9,10 +9,7 @@
 
         public override void OnRender() {
             SetDrawColor(_col);
-
-            RectOutline(_thickness, RectTransform.Rect);
-
-            base.OnRender();
+            RectOutline(_thickness, 0, 0, VW(1), VH(1));
         }
     }
 }

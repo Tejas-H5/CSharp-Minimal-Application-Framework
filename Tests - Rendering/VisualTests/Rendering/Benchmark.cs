@@ -40,19 +40,19 @@ namespace MinimalAF.VisualTests.Rendering
 
             for (int i = 0; i < amount; i++)
             {
-                float x1 = Left + (float)rand.NextDouble() * Width;
-                float y1 = Bottom + (float)rand.NextDouble() * Height;
+                float x1 = VW(rand.NextDouble());
+                float y1 = VH(rand.NextDouble());
 
-                float x2 = Left + (float)rand.NextDouble() * Width;
-                float y2 = Bottom + (float)rand.NextDouble() * Height;
+                float x2 = VW(rand.NextDouble());
+                float y2 = VH((float)rand.NextDouble());
 
                 Line(x1, y1, x2, y2, _lineThiccness, CapType.Circle);
             }
 
             double FPS = frames / time;
             SetDrawColor(0, 0, 0, 1f);
-            Text($"FPS: {FPS.ToString("0.000")}", Left + 10, Bottom + Height - 50);
-            Text($"Lines drawn: {amount}", Left + 10, Bottom + Height - 100);
+            Text("FPS: " + FPS.ToString("0.000"), 10, Height - 50);
+            Text("Lines drawn: " + amount, 10, Height - 100);
 
             time += Time.DeltaTime;
             frames++;

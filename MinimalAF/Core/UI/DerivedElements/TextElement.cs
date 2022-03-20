@@ -6,7 +6,7 @@ namespace MinimalAF {
         public Color4 TextColor {
             get; set;
         }
-        public string Text { get; set; } = "";
+        public string String { get; set; } = "";
 
         public string Font { get; set; } = "";
         public int FontSize { get; set; } = -1;
@@ -32,7 +32,7 @@ namespace MinimalAF {
 
         public TextElement(string text, Color4 textColor, string fontName, int fontSize, VerticalAlignment vAlign, HorizontalAlignment hAlign) {
             TextColor = textColor;
-            Text = text;
+            String = text;
             VerticalAlignment = vAlign;
             HorizontalAlignment = hAlign;
             Font = fontName;
@@ -40,23 +40,23 @@ namespace MinimalAF {
         }
 
         public override void OnRender() {
-            if (Text == null)
+            if (String == null)
                 return;
 
-            CTX.Text.SetFont(Font, FontSize);
-            CTX.SetDrawColor(TextColor);
+            SetFont(Font, FontSize);
+            SetDrawColor(TextColor);
 
             float startX = 0, startY = 0;
 
             switch (VerticalAlignment) {
                 case VerticalAlignment.Bottom:
-                    startY = ScreenRect.Bottom;
+                    startY = RelativeRect.Bottom;
                     break;
                 case VerticalAlignment.Center:
-                    startY = ScreenRect.CenterY;
+                    startY = RelativeRect.CenterY;
                     break;
                 case VerticalAlignment.Top:
-                    startY = ScreenRect.Top;
+                    startY = RelativeRect.Top;
                     break;
                 default:
                     break;
@@ -64,25 +64,27 @@ namespace MinimalAF {
 
             switch (HorizontalAlignment) {
                 case HorizontalAlignment.Left:
-                    startX = ScreenRect.Left;
+                    startX = RelativeRect.Left;
                     break;
                 case HorizontalAlignment.Center:
-                    startX = ScreenRect.CenterX;
+                    startX = RelativeRect.CenterX;
                     break;
                 case HorizontalAlignment.Right:
-                    startX = ScreenRect.Right;
+                    startX = RelativeRect.Right;
                     break;
                 default:
                     break;
             }
 
-            _caratPos = CTX.Text.Draw(Text, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
+            _caratPos = CTX.Text.Draw(String, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
         }
 
-        internal float TextWidth() {
-            //TODO: set the current font
+        public override void OnLayout() {
+			LayoutMargin(0);
+        }
 
-            return GetStringWidth(Text);
+        public float TextWidth() {
+            return GetStringWidth(String);
         }
 
         public PointF GetCaratPos() {
@@ -90,7 +92,6 @@ namespace MinimalAF {
         }
 
         public float GetCharacterHeight() {
-            //TODO: set the current font
             return CTX.Text.GetHeight('|');
         }
     }

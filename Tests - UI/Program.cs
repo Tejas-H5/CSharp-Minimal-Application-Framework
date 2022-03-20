@@ -9,7 +9,6 @@ namespace RenderingEngineVisualTests {
                 new UITest(),
                 new UISplittingTest(),
                 new UITextInputTest(),
-                new UITextNumberInputTest(),
                 new UIAspectRatioTest(),
                 new UILinearArrangeNestedTest(),
                 new UILinearArrangeTest(),

@@ -59,14 +59,16 @@ namespace MinimalAF {
                 return _window.Height;
             }
         }
-        public override Rect GetParentRect() {
-            return Rect;
+        internal override Rect GetParentRelativeRect() {
+            return ScreenRect;
         }
-        new public Rect Rect {
+
+        new public Rect ScreenRect {
             get {
                 return _window.Rect;
             }
         }
+
         public float CurrentFPS {
             get {
                 return _window.CurrentFPS;

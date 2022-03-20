@@ -1,4 +1,6 @@
-﻿namespace MinimalAF {
+﻿using System;
+
+namespace MinimalAF {
     /// <summary>
     /// OpenTK's Color4 has a float constructor as well as an int constructor
     /// so writing new Color4(1,1,1) vs new Color4(1.0f,1.0f,1.0f) has two different outcomes
@@ -34,13 +36,50 @@
         /// floats, 0.0f to 1.0f
         /// </summary>
         public static Color4 RGB(float r, float g, float b) {
-            return new Color4(r, g, b, 1.0f);
+            return Color4.RGBA(r, g, b, 1.0f);
         }
 
-        /// <summary>
-        /// floats, 0.0f to 1.0f
+
+		/// <summary>
+        /// Make a color from HSV. Think of that colour circle you often see in drawing prorams,
         /// </summary>
-        public static Color4 RGBA(float r, float g, float b, float a) {
+        /// <param name="h">An angle around the color circle in degrees</param>
+        /// <param name="s">A distance from the center of the color circle from 0 being the center to 1 being the outside</param>
+        /// <param name="v">Darkness, with 0 being dark and 1 being bright</param>
+        /// <param name="a"></param>
+        /// <returns></returns>
+		public static Color4 HSVA(float h, float s, float v, float a) {
+			float c = v * s;
+			float x = c * (1 - MathF.Abs(h / 60) % 2 - 1);
+			float m = v - c;
+			float r = 0, g = 0, b = 0;
+			if (h < 60) {
+				r = c;
+				g = x;
+			} else if (h < 120) {
+				r = x;
+				g = c;
+			} else if (h < 180) {
+				g = c;
+				b = x;
+			} else if (h < 240) {
+				g = x;
+				b = c;
+			} else if (h < 300) {
+				r = x;
+				b = c;
+			} else {
+				r = c;
+				b = x;
+			}
+
+			return new Color4(r + m, g + m, b + m, a);
+		}
+
+		/// <summary>
+		/// floats, 0.0f to 1.0f
+		/// </summary>
+		public static Color4 RGBA(float r, float g, float b, float a) {
             return new Color4(r, g, b, a);
         }
 

@@ -8,7 +8,7 @@ namespace MinimalAF.VisualTests.Rendering
 {
 	public class PolylineSelfIntersectionAlgorithmTest : Element
     {
-        public override void OnStart()
+        public override void OnMount()
         {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
@@ -119,7 +119,7 @@ namespace MinimalAF.VisualTests.Rendering
 
         public override void OnUpdate()
         {
-            if (MouseButtonIsPressed(MouseButton.Left))
+            if (MouseButtonPressed(MouseButton.Left))
             {
                 _points[_currentPoint] = new PointF(MouseX, MouseY);
                 _currentPoint = (_currentPoint + 1) % _points.Length;

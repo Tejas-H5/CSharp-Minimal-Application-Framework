@@ -3,7 +3,7 @@
         Element _root;
         Element _textInputElement;
 
-        public override void OnStart() {
+        public override void OnMount() {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "xd lmao xdxdxd";
@@ -11,7 +11,7 @@
             w.RenderFrequency = 120;
             w.UpdateFrequency = 120;
 
-            base.OnStart();
+            base.OnMount();
 
             //SetClearColor(Color4.RGBA(1, 1, 1, 1));
 

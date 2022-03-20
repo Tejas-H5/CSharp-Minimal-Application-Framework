@@ -29,11 +29,27 @@ TODO:
 			- switch brackets back to method() 
 				- add .editorconfig
 
----- day 2
-			
 		-> Fix the UI Lifecycle functions
-			-* remove OnStart, replace it with OnMount, OnDismount like REACT, also makes more sense when logically reasoning about object lifetimes
-			-* fix UI API to calculate layout during OnResize and not in an initialization phase. This will allow us to have more flexibility with layout in future
+			-> remove OnStart, replace it with OnMount, OnDismount like REACT, also makes more sense when logically reasoning about object lifetimes.
+				- And remove the need to call base. anything
+				-> Remove IWindowResources. Why is this even a thing
+					-> looks like it has a reason to be there, but I dont buy it. I think any element should be able to have state. Make an interface IResource, and GetResource<IResource> functions that go up the tree and check if a node has a resource. 
+						- Don't. MAke a UIState element that we can get to do these things. This pattern may lead to long chains of 1 like Window=>resource->resource->resource->resource->resource appearing everywhere.
+						For this reason, we should make a State element that can store arbitrary state. And only if things need to have to keep state up to date based on lifecycle methods do we need to make them a Element of their own.
+						- unit test?
+							- not yet, we can use this feature when we update the unit test for text inptus though
+				
+			-> fix UI API to calculate layout during OnResize and not in an initialization phase. This will allow us to have more flexibility with layout in future
+				-> Make all the 'in-rows' whatever methods not be initialziation methods but resizing methods
+					-> Fix up the UI tests. I can't think of any other way to do this. We can work backwards, by typing in our ideal API there and then makeing the necessary refactorings as we did before
+						- The UI system shouldn't be a part of MinimalAF. It should ship seperately.
+							- maybe it should come with it, since I want to ship it with everything I need to make anything ever.
+							- I will figure out some way to seperate the styling from the logic, and we can ship the logic and none of the styling
+							- Remove unity inspired RectTransform. It may actually be hindering us rather than helping us. 
+								- replace it with layout methods. Right now we are doing this with anchors, but we don't need to. 
+									- renamed Rect2D to Rect. Rects can only be 2D lol so its redundant you see (nerd emoji)
+						-> Start going through the tests one by one and fixing them
+									
 		-* Eliminate the need for all 'Screen space to world space' code for 2D rectangles in the UI tree (However if there is a 3D scene within one of those, that will need to implement something like that but that is none of our concern)
 			-* Allow elements to define an internal scale. Perhaps seperate ones for X and Y, or both at the same time. For instance, if we wanted the width of our UI to be 700 units, then we can say that WIDTH * unit = 700 => the unit is 700/WIDTH units per pixel. Something like SetUnitsPerPixel(700 / VW(1));
 				-* needs to be done in the resize function

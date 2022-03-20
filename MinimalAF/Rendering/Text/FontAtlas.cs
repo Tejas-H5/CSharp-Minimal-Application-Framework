@@ -25,7 +25,7 @@ namespace MinimalAF.Rendering.Text {
         public const string DefaultCharacters = "!#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'";
         private Font _systemFont;
         private Bitmap _bitmap;
-        private Dictionary<char, Rect2D> _characterQuadCoords;
+        private Dictionary<char, Rect> _characterQuadCoords;
 
         public Font SystemFont {
             get => _systemFont;
@@ -59,12 +59,12 @@ namespace MinimalAF.Rendering.Text {
 
             _bitmap = CreateAtlasBaseImage(importSettings, characters, _systemFont, padding);
 
-            _characterQuadCoords = new Dictionary<char, Rect2D>();
+            _characterQuadCoords = new Dictionary<char, Rect>();
 
             RenderAtlas(importSettings, characters, _systemFont, _characterQuadCoords, padding, _bitmap);
         }
 
-        public Rect2D GetCharacterUV(char c) {
+        public Rect GetCharacterUV(char c) {
             if (!IsValidCharacter(c)) {
                 c = '?';
             }
@@ -73,7 +73,7 @@ namespace MinimalAF.Rendering.Text {
         }
 
         public SizeF GetCharacterSize(char c) {
-            Rect2D normalized = GetCharacterUV(c);
+            Rect normalized = GetCharacterUV(c);
             float width = _bitmap.Width;
             float height = _bitmap.Height;
 
@@ -106,7 +106,7 @@ namespace MinimalAF.Rendering.Text {
             return font;
         }
 
-        private void RenderAtlas(FontImportSettings fontSettings, string characters, Font font, Dictionary<char, Rect2D> coordMap, int padding, Bitmap bitmap) {
+        private void RenderAtlas(FontImportSettings fontSettings, string characters, Font font, Dictionary<char, Rect> coordMap, int padding, Bitmap bitmap) {
             using (var g = Graphics.FromImage(bitmap)) {
                 ConfigureGraphicsWithFontSettings(fontSettings, g);
 
@@ -125,8 +125,8 @@ namespace MinimalAF.Rendering.Text {
                     float u1 = (currentX + size.Width) / bitmap.Width;
                     float v1 = (currentY + size.Height) / bitmap.Height;
 
-                    Rect2D uv = new Rect2D(u0, v0, u1, v1);
-                    Rect2D correctedUV = new Rect2D(uv.Left, uv.Top, uv.Right, uv.Bottom);
+                    Rect uv = new Rect(u0, v0, u1, v1);
+                    Rect correctedUV = new Rect(uv.Left, uv.Top, uv.Right, uv.Bottom);
 
                     coordMap[c] = correctedUV;
 

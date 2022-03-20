@@ -25,9 +25,9 @@ namespace MinimalAF {
                 return Size.X;
             }
         }
-        public Rect2D Rect {
+        public Rect Rect {
             get {
-                return new Rect2D(0, 0, Width, Height);
+                return new Rect(0, 0, Width, Height);
             }
         }
         public float CurrentFPS {
@@ -71,7 +71,7 @@ namespace MinimalAF {
 
             Input.HookToWindow(this);
 
-            _rootElement.Start();
+            _rootElement.Mount();
 
             _init = true;
             ResizeAction();
@@ -157,7 +157,7 @@ namespace MinimalAF {
         }
 
         void ResizeAction() {
-            _rootElement.Resize();
+            _rootElement.UpdateLayout();
 
             CTX.SetViewport(Rect);
         }
@@ -186,7 +186,7 @@ namespace MinimalAF {
         }
 
         private unsafe void Cleanup() {
-            _rootElement.Cleanup();
+            _rootElement.Dismount();
 
             CTX.Dispose(true);
             AudioCTX.Cleanup();

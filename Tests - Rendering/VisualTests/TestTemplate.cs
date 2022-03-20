@@ -4,7 +4,7 @@ namespace MinimalAF.VisualTests
 {
 	public class TemplateForEntrypointProgram : Element
     {
-        public override void OnStart()
+        public override void OnMount()
         {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
@@ -23,11 +23,11 @@ namespace MinimalAF.VisualTests
             //UI Events / input / other non-rendering update code goes here
         }
 
-        public override void OnResize()
+        public override void OnLayout()
         {
         }
 
-        public override void OnCleanup()
+        public override void OnDismount()
         {
         }
     }

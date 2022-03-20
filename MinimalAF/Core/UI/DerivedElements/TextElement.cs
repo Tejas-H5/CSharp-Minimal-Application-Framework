@@ -50,13 +50,13 @@ namespace MinimalAF {
 
             switch (VerticalAlignment) {
                 case VerticalAlignment.Bottom:
-                    startY = RectTransform.Rect.Bottom;
+                    startY = ScreenRect.Bottom;
                     break;
                 case VerticalAlignment.Center:
-                    startY = RectTransform.Rect.CenterY;
+                    startY = ScreenRect.CenterY;
                     break;
                 case VerticalAlignment.Top:
-                    startY = RectTransform.Rect.Top;
+                    startY = ScreenRect.Top;
                     break;
                 default:
                     break;
@@ -64,13 +64,13 @@ namespace MinimalAF {
 
             switch (HorizontalAlignment) {
                 case HorizontalAlignment.Left:
-                    startX = RectTransform.Rect.Left;
+                    startX = ScreenRect.Left;
                     break;
                 case HorizontalAlignment.Center:
-                    startX = RectTransform.Rect.CenterX;
+                    startX = ScreenRect.CenterX;
                     break;
                 case HorizontalAlignment.Right:
-                    startX = RectTransform.Rect.Right;
+                    startX = ScreenRect.Right;
                     break;
                 default:
                     break;

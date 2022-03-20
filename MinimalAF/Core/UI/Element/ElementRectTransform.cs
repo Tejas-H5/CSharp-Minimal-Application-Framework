@@ -2,15 +2,9 @@
 
 namespace MinimalAF {
     public partial class Element {
-        public RectTransform RectTransform {
-            get {
-                return _rectTransform;
-            }
-        }
-
-        public virtual Rect2D GetParentRect() {
+        public virtual Rect GetParentRect() {
             if (Parent != null) {
-                return Parent.RectTransform.Rect;
+                return Parent.ScreenRect;
             }
 
             throw new NotImplementedException("Parent wasn't hooked up properly. " +
@@ -19,32 +13,32 @@ namespace MinimalAF {
 
         public float Width {
             get {
-                return RectTransform.Rect.Width;
+                return ScreenRect.Width;
             }
         }
         public float Height {
             get {
-                return RectTransform.Rect.Height;
+                return ScreenRect.Height;
             }
         }
         public float Left {
             get {
-                return RectTransform.Rect.Left;
+                return ScreenRect.Left;
             }
         }
         public float Bottom {
             get {
-                return RectTransform.Rect.Bottom;
+                return ScreenRect.Bottom;
             }
         }
         public float Right {
             get {
-                return RectTransform.Rect.Right;
+                return ScreenRect.Right;
             }
         }
         public float Top {
             get {
-                return RectTransform.Rect.Top;
+                return ScreenRect.Top;
             }
         }
     }

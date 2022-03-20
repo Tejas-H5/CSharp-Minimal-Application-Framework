@@ -9,27 +9,10 @@ namespace MinimalAF {
     public class Window : Element {
         OpenTKWindowWrapper _window;
 
-        private IWindowResource[] _windowResources;
-        public readonly WindowMouseInput MouseInput;
-        public readonly WindowKeyboardInput KeyboardInput;
-
         public override bool SingleChild => true;
 
         public Window(Element child) {
-            this.SetChildren(
-                child
-            );
-
-            _windowResources = new IWindowResource[]
-            {
-                MouseInput = new WindowMouseInput(),
-            };
-
-            KeyboardInput = new WindowKeyboardInput();
-        }
-
-        public override void OnStart() {
-            base.OnStart();
+            SetChildren(child);
         }
 
         public void Run() {
@@ -76,10 +59,10 @@ namespace MinimalAF {
                 return _window.Height;
             }
         }
-        public override Rect2D GetParentRect() {
+        public override Rect GetParentRect() {
             return Rect;
         }
-        new public Rect2D Rect {
+        new public Rect Rect {
             get {
                 return _window.Rect;
             }
@@ -130,14 +113,6 @@ namespace MinimalAF {
                     _window.MouseWheelVertical -= value;
                 }
             }
-        }
-
-        public override void OnUpdate() {
-            foreach (IWindowResource ie in _windowResources) {
-                ie.Update();
-            }
-
-            base.OnUpdate();
         }
     }
 }

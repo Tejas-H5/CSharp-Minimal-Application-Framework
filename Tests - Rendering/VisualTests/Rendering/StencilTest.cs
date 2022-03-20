@@ -5,7 +5,7 @@ namespace MinimalAF.VisualTests.Rendering
 {
 	public class StencilTest : Element
     {
-        public override void OnStart()
+        public override void OnMount()
         {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
@@ -16,7 +16,7 @@ namespace MinimalAF.VisualTests.Rendering
 
 			this.SetChildren(geometryAndTextTest);
 
-			base.OnStart();
+			base.OnMount();
 
         }
 

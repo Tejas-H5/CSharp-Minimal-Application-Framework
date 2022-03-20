@@ -3,7 +3,7 @@
         Element _root;
         Element _textInputElement;
 
-        public override void OnStart() {
+        public override void OnMount() {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "Text input ui element test";
@@ -13,7 +13,7 @@
 
             SetClearColor(Color4.RGBA(1, 0, 0, 1));
 
-            base.OnStart();
+            base.OnMount();
             //_root = UICreator.CreatePanel(new Color4(1))
             //    .AddComponent(new UIGraphicsRaycaster());
 

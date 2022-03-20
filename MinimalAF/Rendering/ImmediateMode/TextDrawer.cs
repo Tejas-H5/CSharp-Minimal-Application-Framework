@@ -171,9 +171,9 @@ namespace MinimalAF.Rendering.ImmediateMode {
 
         private void DrawCharacter(float scale, float x, float y, char c) {
             SizeF size = GetSize(c);
-            Rect2D uv = ActiveFont.FontAtlas.GetCharacterUV(c);
+            Rect uv = ActiveFont.FontAtlas.GetCharacterUV(c);
 
-            CTX.Rect.Draw(new Rect2D(x, y, x + size.Width * scale, y + size.Height * scale), uv);
+            CTX.Rect.Draw(new Rect(x, y, x + size.Width * scale, y + size.Height * scale), uv);
         }
 
         public void Dispose() {

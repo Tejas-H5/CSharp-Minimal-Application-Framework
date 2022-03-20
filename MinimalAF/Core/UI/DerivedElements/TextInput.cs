@@ -15,7 +15,7 @@ namespace MinimalAF {
         Property<T> _property;
         Func<string, T> _parser;
 
-        WindowKeyboardInput _keyboardInput;
+        WindowKeyboardInput _uiState;
 
         /// <summary>
         /// A text input that sets value to a property.
@@ -34,14 +34,14 @@ namespace MinimalAF {
             OnTextFinalized += OnTextFinalizedSelf;
         }
 
-        public override void OnStart() {
-            _keyboardInput = GetAncestor<Window>().KeyboardInput;
+        public override void OnMount() {
+			_uiState = GetResource<UIState>();
 
-            base.OnStart();
+            base.OnMount();
         }
 
         public override void OnRender() {
-            if (_keyboardInput.IsFocused(this)) {
+            if (_uiState.IsFocused(this)) {
                 RenderCarat();
             }
 
@@ -56,8 +56,8 @@ namespace MinimalAF {
         }
 
         public override void OnUpdate() {
-            if (_keyboardInput.IsFocused(this)) {
-                if (MouseButtonIsPressed(MouseButton.Left)) {
+            if (_uiState.IsFocused(this)) {
+                if (MouseButtonPressed(MouseButton.Left)) {
                     if (MouseOverSelf()) {
                         EndTyping();
                     }
@@ -76,8 +76,8 @@ namespace MinimalAF {
         }
 
         private void CheckForMouseClick() {
-            if (Input.Mouse.IsPressed(MouseButton.Left) && Input.Mouse.IsOver(RectTransform.Rect)) {
-                _keyboardInput.FocusElement(this);
+            if (Input.Mouse.IsPressed(MouseButton.Left) && Input.Mouse.IsOver(ScreenRect)) {
+				_uiState.FocusElement(this);
 
                 if (_shouldClear)
                     _textObject.Text = "";
@@ -119,8 +119,8 @@ namespace MinimalAF {
 
 
         protected void EndTyping() {
-            if (_keyboardInput.IsFocused(this)) {
-                _keyboardInput.FocusElement(null);
+            if (_uiState.IsFocused(this)) {
+				_uiState.FocusElement(null);
 
                 OnTextFinalized?.Invoke();
             }

@@ -16,15 +16,15 @@
                 );
         }
 
-        public void Draw(Rect2D rect, Rect2D uvs) {
+        public void Draw(Rect rect, Rect uvs) {
             Draw(rect.X0, rect.Y0, rect.X1, rect.Y1, uvs.X0, uvs.Y0, uvs.X1, uvs.Y1);
         }
 
-        public void Draw(Rect2D rect) {
+        public void Draw(Rect rect) {
             Draw(rect.X0, rect.Y0, rect.X1, rect.Y1, 0, 0, 1, 1);
         }
 
-        public void DrawOutline(float thickness, Rect2D rect) {
+        public void DrawOutline(float thickness, Rect rect) {
             DrawOutline(thickness, rect.X0, rect.Y0, rect.X1, rect.Y1);
         }
 

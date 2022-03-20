@@ -120,7 +120,7 @@ namespace MinimalAF {
             _incomingWheelNotches += obj.OffsetY;
         }
 
-        internal bool IsOver(Rect2D rect) {
+        internal bool IsOver(Rect rect) {
             return Intersections.IsInsideRect(X, Y, rect);
         }
 

@@ -7,18 +7,14 @@ namespace MinimalAF.VisualTests.UI {
         public Panel(Color4 color, Color4 hoverColor, Color4 clickColor) {
             _color = color;
             _drawColor = color;
-
             _hoverColor = hoverColor;
             _clickColor = clickColor;
         }
 
         Color4 _drawColor;
-        WindowMouseInput _mouseInput;
 
-        public override void OnStart() {
-            _mouseInput = GetAncestor<Window>().MouseInput;
-
-            base.OnStart();
+        public override void OnMount() {
+            base.OnMount();
         }
 
         public override void OnUpdate() {
@@ -26,7 +22,7 @@ namespace MinimalAF.VisualTests.UI {
 
             _drawColor = _color;
 
-            if (_mouseInput.CheckAndHandleOver(this)) {
+            if (MouseOverSelf() && MouseButtonPressed(MouseButton.Any)) {
                 if (_mouseInput.CheckAndHandlePressed()) {
                     Console.WriteLine("Clicked");
                     _drawColor = _clickColor;

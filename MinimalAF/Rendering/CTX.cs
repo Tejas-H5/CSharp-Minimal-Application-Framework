@@ -20,9 +20,9 @@ namespace MinimalAF.Rendering {
         private static IGLFWGraphicsContext _glContext;
 
         private static int _contextWidth, _contextHeight;
-        private static Rect2D _currentScreenRect;
+        private static Rect _currentScreenRect;
 
-        internal static Rect2D CurrentScreenRect {
+        internal static Rect CurrentScreenRect {
             get => _currentScreenRect;
         }
 
@@ -200,19 +200,19 @@ namespace MinimalAF.Rendering {
         ///		void Perspective3D(Matrix4 cameraPosition, ...cameraSettings) {}
         /// </code>
         /// </summary>
-        internal static void SetViewport(Rect2D screenRect) {
+        internal static void SetViewport(Rect screenRect) {
             screenRect = screenRect.Rectify();
 
             GL.Viewport((int)screenRect.X0, (int)screenRect.Y0, (int)screenRect.Width, (int)screenRect.Height);
             SetScissor(screenRect);
         }
 
-        internal static void SetScissor(Rect2D screenRect) {
+        internal static void SetScissor(Rect screenRect) {
             GL.Scissor((int)screenRect.X0, (int)screenRect.Y0, (int)screenRect.Width, (int)screenRect.Height);
             GL.Enable(EnableCap.ScissorTest);
         }
 
-        internal static void SetRect(Rect2D screenRect) {
+        internal static void SetRect(Rect screenRect) {
             Flush();
             SetScissor(screenRect);
             Cartesian2D(ContextWidth, ContextHeight, screenRect.X0, screenRect.Y0);

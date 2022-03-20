@@ -1,17 +1,29 @@
 ﻿using System;
 
 namespace MinimalAF {
-    public struct Rect2D {
+    public struct Rect {
         public float X0;
         public float Y0;
         public float X1;
         public float Y1;
 
-        public Rect2D(float x0, float y0, float x1, float y1) {
+        public Rect(float x0, float y0, float x1, float y1) {
             X0 = x0;
             Y0 = y0;
             X1 = x1;
             Y1 = y1;
+        }
+
+        public void SetWidth(float newWidth, float center = 0) {
+            float delta = Width - newWidth;
+            X0 += delta * center;
+            X1 -= delta * (1.0f - center);
+        }
+
+        public void SetHeight(float newHeight, float center = 0) {
+            float delta = Height - newHeight;
+            Y0 += delta * center;
+            Y1 -= delta * (1.0f - center);
         }
 
         public float Left {
@@ -41,7 +53,7 @@ namespace MinimalAF {
             }
         }
 
-        public Rect2D Rectify() {
+        public Rect Rectify() {
             if (X0 > X1) {
                 float temp = X1;
                 X1 = X0;
@@ -92,7 +104,7 @@ namespace MinimalAF {
         }
 
         public override bool Equals(object obj) {
-            return obj is Rect2D d &&
+            return obj is Rect d &&
                    X0 == d.X0 &&
                    Y0 == d.Y0 &&
                    X1 == d.X1 &&
@@ -103,20 +115,20 @@ namespace MinimalAF {
             return HashCode.Combine(X0, Y0, X1, Y1);
         }
 
-        public static bool operator ==(Rect2D left, Rect2D right) {
+        public static bool operator ==(Rect left, Rect right) {
             return left.Equals(right);
         }
 
-        public static bool operator !=(Rect2D left, Rect2D right) {
+        public static bool operator !=(Rect left, Rect right) {
             return !(left == right);
         }
 
-        public string Representation() {
+        public string ToString() {
             return "Rect {" + X0 + ", " + X0 + ", " + X1 + ", " + Y1 + "}";
         }
 
-        public Rect2D Intersect(Rect2D other) {
-            return new Rect2D(
+        public Rect Intersect(Rect other) {
+            return new Rect(
                 MathF.Max(Left, other.Left),
                 MathF.Max(Bottom, other.Bottom),
                 MathF.Min(Right, other.Right),

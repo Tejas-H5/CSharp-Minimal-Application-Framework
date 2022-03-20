@@ -27,6 +27,7 @@
                 return _mouseInputManager;
             }
         }
+
         internal static KeyboardInputManager Keyboard {
             get {
                 return _keyboardManager;

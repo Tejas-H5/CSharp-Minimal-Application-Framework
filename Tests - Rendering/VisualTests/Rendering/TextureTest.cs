@@ -9,7 +9,7 @@ namespace MinimalAF.VisualTests.Rendering
         Texture _tex;
         Texture _tex2;
 
-        public override void OnStart()
+        public override void OnMount()
         {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
@@ -41,7 +41,7 @@ namespace MinimalAF.VisualTests.Rendering
             SetTexture(_tex);
             Rect(20, 20, Width / 2 - 20, Height - 20);
 
-            Rect2D rect2 = new Rect2D(Width / 2 + 20, 20, Width - 20, Height - 20);
+            Rect rect2 = new Rect(Width / 2 + 20, 20, Width - 20, Height - 20);
 
 			using (PushMatrix(
 				Matrix4.Transpose(Matrix4.CreateTranslation(rect2.CenterX, rect2.CenterY, 0)) *
@@ -52,7 +52,7 @@ namespace MinimalAF.VisualTests.Rendering
 			//using (PushMatrix(Matrix4.Identity))
 			{
 				SetTexture(_tex2);
-				Rect(new Rect2D(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectify());
+				Rect(new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectify());
 			}
         }
     }

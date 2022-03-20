@@ -7,14 +7,14 @@ namespace MinimalAF {
         /// Shorthand for RectTransform.Height * amount
         /// </summary>
         public float VH(float amount) {
-            return RectTransform.Height * amount;
+            return ScreenRect.Height * amount;
         }
 
         /// <summary>
         /// Shorthand for RectTransform.Width * amount
         /// </summary>
         public float VW(float amount) {
-            return RectTransform.Width * amount;
+            return ScreenRect.Width * amount;
         }
 
         public void UseFramebuffer(int index) {
@@ -41,7 +41,7 @@ namespace MinimalAF {
             CTX.Framebuffer.DrawFramebufferToScreen2D(index);
         }
 
-        public void DrawFramebuffer(int index, Rect2D screenRect) {
+        public void DrawFramebuffer(int index, Rect screenRect) {
             CTX.Framebuffer.DrawFramebufferToScreen2D(index, screenRect);
         }
 
@@ -89,11 +89,11 @@ namespace MinimalAF {
             CTX.Rect.Draw(x0, y0, x1, y1, u0 = 0, v0 = 0, u1 = 1, v1 = 1);
         }
 
-        public void Rect(Rect2D rect, Rect2D uvs) {
+        public void Rect(Rect rect, Rect uvs) {
             CTX.Rect.Draw(rect, uvs);
         }
 
-        public void Rect(Rect2D rect) {
+        public void Rect(Rect rect) {
             CTX.Rect.Draw(rect);
         }
 
@@ -133,7 +133,7 @@ namespace MinimalAF {
             CTX.Line.DrawOutline(outlineThickness, x0, y0, x1, y1, thickness, cap);
         }
 
-        public void RectOutline(float thickness, Rect2D rect) {
+        public void RectOutline(float thickness, Rect rect) {
             CTX.Rect.DrawOutline(thickness, rect);
         }
 

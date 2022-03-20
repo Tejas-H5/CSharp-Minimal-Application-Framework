@@ -11,7 +11,7 @@ namespace MinimalAF.VisualTests.Rendering
         Texture _tex;
 		TextTest _textTest;
 
-		public override void OnStart()
+		public override void OnMount()
 		{
 			Window w = GetAncestor<Window>();
 			w.Size = (800, 600);
@@ -24,7 +24,7 @@ namespace MinimalAF.VisualTests.Rendering
 			Init();
 
 			this.SetChildren(_textTest);
-			base.OnStart();
+			base.OnMount();
 
 
             // remove when we start using OnMount

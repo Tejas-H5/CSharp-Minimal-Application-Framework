@@ -6,7 +6,7 @@ namespace MinimalAF.AudioTests {
         AudioSourceOneShot _clackSound;
         AudioListener _listener;
 
-        public override void OnStart() {
+        public override void OnMount() {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "Panning test 2";

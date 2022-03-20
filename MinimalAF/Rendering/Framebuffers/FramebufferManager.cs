@@ -85,11 +85,11 @@ namespace MinimalAF.Rendering {
         /// This only works in a 2D context
         /// </summary>
         /// <param name="index"></param>
-        public void DrawFramebufferToScreen2D(int index, Rect2D screenRect) {
+        public void DrawFramebufferToScreen2D(int index, Rect screenRect) {
             Texture prevTexture = CTX.Texture.Get();
 
             CTX.Texture.Set(GetTexture(index));
-            CTX.Rect.Draw(screenRect, new Rect2D(screenRect.X0 / CTX.ContextWidth, screenRect.Y0 / CTX.ContextHeight, screenRect.X1 / CTX.ContextWidth, screenRect.Y1 / CTX.ContextHeight));
+            CTX.Rect.Draw(screenRect, new Rect(screenRect.X0 / CTX.ContextWidth, screenRect.Y0 / CTX.ContextHeight, screenRect.X1 / CTX.ContextWidth, screenRect.Y1 / CTX.ContextHeight));
 
             CTX.Texture.Set(prevTexture);
         }

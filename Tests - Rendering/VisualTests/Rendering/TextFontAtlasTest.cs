@@ -4,7 +4,7 @@ namespace MinimalAF.VisualTests.Rendering
 {
 	class TextFontAtlasText : Element
     {
-        public override void OnStart()
+        public override void OnMount()
         {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);

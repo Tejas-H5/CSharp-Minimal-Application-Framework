@@ -1,11 +1,12 @@
 ﻿namespace MinimalAF.VisualTests.UI {
     public class UISplittingTest : Element {
-        public UISplittingTest() {
-            Color4 col = new Color4(0, 1);
+        Element topSplit, leftSplit, rightSplit, bottomSplit;
 
+        public UISplittingTest() {
+            Color4 col = Color4.VA(0, 1);
             this.SetChildren(
                 new OutlineRect(col, 5)
-                .Anchors(new Rect2D(0, 0, 1, 1))
+                .Anchors(new Rect(0, 0, 1, 1))
                 .Offsets(25)
                 .TopSplit(
                     70,
@@ -33,7 +34,7 @@
             );
         }
 
-        public override void OnStart() {
+        public override void OnMount() {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "Splitting test";
@@ -43,7 +44,7 @@
 
             SetClearColor(Color4.RGBA(1, 1, 1, 1));
 
-            base.OnStart();
+            base.OnMount();
         }
     }
 }

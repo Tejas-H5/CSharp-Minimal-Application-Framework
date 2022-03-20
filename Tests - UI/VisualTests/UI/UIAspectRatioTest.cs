@@ -19,7 +19,7 @@
             );
         }
 
-        public override void OnStart() {
+        public override void OnMount() {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "UIAspectRatioTest";
@@ -29,7 +29,7 @@
 
             SetClearColor(Color4.RGBA(0, 0, 0, 0));
 
-            base.OnStart();
+            base.OnMount();
         }
     }
 }

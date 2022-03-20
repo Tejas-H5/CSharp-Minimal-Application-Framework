@@ -2,11 +2,11 @@
 
 namespace MinimalAF {
     public static class Intersections {
-        public static bool IsInsideRect(PointF p, Rect2D a) {
+        public static bool IsInsideRect(PointF p, Rect a) {
             return IsInsideRect(p.X, p.Y, a.Left, a.Bottom, a.Right, a.Top);
         }
 
-        public static bool IsInsideRect(float x, float y, Rect2D a) {
+        public static bool IsInsideRect(float x, float y, Rect a) {
             return IsInsideRect(x, y, a.Left, a.Bottom, a.Right, a.Top);
         }
 

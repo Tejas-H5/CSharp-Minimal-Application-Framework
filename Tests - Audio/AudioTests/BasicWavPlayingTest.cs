@@ -6,7 +6,7 @@ namespace MinimalAF.AudioTests {
     public class BasicWavPlayingTest : Element {
         AudioSourceOneShot _clackSound;
 
-        public override void OnStart() {
+        public override void OnMount() {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "Keyboard test";

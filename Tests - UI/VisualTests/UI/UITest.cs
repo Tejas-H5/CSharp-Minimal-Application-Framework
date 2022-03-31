@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MinimalAF.VisualTests.UI {
     public class UITest : Element {
@@ -44,6 +45,8 @@ namespace MinimalAF.VisualTests.UI {
         }
 
         public override void OnLayout() {
+            Console.WriteLine("Layout changed");
+
             for (int i = 0; i < upSplits.Count; i++) {
                 leftSplits[i].LayoutElementsLinear(leftSplits[i].Children, LayoutDirection.Left, goldenRatioSplit, true);
                 downSplits[i].LayoutElementsLinear(downSplits[i].Children, LayoutDirection.Down, goldenRatioSplit, true);
@@ -61,12 +64,9 @@ namespace MinimalAF.VisualTests.UI {
             Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "UI Test";
-
             w.RenderFrequency = 120;
 
             SetClearColor(Color4.RGBA(1, 1, 1, 1));
-
-            base.OnMount();
         }
     }
 }

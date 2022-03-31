@@ -11,7 +11,7 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Stencil rendering test";
 
-           SetClearColor(Color4.RGBA(0,0,0,0));
+            SetClearColor(Color4.RGBA(0,0,0,0));
             SetFont("Consolas", 24);
 
 			this.SetChildren(geometryAndTextTest);
@@ -36,9 +36,10 @@ namespace MinimalAF.VisualTests.Rendering
             Rect(0, 0, Width, barSize);
 
             StartUsingStencil();
+        }
 
-			base.OnRender();
-
+        public override void AfterRender() {
+            // TODO low priority: make this stack based. Any of the children elements could have called this and made wierd stuff happen
             LiftStencil();
 
             StartStencillingWhileDrawing();

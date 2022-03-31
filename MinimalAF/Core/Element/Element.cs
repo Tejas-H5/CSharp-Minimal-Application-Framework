@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 using System;
 
 namespace MinimalAF {
-	public partial class Element {
+	public abstract partial class Element {
 		static readonly Element[] NULL_ARRAY = new Element[0];
 
 		public virtual bool SingleChild => false;
@@ -11,10 +11,9 @@ namespace MinimalAF {
 		public bool IsVisibleNextFrame = true;
 
 		protected Element _parent = null;
-		protected bool _shouldResize = true;
+		protected bool _shouldMount = false;
 		protected bool _isVisible = true;
 		protected Element[] _children;
-		private Color4 _clearColor;
 
 		/// <summary>
         /// Don't use this for rendering, use RelativeRect instead
@@ -25,8 +24,9 @@ namespace MinimalAF {
 
 		public Vector2 Pivot;
 
+		// TODO: make this somewhat local, or come up with a good way to do that
 		protected void SetClearColor(Color4 value) {
-			_clearColor = value;
+			CTX.SetClearColor(value);
 		}
 
 		public Element[] Children {
@@ -55,8 +55,11 @@ namespace MinimalAF {
 				return _parent;
 			}
 			set {
+				if (value == _parent)
+					return;
+
 				_parent = value;
-				_shouldResize = true;
+				_shouldMount = true;
 			}
 		}
 
@@ -65,6 +68,9 @@ namespace MinimalAF {
 				return _isVisible;
 			}
 			set {
+				if (_isVisible == value)
+					return;
+				
 				_isVisible = value;
 				IsVisibleNextFrame = value;
 
@@ -121,13 +127,12 @@ namespace MinimalAF {
 				return;
 			}
 
-			if (_shouldResize) {
-				_shouldResize = false;
-				UpdateLayout();
+			if (_shouldMount) {
+				_shouldMount = false;
+				Mount();
 			}
 
 			CTX.SetRect(ScreenRect);
-
 			OnUpdate();
 
 			for (int i = 0; i < _children.Length; i++) {
@@ -143,8 +148,10 @@ namespace MinimalAF {
 			}
 
 			CTX.SetRect(ScreenRect);
-			CTX.SetClearColor(_clearColor.R, _clearColor.G, _clearColor.B, _clearColor.A);
 			CTX.Texture.Set(null);
+
+			// SetDrawColor(_clearColor);
+			// Rect(RelativeRect);
 
 			OnRender();
 
@@ -155,18 +162,22 @@ namespace MinimalAF {
 			AfterRender();
 		}
 
-
-		// Rename to mount and OnMount
 		public void Mount() {
 			OnMount();
 
-			for (int i = 0; i < _children.Length; i++) {
-				_children[i].Mount();
-			}
-
-			AfterMount();
-
+			AncestorChanged();
 			UpdateLayout();
+		}
+
+		public void AncestorChanged() {
+			OnAncestorChanged();
+
+			for (int i = 0; i < _children.Length; i++) {
+				_children[i].AncestorChanged();
+			}
+		}
+
+		public virtual void OnAncestorChanged() {
 		}
 
 		public void Dismount() {
@@ -192,7 +203,7 @@ namespace MinimalAF {
 		internal void RecalculateScreenRects() {
 			if (Parent == null) {
 				// will be overriden by root element
-				ScreenRect = GetParentRelativeRect();
+				ScreenRect = GetParentScreenRect();
 			} else {
 				ScreenRect = RelativeRect;
 				ScreenRect.X0 += Parent.ScreenRect.X0;
@@ -244,11 +255,13 @@ namespace MinimalAF {
 
 
 		/// <summary>
-        /// Use this to resize all children containers with the Layout methods.
+        /// Use this to re-calculate all of the child RelativeRects. They are Rects that are defined relative to this one.
         /// Don't change this container's own rectangle, as you may be overriding changes done by parents
+        /// 
+        /// Note that in most cases you can write less code by using the Layout methods rather than 
+        /// setting the rects by hand
 		/// </summary>
 		public virtual void OnLayout() {
-
 		}
 
 

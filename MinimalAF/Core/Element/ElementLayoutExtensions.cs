@@ -20,7 +20,17 @@ namespace MinimalAF {
 			bool vertical = layoutDirection == LayoutDirection.Up || layoutDirection == LayoutDirection.Down;
 			bool reverse = layoutDirection == LayoutDirection.Down || layoutDirection == LayoutDirection.Left;
 
-			float previousAnchor = offsets[0];
+			if (offsets == null) {
+				normalizedOffsets = false;
+			}
+
+			float previousAnchor;
+
+			if (offsets != null) {
+				previousAnchor = offsets[0];
+			} else {
+				previousAnchor = 0;
+			}
 
 			if (reverse) {
 				if (vertical) {
@@ -120,7 +130,7 @@ namespace MinimalAF {
 		}
 
 		public void LayoutMargin(float margin) {
-			var parentRect = GetParentRelativeRect();
+			var parentRect = GetParentScreenRect();
 			RelativeRect = new Rect(0, 0, parentRect.X1, parentRect.Y1);
 
 			LayoutRelativeMargin(margin);

@@ -34,7 +34,11 @@
                 );
             }
 
-            SetChildren(rows);
+            SetChildren(
+                new UIRootElement().SetChildren(
+                    rows
+                )
+            );
         }
 
 

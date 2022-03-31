@@ -66,14 +66,11 @@ namespace MinimalAF {
             MouseWheel += WindowInstance_MouseWheel;
 
             CTX.Init(Context);
-
             AudioCTX.Init();
-
             Input.HookToWindow(this);
-
             _rootElement.Mount();
-
             _init = true;
+
             ResizeAction();
 
             IsVisible = true;
@@ -158,6 +155,7 @@ namespace MinimalAF {
 
         void ResizeAction() {
             _rootElement.UpdateLayout();
+
             CTX.SetViewport(Rect);
         }
 

@@ -53,6 +53,8 @@ namespace MinimalAF {
 				var res = next.GetResourceAtElement<T>();
 				if (res != null)
 					return res;
+
+				next = next.Parent;
 			}
 
 			return null;

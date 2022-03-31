@@ -9,11 +9,11 @@ namespace RenderingEngineVisualTests
         {
             Element[] tests =
             {
+				new NestingTest(),
+                new StencilTest(),
                 new PolylineTest(),
                 new TextureTest(),
                 new GeometryAndTextTest(),
-                new StencilTest(),
-				new NestingTest(),
                 new TextTest(),
                 new PolylineSelfIntersectionAlgorithmTest(),
                 new ArcTest(),

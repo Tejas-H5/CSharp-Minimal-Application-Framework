@@ -23,6 +23,11 @@ namespace MinimalAF {
             _window = null;
         }
 
+        public override void OnLayout() {
+			Children[0].ScreenRect = RelativeRect;
+			Children[0].RelativeRect = RelativeRect;
+		}
+
         public Vector2i Size {
             get {
                 return new Vector2i(_window.Size.X, _window.Size.Y);
@@ -59,11 +64,11 @@ namespace MinimalAF {
                 return _window.Height;
             }
         }
-        internal override Rect GetParentRelativeRect() {
-            return ScreenRect;
+        internal override Rect GetParentScreenRect() {
+            return RelativeRect;
         }
 
-        new public Rect ScreenRect {
+        new public Rect RelativeRect {
             get {
                 return _window.Rect;
             }

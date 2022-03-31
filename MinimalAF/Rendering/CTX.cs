@@ -147,8 +147,8 @@ namespace MinimalAF.Rendering {
             return ClearColor;
         }
 
-        internal static void SetClearColor(float r, float g, float b, float a) {
-            ClearColor = Color4.RGBA(r, g, b, a);
+        internal static void SetClearColor(Color4 color) {
+            ClearColor = color;
         }
 
 

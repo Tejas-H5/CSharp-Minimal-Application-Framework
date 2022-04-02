@@ -32,7 +32,7 @@ namespace MinimalAF {
             );
         }
 
-        public override void OnAncestorChanged() {
+        public override void OnMount(Window w) {
 			_uiState = GetResource<UIState>();
         }
 

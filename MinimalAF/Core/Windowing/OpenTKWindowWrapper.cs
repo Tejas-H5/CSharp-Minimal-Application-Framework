@@ -14,6 +14,7 @@ namespace MinimalAF {
         int updateFrames = 0;
         float _fps;
         float _updateFps;
+        bool _started = false;
 
         public int Height {
             get {
@@ -68,11 +69,8 @@ namespace MinimalAF {
             CTX.Init(Context);
             AudioCTX.Init();
             Input.HookToWindow(this);
-            _rootElement.Mount();
             _init = true;
-
             ResizeAction();
-
             IsVisible = true;
         }
 
@@ -154,10 +152,16 @@ namespace MinimalAF {
         }
 
         void ResizeAction() {
-            _rootElement.RelativeRect = new Rect(0, 0, Width, Height);
-            _rootElement.Layout();
-
             CTX.SetViewport(Rect);
+
+            _rootElement.RelativeRect = new Rect(0, 0, Width, Height);
+            
+            if(_init && !_started) {
+                _started = true;
+                _rootElement.Mount();
+            }
+
+            _rootElement.Layout();
         }
 
 

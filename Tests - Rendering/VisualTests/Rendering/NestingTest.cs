@@ -26,6 +26,9 @@ namespace MinimalAF.VisualTests.Rendering
             el2.RelativeRect = new Rect(0, VH(0.5f), VW(0.5f), VH(1f));
             el3.RelativeRect = new Rect(VW(0.5f), 0, VW(1f), VH(0.5f));
             el4.RelativeRect = new Rect(VW(0.5f), VH(0.5f), VW(1), VH(1));
+
+            CalculateChildLayouts();
         }
     }
 }
+        

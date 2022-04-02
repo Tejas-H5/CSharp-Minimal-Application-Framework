@@ -12,9 +12,10 @@ namespace MinimalAF.VisualTests.Rendering
             _lineThiccness = thickness;
         }
 
-        public override void OnMount()
+        public override void OnMount(Window w)
         {
-            Window w = GetAncestor<Window>();
+            
+
             w.Size = (800, 600);
             w.Title = "Rendering Engine Line benchmark";
 

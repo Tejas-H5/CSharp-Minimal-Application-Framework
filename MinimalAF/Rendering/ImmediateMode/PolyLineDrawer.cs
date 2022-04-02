@@ -41,7 +41,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
                 return;
             }
 
-            _thickness = thickness /= 2;
+            _thickness = thickness;
             _lastLastX = x;
             _lastLastY = y;
             _lastX = x;

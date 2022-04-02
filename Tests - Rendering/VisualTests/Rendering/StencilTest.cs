@@ -5,18 +5,18 @@ namespace MinimalAF.VisualTests.Rendering
 {
 	public class StencilTest : Element
     {
-        public override void OnMount()
+        public override void OnMount(Window w)
         {
-            Window w = GetAncestor<Window>();
+            
             w.Size = (800, 600);
             w.Title = "Stencil rendering test";
 
             SetClearColor(Color4.RGBA(0,0,0,0));
             SetFont("Consolas", 24);
 
-			this.SetChildren(geometryAndTextTest);
+			SetChildren(geometryAndTextTest);
 
-			base.OnMount();
+			base.OnMount(w);
 
         }
 
@@ -78,5 +78,12 @@ namespace MinimalAF.VisualTests.Rendering
             _time += (float)Time.DeltaTime;
 			_xPos = 200 * MathF.Sin(_time / 2.0f);
         }
+
+        public override void OnLayout() {
+            geometryAndTextTest.RelativeRect = new Rect(0, 0, VW(1), VH(1));
+
+            CalculateChildLayouts();
+        }
+
     }
 }

@@ -8,18 +8,20 @@ namespace MinimalAF {
     /// </summary>
     public class Window : Element {
         OpenTKWindowWrapper _window;
+        Element _rootElement;
 
         public override bool SingleChild => true;
 
-        public Window(Element child) {
-            SetChildren(child);
-        }
+        public Window() {}
 
-        public void Run() {
+        public void Run(Element rootElement) {
             using (OpenTKWindowWrapper window = new OpenTKWindowWrapper(this)) {
                 _window = window;
+                _rootElement = rootElement;
+
                 window.Run();
             }
+
             _window = null;
         }
 
@@ -30,6 +32,10 @@ namespace MinimalAF {
             set {
                 _window.Size = new OpenTK.Mathematics.Vector2i(value.X, value.Y);
             }
+        }
+
+        public override void OnMount(Window w) {
+            SetChildren(_rootElement);
         }
 
         public void Maximize() {

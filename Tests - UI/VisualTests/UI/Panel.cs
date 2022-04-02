@@ -14,7 +14,7 @@ namespace MinimalAF.VisualTests.UI {
 
         Color4 _drawColor;
 
-        public override void OnAncestorChanged() {
+        public override void OnMount(Window w) {
             _uiState = GetResource<UIState>();
         }
 

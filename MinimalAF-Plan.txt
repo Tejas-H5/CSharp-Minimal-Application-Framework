@@ -70,7 +70,7 @@ arrange-children
 
 So then in OnLayout, parents calculate child sizes, and then in AfterLayout, each item is arranging it's child objects and then fixing up their sizes for the parent to arrange them.
 	- get code compiling, and fix issues
-		- add a new method Parent subtree changed, When a parent is assigned, we call OnAncestorChanged for all children nodes so they can get resources there
+		- add a new method Parent subtree changed, When a parent is assigned, we call OnAncestorChanged (actually we no longer need this cause OnMount and OnDismount will now be called recursively, and only when connected to the main application (i.e window)) for all children nodes so they can get resources there
 		
 		- fix first test
 		- fix rendering tests

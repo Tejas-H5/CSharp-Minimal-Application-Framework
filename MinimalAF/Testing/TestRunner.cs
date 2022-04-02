@@ -1,7 +1,7 @@
 ﻿namespace MinimalAF.Testing {
     public class TestRunner : Element {
 
-        public override void OnMount() {
+        public override void OnMount(Window w) {
 
         }
 

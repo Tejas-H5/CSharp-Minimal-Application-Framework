@@ -72,8 +72,8 @@ namespace MinimalAF.VisualTests.UI {
             base.OnUpdate();
         }
 
-        public override void OnMount() {
-            Window w = GetAncestor<Window>();
+        public override void OnMount(Window w) {
+            
             w.Size = (800, 600);
             w.Title = "UI Test";
             w.RenderFrequency = 120;

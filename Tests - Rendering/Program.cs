@@ -9,9 +9,9 @@ namespace RenderingEngineVisualTests
         {
             Element[] tests =
             {
+                new PolylineTest(),
 				new NestingTest(),
                 new StencilTest(),
-                new PolylineTest(),
                 new TextureTest(),
                 new GeometryAndTextTest(),
                 new TextTest(),
@@ -24,9 +24,11 @@ namespace RenderingEngineVisualTests
             };
 
 
+            var window = new Window();
+
             foreach (Element entryPoint in tests)
             {
-                new Window(entryPoint).Run();
+                window.Run(entryPoint);
             }
         }
     }

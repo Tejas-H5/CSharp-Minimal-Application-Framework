@@ -7,7 +7,7 @@ namespace AudioEngineTests.AudioTests {
         AudioSourceStreamed _streamedSource;
         AudioClipStream _streamProvider;
 
-        public override void OnMount() {
+        public override void OnMount(Window w) {
             AudioData music = AudioData.FromFile("./Res/testMusicShort.mp3");
             _streamProvider = new AudioClipStream(music);
 

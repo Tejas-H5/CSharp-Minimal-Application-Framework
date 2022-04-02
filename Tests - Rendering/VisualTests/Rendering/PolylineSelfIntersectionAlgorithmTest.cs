@@ -8,9 +8,9 @@ namespace MinimalAF.VisualTests.Rendering
 {
 	public class PolylineSelfIntersectionAlgorithmTest : Element
     {
-        public override void OnMount()
+        public override void OnMount(Window w)
         {
-            Window w = GetAncestor<Window>();
+            
             w.Size = (800, 600);
             w.Title = "PolylineSelfIntersectionAlgorithmTest";
             SetClearColor(Color4.RGBA(1, 1, 1, 1));
@@ -36,9 +36,9 @@ namespace MinimalAF.VisualTests.Rendering
             PointF p3 = _points[2];
             PointF p4 = _points[3];
 
-            float thickness = 200;
+            float radius = 100;
 
-            StartPolyLine(p1.X, p1.Y, thickness, CapType.None);
+            StartPolyLine(p1.X, p1.Y, radius, CapType.None);
             ContinuePolyLine(p2.X, p2.Y);
             ContinuePolyLine(p3.X, p3.Y);
             EndPolyLine(p4.X, p4.Y);
@@ -46,9 +46,9 @@ namespace MinimalAF.VisualTests.Rendering
 
             PointF lastPerp;
 
-            lastPerp = DrawFirstPerpendicular(p1, p2, thickness/2);
-            lastPerp = DrawAndDebugPerpendicular(p1, p2, p3, lastPerp, thickness / 2);
-            lastPerp = DrawAndDebugPerpendicular(p2, p3, p4, lastPerp, thickness / 2);
+            lastPerp = DrawFirstPerpendicular(p1, p2, radius);
+            lastPerp = DrawAndDebugPerpendicular(p1, p2, p3, lastPerp, radius);
+            lastPerp = DrawAndDebugPerpendicular(p2, p3, p4, lastPerp, radius);
 
             DrawAlgorithmDebug();
         }

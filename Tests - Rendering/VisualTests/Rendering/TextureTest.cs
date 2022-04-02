@@ -9,9 +9,9 @@ namespace MinimalAF.VisualTests.Rendering
         Texture _tex;
         Texture _tex2;
 
-        public override void OnMount()
+        public override void OnMount(Window w)
         {
-            Window w = GetAncestor<Window>();
+            
             w.Size = (800, 600);
             w.Title = "Texture loading test";
             //w.RenderFrequency = 120; 60;

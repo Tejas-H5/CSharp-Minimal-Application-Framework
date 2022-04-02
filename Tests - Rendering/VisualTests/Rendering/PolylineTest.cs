@@ -16,9 +16,9 @@ namespace MinimalAF.VisualTests.Rendering
 
 		double timer = 0;
 
-		public override void OnMount()
+		public override void OnMount(Window w)
 		{
-			Window w = GetAncestor<Window>();
+			
 			w.Size = (800, 600);
 			w.Title = "Mouse test";
 

@@ -7,9 +7,9 @@ namespace MinimalAF.VisualTests.Rendering
 {
 	public class KeyboardTest : Element
     {
-        public override void OnMount()
+        public override void OnMount(Window w)
         {
-            Window w = GetAncestor<Window>();
+            
             w.Size = (800, 600);
             w.Title = "Keyboard test";
 

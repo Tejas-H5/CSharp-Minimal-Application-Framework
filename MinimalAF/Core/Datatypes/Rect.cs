@@ -89,13 +89,13 @@ namespace MinimalAF {
 
 		public float Width {
 			get {
-				return Right - Left;
+				return MathF.Abs(X0 - X1);
 			}
 		}
 
 		public float Height {
 			get {
-				return Top - Bottom;
+				return MathF.Abs(Y0 - Y1);
 			}
 		}
 

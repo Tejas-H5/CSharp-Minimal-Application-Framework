@@ -9,9 +9,8 @@ namespace MinimalAF.VisualTests.Rendering
     {
         List<string> rain;
 
-        public override void OnMount()
+        public override void OnMount(Window w)
         {
-            Window w = GetAncestor<Window>();
             w.Size = (800, 600);
             w.Title = "Matrix rain test";
 

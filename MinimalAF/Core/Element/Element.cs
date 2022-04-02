@@ -10,9 +10,10 @@ namespace MinimalAF {
         public bool IsVisibleNextFrame = true;
 
         protected Element _parent = null;
-        protected bool _shouldMount = false;
         protected bool _isVisible = true;
         protected Element[] _children;
+        private bool _shouldTriggerParentResize = false;
+        private bool _mounted = false;
 
         private Rect _relativeRect;
         public Vector2 Pivot;
@@ -50,8 +51,13 @@ namespace MinimalAF {
                 for (int i = 0; i < _children.Length; i++) {
                     _children[i].Parent = this;
                 }
+                
+                // sepearte loops so that the children have access to all siblings if needed
+                for (int i = 0; i < _children.Length; i++) {
+                    _children[i].Mount();
+                }
 
-                OnChildResize();
+                _shouldTriggerParentResize = true;
             }
         }
 
@@ -69,7 +75,6 @@ namespace MinimalAF {
                     return;
 
                 _parent = value;
-                _shouldMount = true;
             }
         }
 
@@ -149,11 +154,13 @@ namespace MinimalAF {
                 return;
             }
 
-            if (_shouldMount) {
-                _shouldMount = false;
-                Mount();
-            }
+            if (_shouldTriggerParentResize) {
+                _shouldTriggerParentResize = false;
 
+                if (Parent != null) {
+                    OnChildResize();
+                }
+            }
 
             _screenRect = RelativeRect;
             _screenRect.Move(parentScreenRect.X0, parentScreenRect.Y0);
@@ -181,7 +188,7 @@ namespace MinimalAF {
             CTX.SetScreenRect(_screenRect);
             SetTexture(null);
             SetDrawColor(Color4.RGB(1, 0, 0));
-            RectOutline(1, 0, 0, VW(1), VH(1));
+            RectOutline(1, 1, 1, VW(1)-1, VH(1)-1);
 
             OnRender();
 
@@ -193,21 +200,24 @@ namespace MinimalAF {
         }
 
         public void Mount() {
-            OnMount();
-
-            AncestorChanged();
-        }
-
-        public void AncestorChanged() {
-            OnAncestorChanged();
-
-            for (int i = 0; i < _children.Length; i++) {
-                _children[i].AncestorChanged();
+            Window w = GetAncestor<Window>();
+            if(w == null){
+                return;
             }
+
+            Mount(w);
         }
 
-        public virtual void OnAncestorChanged() {
+        private void Mount(Window w) {
+            OnMount(w);
+
+            for(int i = 0; i < Children.Length; i++) {
+                Children[i].Mount(w);
+            }
+
+            _mounted = true;
         }
+
 
         public void Dismount() {
             for (int i = 0; i < _children.Length; i++) {
@@ -215,6 +225,20 @@ namespace MinimalAF {
             }
 
             OnDismount();
+            _mounted = false;
+        }
+
+
+        public void Layout() {
+            if(!_mounted) {
+                return;
+            }
+
+            _onChildResizeLock = true;
+
+            OnLayout();
+
+            _onChildResizeLock = false;
         }
 
         /// <summary>
@@ -227,23 +251,25 @@ namespace MinimalAF {
         /// Otherwise this element won't work really
         /// </summary>
         /// <param name="newScreenRect"></param>
-        public void Layout() {
-            _onChildResizeLock = true;
-
-            OnLayout();
-
-            _onChildResizeLock = false;
-        }
-
         public virtual void OnLayout() {
             for (int i = 0; i < _children.Length; i++) {
                 _children[i].RelativeRect = new Rect(0, 0, VW(1), VH(1));
-                _children[i].Layout();
+            }
+
+            CalculateChildLayouts();
+        }
+
+        protected void CalculateChildLayouts() {
+            for (int i = 0; i < Children.Length; i++) {
+                Children[i].Layout();
             }
         }
+        
 
         bool _onChildResizeLock = false;
         void OnChildResize() {
+            _shouldTriggerParentResize = false;
+
             if (_onChildResizeLock) {
                 return;
             }
@@ -263,7 +289,7 @@ namespace MinimalAF {
         /// Is called after this element hooks to the element tree.
         /// </para>
         /// </summary>
-        public virtual void OnMount() {
+        public virtual void OnMount(Window w) {
 
         }
 

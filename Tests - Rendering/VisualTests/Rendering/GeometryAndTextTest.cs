@@ -11,9 +11,12 @@ namespace MinimalAF.VisualTests.Rendering
         Texture _tex;
 		TextTest _textTest;
 
-		public override void OnMount()
+        public void OnConstructor() {
+
+        }
+
+        public override void OnMount(Window w)
 		{
-			Window w = GetAncestor<Window>();
 			w.Size = (800, 600);
 			w.Title = "Text and geometry test"; 
 
@@ -23,7 +26,7 @@ namespace MinimalAF.VisualTests.Rendering
 			_textTest = new TextTest();
 			Init();
 
-			this.SetChildren(_textTest);
+			SetChildren(_textTest);
 
             // remove when we start using OnMount
 			w.Title = "Text and geometry test"; 
@@ -60,6 +63,12 @@ namespace MinimalAF.VisualTests.Rendering
             Rect(VW(0.5f) - 50, VH(0.5f) - 50, VW(0.5f) + 50, VH(0.5f) + 50);
 
             //RenderingContext.DrawRect(100,100,Width-100, Height-100);
+        }
+
+        public override void OnLayout() {
+            _textTest.RelativeRect = new Rect(0, 0, VW(1), VH(1));
+
+            CalculateChildLayouts();
         }
     }
 }

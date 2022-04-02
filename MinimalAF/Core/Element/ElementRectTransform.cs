@@ -2,10 +2,6 @@
 
 namespace MinimalAF {
     public partial class Element {
-        internal virtual Rect GetParentScreenRect() {
-			return Parent.ScreenRect;
-        }
-
         public float Width {
             get {
                 return RelativeRect.Width;

@@ -5,7 +5,7 @@
             _rightSplit,
             _bottomSplit;
 
-        public UISplittingTest() {
+        protected override void OnConstruct() {
             // This is a legacy test whose name makes no sense now that the API has changed so much.
             // The functionality should still be there tho
 
@@ -41,14 +41,14 @@
         }
 
         public override void OnLayout() {
-            _topSplit.Children[0].LayoutMargin(10);
-            _topSplit.Children[1].LayoutMargin(10);
-            _leftSplit.Children[0].LayoutMargin(10);
-            _leftSplit.Children[1].LayoutMargin(10);
-            _rightSplit.Children[0].LayoutMargin(10);
-            _rightSplit.Children[1].LayoutMargin(10);
-            _bottomSplit.Children[0].LayoutMargin(10);
-            _bottomSplit.Children[1].LayoutMargin(10);
+            _topSplit.Children[0].LayoutRelativeMargin(10);
+            _topSplit.Children[1].LayoutRelativeMargin(10);
+            _leftSplit.Children[0].LayoutRelativeMargin(10);
+            _leftSplit.Children[1].LayoutRelativeMargin(10);
+            _rightSplit.Children[0].LayoutRelativeMargin(10);
+            _rightSplit.Children[1].LayoutRelativeMargin(10);
+            _bottomSplit.Children[0].LayoutRelativeMargin(10);
+            _bottomSplit.Children[1].LayoutRelativeMargin(10);
 
             LayoutElementsSplit(_topSplit.Children, LayoutDirection.Down, 70);
             LayoutElementsSplit(_leftSplit.Children, LayoutDirection.Left, 200);

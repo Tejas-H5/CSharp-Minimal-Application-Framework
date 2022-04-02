@@ -29,8 +29,8 @@ namespace MinimalAF.VisualTests.Rendering
 			SetFont("Consolas", 16);
 
 			// TODO: get this working
-			//_linePoint = new PointF(VW(0.5f), VH(0.5f));
-			_linePoint = new PointF(400, 300);
+			_linePoint = new PointF(VW(0.5f), VH(0.5f));
+			//_linePoint = new PointF(400, 300);
 		}
 
 

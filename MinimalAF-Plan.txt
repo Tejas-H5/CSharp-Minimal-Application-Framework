@@ -131,14 +131,129 @@ I am using this to make a bunch of other things.
 			The rectangle now knows how big each of the text boxes need to be, and can slot them into place, and optionally calculate it's own height.
 			It only needs to recalculate itself when it's parent changes size. Even then, it may not change in width at all.
 			This means that when we go to calculate each of the boxes, we can check that the parent width is
-			identical to what it was before, so we don't need to do anything. (I stole this from REACT)
+			identical to what it was before, so we don't need to do anything. (I stole this from REACT memo)
+		But now, the screen rects need to be updated.
+		Now that all the relative rects are calculated, we should be able to just recalculate the screen rects in a second pass, but is there a way to
+		do this on the first one?
+		Assuming that each parent will scale thier childs/set their layout, then we can just recalculate the rects right after the things are calculated.
 
+	-> Rewrite the interfaces to recalculate the sizes
+	
 
-										
-									
----- day
+Lets write some pseudo code, cause I am having a hard time seeing where to put the memoizatio code
 
-					
+// make this optional
+RecalculateChildLayouts(parentSize):
+	for child in children:
+		child.RecalculateLayout(parentSize);
+	
+RecalculateLayout: 
+	LayoutMargin(10);
+	RecalculateChildLayouts(parentSize)
+
+	// arrange thie children now
+	newHeight = 0;
+	for child in children:
+		newHeight += etc
+	
+	relativeRect.size.height = newHeight
+
+RecalculateScreenRects():
+	ScreenRect = GetParentRect() + RelativeRect.pos
+	for child in children:	
+		child.RecalculateScreenRects()
+		
+	- new idea: recalculate layout as part of a setter method.
+	- It will be called Resize and not SetRect, beacuse Resize implies that we aren't
+simply setting a rect, but we are giving it a rect we want it to fill and it will try it's best to fit there	
+
+// default action
+Layout(newScreenRect):
+	ScreenRect = newScreenRect
+	for child in children:	
+		child.Layout(ScreenRect)
+		
+		
+	Now the problem is that I have RelativeRect as well as ScreenRect. I
+	need to keep those two in sync somehow. I use the ScreenRect to OpenGL rendering
+	but I use RelativeRect to position the rectangles relative to one another so that moving
+	the rects doesn't need a full UI recalculation, and because it is more intuitive on a 
+	individual element basis.
+	When I set the screen rect, I could Update the relative rect to be screenRect - parentRect
+	
+	and when I set the relativeRect, I could set the screen Rect to be parentRect + ScreenRect
+	so that it they are always insync
+	
+	The assumption being made is that the parent screen rect won't change. When I change the parent screen rect,
+	I necessarily have to change all the screen rects below.
+	
+	So I guess we can't really keep those things in sync, nor will the UI recalc saving save very much at all
+	So I guess we can just recalculate the screen rects directly after we invoke a resize.
+	I might just remove RelativeRect, and use it just as a getter
+	
+	So here is what will happen:
+	
+	-> Element resizes for any reason
+		-> Trigger OnChildResize in parent.
+			-> Trigger OnChildResize in parent.
+				... if parent needs to resize.
+			else
+				call TriggerLayout()
+		-> All children must update their relative rects
+			-> All children must update their relative rects
+				...
+		-> All children must update their screen rects
+			-> All children must update their screen rects
+				...
+
+	So that whole children updating + screen rect updating needs to be a method
+	Also most UI would be updating from the bottom up, right
+	So if an element resizes, it should call parent.OnChildLayout
+		and then the default OnChildLayout would be 
+			Layout() -> 
+				for child: child.RelativeRect = whatever
+		or it would be 
+			parent.OnChildLayout
+			
+			and then the Latyout method would go back down the tree
+	
+	Ok so I spent some time on a literal whiteboard, and I think I've come up with something.
+	
+	The layout method will assume that it's been sized correctly, and that it
+	is to expand/contract along one or two axes. It does not assume
+	that it has a valid positon, or that it's parents have a valid position unless that parent is the root-level element.
+	(We need this to be the case for the induction to work)
+	We can assume that after the Layout method has completed,
+	that the element has a final size, but not that it is in it's final position.
+	We can however assume that all of it's children are in their final positions.
+	Layout():
+		-> call child.Layout() for each child
+		-> position children as required
+		-> resize ourselves as requied.
+		
+	Therefore, if the root element is in it's valid position, when it calls
+	Layout(), all of it's children will be in valid positions.
+	So we have kind-of inductively proven that the layouting will work downwards.
+	
+	Now what about when a text changes, and now it's text-box needs to change?	
+	When an element changes size for whatever reason other than in child.Layout:
+	call parent.OnChildResize()
+	
+	This method assumes that all the children are no longer the correct size, or in valid positions.
+	Usually, this will only be the case with one child.
+	
+	OnChildResize():
+		rect = Size;
+		Layout();	// TODO: memoize this as well.
+		if (rect != Rect):
+			Parent.OnChildResize();
+			
+	In the above example, if Layout() is consistenly resulting in an incorrect size,
+	no memoization will prevent a recursive back and forth.
+	Eventually, one of the layout functions won't change the rect of the container.
+	And this will mean that we can stop calling OnChildResize recursively upwards.
+	
+	
 
 ---- day
 

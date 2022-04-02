@@ -61,17 +61,19 @@ namespace MinimalAF {
 					currentAnchor = offsets[i + 1];
 				}
 
+                Rect wanted = el.RelativeRect;
+
 				if (vertical) {
 					if (normalizedOffsets) {
 						currentAnchor = VW(currentAnchor);
 					}
 
 					if (reverse) {
-						el.RelativeRect.Y0 = currentAnchor;
-						el.RelativeRect.Y1 = previousAnchor;
+						wanted.Y0 = currentAnchor;
+						wanted.Y1 = previousAnchor;
 					} else {
-						el.RelativeRect.Y0 = previousAnchor;
-						el.RelativeRect.Y1 = currentAnchor;
+						wanted.Y0 = previousAnchor;
+						wanted.Y1 = currentAnchor;
 					}
 				} else {
 					if (normalizedOffsets) {
@@ -79,13 +81,15 @@ namespace MinimalAF {
 					}
 
 					if (reverse) {
-						el.RelativeRect.X0 = currentAnchor;
-						el.RelativeRect.X1 = previousAnchor;
+						wanted.X0 = currentAnchor;
+						wanted.X1 = previousAnchor;
 					} else {
-						el.RelativeRect.X0 = previousAnchor;
-						el.RelativeRect.X1 = currentAnchor;
+						wanted.X0 = previousAnchor;
+						wanted.X1 = currentAnchor;
 					}
 				}
+
+				el.RelativeRect = wanted;
 
 				previousAnchor = currentAnchor;
 
@@ -107,44 +111,46 @@ namespace MinimalAF {
         /// <param name="layoutDirection"></param>
         /// <param name="splitAmount"></param>
 		public void LayoutElementsSplit(Element el0, Element el1, LayoutDirection layoutDirection, float splitAmount) {
+			Rect wanted0 = el0.RelativeRect;
+			Rect wanted1 = el1.RelativeRect;
 			if (layoutDirection == LayoutDirection.Down) {
-				el0.RelativeRect.Y0 += VH(1) - splitAmount;
-				el1.RelativeRect.Y1 -= splitAmount;
+				wanted0.Y0 += VH(1) - splitAmount;
+				wanted1.Y1 -= splitAmount;
 			} else if (layoutDirection == LayoutDirection.Up) {
-				el0.RelativeRect.Y0 += splitAmount;
-				el1.RelativeRect.Y1 -= VH(1) - splitAmount;
+				wanted0.Y0 += splitAmount;
+				wanted1.Y1 -= VH(1) - splitAmount;
 			} else if (layoutDirection == LayoutDirection.Left) {
-				el0.RelativeRect.X0 += VW(1) - splitAmount;
-				el1.RelativeRect.X1 -= splitAmount;
+				wanted0.X0 += VW(1) - splitAmount;
+				wanted1.X1 -= splitAmount;
 			} else {
-				el0.RelativeRect.X0 += splitAmount;
-				el1.RelativeRect.X1 -= VW(1) - splitAmount;
+				wanted0.X0 += splitAmount;
+				wanted1.X1 -= VW(1) - splitAmount;
 			}
+
+			el0.RelativeRect = wanted0;
+			el1.RelativeRect = wanted1;
 		}
 
 		public void LayoutRelativeMargin(float margin) {
-			RelativeRect.X0 += margin;
-			RelativeRect.Y0 += margin;
-			RelativeRect.X1 -= margin;
-			RelativeRect.Y1 -= margin;
-		}
+			Rect wanted = RelativeRect;
 
-		public void LayoutMargin(float margin) {
-			var parentRect = GetParentScreenRect();
-			RelativeRect = new Rect(0, 0, parentRect.X1, parentRect.Y1);
+			wanted.X0 += margin;
+			wanted.Y0 += margin;
+			wanted.X1 -= margin;
+			wanted.Y1 -= margin;
 
-			LayoutRelativeMargin(margin);
-		}
-
-		public void LayoutMargin(float marginLeft, float marginBottom, float marginRight, float marginTop) {
-
+			RelativeRect = wanted;
 		}
 
 		public void LayoutRelativeMargin(float marginLeft, float marginBottom, float marginRight, float marginTop) {
-			RelativeRect.X0 += marginLeft;
-			RelativeRect.Y0 += marginBottom;
-			RelativeRect.X1 -= marginRight;
-			RelativeRect.Y1 -= marginTop;
+			Rect wanted = RelativeRect;
+
+			wanted.X0 += marginLeft;
+			wanted.Y0 += marginBottom;
+			wanted.X1 -= marginRight;
+			wanted.Y1 -= marginTop;
+
+			RelativeRect = wanted;
 		}
 
 		public enum AspectRatioMethod {
@@ -153,14 +159,15 @@ namespace MinimalAF {
 
 		public void LayoutAspectRatio(float widthOverHeight, AspectRatioMethod method) {
 			bool shouldDriveHeight = false;
+			Rect wanted = RelativeRect;
 
 			if (method == AspectRatioMethod.DriveHeight) {
 				shouldDriveHeight = true;
 			} else if (method == AspectRatioMethod.DriveHeight) {
-				RelativeRect.SetHeight(RelativeRect.Width / widthOverHeight);
+				shouldDriveHeight = true;
 			} else if (method == AspectRatioMethod.FitInside || method == AspectRatioMethod.FitOutside) {
-				float newWidth = RelativeRect.Height * widthOverHeight;
-				shouldDriveHeight = newWidth > Parent.RelativeRect.Width;
+				float newWidth = wanted.Height * widthOverHeight;
+				shouldDriveHeight = newWidth > RelativeRect.Width;
 
 				if (method == AspectRatioMethod.FitOutside) {
 					shouldDriveHeight = !shouldDriveHeight;
@@ -168,10 +175,12 @@ namespace MinimalAF {
 			}
 
 			if (shouldDriveHeight) {
-				RelativeRect.SetHeight(RelativeRect.Width / widthOverHeight);
+				wanted.SetHeight(wanted.Width / widthOverHeight, Pivot.Y);
 			} else {
-				RelativeRect.SetWidth(RelativeRect.Height * widthOverHeight);
+				wanted.SetWidth(wanted.Height * widthOverHeight, Pivot.X);
 			}
+
+			RelativeRect = wanted;
 		}
 	}
 }

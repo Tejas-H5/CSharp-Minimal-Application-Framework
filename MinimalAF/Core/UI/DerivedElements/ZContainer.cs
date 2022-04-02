@@ -25,7 +25,7 @@ namespace MinimalAF {
             if (_stack.Count < 1)
                 return;
 
-            _stack[_stack.Count - 1].Update();
+            _stack[_stack.Count - 1].UpdateSelfAndChildren(_screenRect);
         }
     }
 }

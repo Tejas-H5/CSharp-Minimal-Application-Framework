@@ -50,13 +50,13 @@ namespace MinimalAF {
 
             switch (VerticalAlignment) {
                 case VerticalAlignment.Bottom:
-                    startY = RelativeRect.Bottom;
+                    startY = 0;
                     break;
                 case VerticalAlignment.Center:
-                    startY = RelativeRect.CenterY;
+                    startY = VH(0.5f);
                     break;
                 case VerticalAlignment.Top:
-                    startY = RelativeRect.Top;
+                    startY = VH(1.0f);
                     break;
                 default:
                     break;
@@ -64,23 +64,19 @@ namespace MinimalAF {
 
             switch (HorizontalAlignment) {
                 case HorizontalAlignment.Left:
-                    startX = RelativeRect.Left;
+                    startX = 0;
                     break;
                 case HorizontalAlignment.Center:
-                    startX = RelativeRect.CenterX;
+                    startX = VH(0.5f);
                     break;
                 case HorizontalAlignment.Right:
-                    startX = RelativeRect.Right;
+                    startX = VH(1f);
                     break;
                 default:
                     break;
             }
 
             _caratPos = CTX.Text.Draw(String, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
-        }
-
-        public override void OnLayout() {
-			LayoutMargin(0);
         }
 
         public float TextWidth() {

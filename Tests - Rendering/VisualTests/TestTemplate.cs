@@ -23,9 +23,6 @@ namespace MinimalAF.VisualTests
             //UI Events / input / other non-rendering update code goes here
         }
 
-        public override void OnLayout()
-        {
-        }
 
         public override void OnDismount()
         {

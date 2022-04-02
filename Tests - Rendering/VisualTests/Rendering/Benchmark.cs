@@ -40,10 +40,10 @@ namespace MinimalAF.VisualTests.Rendering
 
             for (int i = 0; i < amount; i++)
             {
-                float x1 = VW(rand.NextDouble());
-                float y1 = VH(rand.NextDouble());
+                float x1 = VW((float)rand.NextDouble());
+                float y1 = VH((float)rand.NextDouble());
 
-                float x2 = VW(rand.NextDouble());
+                float x2 = VW((float)rand.NextDouble());
                 float y2 = VH((float)rand.NextDouble());
 
                 Line(x1, y1, x2, y2, _lineThiccness, CapType.Circle);

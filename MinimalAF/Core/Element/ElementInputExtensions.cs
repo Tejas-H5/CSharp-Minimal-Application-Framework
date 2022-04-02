@@ -37,7 +37,7 @@ namespace MinimalAF {
         }
 
         public bool MouseOverSelf() {
-            return Input.Mouse.IsOver(ScreenRect);
+            return Input.Mouse.IsOver(_screenRect);
         }
 
         public void CancelDrag() {

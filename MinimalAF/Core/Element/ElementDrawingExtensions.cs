@@ -17,21 +17,6 @@ namespace MinimalAF {
             return RelativeRect.Width * amount;
         }
 
-		/// <summary>
-		/// Shorthand for VH((float)amount)
-		/// </summary>
-		public float VH(double amount) {
-			return VH((float)amount);
-		}
-
-		/// <summary>
-		/// Shorthand for VW((float)amount)
-		/// </summary>
-		public float VW(double amount) {
-			return VW((float)amount);
-		}
-
-
 		public void UseFramebuffer(int index) {
             CTX.Framebuffer.Use(index);
         }

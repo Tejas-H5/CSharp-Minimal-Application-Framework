@@ -24,8 +24,6 @@ namespace MinimalAF.VisualTests.Rendering
 			Init();
 
 			this.SetChildren(_textTest);
-			base.OnMount();
-
 
             // remove when we start using OnMount
 			w.Title = "Text and geometry test"; 
@@ -50,10 +48,8 @@ namespace MinimalAF.VisualTests.Rendering
 		}
 
         float a = 0;
-        public override void OnRender()
+        public override void AfterRender()
         {
-			base.OnRender();
-
             SetTexture(null);
             SetDrawColor(Color4.RGBA(0,1,0,0.5f));
             Arc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f), a, MathF.PI * 2 + a, 6);

@@ -106,7 +106,7 @@ namespace MinimalAF {
             AudioCTX.Update();
 
             Time._deltaTime = (float)args.Time;
-            _rootElement.Update();
+            _rootElement.UpdateSelfAndChildren(new Rect(0, 0, Width, Height));
 
             TrackUpdateFPS(args);
         }
@@ -145,7 +145,7 @@ namespace MinimalAF {
 
             CTX.Cartesian2D(Width, Height);
 
-            _rootElement.Render();
+            _rootElement.RenderSelfAndChildren(new Rect(0, 0, Width, Height));
 
 
             CTX.SwapBuffers();
@@ -154,7 +154,8 @@ namespace MinimalAF {
         }
 
         void ResizeAction() {
-            _rootElement.UpdateLayout();
+            _rootElement.RelativeRect = new Rect(0, 0, Width, Height);
+            _rootElement.Layout();
 
             CTX.SetViewport(Rect);
         }

@@ -14,7 +14,7 @@ namespace MinimalAF.VisualTests.UI {
         List<Element> rightSplits = new List<Element>();
         List<Element> downSplits = new List<Element>();
 
-        public UITest() {
+        protected override void OnConstruct() {
             Element cont = this;
 
             for (int i = 0; i < 5; i++) {
@@ -42,16 +42,28 @@ namespace MinimalAF.VisualTests.UI {
 
                 cont = upper;
             }
+
+            SetChildren(cont);
         }
 
         public override void OnLayout() {
             Console.WriteLine("Layout changed");
 
+            Element cont = this;
             for (int i = 0; i < upSplits.Count; i++) {
+                leftSplits[i].RelativeRect = new Rect(0, 0, cont.VW(1), cont.VH(1));
                 leftSplits[i].LayoutElementsLinear(leftSplits[i].Children, LayoutDirection.Left, goldenRatioSplit, true);
+
+                downSplits[i].RelativeRect = new Rect(0, 0, leftSplits[i].VW(1), leftSplits[i].VH(1));
                 downSplits[i].LayoutElementsLinear(downSplits[i].Children, LayoutDirection.Down, goldenRatioSplit, true);
+
+                rightSplits[i].RelativeRect = new Rect(0, 0, downSplits[i].VW(1), downSplits[i].VH(1));
                 rightSplits[i].LayoutElementsLinear(rightSplits[i].Children, LayoutDirection.Right, goldenRatioSplit, true);
+
+                upSplits[i].RelativeRect = new Rect(0, 0, rightSplits[i].VW(1), rightSplits[i].VH(1));
                 upSplits[i].LayoutElementsLinear(upSplits[i].Children, LayoutDirection.Up, goldenRatioSplit, true);
+
+                cont = upSplits[i];
             }
         }
 

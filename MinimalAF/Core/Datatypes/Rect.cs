@@ -123,8 +123,15 @@ namespace MinimalAF {
 			return !(left == right);
 		}
 
-		public string ToString() {
+		public override string ToString() {
 			return "Rect {" + X0 + ", " + X0 + ", " + X1 + ", " + Y1 + "}";
+		}
+
+		public void Move(float x, float y) {
+			X0 += x;
+			X1 += x;
+			Y0 += y;
+			Y1 += y;
 		}
 
 		public Rect Intersect(Rect other) {

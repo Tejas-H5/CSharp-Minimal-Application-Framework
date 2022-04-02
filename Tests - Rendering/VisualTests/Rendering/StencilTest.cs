@@ -76,8 +76,6 @@ namespace MinimalAF.VisualTests.Rendering
         public override void OnUpdate()
         {
             _time += (float)Time.DeltaTime;
-
-			base.OnUpdate();
 			_xPos = 200 * MathF.Sin(_time / 2.0f);
         }
     }

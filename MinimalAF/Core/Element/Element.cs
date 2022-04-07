@@ -20,17 +20,13 @@ namespace MinimalAF {
 
         // this is auto-calculated
         protected Rect _screenRect;
+        bool _rectModified = false;
 
         public void SetRelativeRect(Rect value) {
             if (RelativeRect != value) {
                 RelativeRect = value;
             }
-
-            if (Parent != null) {
-                Parent.OnChildResize();
-            }
         }
-
 
         // TODO: make this somewhat local, or come up with a good way to do that
         protected void SetClearColor(Color4 value) {
@@ -91,7 +87,7 @@ namespace MinimalAF {
             }
         }
 
-        public bool Clipping { get; set; } = true;
+        public bool Clipping { get; set; } = false;
 
         public Rect RelativeRect {
             get {
@@ -103,6 +99,8 @@ namespace MinimalAF {
                 if (Parent != null) {
                     Parent.OnChildResize();
                 }
+
+                _rectModified = true;
             }
         }
 
@@ -236,6 +234,13 @@ namespace MinimalAF {
 
             _onChildResizeLock = true;
 
+            for (int i = 0; i < Children.Length; i++) {
+                if (Children[i]._rectModified)
+                    continue;
+
+                _children[i].RelativeRect = new Rect(0, 0, VW(1), VH(1));
+            }
+
             OnLayout();
 
             _onChildResizeLock = false;
@@ -252,10 +257,6 @@ namespace MinimalAF {
         /// </summary>
         /// <param name="newScreenRect"></param>
         public virtual void OnLayout() {
-            for (int i = 0; i < _children.Length; i++) {
-                _children[i].RelativeRect = new Rect(0, 0, VW(1), VH(1));
-            }
-
             CalculateChildLayouts();
         }
 
@@ -263,8 +264,12 @@ namespace MinimalAF {
             for (int i = 0; i < Children.Length; i++) {
                 Children[i].Layout();
             }
+
+            for (int i = 0; i < Children.Length; i++) {
+                Children[i]._rectModified = false;
+            }
         }
-        
+
 
         bool _onChildResizeLock = false;
         void OnChildResize() {

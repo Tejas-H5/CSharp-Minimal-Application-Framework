@@ -6,7 +6,7 @@ namespace MinimalAF {
     public class UIRootElement : Element {
 		UIState _state;
 
-        public UIRootElement() {
+        protected override void OnConstruct() {
 			_state = new UIState();
 			AddResource(_state);
         }

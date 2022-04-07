@@ -6,12 +6,13 @@ namespace RenderingEngineVisualTests {
         static void Main(string[] args) {
             Element[] tests =
             {
+                new UIResizingTest(),
+                new UILinearArrangeTest(),
+                new UILinearArrangeNestedTest(),
                 new UITest(),
                 new UISplittingTest(),
                 new UITextInputTest(),
                 new UIAspectRatioTest(),
-                new UILinearArrangeNestedTest(),
-                new UILinearArrangeTest(),
             };
 
 

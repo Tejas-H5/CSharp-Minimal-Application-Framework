@@ -11,16 +11,18 @@
 
             Color4 col = Color4.VA(0, 1);
             SetChildren(
-                _topSplit = new OutlineRect(col, 5).SetChildren(
-                    new TextElement("TopSplit 70", col),
-                    _leftSplit = new OutlineRect(col, 4).SetChildren(
-                        new TextElement("LeftSplit 200", col),
-                        _bottomSplit = new OutlineRect(col, 4).SetChildren(
-                            new TextElement("BottomSplit 100", col),
-                            _rightSplit = new OutlineRect(col, 1).SetChildren(
-                                new TextElement("RightSplit 150", col),
-                                new OutlineRect(col, 1).SetChildren(
-                                    new TextElement("end;", col)
+                new UIRootElement().SetChildren(
+                    _topSplit = new OutlineRect(col, 5).SetChildren(
+                        new TextElement("TopSplit 70", col),
+                        _leftSplit = new OutlineRect(col, 4).SetChildren(
+                            new TextElement("LeftSplit 200", col),
+                            _bottomSplit = new OutlineRect(col, 4).SetChildren(
+                                new TextElement("BottomSplit 100", col),
+                                _rightSplit = new OutlineRect(col, 1).SetChildren(
+                                    new TextElement("RightSplit 150", col),
+                                    new OutlineRect(col, 1).SetChildren(
+                                        new TextElement("end;", col)
+                                    )
                                 )
                             )
                         )

@@ -67,16 +67,16 @@ namespace MinimalAF {
                     startX = 0;
                     break;
                 case HorizontalAlignment.Center:
-                    startX = VH(0.5f);
+                    startX = VW(0.5f);
                     break;
                 case HorizontalAlignment.Right:
-                    startX = VH(1f);
+                    startX = VW(1f);
                     break;
                 default:
                     break;
             }
 
-            _caratPos = CTX.Text.Draw(String, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
+            _caratPos = Text(String, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
         }
 
         public float TextWidth() {
@@ -88,7 +88,7 @@ namespace MinimalAF {
         }
 
         public float GetCharacterHeight() {
-            return CTX.Text.GetHeight('|');
+            return GetCharHeight('|');
         }
     }
 }

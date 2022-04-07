@@ -1,5 +1,5 @@
 ﻿namespace MinimalAF.VisualTests.UI {
-    public class UILinearArrangeTest : Element {
+    public class UIResizingTest : Element {
         Element _root;
         Element _textInputElement;
 
@@ -20,26 +20,8 @@
             SetClearColor(Color4.RGBA(1, 1, 1, 1));
 
             SetChildren(
-                GenerateElement("0 (Press space to toggle layout)   "),
-                GenerateElement("1"),
-                GenerateElement("2"),
-                GenerateElement("3")
+                GenerateElement("0")
             );
-        }
-
-        int layouting = (int)LayoutDirection.Right;
-
-        public override void OnUpdate() {
-            if (KeyPressed(KeyCode.Space)) {
-                layouting = (layouting + 1) % ((int)(LayoutDirection.Right + 1));
-                Layout();
-            }
-        }
-
-
-        public override void OnLayout() {
-            LayoutElementsLinear(Children, (LayoutDirection)layouting);
-            CalculateChildLayouts();
         }
     }
 }

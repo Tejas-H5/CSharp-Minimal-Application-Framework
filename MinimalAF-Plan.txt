@@ -253,7 +253,10 @@ Layout(newScreenRect):
 	Eventually, one of the layout functions won't change the rect of the container.
 	And this will mean that we can stop calling OnChildResize recursively upwards.
 	
-	
+	- Get the UI tests passing
+		- Update loop: set a flag hasResizedManually = false
+		- RelativeRect :: set: set hasResizedManually = true
+		- If !hasResizedManually: default resizing action else nothing
 
 ---- day
 

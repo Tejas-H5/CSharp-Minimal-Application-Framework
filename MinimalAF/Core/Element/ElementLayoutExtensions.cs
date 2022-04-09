@@ -113,21 +113,6 @@ namespace MinimalAF {
             }
         }
 
-        public void LayoutSplit(ReadOnlySpan<Element> elements, LayoutDirection layoutDirection, float splitAmount) {
-            if (elements.Length != 2) {
-                throw new Exception("Only 2 elements may be involved in a split");
-            }
-
-            LayoutSplit(elements[0], elements[1], layoutDirection, splitAmount);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="el0"></param>
-        /// <param name="el1"></param>
-        /// <param name="layoutDirection"></param>
-        /// <param name="splitAmount"></param>
         public void LayoutSplit(Element el0, Element el1, LayoutDirection layoutDirection, float splitAmount) {
             Rect wanted0 = el0.RelativeRect;
             Rect wanted1 = el1.RelativeRect;

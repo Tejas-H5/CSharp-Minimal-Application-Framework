@@ -2,38 +2,38 @@
 using System.Collections.Generic;
 
 namespace MinimalAF.VisualTests.UI {
-
-    public class SplitContainer : Element {
-
-        LayoutDirection _dir;
-
-        public SplitContainer(LayoutDirection dir) {
-            _dir = dir;
-        }
-
-        Panel GeneratePanel(Color4 col) {
-            return new Panel(Color4.VA(0, 0.1f), col, Color4.RGBA(0, 1, 0, 0.5f));
-        }
-
-        protected override void OnConstruct() {
-            SetChildren(
-                GeneratePanel(Color4.RGBA(1,0,0,0.5f)),
-                GeneratePanel(Color4.RGBA(0, 0, 1, 0.5f))
-            );
-        }
-
-        float[] goldenRatioSplit = new float[] { 0, 0.38196601125f, 1 };
-
-
-        public override void OnLayout() {
-            LayoutLinear(Children, _dir, goldenRatioSplit, true);
-            LayoutInset(Children, 10);
-
-            LayoutChildren();
-        }
-    }
-
     public class UIGoldenRatioTest : Element {
+
+        class SplitContainer : Element {
+
+            LayoutDirection _dir;
+
+            public SplitContainer(LayoutDirection dir) {
+                _dir = dir;
+            }
+
+            Panel GeneratePanel(Color4 col) {
+                return new Panel(Color4.VA(0, 0.1f), col, Color4.RGBA(0, 1, 0, 0.5f));
+            }
+
+            protected override void OnConstruct() {
+                SetChildren(
+                    GeneratePanel(Color4.RGBA(1, 0, 0, 0.5f)),
+                    GeneratePanel(Color4.RGBA(0, 0, 1, 0.5f))
+                );
+            }
+
+            float[] goldenRatioSplit = new float[] { 0, 0.38196601125f, 1 };
+
+
+            public override void OnLayout() {
+                LayoutLinear(Children, _dir, goldenRatioSplit, true);
+                LayoutInset(Children, 10);
+
+                LayoutChildren();
+            }
+        }
+
         protected override void OnConstruct() {
             SetChildren(
                 new UIRootElement()

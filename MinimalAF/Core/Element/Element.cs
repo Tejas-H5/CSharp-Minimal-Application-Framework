@@ -214,6 +214,10 @@ namespace MinimalAF {
             ));
         }
 
+        public void UseCoordinates() {
+            CTX.SetScreenRect(_screenRect, Clipping);
+        }
+
         internal void RenderSelfAndChildren(RenderAccumulator acc) {
             if (!IsVisible) {
                 return;
@@ -221,8 +225,8 @@ namespace MinimalAF {
 
             _screenRect = RelativeRect;
             _screenRect.Move(acc.ParentScreenRect.X0, acc.ParentScreenRect.Y0);
+            UseCoordinates();
 
-            CTX.SetScreenRect(_screenRect, Clipping);
             SetTexture(null);
 
             OnRender();
@@ -319,16 +323,19 @@ namespace MinimalAF {
 
 
         /// <summary>
-        /// Assume that the parent element has positioned this one, and then layout the children accordingly.
+        /// <para>
+        /// Size and position your child elements in this method.
+        /// After this method has been called, all child elements must be correctly sized and positioned, and this
+        /// element must be correctly sized (you should assume that the parent element will position this element).
+        /// </para>
         /// 
-        /// Don't forget to call Layout() on all the children. This isn't done by default in order to make 
-        /// more things possible. If you just want to loop through all the children and call Layout() on them,
-        /// you can use <see cref="LayoutChildren"/>.
+        /// <para>
+        /// Don't forget to either call <see cref="LayoutChildren"/>, or alternatively call <see cref="Layout"/> 
+        /// at least once on all the children. 
         /// 
-        /// Optionally, you can resize this rect, so that a parent can finish calculating its layout.
-        /// 
+        /// This is not done by default, to allow for more flexibility.
+        /// </para>
         /// </summary>
-        /// <param name="newScreenRect"></param>
         public virtual void OnLayout() {
             LayoutChildren();
         }

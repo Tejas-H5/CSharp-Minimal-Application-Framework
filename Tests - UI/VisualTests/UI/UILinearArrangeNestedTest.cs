@@ -7,6 +7,15 @@
             return new UILinearArrangeTest();
         }
 
+        public UILinearArrangeNestedTest() {
+            SetChildren(
+                GenerateElement("0 (Press space to toggle layout)   "),
+                GenerateElement("1"),
+                GenerateElement("2"),
+                GenerateElement("3")
+            );
+        }
+
         public override void OnMount(Window w) {
 
             w.Size = (800, 600);
@@ -16,13 +25,6 @@
             w.UpdateFrequency = 120;
 
             SetClearColor(Color4.RGBA(1, 1, 1, 1));
-
-            SetChildren(
-                GenerateElement("0 (Press space to toggle layout)   "),
-                GenerateElement("1"),
-                GenerateElement("2"),
-                GenerateElement("3")
-            );
         }
 
         int layouting = (int)LayoutDirection.Down;

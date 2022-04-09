@@ -7,7 +7,6 @@ namespace MinimalAF.AudioTests {
         AudioSourceOneShot _clackSound;
 
         public override void OnMount(Window w) {
-            
             w.Size = (800, 600);
             w.Title = "Keyboard test";
 

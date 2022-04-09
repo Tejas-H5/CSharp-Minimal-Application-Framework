@@ -5,16 +5,19 @@ using System.Collections.Generic;
 
 namespace MinimalAF {
     public abstract partial class Element {
-        static readonly List<Element> NULL_LIST = new List<Element>();
-
         protected Element _parent = null;
-        protected List<Element> _children = NULL_LIST;
+        protected List<Element> _children = new List<Element>();
         public virtual bool SingleChild => false;
 
         public bool IsVisibleNextFrame = true;
         protected bool _isVisible = true;
         private bool _shouldTriggerParentResize = false;
         private bool _mounted = false;
+        internal bool Mounted {
+            set {
+                _mounted = value;
+            }
+        }
 
         public Vector2 Pivot;
         private Rect _relativeRect;
@@ -37,28 +40,6 @@ namespace MinimalAF {
             get {
                 return _children;
             }
-            private set {
-#if DEBUG
-                if (SingleChild && Children != null && Children.Count > 1)
-                    throw new Exception("This element must only be given 1 child, possibly in the constructor.");
-#endif
-
-                // Children will be removed anyway, but this should give O(n) instead of O(n^2)
-                for (int i = 0; i < Children.Count; i++) {
-                    Remove(i);
-                }
-
-                _children = value;
-
-                if (Children.Count == 0)
-                    return;
-
-                for (int i = 0; i < Children.Count; i++) {
-                    Children[i].Parent = this;
-                }
-                
-                _shouldTriggerParentResize = true;
-            }
         }
 
         public Element this[int index] {
@@ -67,8 +48,25 @@ namespace MinimalAF {
             }
         }
 
-        public Element SetChildren(params Element[] arr) {
-            Children = new List<Element>(arr);
+        public Element SetChildren(params Element[] newChildren) {
+#if DEBUG
+            if (SingleChild && Children != null && Children.Count > 1)
+                throw new Exception("This element must only be given 1 child, possibly in the constructor.");
+#endif
+
+            // Children will be removed anyway, but this should give O(n) instead of O(n^2)
+            for (int i = Children.Count - 1; i >= 0; i--) {
+                Remove(i);
+            }
+
+            if (newChildren != null) {
+                for (int i = 0; i < newChildren.Length; i++) {
+                    AddChild(newChildren[i]);
+                }
+            }
+
+            _shouldTriggerParentResize = true;
+
             return this;
         }
 
@@ -85,7 +83,25 @@ namespace MinimalAF {
             Element child = Children[index];
             Children.RemoveAt(index);
             child.Dismount();
-            child.Parent = null;
+            child._parent = null;
+        }
+
+        public int Index() {
+            if (Parent == null) {
+                return 0;
+            }
+
+            return Parent.Children.IndexOf(this);
+        }
+
+        private void Add(Element element) {
+            _children.Add(element);
+
+            element.Mount();
+        }
+
+        public void AddChild(Element element) {
+            element.Parent = this;
         }
 
         public Element Parent {
@@ -93,14 +109,22 @@ namespace MinimalAF {
                 return _parent;
             }
             set {
+                if (value == this) {
+                    throw new Exception("DevIsStupid exception: An element can't be it's own parent, as this causes infinite recursion");
+                }
+
                 if (value == _parent)
                     return;
 
-                if(_parent != null) {
+                if (_parent != null) {
                     _parent.Remove(this);
                 }
 
                 _parent = value;
+
+                if (_parent != null) {
+                    _parent.Add(this);
+                }
             }
         }
 
@@ -264,9 +288,14 @@ namespace MinimalAF {
                 return acc;
 
             SetDrawColor(Color4.RGBA(1, 0, 0, 0.5f));
+
             RectOutline(2, 1, 1, VW(1) - 1, VH(1) - 1);
 
+            SetDrawColor(Color4.RGBA(1, 0, 0, 0.1f));
             Rect(0, 0, 10, 10);
+            Rect(VW(1) - 10, 0, VW(1), 10);
+            Rect(0, VH(1) - 10, 10, VH(1));
+            Rect(VW(1) - 10, VH(1) - 10, VW(1), VH(1));
 
             SetDrawColor(Color4.RGB(0, 0, 0));
             int textSize = 12;

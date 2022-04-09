@@ -3,6 +3,15 @@
         Element _root;
         Element _textInputElement;
 
+        public UILinearArrangeTest() {
+            SetChildren(
+                GenerateElement("0 (Press space to toggle layout)   "),
+                GenerateElement("1"),
+                GenerateElement("2"),
+                GenerateElement("3")
+            );
+        }
+
         Element GenerateElement(string text) {
             return new OutlineRect(Color4.VA(0, 1), 1).SetChildren(
                 new TextElement(text, Color4.VA(0, 1), "Consolas", 24, VerticalAlignment.Center, HorizontalAlignment.Center)
@@ -18,13 +27,6 @@
             w.UpdateFrequency = 120;
 
             SetClearColor(Color4.RGBA(1, 1, 1, 1));
-
-            SetChildren(
-                GenerateElement("0 (Press space to toggle layout)   "),
-                GenerateElement("1"),
-                GenerateElement("2"),
-                GenerateElement("3")
-            );
         }
 
         int layouting = (int)LayoutDirection.Right;

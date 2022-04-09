@@ -1,10 +1,8 @@
-﻿namespace MinimalAF.VisualTests.UI {
+﻿using System;
 
-    class DragState {
-        public DraggedContent CurrentlyDraggedContent = null;
-    }
+namespace MinimalAF.VisualTests.UI {
 
-    class DraggedContent : Element {
+    public class DraggedContent : Element {
         Element GeneratePanel(string text) {
             return new Panel(Color4.VA(0, 0.1f), Color4.RGBA(0, 0, 1, 0.5f), Color4.RGBA(0, 1, 0, 0.5f))
                 .SetChildren(
@@ -17,9 +15,14 @@
             SetChildren(GeneratePanel("Drag component"));
         }
 
-        DragState _dragState;
+        UIDragTestProgram _dragState;
         public override void OnMount(Window w) {
-            _dragState = GetResource<DragState>();
+            Console.WriteLine("Mount");
+            _dragState = GetAncestor<UIDragTestProgram>();
+        }
+
+        public override void OnDismount() {
+            Console.WriteLine("Dismount");
         }
 
         float startX0 = 0, startY0 = 0;
@@ -31,7 +34,11 @@
                 _dragState.CurrentlyDraggedContent = this;
             } else if (MouseIsDragging) {
                 RelativeRect.SetPure(startX0, startY0, startX0 + RelativeRect.Width, startY0 + RelativeRect.Height);
-            } else if (MouseFinishedDragging) {
+            }
+        }
+
+        public override void AfterUpdate() {
+            if (MouseFinishedDragging) {
                 _dragState.CurrentlyDraggedContent = null;
             }
         }
@@ -49,22 +56,15 @@
                 );
         }
 
-        public DragReciever() {
+        public DragReciever(string text) {
             SetChildren(
                 GeneratePanel(text)
             );
         }
 
-        string text;
-
-        public DragReciever(string text) {
-            this.text = text;
-        }
-
-
-        DragState _dragState;
+        UIDragTestProgram _dragState;
         public override void OnMount(Window w) {
-            _dragState = GetResource<DragState>();
+            _dragState = GetAncestor<UIDragTestProgram>();
         }
 
 
@@ -77,17 +77,32 @@
         }
     }
 
-    public class UIDragTestProgram : Element{
-        public UIDragTestProgram() {
-            AddResource(new DragState());
+    public class UIDragTestProgram : Element {
+        public DraggedContent CurrentlyDraggedContent = null;
 
+        DraggedContent _thinggo;
+
+        public UIDragTestProgram() {
+            _thinggo = new DraggedContent();
+            Element area1;
             SetChildren(
-                new DragReciever("Area 1")
-                .SetChildren(
-                    new DraggedContent()
-                ), 
+                area1 = new DragReciever("Area 1"), 
                 new DragReciever("Area 2")
             );
+
+            area1.AddChild(_thinggo);
+        }
+
+        public override void OnUpdate() {
+            if (KeyPressed(KeyCode.Space)) {
+                int index = _thinggo.Parent.Index();
+
+                if (index == 0) {
+                    _thinggo.Parent = this[1];
+                } else {
+                    _thinggo.Parent = this[0];
+                }
+            }
         }
 
         public override void OnLayout() {

@@ -19,10 +19,17 @@ namespace MinimalAF {
                 _window = window;
                 _rootElement = rootElement;
 
+                // event loop that polls
                 window.Run();
             }
 
+            SetChildren(null);
             _window = null;
+        }
+
+        internal void StartMounting() {
+            SetChildren(_rootElement);
+            Mounted = true;
         }
 
         public Vector2i Size {
@@ -32,10 +39,6 @@ namespace MinimalAF {
             set {
                 _window.Size = new OpenTK.Mathematics.Vector2i(value.X, value.Y);
             }
-        }
-
-        public override void OnMount(Window w) {
-            SetChildren(_rootElement);
         }
 
         public void Maximize() {
@@ -66,17 +69,12 @@ namespace MinimalAF {
             }
         }
 
-        new public Rect RelativeRect {
-            get {
-                return _window.Rect;
-            }
-        }
-
         public float CurrentFPS {
             get {
                 return _window.CurrentFPS;
             }
         }
+
         public float CurrentUpdateFPS {
             get {
                 return _window.CurrentUpdateFPS;

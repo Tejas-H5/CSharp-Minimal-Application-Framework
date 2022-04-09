@@ -7,14 +7,13 @@ using System.ComponentModel;
 
 namespace MinimalAF {
     internal class OpenTKWindowWrapper : GameWindow {
-        Element _rootElement;
+        Window _rootWindow;
 
         double time = 0;
         int renderFrames = 0;
         int updateFrames = 0;
         float _fps;
         float _updateFps;
-        bool _started = false;
 
         public int Height {
             get {
@@ -43,14 +42,14 @@ namespace MinimalAF {
             }
         }
 
-        public OpenTKWindowWrapper(Element rootElement)
+        public OpenTKWindowWrapper(Window rootWindow)
             : base(new GameWindowSettings {
                 IsMultiThreaded = false
             },
             new NativeWindowSettings {
                 StartVisible = false
             }) {
-            _rootElement = rootElement;
+            _rootWindow = rootWindow;
         }
 
         public event Action<uint> TextInputEvent;
@@ -70,7 +69,11 @@ namespace MinimalAF {
             AudioCTX.Init();
             Input.HookToWindow(this);
             _init = true;
+
             ResizeAction();
+
+            _rootWindow.StartMounting();
+
             IsVisible = true;
         }
 
@@ -104,7 +107,7 @@ namespace MinimalAF {
             AudioCTX.Update();
 
             Time._deltaTime = (float)args.Time;
-            _rootElement.UpdateSelfAndChildren(new Rect(0, 0, Width, Height));
+            _rootWindow.UpdateSelfAndChildren(new Rect(0, 0, Width, Height));
 
             TrackUpdateFPS(args);
         }
@@ -143,7 +146,7 @@ namespace MinimalAF {
 
             CTX.Cartesian2D(Width, Height);
 
-            _rootElement.RenderSelfAndChildren(new Rect(0, 0, Width, Height));
+            _rootWindow.RenderSelfAndChildren(new Rect(0, 0, Width, Height));
 
 
             CTX.SwapBuffers();
@@ -154,14 +157,9 @@ namespace MinimalAF {
         void ResizeAction() {
             CTX.SetViewport(Rect);
 
-            _rootElement.RelativeRect = new Rect(0, 0, Width, Height);
+            _rootWindow.RelativeRect = new Rect(0, 0, Width, Height);
             
-            if(_init && !_started) {
-                _started = true;
-                _rootElement.Mount();
-            }
-
-            _rootElement.Layout();
+            _rootWindow.Layout();
         }
 
 
@@ -188,7 +186,7 @@ namespace MinimalAF {
         }
 
         private unsafe void Cleanup() {
-            _rootElement.Dismount();
+            _rootWindow.Dismount();
 
             CTX.Dispose(true);
             AudioCTX.Cleanup();

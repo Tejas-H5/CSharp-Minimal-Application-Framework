@@ -1,7 +1,8 @@
 TODO:
 	- Start using  List instead of an array to store children
+	-> Remove constructors, make sure that mounting only happens when the window is opened and not as soon as the class is created.
 	
-	-> testcase where I drag a thing from one container to another
+	-* testcase where I drag a thing from one container to another
 	
 	
 

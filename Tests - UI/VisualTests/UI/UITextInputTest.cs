@@ -1,5 +1,6 @@
 ﻿namespace MinimalAF.VisualTests.UI {
-    public class UITextInputTest : Element {
+
+    class TextInputsUI : Element {
         protected override void OnConstruct() {
             Element[] rows = new Element[9];
 
@@ -29,30 +30,41 @@
                 }
             }
 
-            SetChildren(new UIRootElement().SetChildren(rows));
+            SetChildren(rows);
         }
-
 
         public override void OnLayout() {
-            LayoutLinear(Children, LayoutDirection.Down);
+            LayoutInset(Children.Slice(0, 3), 0, VH(2f / 3f), 0, 0);
+            LayoutLinear(Children.Slice(0, 3), LayoutDirection.Right);
 
-            for (int i = 0; i < Children.Length; i++) {
-                Children[i].LayoutLinear(Children[i].Children, LayoutDirection.Right);
-            }
+            LayoutInset(Children.Slice(3, 6), 0, VH(1f / 3f), 0, VH(1f / 3f));
+            LayoutLinear(Children.Slice(3, 6), LayoutDirection.Right);
+
+            LayoutInset(Children.Slice(6, 9), 0, VH(0), 0, VH(2f / 3f));
+            LayoutLinear(Children.Slice(6, 9), LayoutDirection.Right);
+
+            LayoutInset(Children, 10);
+
+            LayoutChildren();
+
         }
+    }
 
-
-        public override void OnUpdate() {
-            base.OnUpdate();
-        }
-
-
+    public class UITextInputTest : Element {
         public override void OnMount(Window w) {
-            
+
             w.Size = (800, 600);
             w.Title = "Text input ui element test";
 
             SetClearColor(Color4.RGBA(1, 1, 1, 1));
+        }
+
+        Element[] rows;
+
+        protected override void OnConstruct() {
+            
+
+            SetChildren(new UIRootElement().SetChildren(new TextInputsUI()));
         }
     }
 }

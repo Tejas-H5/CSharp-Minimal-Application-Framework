@@ -6,13 +6,13 @@ namespace RenderingEngineVisualTests {
         static void Main(string[] args) {
             Element[] tests =
             {
+                new UIAspectRatioTest(),
+                new UITextInputTest(),
                 new UISplittingTest(),
                 new UIGoldenRatioTest(),
                 new UIResizingTest(),
                 new UILinearArrangeTest(),
                 new UILinearArrangeNestedTest(),
-                new UITextInputTest(),
-                new UIAspectRatioTest(),
             };
 
             MinimalAFEnvironment.Debug = true;

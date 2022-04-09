@@ -16,7 +16,7 @@ namespace MinimalAF {
         /// <param name="elements"></param>
         /// <param name="layoutDirection"></param>
         /// <param name="offsets"></param>
-        public void LayoutLinear(ReadOnlySpan<Element> elements, LayoutDirection layoutDirection = LayoutDirection.Right, float[] offsets = null, bool normalizedOffsets = false) {
+        public void LayoutLinear(ArraySlice<Element> elements, LayoutDirection layoutDirection = LayoutDirection.Right, float[] offsets = null, bool normalizedOffsets = false) {
             bool vertical = layoutDirection == LayoutDirection.Up || layoutDirection == LayoutDirection.Down;
             bool reverse = layoutDirection == LayoutDirection.Down || layoutDirection == LayoutDirection.Left;
 
@@ -134,7 +134,7 @@ namespace MinimalAF {
             el1.RelativeRect = wanted1;
         }
 
-        public void LayoutInset(ReadOnlySpan<Element> elements, float margin) {
+        public void LayoutInset(ArraySlice<Element> elements, float margin) {
             LayoutInset(elements, margin, margin, margin, margin);
         }
 
@@ -142,7 +142,7 @@ namespace MinimalAF {
             LayoutInset(element, margin, margin, margin, margin);
         }
 
-        public void LayoutInset(ReadOnlySpan<Element> elements, float marginLeft, float marginBottom, float marginRight, float marginTop) {
+        public void LayoutInset(ArraySlice<Element> elements, float marginLeft, float marginBottom, float marginRight, float marginTop) {
             for (int i = 0; i < elements.Length; i++) {
                 LayoutInset(elements[i], marginLeft, marginBottom, marginRight, marginTop);
             }
@@ -163,7 +163,7 @@ namespace MinimalAF {
             DriveWidth, DriveHeight, FitInside, FitOutside
         }
 
-        public void LayoutAspectRatio(ReadOnlySpan<Element> elements, float widthOverHeight, AspectRatioMethod method) {
+        public void LayoutAspectRatio(ArraySlice<Element> elements, float widthOverHeight, AspectRatioMethod method) {
             for (int i = 0; i < elements.Length; i++) {
                 LayoutAspectRatio(elements[i], widthOverHeight, method);
             }

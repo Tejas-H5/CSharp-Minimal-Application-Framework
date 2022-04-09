@@ -1,5 +1,4 @@
 ﻿namespace MinimalAF.VisualTests.UI {
-
     class AspectRatioContent : Element {
         TextElement _text;
         Element _child;
@@ -11,14 +10,46 @@
             );
         }
 
+        public override void OnUpdate() {
+            if (KeyPressed(KeyCode.Left) || KeyPressed(KeyCode.Right) || KeyPressed(KeyCode.Up) || KeyPressed(KeyCode.Down)) {
+                if (KeyPressed(KeyCode.Left)) {
+                    Pivot.X -= 0.5f;
+                }
+
+                if (KeyPressed(KeyCode.Right)) {
+                    Pivot.X += 0.5f;
+                }
+
+                if (KeyPressed(KeyCode.Up)) {
+                    Pivot.Y += 0.5f;
+                }
+
+                if (KeyPressed(KeyCode.Down)) {
+                    Pivot.Y -= 0.5f;
+                }
+
+                Layout();
+            }
+        }
+
+        public override void OnRender() {
+            SetDrawColor(Color4.VA(0, 1));
+
+            string text = "Pivot: {" + Pivot.X.ToString("0.00") + ", " + Pivot.Y.ToString("0.00") + "}\n" +
+                "(use arrow keys to move)";
+
+            Text(text, VW(0.5f), VH(0.5f), HorizontalAlignment.Center, VerticalAlignment.Center);
+        }
+
         public override void OnLayout() {
-            Pivot = new OpenTK.Mathematics.Vector2(0.5f, 0.5f);
             LayoutAspectRatio(_child, 4f / 3f, AspectRatioMethod.FitInside);
             LayoutInset(_child, 10);
 
             LayoutInset(_child, 0);
             _text.HorizontalAlignment = HorizontalAlignment.Left;
             _text.VerticalAlignment = VerticalAlignment.Bottom;
+
+            LayoutChildren();
         }
     }
 
@@ -36,19 +67,17 @@
         }
 
         public override void OnMount(Window w) {
-            
             w.Size = (800, 600);
             w.Title = "UIAspectRatioTest";
             w.RenderFrequency = 120;
             w.UpdateFrequency = 120;
 
-            SetClearColor(Color4.RGBA(0, 0, 0, 0));
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
         }
 
         public override void OnLayout() {
             LayoutInset(_container, 10);
-
-            base.OnLayout();
+            LayoutChildren();
         }
     }
 }

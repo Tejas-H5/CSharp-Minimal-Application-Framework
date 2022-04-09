@@ -1,4 +1,5 @@
-﻿using MinimalAF.Rendering;
+﻿using MinimalAF;
+using MinimalAF.Rendering;
 using System;
 using System.Drawing;
 
@@ -50,17 +51,17 @@ namespace MinimalAF {
         }
 
         public override void OnUpdate() {
-			//if (MouseButtonPressed(MouseButton.Any) && MouseOverSelf()) {
-			//	_uiState.CurrentlyFocused = this;
-			//}
+            if (MouseButtonPressed(MouseButton.Any) && MouseOverSelf()) {
+                _uiState.CurrentlyFocused = this;
+            }
 
-			//if (_uiState.CurrentlyFocused != this)
-			//	return;
+            if (_uiState.CurrentlyFocused != this)
+                return;
 
 
-			//if (TypeKeystrokes() || Input.Keyboard.IsPressed(KeyCode.Escape)) {
-			//	EndTyping();
-			//}
+            if (TypeKeystrokes() || Input.Keyboard.IsPressed(KeyCode.Escape)) {
+                EndTyping();
+            }
         }
 
 

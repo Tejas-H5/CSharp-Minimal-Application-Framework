@@ -124,7 +124,7 @@ namespace MinimalAF {
 		}
 
 		public override string ToString() {
-			return "Rect {" + X0 + ", " + X0 + ", " + X1 + ", " + Y1 + "}";
+			return "{" + X0 + ", " + Y0 + ", " + X1 + ", " + Y1 + "}";
 		}
 
 		public void Move(float x, float y) {

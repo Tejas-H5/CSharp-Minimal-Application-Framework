@@ -12,7 +12,7 @@ namespace MinimalAF {
 
         bool _dragCancelled;
         bool _wasAnyDown = false;
-        bool _anyDown = false;
+        bool _anyHeld = false;
         bool _wasAnyHeld = false;
         bool _isAnyHeld = false;
         bool _wasDragging = false;
@@ -45,7 +45,7 @@ namespace MinimalAF {
 
         internal bool IsAnyDown {
             get {
-                return _anyDown;
+                return _anyHeld;
             }
         }
         internal bool IsAnyPressed {
@@ -155,9 +155,9 @@ namespace MinimalAF {
             return _prevMouseButtonStates[(int)b] && (!_mouseButtonStates[(int)b]);
         }
 
-        internal bool IsDown(MouseButton b) {
+        internal bool IsHeld(MouseButton b) {
             if (b == MouseButton.Any)
-                return _anyPressed;
+                return _anyHeld;
 
             return _mouseButtonStates[(int)b];
         }
@@ -204,9 +204,9 @@ namespace MinimalAF {
         private void UpdatePressedStates() {
             _wasDragging = CurrentlyDragging;
             _wasAnyHeld = _isAnyHeld;
-            _wasAnyDown = _anyDown;
+            _wasAnyDown = _anyHeld;
 
-            _anyDown = false;
+            _anyHeld = false;
             _anyPressed = false;
             _anyReleased = false;
 
@@ -215,13 +215,13 @@ namespace MinimalAF {
                         (OpenTK.Windowing.GraphicsLibraryFramework.MouseButton)i
                     );
 
-                _anyDown = _anyDown || _mouseButtonStates[i];
+                _anyHeld = _anyHeld || _mouseButtonStates[i];
 
                 _anyPressed = _anyPressed || (!_prevMouseButtonStates[i] && _mouseButtonStates[i]);
                 _anyReleased = _anyReleased || (_prevMouseButtonStates[i] && !_mouseButtonStates[i]);
             }
 
-            _isAnyHeld = _wasAnyDown && _anyDown;
+            _isAnyHeld = _wasAnyDown && _anyHeld;
         }
 
         private void UpdateMousewheelNotches() {

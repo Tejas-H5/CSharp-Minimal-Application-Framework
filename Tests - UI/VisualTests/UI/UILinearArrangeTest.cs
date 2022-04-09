@@ -39,7 +39,7 @@
 
         public override void OnLayout() {
             LayoutElementsLinear(Children, (LayoutDirection)layouting);
-            CalculateChildLayouts();
+            LayoutChildren();
         }
     }
 }

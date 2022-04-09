@@ -47,13 +47,19 @@ namespace MinimalAF {
                 for (int i = 0; i < _children.Length; i++) {
                     _children[i].Parent = this;
                 }
-                
+
                 // sepearte loops so that the children have access to all siblings if needed
                 for (int i = 0; i < _children.Length; i++) {
                     _children[i].Mount();
                 }
 
                 _shouldTriggerParentResize = true;
+            }
+        }
+
+        public Element this[int index] {
+            get {
+                return Children[index];
             }
         }
 
@@ -173,33 +179,93 @@ namespace MinimalAF {
             AfterUpdate();
         }
 
+
+        internal struct RenderAccumulator {
+            public int Depth;
+            public Rect ScreenRect;
+
+#if DEBUG
+            public int HoverDepth;
+#endif
+
+            public RenderAccumulator(
+                int depth,
+                Rect screenRect
+#if DEBUG
+                , int hoverDepth
+#endif
+            ) {
+                Depth = depth;
+                ScreenRect = screenRect;
+
+#if DEBUG
+                HoverDepth = hoverDepth;
+#endif
+            }
+        }
+
         internal void RenderSelfAndChildren(Rect parentScreenRect) {
+            RenderSelfAndChildren(new RenderAccumulator(
+                0,
+                parentScreenRect
+#if DEBUG
+                , 0
+#endif
+            ));
+        }
+
+        internal void RenderSelfAndChildren(RenderAccumulator acc) {
             if (!IsVisible) {
                 return;
             }
 
-
             _screenRect = RelativeRect;
-            _screenRect.Move(parentScreenRect.X0, parentScreenRect.Y0);
-            CTX.SetScreenRect(_screenRect);
+            _screenRect.Move(acc.ScreenRect.X0, acc.ScreenRect.Y0);
 
             CTX.SetScreenRect(_screenRect);
             SetTexture(null);
-            SetDrawColor(Color4.RGB(1, 0, 0));
-            RectOutline(1, 1, 1, VW(1)-1, VH(1)-1);
 
             OnRender();
 
+#if DEBUG
+            if (MinimalAFEnvironment.Debug) {
+                acc = DrawDebugStuff(acc);
+            }
+#endif
+
             for (int i = 0; i < _children.Length; i++) {
-                _children[i].RenderSelfAndChildren(_screenRect);
+                _children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, _screenRect, acc.HoverDepth));
             }
 
             AfterRender();
         }
 
+#if DEBUG
+        RenderAccumulator DrawDebugStuff(RenderAccumulator acc) {
+            if (!MouseOverSelf())
+                return acc;
+
+            SetDrawColor(Color4.RGB(1, 0, 0));
+            RectOutline(acc.Depth + 1, 1, 1, VW(1) - 1, VH(1) - 1);
+
+            Rect(0, 0, 10, 10);
+
+            SetDrawColor(Color4.RGB(0, 0, 0));
+            int textSize = 12;
+            SetFont("Consolas", textSize);
+            Text(GetType().Name + " " + RelativeRect.ToString(), 10 + 2 * acc.Depth, 10 + textSize * acc.HoverDepth);
+
+            SetFont("");
+            SetTexture(null);
+
+            acc.HoverDepth += 1;
+            return acc;
+        }
+#endif
+
         public void Mount() {
             Window w = GetAncestor<Window>();
-            if(w == null){
+            if (w == null) {
                 return;
             }
 
@@ -209,7 +275,7 @@ namespace MinimalAF {
         private void Mount(Window w) {
             OnMount(w);
 
-            for(int i = 0; i < Children.Length; i++) {
+            for (int i = 0; i < Children.Length; i++) {
                 Children[i].Mount(w);
             }
 
@@ -228,7 +294,7 @@ namespace MinimalAF {
 
 
         public void Layout() {
-            if(!_mounted) {
+            if (!_mounted) {
                 return;
             }
 
@@ -243,30 +309,33 @@ namespace MinimalAF {
 
             OnLayout();
 
+            for (int i = 0; i < Children.Length; i++) {
+                Children[i]._rectModified = false;
+            }
+
             _onChildResizeLock = false;
         }
 
+
+
         /// <summary>
-        /// Use the newScreenRect to set this element's screenRect. You can optionally make it smaller.
-        /// For example, if you are trying to fit to the children inside this element, you will need to 
-        /// Call the layout function on each of the chldren. They must then resize to something appropriate, and resize their children
-        /// You can use that size to position 
+        /// Assume that the parent element has positioned this one, and then layout the children accordingly.
         /// 
-        /// This function is required to call Layout on all the children somehow.
-        /// Otherwise this element won't work really
+        /// Don't forget to call Layout() on all the children. This isn't done by default in order to make 
+        /// more things possible. If you just want to loop through all the children and call Layout() on them,
+        /// you can use <see cref="LayoutChildren"/>.
+        /// 
+        /// Optionally, you can resize this rect, so that a parent can finish calculating its layout.
+        /// 
         /// </summary>
         /// <param name="newScreenRect"></param>
         public virtual void OnLayout() {
-            CalculateChildLayouts();
+            LayoutChildren();
         }
 
-        protected void CalculateChildLayouts() {
+        protected void LayoutChildren() {
             for (int i = 0; i < Children.Length; i++) {
                 Children[i].Layout();
-            }
-
-            for (int i = 0; i < Children.Length; i++) {
-                Children[i]._rectModified = false;
             }
         }
 

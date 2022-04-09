@@ -18,13 +18,16 @@ namespace MinimalAF.VisualTests.UI {
             _uiState = GetResource<UIState>();
         }
 
-        public override void OnUpdate() {
-            base.OnUpdate();
-
+        public override void AfterUpdate() {
             _drawColor = _color;
 
+            if (_uiState.EventWasHandled)
+                return;
+
             if (MouseOverSelf()) {
-                if (MouseButtonPressed(MouseButton.Any)) {
+                _uiState.EventWasHandled = true;
+
+                if (MouseButtonHeld(MouseButton.Any)) {
                     _drawColor = _clickColor;
                 } else {
                     _drawColor = _hoverColor;
@@ -34,12 +37,13 @@ namespace MinimalAF.VisualTests.UI {
 
         public override void OnRender() {
             SetDrawColor(Color4.VA(0, 1));
-            RectOutline(1, RelativeRect);
+            RectOutline(2, 0, 0, VW(1), VH(1));
 
             SetDrawColor(_drawColor);
-            Rect(RelativeRect);
+            Rect(0, 0, VW(1), VH(1));
 
             base.OnRender();
         }
+
     }
 }

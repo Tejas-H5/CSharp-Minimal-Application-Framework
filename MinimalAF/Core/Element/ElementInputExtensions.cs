@@ -32,8 +32,8 @@ namespace MinimalAF {
             return Input.Mouse.IsReleased(b);
         }
 
-        public bool MouseButtonDown(MouseButton b) {
-            return Input.Mouse.IsDown(b);
+        public bool MouseButtonHeld(MouseButton b) {
+            return Input.Mouse.IsHeld(b);
         }
 
         public bool MouseOverSelf() {

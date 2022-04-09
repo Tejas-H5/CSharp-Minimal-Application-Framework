@@ -68,7 +68,7 @@ namespace MinimalAF.VisualTests.Rendering
         public override void OnLayout() {
             _textTest.RelativeRect = new Rect(0, 0, VW(1), VH(1));
 
-            CalculateChildLayouts();
+            LayoutChildren();
         }
     }
 }

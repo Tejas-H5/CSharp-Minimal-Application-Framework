@@ -20,6 +20,7 @@ namespace MinimalAF {
         }
 
         public Vector2 Pivot;
+        public Vector2 Offset;
         private Rect _relativeRect;
         protected Rect _screenRect; // this is auto-calculated
         bool _rectModified = false;
@@ -204,9 +205,8 @@ namespace MinimalAF {
                 }
             }
 
-            _screenRect = RelativeRect;
-            _screenRect.Move(parentScreenRect.X0, parentScreenRect.Y0);
-            CTX.SetScreenRect(_screenRect, false);
+            RecalcScreenRect(parentScreenRect);
+            UseCoordinates();
 
             OnUpdate();
 
@@ -252,8 +252,14 @@ namespace MinimalAF {
             ));
         }
 
-        public void UseCoordinates() {
-            CTX.SetScreenRect(_screenRect, Clipping);
+
+        private void RecalcScreenRect(Rect parentScreenRect) {
+            _screenRect = RelativeRect;
+            _screenRect.Move(parentScreenRect.X0 + Offset.X, parentScreenRect.Y0 + Offset.Y);
+        }
+
+        public void UseCoordinates(bool clipping=false) {
+            CTX.SetScreenRect(_screenRect, clipping);
         }
 
         internal void RenderSelfAndChildren(RenderAccumulator acc) {
@@ -261,8 +267,7 @@ namespace MinimalAF {
                 return;
             }
 
-            _screenRect = RelativeRect;
-            _screenRect.Move(acc.ParentScreenRect.X0, acc.ParentScreenRect.Y0);
+            RecalcScreenRect(acc.ParentScreenRect);
             UseCoordinates();
 
             SetTexture(null);

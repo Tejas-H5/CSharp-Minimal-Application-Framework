@@ -1,19 +1,10 @@
 TODO:
-	- Start using  List instead of an array to store children
-	-> Remove constructors, make sure that mounting only happens when the window is opened and not as soon as the class is created.
-	
-	-* testcase where I drag a thing from one container to another
-	
-	
-
 - Meta-test that you can actually make cool stuff with this framework.
 	- Test harness that collates and allows for searching through all unit tests
 		-* Create An Attribute is used to mark tests
 		-* Create an element that can aggregate and show all unit tests
 			-* a side-panel that can be hidden/shown and shows all tests
 				-* make this an accordion menu in future.
-	
-	
 	
 	-* non-immediate support
 	

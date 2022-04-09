@@ -1,5 +1,10 @@
 Anything cluttering up MinimalAF plan is just thrown in here
 =======================================================
+	- Start using  List instead of an array to store children
+	- Remove constructors, make sure that mounting only happens when the window is opened and not as soon as the class is created.
+	
+	- testcase where I drag a thing from one container to another
+
 -> Give Elements their own coordinate systems, and drawing capabilities. Elements should be able to work anywhere in the subtree.
 	- Get the UI tests passing
 		- Update loop: set a flag hasResizedManually = false

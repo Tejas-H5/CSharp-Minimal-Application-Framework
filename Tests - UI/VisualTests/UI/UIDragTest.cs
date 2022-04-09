@@ -26,20 +26,39 @@ namespace MinimalAF.VisualTests.UI {
         }
 
         float startX0 = 0, startY0 = 0;
+        bool isDragging = false, setNullNextFrame = false;
+
+        public override void OnRender() { // debugging purposes
+            base.OnRender();
+        }
 
         public override void OnUpdate() {
             if (MouseOverSelf() && MouseStartedDragging) {
                 startX0 = RelativeRect.X0;
                 startY0 = RelativeRect.Y0;
                 _dragState.CurrentlyDraggedContent = this;
-            } else if (MouseIsDragging) {
-                RelativeRect.SetPure(startX0, startY0, startX0 + RelativeRect.Width, startY0 + RelativeRect.Height);
+                isDragging = true;
+            } else if (MouseFinishedDragging) {
+                isDragging = false;
+                Offset = (0, 0);
+            }
+
+            if (isDragging) {
+                float offsetX = startX0 + MouseDragDeltaX;
+                float offsetY = startY0 + MouseDragDeltaY;
+
+                Offset = (offsetX, offsetY);
+
+                Console.WriteLine("" + Offset.X + ", " + Offset.Y);
             }
         }
 
         public override void AfterUpdate() {
             if (MouseFinishedDragging) {
+                setNullNextFrame = true;
+            } else if(setNullNextFrame) {
                 _dragState.CurrentlyDraggedContent = null;
+                setNullNextFrame = false;
             }
         }
 
@@ -52,7 +71,7 @@ namespace MinimalAF.VisualTests.UI {
         Element GeneratePanel(string text) {
             return new OutlineRect(Color4.VA(0, 0.1f), 2)
                 .SetChildren(
-                    new TextElement(text, Color4.VA(0,1), VerticalAlignment.Bottom, HorizontalAlignment.Left)
+                    new TextElement(text, Color4.VA(0, 1), VerticalAlignment.Bottom, HorizontalAlignment.Left)
                 );
         }
 
@@ -72,6 +91,7 @@ namespace MinimalAF.VisualTests.UI {
             if (MouseOverSelf() && MouseFinishedDragging) {
                 if (_dragState.CurrentlyDraggedContent != null) {
                     _dragState.CurrentlyDraggedContent.Parent = this;
+                    _dragState.CurrentlyDraggedContent = null;
                 }
             }
         }
@@ -86,7 +106,7 @@ namespace MinimalAF.VisualTests.UI {
             _thinggo = new DraggedContent();
             Element area1;
             SetChildren(
-                area1 = new DragReciever("Area 1"), 
+                area1 = new DragReciever("Area 1"),
                 new DragReciever("Area 2")
             );
 

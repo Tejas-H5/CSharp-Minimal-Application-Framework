@@ -1,7 +1,7 @@
 ﻿namespace MinimalAF.VisualTests.UI {
 
     class TextInputsUI : Element {
-        protected override void OnConstruct() {
+        public TextInputsUI() {
             Element[] rows = new Element[9];
 
             for (int i = 0; i < 3; i++) {
@@ -61,9 +61,7 @@
 
         Element[] rows;
 
-        protected override void OnConstruct() {
-            
-
+        public UITextInputTest() {
             SetChildren(new UIRootElement().SetChildren(new TextInputsUI()));
         }
     }

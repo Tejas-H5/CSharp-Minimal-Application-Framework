@@ -1,40 +1,25 @@
-------------
-
 TODO:
--> Give Elements their own coordinate systems, and drawing capabilities. Elements should be able to work anywhere in the subtree.
-	- Get the UI tests passing
-		- Update loop: set a flag hasResizedManually = false
-		- RelativeRect :: set: set hasResizedManually = true
-		- If !hasResizedManually: default resizing action else nothing
-		-* Fix the split test
-		
-
--* Improve coordinate system usage
-	-* Allow any element to be able to draw to any other element's coordinate system when needed
-		-* using(element.PushCoordinateSystem())
-									
--* Eliminate the need for all 'Screen space to world space' code for 2D rectangles in the UI tree (However if there is a 3D scene within one of those, that will need to implement something like that but that is none of our concern)
-			-* Allow elements to define an internal scale. Perhaps seperate ones for X and Y, or both at the same time. For instance, if we wanted the width of our UI to be 700 units, then we can say that WIDTH * unit = 700 => the unit is 700/WIDTH units per pixel. Something like 	SetUnitsPerPixel(700 / VW(1));
-				-* needs to be done in the resize function
-			And this can call SetUnitsPerPixelWidth(x) and ...Height(x);
-			And this can scale the projection matrix
-				-* Then we need UnitsWidth and UnitsHeight, since VW and VH won't cut it anymore
-		-* Recreate all UI If needed
-		-* fix all UI tests
-		-* turn children array into a list, where removing and adding triggers mount and dismount
-		-* Make a unit test with two columns and cards, and we can drag+drop the cards amongst the columns and between them
-		
-
-
-	-* 3D immediate and non-immediate support
+	- Start using  List instead of an array to store children
+	
+	-> testcase where I drag a thing from one container to another
+	
 	
 
+- Meta-test that you can actually make cool stuff with this framework.
+	- Test harness that collates and allows for searching through all unit tests
+		-* Create An Attribute is used to mark tests
+		-* Create an element that can aggregate and show all unit tests
+			-* a side-panel that can be hidden/shown and shows all tests
+				-* make this an accordion menu in future.
+	
+	
+	
+	-* non-immediate support
+	
+	-* 3D viewport support
+	
 	-* implement Disposable for Audiosource and possibly other classes
 		since they are now pooled
-		
-	-* Test harness that collates all unit tests
-		-* Create An Attribute is used to mark tests
-		-* Create a subprogram that can aggregate and show all unit tests
 
 	-* clipping needs to be toggleable
 		-* remove setRect

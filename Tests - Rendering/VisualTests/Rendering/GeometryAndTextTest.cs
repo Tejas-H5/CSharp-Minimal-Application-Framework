@@ -11,10 +11,6 @@ namespace MinimalAF.VisualTests.Rendering
         Texture _tex;
 		TextTest _textTest;
 
-        public void OnConstructor() {
-
-        }
-
         public override void OnMount(Window w)
 		{
 			w.Size = (800, 600);

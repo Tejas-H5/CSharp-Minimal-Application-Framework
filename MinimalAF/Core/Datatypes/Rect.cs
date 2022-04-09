@@ -134,6 +134,17 @@ namespace MinimalAF {
 			Y1 += y;
 		}
 
+        /// <summary>
+        /// Allows you to set the rect without any property side-effects.
+        /// </summary>
+        /// <param name="other"></param>
+        public void SetPure(float x0, float y0, float x1, float y1) {
+            X0 = x0;
+            X1 = x1;
+            Y0 = y0;
+            Y1 = y1;
+        }
+
 		public Rect Intersect(Rect other) {
 			return new Rect(
 				MathF.Max(Left, other.Left),

@@ -6,6 +6,7 @@ namespace RenderingEngineVisualTests {
         static void Main(string[] args) {
             Element[] tests =
             {
+                new UIDragTest(),
                 new UIAspectRatioTest(),
                 new UITextInputTest(),
                 new UISplittingTest(),

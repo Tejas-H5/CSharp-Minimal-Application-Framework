@@ -2,7 +2,7 @@
     class AspectRatioContent : Element {
         TextElement _text;
         Element _child;
-        protected override void OnConstruct() {
+        public AspectRatioContent() {
             SetChildren(
                 _child = new OutlineRect(Color4.RGBA(1, 0, 0, 1), 2).SetChildren(
                     _text = new TextElement("4 : 3 Aspect ratio", Color4.RGBA(1, 0, 0, 1))
@@ -57,7 +57,7 @@
         Element _container;
         Element _aspectRatio;
 
-        protected override void OnConstruct() {
+        public UIAspectRatioTest() {
             SetChildren(
                 _container = new OutlineRect(Color4.RGBA(1, 1, 1, 1), 2)
                 .SetChildren(

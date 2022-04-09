@@ -1,25 +1,24 @@
 ﻿using MinimalAF.Rendering;
 using OpenTK.Mathematics;
 using System;
+using System.Collections.Generic;
 
 namespace MinimalAF {
     public abstract partial class Element {
-        static readonly Element[] NULL_ARRAY = new Element[0];
-
-        public virtual bool SingleChild => false;
-        public bool IsVisibleNextFrame = true;
+        static readonly List<Element> NULL_LIST = new List<Element>();
 
         protected Element _parent = null;
+        protected List<Element> _children = NULL_LIST;
+        public virtual bool SingleChild => false;
+
+        public bool IsVisibleNextFrame = true;
         protected bool _isVisible = true;
-        protected Element[] _children;
         private bool _shouldTriggerParentResize = false;
         private bool _mounted = false;
 
-        private Rect _relativeRect;
         public Vector2 Pivot;
-
-        // this is auto-calculated
-        protected Rect _screenRect;
+        private Rect _relativeRect;
+        protected Rect _screenRect; // this is auto-calculated
         bool _rectModified = false;
 
         public void SetRelativeRect(Rect value) {
@@ -34,25 +33,30 @@ namespace MinimalAF {
         }
 
         // todo: make this a list
-        public Element[] Children {
+        public List<Element> Children {
             get {
                 return _children;
             }
             private set {
-                if (SingleChild && _children != null && _children.Length > 1)
+#if DEBUG
+                if (SingleChild && Children != null && Children.Count > 1)
                     throw new Exception("This element must only be given 1 child, possibly in the constructor.");
+#endif
+
+                // Children will be removed anyway, but this should give O(n) instead of O(n^2)
+                for (int i = 0; i < Children.Count; i++) {
+                    Remove(i);
+                }
 
                 _children = value;
 
-                for (int i = 0; i < _children.Length; i++) {
-                    _children[i].Parent = this;
-                }
+                if (Children.Count == 0)
+                    return;
 
-                // sepearte loops so that the children have access to all siblings if needed
-                for (int i = 0; i < _children.Length; i++) {
-                    _children[i].Mount();
+                for (int i = 0; i < Children.Count; i++) {
+                    Children[i].Parent = this;
                 }
-
+                
                 _shouldTriggerParentResize = true;
             }
         }
@@ -64,8 +68,24 @@ namespace MinimalAF {
         }
 
         public Element SetChildren(params Element[] arr) {
-            Children = arr;
+            Children = new List<Element>(arr);
             return this;
+        }
+
+        public void Remove(Element child) {
+            int index = Children.IndexOf(child);
+            if (index == -1) {
+                return;
+            }
+
+            Remove(index);
+        }
+
+        private void Remove(int index) {
+            Element child = Children[index];
+            Children.RemoveAt(index);
+            child.Dismount();
+            child.Parent = null;
         }
 
         public Element Parent {
@@ -75,6 +95,10 @@ namespace MinimalAF {
             set {
                 if (value == _parent)
                     return;
+
+                if(_parent != null) {
+                    _parent.Remove(this);
+                }
 
                 _parent = value;
             }
@@ -111,17 +135,7 @@ namespace MinimalAF {
         }
 
         public Element() {
-            OnConstruct();
         }
-
-        protected virtual void OnConstruct() {
-            Children = NULL_ARRAY;
-        }
-
-        public Element(Element[] children) {
-            Children = children;
-        }
-
 
         /// <summary>
         /// <para>
@@ -172,8 +186,8 @@ namespace MinimalAF {
 
             OnUpdate();
 
-            for (int i = 0; i < _children.Length; i++) {
-                _children[i].UpdateSelfAndChildren(_screenRect);
+            for (int i = 0; i < Children.Count; i++) {
+                Children[i].UpdateSelfAndChildren(_screenRect);
             }
 
             AfterUpdate();
@@ -237,8 +251,8 @@ namespace MinimalAF {
             }
 #endif
 
-            for (int i = 0; i < _children.Length; i++) {
-                _children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, _screenRect, acc.HoverDepth));
+            for (int i = 0; i < Children.Count; i++) {
+                Children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, _screenRect, acc.HoverDepth));
             }
 
             AfterRender();
@@ -279,7 +293,7 @@ namespace MinimalAF {
         private void Mount(Window w) {
             OnMount(w);
 
-            for (int i = 0; i < Children.Length; i++) {
+            for (int i = 0; i < Children.Count; i++) {
                 Children[i].Mount(w);
             }
 
@@ -288,8 +302,8 @@ namespace MinimalAF {
 
 
         public void Dismount() {
-            for (int i = 0; i < _children.Length; i++) {
-                _children[i].Dismount();
+            for (int i = 0; i < Children.Count; i++) {
+                Children[i].Dismount();
             }
 
             OnDismount();
@@ -304,16 +318,16 @@ namespace MinimalAF {
 
             _onChildResizeLock = true;
 
-            for (int i = 0; i < Children.Length; i++) {
+            for (int i = 0; i < Children.Count; i++) {
                 if (Children[i]._rectModified)
                     continue;
 
-                _children[i].RelativeRect = new Rect(0, 0, VW(1), VH(1));
+                Children[i].RelativeRect = new Rect(0, 0, VW(1), VH(1));
             }
 
             OnLayout();
 
-            for (int i = 0; i < Children.Length; i++) {
+            for (int i = 0; i < Children.Count; i++) {
                 Children[i]._rectModified = false;
             }
 
@@ -341,7 +355,7 @@ namespace MinimalAF {
         }
 
         protected void LayoutChildren() {
-            for (int i = 0; i < Children.Length; i++) {
+            for (int i = 0; i < Children.Count; i++) {
                 Children[i].Layout();
             }
         }

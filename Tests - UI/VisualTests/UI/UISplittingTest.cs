@@ -4,16 +4,14 @@
             LayoutDirection dir;
             float splitAmount;
 
-            public SplitContainer(LayoutDirection dir, float splitAmount) {
-                this.dir = dir;
-                this.splitAmount = splitAmount;
-            }
-
             Panel GeneratePanel(Color4 col) {
                 return new Panel(Color4.VA(0, 0.1f), col, Color4.RGBA(0, 1, 0, 0.5f));
             }
 
-            protected override void OnConstruct() {
+            public SplitContainer(LayoutDirection dir, float splitAmount) {
+                this.dir = dir;
+                this.splitAmount = splitAmount;
+
                 SetChildren(
                     GeneratePanel(Color4.RGBA(1, 0, 0, 0.5f)),
                     GeneratePanel(Color4.RGBA(0, 0, 1, 0.5f))
@@ -41,7 +39,7 @@
             }
         }
 
-        protected override void OnConstruct() {
+        public UISplittingTest() {
             Element down = new SplitContainer(LayoutDirection.Down, 70);
             Element left = new SplitContainer(LayoutDirection.Left, 200);
             Element up = new SplitContainer(LayoutDirection.Up, 100);

@@ -11,7 +11,7 @@ namespace MinimalAF.VisualTests.Rendering
         Element el3;
         Element el4;
 
-        protected override void OnConstruct()
+        public NestingTest()
 		{
             el1 = new TextTest();
             el2 = new PolylineTest();

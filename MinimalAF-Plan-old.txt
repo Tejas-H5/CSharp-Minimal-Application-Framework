@@ -1,5 +1,21 @@
 Anything cluttering up MinimalAF plan is just thrown in here
 =======================================================
+-> Give Elements their own coordinate systems, and drawing capabilities. Elements should be able to work anywhere in the subtree.
+	- Get the UI tests passing
+		- Update loop: set a flag hasResizedManually = false
+		- RelativeRect :: set: set hasResizedManually = true
+		- If !hasResizedManually: default resizing action else nothing
+		- Fix the split test
+		
+
+	- Improve coordinate system usage
+		- Allow any element to be able to draw to any other element's coordinate system when needed
+			- using(element.PushCoordinateSystem())
+			
+			
+			
+			
+
 	-> Give Elements their own coordinate systems, and drawing capabilities. Elements should be able to work anywhere in the subtree.
 		- If they are all grounding themselves using Width and Height, I should just be able to give them a different width and height (Happens automatically so I dont have to do anything really), and make the offset based on the screen position. Then use a GLScissor to constrain the drawing. Can still work with 3D cause of viewports.
 		

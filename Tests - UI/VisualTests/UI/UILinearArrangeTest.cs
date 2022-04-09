@@ -38,7 +38,7 @@
 
 
         public override void OnLayout() {
-            LayoutElementsLinear(Children, (LayoutDirection)layouting);
+            LayoutLinear(Children, (LayoutDirection)layouting);
             LayoutChildren();
         }
     }

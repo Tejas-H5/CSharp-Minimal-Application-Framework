@@ -43,19 +43,19 @@
         }
 
         public override void OnLayout() {
-            _topSplit.Children[0].LayoutRelativeMargin(10);
-            _topSplit.Children[1].LayoutRelativeMargin(10);
-            _leftSplit.Children[0].LayoutRelativeMargin(10);
-            _leftSplit.Children[1].LayoutRelativeMargin(10);
-            _rightSplit.Children[0].LayoutRelativeMargin(10);
-            _rightSplit.Children[1].LayoutRelativeMargin(10);
-            _bottomSplit.Children[0].LayoutRelativeMargin(10);
-            _bottomSplit.Children[1].LayoutRelativeMargin(10);
+            LayoutInset(_topSplit.Children[0], 10);
+            LayoutInset(_topSplit.Children[1], 10);
+            LayoutInset(_leftSplit.Children[0], 10);
+            LayoutInset(_leftSplit.Children[1], 10);
+            LayoutInset(_rightSplit.Children[0], 10);
+            LayoutInset(_rightSplit.Children[1], 10);
+            LayoutInset(_bottomSplit.Children[0], 10);
+            LayoutInset(_bottomSplit.Children[1], 10);
 
-            LayoutElementsSplit(_topSplit.Children, LayoutDirection.Down, 70);
-            LayoutElementsSplit(_leftSplit.Children, LayoutDirection.Left, 200);
-            LayoutElementsSplit(_rightSplit.Children, LayoutDirection.Right, 100);
-            LayoutElementsSplit(_bottomSplit.Children, LayoutDirection.Up, 150);
+            LayoutSplit(_topSplit.Children, LayoutDirection.Down, 70);
+            LayoutSplit(_leftSplit.Children, LayoutDirection.Left, 200);
+            LayoutSplit(_rightSplit.Children, LayoutDirection.Right, 100);
+            LayoutSplit(_bottomSplit.Children, LayoutDirection.Up, 150);
         }
     }
 }

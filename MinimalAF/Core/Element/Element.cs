@@ -168,7 +168,7 @@ namespace MinimalAF {
 
             _screenRect = RelativeRect;
             _screenRect.Move(parentScreenRect.X0, parentScreenRect.Y0);
-            CTX.SetScreenRect(_screenRect);
+            CTX.SetScreenRect(_screenRect, false);
 
             OnUpdate();
 
@@ -182,7 +182,7 @@ namespace MinimalAF {
 
         internal struct RenderAccumulator {
             public int Depth;
-            public Rect ScreenRect;
+            public Rect ParentScreenRect;
 
 #if DEBUG
             public int HoverDepth;
@@ -196,7 +196,7 @@ namespace MinimalAF {
 #endif
             ) {
                 Depth = depth;
-                ScreenRect = screenRect;
+                ParentScreenRect = screenRect;
 
 #if DEBUG
                 HoverDepth = hoverDepth;
@@ -220,16 +220,16 @@ namespace MinimalAF {
             }
 
             _screenRect = RelativeRect;
-            _screenRect.Move(acc.ScreenRect.X0, acc.ScreenRect.Y0);
+            _screenRect.Move(acc.ParentScreenRect.X0, acc.ParentScreenRect.Y0);
 
-            CTX.SetScreenRect(_screenRect);
+            CTX.SetScreenRect(_screenRect, Clipping);
             SetTexture(null);
 
             OnRender();
 
 #if DEBUG
             if (MinimalAFEnvironment.Debug) {
-                acc = DrawDebugStuff(acc);
+                acc = DrawDebugStuff(acc, _screenRect);
             }
 #endif
 
@@ -241,19 +241,19 @@ namespace MinimalAF {
         }
 
 #if DEBUG
-        RenderAccumulator DrawDebugStuff(RenderAccumulator acc) {
+        RenderAccumulator DrawDebugStuff(RenderAccumulator acc, Rect newScreenRect) {
             if (!MouseOverSelf())
                 return acc;
 
-            SetDrawColor(Color4.RGB(1, 0, 0));
-            RectOutline(acc.Depth + 1, 1, 1, VW(1) - 1, VH(1) - 1);
+            SetDrawColor(Color4.RGBA(1, 0, 0, 0.5f));
+            RectOutline(2, 1, 1, VW(1) - 1, VH(1) - 1);
 
             Rect(0, 0, 10, 10);
 
             SetDrawColor(Color4.RGB(0, 0, 0));
             int textSize = 12;
             SetFont("Consolas", textSize);
-            Text(GetType().Name + " " + RelativeRect.ToString(), 10 + 2 * acc.Depth, 10 + textSize * acc.HoverDepth);
+            Text(GetType().Name + " " + RelativeRect.ToString(), -newScreenRect.X0 + 10, -newScreenRect.Y0 + 10 + textSize * acc.HoverDepth);
 
             SetFont("");
             SetTexture(null);

@@ -13,10 +13,10 @@
 
         public override void OnLayout() {
             Pivot = new OpenTK.Mathematics.Vector2(0.5f, 0.5f);
-            LayoutRelativeMargin(10);
-            LayoutAspectRatio(4f / 3f, AspectRatioMethod.FitInside);
+            LayoutAspectRatio(_child, 4f / 3f, AspectRatioMethod.FitInside);
+            LayoutInset(_child, 10);
 
-            _child.LayoutRelativeMargin(0);
+            LayoutInset(_child, 0);
             _text.HorizontalAlignment = HorizontalAlignment.Left;
             _text.VerticalAlignment = VerticalAlignment.Bottom;
         }
@@ -46,7 +46,7 @@
         }
 
         public override void OnLayout() {
-            _container.LayoutRelativeMargin(10);
+            LayoutInset(_container, 10);
 
             base.OnLayout();
         }

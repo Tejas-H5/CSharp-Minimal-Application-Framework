@@ -34,10 +34,10 @@
 
 
         public override void OnLayout() {
-            LayoutElementsLinear(Children, LayoutDirection.Down);
+            LayoutLinear(Children, LayoutDirection.Down);
 
             for (int i = 0; i < Children.Length; i++) {
-                Children[i].LayoutElementsLinear(Children[i].Children, LayoutDirection.Right);
+                Children[i].LayoutLinear(Children[i].Children, LayoutDirection.Right);
             }
         }
 

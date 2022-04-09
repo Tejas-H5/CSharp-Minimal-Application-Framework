@@ -26,7 +26,9 @@ namespace MinimalAF.VisualTests.UI {
 
 
         public override void OnLayout() {
-            LayoutElementsLinear(Children, _dir, goldenRatioSplit, true);
+            LayoutLinear(Children, _dir, goldenRatioSplit, true);
+            LayoutInset(Children, 10);
+
             LayoutChildren();
         }
     }

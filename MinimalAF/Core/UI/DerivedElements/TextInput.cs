@@ -51,7 +51,7 @@ namespace MinimalAF {
         }
 
         public override void OnUpdate() {
-            if (MouseButtonPressed(MouseButton.Any) && MouseOverSelf()) {
+            if (MouseButtonPressed(MouseButton.Any) && MouseOverSelf) {
                 _uiState.CurrentlyFocused = this;
             }
 

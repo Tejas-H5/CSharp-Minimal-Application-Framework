@@ -66,12 +66,10 @@ namespace MinimalAF {
                 }
             }
 
-            _shouldTriggerParentResize = true;
-
             return this;
         }
 
-        public void Remove(Element child) {
+        public void RemoveChild(Element child) {
             int index = _children.IndexOf(child);
             if (index == -1) {
                 return;
@@ -85,6 +83,8 @@ namespace MinimalAF {
             _children.RemoveAt(index);
             child.Dismount();
             child._parent = null;
+
+            _shouldTriggerParentResize = true;
         }
 
         public int Index() {
@@ -99,6 +99,8 @@ namespace MinimalAF {
             _children.Add(element);
 
             element.Mount();
+
+            _shouldTriggerParentResize = true;
         }
 
         public void AddChild(Element element) {
@@ -118,7 +120,7 @@ namespace MinimalAF {
                     return;
 
                 if (_parent != null) {
-                    _parent.Remove(this);
+                    _parent.RemoveChild(this);
                 }
 
                 _parent = value;
@@ -289,14 +291,14 @@ namespace MinimalAF {
 
 #if DEBUG
         RenderAccumulator DrawDebugStuff(RenderAccumulator acc, Rect newScreenRect) {
-            if (!MouseOverSelf())
+            if (!MouseOverSelf)
                 return acc;
 
             SetDrawColor(Color4.RGBA(1, 0, 0, 0.5f));
 
             RectOutline(2, 1, 1, VW(1) - 1, VH(1) - 1);
 
-            SetDrawColor(Color4.RGBA(1, 0, 0, 0.1f));
+            SetDrawColor(Color4.RGBA(1, 0, 0, 0.35f));
             Rect(0, 0, 10, 10);
             Rect(VW(1) - 10, 0, VW(1), 10);
             Rect(0, VH(1) - 10, 10, VH(1));
@@ -305,7 +307,9 @@ namespace MinimalAF {
             SetDrawColor(Color4.RGB(0, 0, 0));
             int textSize = 12;
             SetFont("Consolas", textSize);
-            Text(GetType().Name + " " + RelativeRect.ToString(), -newScreenRect.X0 + 10, -newScreenRect.Y0 + 10 + textSize * acc.HoverDepth);
+
+            string text = GetType().Name + " " + RelativeRect.ToString() + " Depth: " + acc.Depth;
+            Text(text, -newScreenRect.X0 + 10, -newScreenRect.Y0 + 10 + textSize * acc.HoverDepth);
 
             SetFont("");
             SetTexture(null);
@@ -316,12 +320,14 @@ namespace MinimalAF {
 #endif
 
         public void Mount() {
-            Window w = GetAncestor<Window>();
+            ApplicationWindow w = GetAncestor<ApplicationWindow>();
+
             if (w == null) {
                 return;
             }
 
-            Mount(w);
+            Window mockWindow = GetAncestor<Window>();
+            Mount(mockWindow);
         }
 
         private void Mount(Window w) {
@@ -356,7 +362,7 @@ namespace MinimalAF {
                 if (_children[i]._rectModified)
                     continue;
 
-                _children[i].RelativeRect = new Rect(0, 0, VW(1), VH(1));
+                _children[i].RelativeRect = DefaultRect();
             }
 
             OnLayout();
@@ -368,6 +374,21 @@ namespace MinimalAF {
             _onChildResizeLock = false;
         }
 
+        /// <summary>
+        /// <para>
+        /// This is how the parent will size this rect by default. The parent will call this method on it's elements
+        /// before calling OnLayout
+        /// </para>
+        /// 
+        /// <para>
+        /// Note that I have never ever had to use this (and when I tried, I later realised my design was wrong), 
+        /// and if you are using it, it may be a problem with your design.
+        /// I am keeping it in for now, just in case
+        /// </para>
+        /// </summary>
+        public virtual Rect DefaultRect() {
+            return new Rect(0, 0, VW(1), VH(1));
+        }
 
 
         /// <summary>

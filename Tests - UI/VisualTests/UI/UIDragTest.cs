@@ -10,7 +10,6 @@ namespace MinimalAF.VisualTests.UI {
                 );
         }
 
-
         public DraggedContent() {
             SetChildren(GeneratePanel("Drag component"));
         }
@@ -33,7 +32,7 @@ namespace MinimalAF.VisualTests.UI {
         }
 
         public override void OnUpdate() {
-            if (MouseOverSelf() && MouseStartedDragging) {
+            if (MouseStartedDragging) {
                 startX0 = RelativeRect.X0;
                 startY0 = RelativeRect.Y0;
                 _dragState.CurrentlyDraggedContent = this;
@@ -88,7 +87,7 @@ namespace MinimalAF.VisualTests.UI {
 
 
         public override void OnUpdate() {
-            if (MouseOverSelf() && MouseFinishedDragging) {
+            if (MouseOverSelf && MouseFinishedDragging) {
                 if (_dragState.CurrentlyDraggedContent != null) {
                     _dragState.CurrentlyDraggedContent.Parent = this;
                     _dragState.CurrentlyDraggedContent = null;

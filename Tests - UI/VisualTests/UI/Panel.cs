@@ -24,7 +24,7 @@ namespace MinimalAF.VisualTests.UI {
             if (_uiState.EventWasHandled)
                 return;
 
-            if (MouseOverSelf()) {
+            if (MouseOverSelf) {
                 _uiState.EventWasHandled = true;
 
                 if (MouseButtonHeld(MouseButton.Any)) {

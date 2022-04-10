@@ -1,10 +1,13 @@
 TODO:
 	- Meta-test to make sure that you can actually make cool and useful things with this framework.
 	- Test harness that collates and allows for searching through all unit tests
-		-* Create An Attribute is used to mark tests
-		-* Create an element that can aggregate and show all unit tests
-			-* a side-panel that can be hidden/shown and shows all tests
-				-* make this an accordion menu in future.
+		- Create An Attribute is used to mark tests
+		- Create an element that can aggregate and show all unit tests
+		- Allow multiple windows, make a side-window that controls the main window
+		-* create a Debug window
+			-* a side-panel that lists all tests that can be searched in
+				-* clicking on a test will change what is shown in the main window
+			-* a main view that shows the current element tree
 	
 	-* non-immediate support
 	

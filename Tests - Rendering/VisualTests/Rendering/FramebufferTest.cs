@@ -1,32 +1,27 @@
 ﻿using MinimalAF.Rendering;
 
-namespace MinimalAF.VisualTests.Rendering
-{
-	[VisualTest]
-    public class FramebufferTest : Element
-    {
-        public override void OnMount(Window w)
-        {
-            
+namespace MinimalAF.VisualTests.Rendering {
+    [VisualTest]
+    public class FramebufferTest : Element {
+        public override void OnMount(Window w) {
+
             w.Size = (800, 600);
             w.Title = "FramebufferTest";
 
             //w.RenderFrequency = 120;
             //w.UpdateFrequency = 120; 20;
 
-           SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
         }
 
 
         double timer = 0;
 
-        public override void OnUpdate()
-        {
+        public override void OnUpdate() {
             timer += Time.DeltaTime;
         }
 
-        public override void OnRender()
-        {
+        public override void OnRender() {
             UseTransparentFramebuffer(0);
 
             SetDrawColor(0, 0, 1, 1);
@@ -41,12 +36,15 @@ namespace MinimalAF.VisualTests.Rendering
 
             SetDrawColor(Color4.RGBA(0, 0, 0, 1));
             SetFont("Consolas", 12);
-            Text("The red square must be fully visible under the circles.\n" +
+
+            string assertThat = "The red square must be fully visible under the circles.\n" +
                 "The part where the circles overlap must not be visible.\n" +
                 "There must be a small orange rectangle in the middle\n" +
-				"It must all be inside the green square\n" +
-				"This text must be 0,0,0 black \n",
-                0, Height - 20);
+                "It must all be inside the green square\n" +
+                "This text must be 0,0,0 black \n" +
+                "The circles must actually be circular, and not distorted ovals \n";
+
+            Text(assertThat, 0, Height - 20);
 
             SetDrawColor(1, 0, 0, 1);
 
@@ -56,8 +54,8 @@ namespace MinimalAF.VisualTests.Rendering
             Rect(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
             SetDrawColor(1, 1, 1, 0.5f);
             SetTexture(GetFramebufferTexture(0));
-            
-            Rect(0, 0, Width,Height);
+
+            Rect(0, 0, Width, Height);
 
             SetTexture(null);
 
@@ -66,8 +64,7 @@ namespace MinimalAF.VisualTests.Rendering
         }
 
 
-        private void DrawDualCirclesCenter(float x, float y)
-        {
+        private void DrawDualCirclesCenter(float x, float y) {
             Circle(x - 100, y - 100, 200);
             Circle(x + 100, y + 100, 200);
         }

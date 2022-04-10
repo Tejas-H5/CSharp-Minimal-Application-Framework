@@ -8,7 +8,6 @@ namespace MinimalAF.VisualTests.Rendering
     {
         public override void OnMount(Window w)
         {
-            
             w.Size = (800, 600);
             w.Title = "Triangle";
 

@@ -6,8 +6,15 @@ using System;
 using System.ComponentModel;
 
 namespace MinimalAF {
+    public enum WindowState {
+        Normal,
+        Minimized,
+        Maximized,
+        Fullscreen
+    }
+
     internal class OpenTKWindowWrapper : GameWindow {
-        Window _rootWindow;
+        ApplicationWindow _rootWindow;
 
         double time = 0;
         int renderFrames = 0;
@@ -42,7 +49,7 @@ namespace MinimalAF {
             }
         }
 
-        public OpenTKWindowWrapper(Window rootWindow)
+        public OpenTKWindowWrapper(ApplicationWindow rootWindow)
             : base(new GameWindowSettings {
                 IsMultiThreaded = false
             },
@@ -192,16 +199,8 @@ namespace MinimalAF {
             AudioCTX.Cleanup();
         }
 
-        public void Maximize() {
-            WindowState = WindowState.Maximized;
-        }
-
-        public void Fullscreen() {
-            WindowState = WindowState.Fullscreen;
-        }
-
-        public void Unmaximize() {
-            WindowState = WindowState.Normal;
+        public void SetWindowState(WindowState state) {
+            WindowState = (OpenTK.Windowing.Common.WindowState)state;
         }
     }
 }

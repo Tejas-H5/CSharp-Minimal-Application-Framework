@@ -3,16 +3,39 @@ using System;
 
 namespace MinimalAF {
     /// <summary>
+    /// Mainly used to mock a window for testing
+    /// </summary>
+    public abstract class Window : Element {
+        public abstract string Title {
+            get; set;
+        }
+        public abstract double UpdateFrequency {
+            get; set;
+        }
+        public abstract double RenderFrequency {
+            get; set;
+        }
+        public abstract WindowState WindowState {
+            get; set;
+        }
+
+        public abstract (int, int) Size {
+            get; set;
+        }
+    }
+
+    /// <summary>
     /// Only be getting this and modifying stuff if the element is a root-level element
     /// of your program.
     /// </summary>
-    public class Window : Element {
+    public class ApplicationWindow : Window {
         OpenTKWindowWrapper _window;
         Element _rootElement;
 
         public override bool SingleChild => true;
 
-        public Window() {}
+        public ApplicationWindow() {
+        }
 
         public void Run(Element rootElement) {
             using (OpenTKWindowWrapper window = new OpenTKWindowWrapper(this)) {
@@ -32,12 +55,12 @@ namespace MinimalAF {
             Mounted = true;
         }
 
-        public Vector2i Size {
+        public override (int, int) Size {
             get {
-                return new Vector2i(_window.Size.X, _window.Size.Y);
+                return (_window.Size.X, _window.Size.Y);
             }
             set {
-                _window.Size = new OpenTK.Mathematics.Vector2i(value.X, value.Y);
+                _window.Size = new OpenTK.Mathematics.Vector2i(value.Item1, value.Item2);
             }
         }
 
@@ -45,17 +68,14 @@ namespace MinimalAF {
             _window.Close();
         }
 
+        public override WindowState WindowState {
+            get => (WindowState)_window.WindowState;
+            set {
+                _window.WindowState = (OpenTK.Windowing.Common.WindowState)value;
+            }
+        }
 
-        public void Maximize() {
-            _window.Maximize();
-        }
-        public void Fullscreen() {
-            _window.Fullscreen();
-        }
-        public void Unmaximize() {
-            _window.Unmaximize();
-        }
-        public string Title {
+        public override string Title {
             get {
                 return _window.Title;
             }
@@ -85,7 +105,7 @@ namespace MinimalAF {
                 return _window.CurrentUpdateFPS;
             }
         }
-        public double UpdateFrequency {
+        public override double UpdateFrequency {
             get {
                 return _window.UpdateFrequency;
             }
@@ -93,7 +113,7 @@ namespace MinimalAF {
                 _window.UpdateFrequency = value;
             }
         }
-        public double RenderFrequency {
+        public override double RenderFrequency {
             get {
                 return _window.RenderFrequency;
             }

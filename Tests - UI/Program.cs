@@ -18,7 +18,7 @@ namespace RenderingEngineVisualTests {
 
             MinimalAFEnvironment.Debug = true;
             foreach (Element entryPoint in tests) {
-                new Window().Run(entryPoint);
+                new ApplicationWindow().Run(entryPoint);
             }
         }
     }

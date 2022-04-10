@@ -40,7 +40,7 @@ namespace MinimalAF {
                 if (!ranOutOfTests) {
                     NextTest();
                 } else {
-                    GetAncestor<Window>().Close();
+                    GetAncestor<ApplicationWindow>().Close();
                 }
             }
         }

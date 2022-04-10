@@ -4,6 +4,7 @@ using System;
 using System.Text;
 
 namespace MinimalAF.AudioTests {
+	[VisualTest]
     public class MusicAndKeysTest : Element {
         AudioSourceOneShot _clackSound;
         AudioSourceStreamed _streamedSource;

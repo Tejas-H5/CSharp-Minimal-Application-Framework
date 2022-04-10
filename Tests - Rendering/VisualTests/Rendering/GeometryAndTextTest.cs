@@ -5,6 +5,7 @@ using System.Text;
 
 namespace MinimalAF.VisualTests.Rendering
 {
+	[VisualTest]
 	class GeometryAndTextTest : Element
     {
         List<string> rain = new List<string>();

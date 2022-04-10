@@ -1,4 +1,5 @@
 ﻿namespace MinimalAF.VisualTests.UI {
+	[VisualTest]
     public class UILinearArrangeNestedTest : Element {
         Element _root;
         Element _textInputElement;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace MinimalAF.VisualTests.UI {
+	[VisualTest]
     public class UIGoldenRatioTest : Element {
 
         class SplitContainer : Element {

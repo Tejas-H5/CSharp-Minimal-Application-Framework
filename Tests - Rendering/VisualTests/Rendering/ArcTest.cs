@@ -3,6 +3,7 @@ using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
+	[VisualTest]
 	class ArcTest : Element
     {
         public override void OnMount(Window w)

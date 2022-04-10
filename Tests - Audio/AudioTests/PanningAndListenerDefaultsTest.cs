@@ -1,6 +1,7 @@
 ﻿using MinimalAF.Audio;
 
 namespace MinimalAF.AudioTests {
+	[VisualTest]
     public class PanningAndListenerDefaultsTest : Element {
         AudioSourceOneShot _clackSound;
         AudioListener _listener;

@@ -1,6 +1,4 @@
 ﻿using MinimalAF;
-using MinimalAF.Testing;
-using MinimalAF.VisualTests.Rendering;
 
 namespace RenderingEngineVisualTests
 {

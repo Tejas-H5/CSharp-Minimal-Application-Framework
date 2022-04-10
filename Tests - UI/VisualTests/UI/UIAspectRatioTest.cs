@@ -53,6 +53,7 @@
         }
     }
 
+	[VisualTest]
     public class UIAspectRatioTest : Element {
         Element _container;
         Element _aspectRatio;

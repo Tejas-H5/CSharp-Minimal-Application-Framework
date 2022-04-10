@@ -6,6 +6,7 @@ using System.Drawing;
 
 namespace MinimalAF.VisualTests.Rendering
 {
+	[VisualTest]
 	public class PolylineTest : Element
 	{
 		Queue<Vector2> _points = new Queue<Vector2>();

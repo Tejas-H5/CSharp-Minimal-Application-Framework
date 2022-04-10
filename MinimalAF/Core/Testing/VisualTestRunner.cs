@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace MinimalAF.Testing {
+namespace MinimalAF {
     public class VisualTestRunner : Element {
         List<Type> visualTestElements = new List<Type>();
 

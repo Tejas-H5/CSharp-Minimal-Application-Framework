@@ -50,6 +50,7 @@
         }
     }
 
+	[VisualTest]
     public class UITextInputTest : Element {
         public override void OnMount(Window w) {
             w.Size = (800, 600);

@@ -4,6 +4,7 @@ using System.Text;
 
 namespace MinimalAF.VisualTests.Rendering
 {
+	[VisualTest]
 	public class NestingTest : Element
 	{
         Element el1;

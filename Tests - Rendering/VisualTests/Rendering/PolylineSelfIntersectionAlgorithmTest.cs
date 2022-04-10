@@ -6,6 +6,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace MinimalAF.VisualTests.Rendering
 {
+	[VisualTest]
 	public class PolylineSelfIntersectionAlgorithmTest : Element
     {
         public override void OnMount(Window w)

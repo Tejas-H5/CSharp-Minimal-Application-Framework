@@ -1,4 +1,5 @@
 ﻿namespace MinimalAF.VisualTests.UI {
+	[VisualTest]
     public class UISplittingTest : Element {
         class SplitContainer : Element {
             LayoutDirection dir;

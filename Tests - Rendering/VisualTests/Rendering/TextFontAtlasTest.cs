@@ -2,6 +2,7 @@
 
 namespace MinimalAF.VisualTests.Rendering
 {
+    [VisualTest]
 	class TextFontAtlasText : Element
     {
         public override void OnMount(Window w)

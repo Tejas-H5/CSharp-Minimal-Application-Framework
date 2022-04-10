@@ -1,8 +1,8 @@
 using System;
 
-namespace MinimalAF.Testing {
+namespace MinimalAF {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-    sealed class VisualTestAttribute : Attribute {
+    public sealed class VisualTestAttribute : Attribute {
         public VisualTestAttribute() {
             
         }

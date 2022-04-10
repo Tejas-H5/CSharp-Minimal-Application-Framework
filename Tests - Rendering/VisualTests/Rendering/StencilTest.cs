@@ -3,6 +3,7 @@ using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
+	[VisualTest]
 	public class StencilTest : Element
     {
         public override void OnMount(Window w)

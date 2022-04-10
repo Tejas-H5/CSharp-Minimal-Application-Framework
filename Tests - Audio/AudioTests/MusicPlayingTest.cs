@@ -3,6 +3,7 @@ using MinimalAF.Audio;
 using MinimalAF.Rendering;
 
 namespace AudioEngineTests.AudioTests {
+	[VisualTest]
     class MusicPlayingTest : Element {
         AudioSourceStreamed _streamedSource;
         AudioClipStream _streamProvider;

@@ -4,6 +4,7 @@ using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
+	[VisualTest]
 	class TextureTest : Element
     {
         Texture _tex;

@@ -2,7 +2,8 @@
 
 namespace MinimalAF.VisualTests.Rendering
 {
-	public class FramebufferTest : Element
+	[VisualTest]
+    public class FramebufferTest : Element
     {
         public override void OnMount(Window w)
         {

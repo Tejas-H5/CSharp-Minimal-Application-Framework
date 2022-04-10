@@ -5,6 +5,7 @@ using System.Text;
 
 namespace MinimalAF.VisualTests.Rendering
 {
+	[VisualTest]
 	public class KeyboardTest : Element
     {
         public override void OnMount(Window w)

@@ -133,6 +133,7 @@ namespace MinimalAF.VisualTests.UI {
         }
     }
 
+	[VisualTest]
     public class UIDragTest : Element {
         Element _container;
 

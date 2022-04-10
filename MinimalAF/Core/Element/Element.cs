@@ -36,27 +36,27 @@ namespace MinimalAF {
             CTX.SetClearColor(value);
         }
 
-        // todo: make this a list
-        public List<Element> Children {
+        public ArraySlice<Element> Children {
             get {
                 return _children;
             }
         }
 
+
         public Element this[int index] {
             get {
-                return Children[index];
+                return _children[index];
             }
         }
 
         public Element SetChildren(params Element[] newChildren) {
 #if DEBUG
-            if (SingleChild && Children != null && Children.Count > 1)
+            if (SingleChild && _children != null && _children.Count > 1)
                 throw new Exception("This element must only be given 1 child, possibly in the constructor.");
 #endif
 
-            // Children will be removed anyway, but this should give O(n) instead of O(n^2)
-            for (int i = Children.Count - 1; i >= 0; i--) {
+            // _children will be removed anyway, but this should give O(n) instead of O(n^2)
+            for (int i = _children.Count - 1; i >= 0; i--) {
                 Remove(i);
             }
 
@@ -72,7 +72,7 @@ namespace MinimalAF {
         }
 
         public void Remove(Element child) {
-            int index = Children.IndexOf(child);
+            int index = _children.IndexOf(child);
             if (index == -1) {
                 return;
             }
@@ -81,8 +81,8 @@ namespace MinimalAF {
         }
 
         private void Remove(int index) {
-            Element child = Children[index];
-            Children.RemoveAt(index);
+            Element child = _children[index];
+            _children.RemoveAt(index);
             child.Dismount();
             child._parent = null;
         }
@@ -92,7 +92,7 @@ namespace MinimalAF {
                 return 0;
             }
 
-            return Parent.Children.IndexOf(this);
+            return Parent._children.IndexOf(this);
         }
 
         private void Add(Element element) {
@@ -210,8 +210,8 @@ namespace MinimalAF {
 
             OnUpdate();
 
-            for (int i = 0; i < Children.Count; i++) {
-                Children[i].UpdateSelfAndChildren(_screenRect);
+            for (int i = 0; i < _children.Count; i++) {
+                _children[i].UpdateSelfAndChildren(_screenRect);
             }
 
             AfterUpdate();
@@ -280,8 +280,8 @@ namespace MinimalAF {
             }
 #endif
 
-            for (int i = 0; i < Children.Count; i++) {
-                Children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, _screenRect, acc.HoverDepth));
+            for (int i = 0; i < _children.Count; i++) {
+                _children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, _screenRect, acc.HoverDepth));
             }
 
             AfterRender();
@@ -327,8 +327,8 @@ namespace MinimalAF {
         private void Mount(Window w) {
             OnMount(w);
 
-            for (int i = 0; i < Children.Count; i++) {
-                Children[i].Mount(w);
+            for (int i = 0; i < _children.Count; i++) {
+                _children[i].Mount(w);
             }
 
             _mounted = true;
@@ -336,8 +336,8 @@ namespace MinimalAF {
 
 
         public void Dismount() {
-            for (int i = 0; i < Children.Count; i++) {
-                Children[i].Dismount();
+            for (int i = 0; i < _children.Count; i++) {
+                _children[i].Dismount();
             }
 
             OnDismount();
@@ -352,17 +352,17 @@ namespace MinimalAF {
 
             _onChildResizeLock = true;
 
-            for (int i = 0; i < Children.Count; i++) {
-                if (Children[i]._rectModified)
+            for (int i = 0; i < _children.Count; i++) {
+                if (_children[i]._rectModified)
                     continue;
 
-                Children[i].RelativeRect = new Rect(0, 0, VW(1), VH(1));
+                _children[i].RelativeRect = new Rect(0, 0, VW(1), VH(1));
             }
 
             OnLayout();
 
-            for (int i = 0; i < Children.Count; i++) {
-                Children[i]._rectModified = false;
+            for (int i = 0; i < _children.Count; i++) {
+                _children[i]._rectModified = false;
             }
 
             _onChildResizeLock = false;
@@ -389,8 +389,8 @@ namespace MinimalAF {
         }
 
         protected void LayoutChildren() {
-            for (int i = 0; i < Children.Count; i++) {
-                Children[i].Layout();
+            for (int i = 0; i < _children.Count; i++) {
+                _children[i].Layout();
             }
         }
 

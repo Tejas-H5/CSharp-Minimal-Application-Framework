@@ -34,16 +34,16 @@
         }
 
         public override void OnLayout() {
-            LayoutInset(Children.Slice(0, 3), 0, VH(2f / 3f), 0, 0);
-            LayoutLinear(Children.Slice(0, 3), LayoutDirection.Right);
+            LayoutInset(_children.Slice(0, 3), 0, VH(2f / 3f), 0, 0);
+            LayoutLinear(_children.Slice(0, 3), LayoutDirection.Right);
 
-            LayoutInset(Children.Slice(3, 6), 0, VH(1f / 3f), 0, VH(1f / 3f));
-            LayoutLinear(Children.Slice(3, 6), LayoutDirection.Right);
+            LayoutInset(_children.Slice(3, 6), 0, VH(1f / 3f), 0, VH(1f / 3f));
+            LayoutLinear(_children.Slice(3, 6), LayoutDirection.Right);
 
-            LayoutInset(Children.Slice(6, 9), 0, VH(0), 0, VH(2f / 3f));
-            LayoutLinear(Children.Slice(6, 9), LayoutDirection.Right);
+            LayoutInset(_children.Slice(6, 9), 0, VH(0), 0, VH(2f / 3f));
+            LayoutLinear(_children.Slice(6, 9), LayoutDirection.Right);
 
-            LayoutInset(Children, 10);
+            LayoutInset(_children, 10);
 
             LayoutChildren();
 

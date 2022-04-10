@@ -126,8 +126,8 @@ namespace MinimalAF.VisualTests.UI {
         }
 
         public override void OnLayout() {
-            LayoutLinear(Children, LayoutDirection.Left);
-            LayoutInset(Children, 50);
+            LayoutLinear(_children, LayoutDirection.Left);
+            LayoutInset(_children, 50);
 
             LayoutChildren();
         }

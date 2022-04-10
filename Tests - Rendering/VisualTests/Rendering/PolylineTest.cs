@@ -1,5 +1,6 @@
 ﻿using MinimalAF.Rendering;
 using MinimalAF.Util;
+using OpenTK.Mathematics;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -7,10 +8,10 @@ namespace MinimalAF.VisualTests.Rendering
 {
 	public class PolylineTest : Element
 	{
-		Queue<PointF> _points = new Queue<PointF>();
+		Queue<Vector2> _points = new Queue<Vector2>();
 		Queue<double> _times = new Queue<double>();
 
-		PointF _linePoint, _linePointDragStart;
+		Vector2 _linePoint, _linePointDragStart;
 		bool _dragStarted;
 		float _radius = 50;
 
@@ -29,14 +30,18 @@ namespace MinimalAF.VisualTests.Rendering
 			SetFont("Consolas", 16);
 
 			// TODO: get this working
-			_linePoint = new PointF(VW(0.5f), VH(0.5f));
-			//_linePoint = new PointF(400, 300);
+			_linePoint = (0,0);
+			//_linePoint = new Vector2(400, 300);
 		}
 
 
 		public override void OnUpdate()
 		{
 			timer += Time.DeltaTime;
+
+            if (_linePoint == new Vector2(0, 0)) {
+                _linePoint = new Vector2(VW(0.5f), VH(0.5f));
+            }
 
 			_points.Enqueue(_linePoint);
 			_times.Enqueue(timer);
@@ -60,7 +65,7 @@ namespace MinimalAF.VisualTests.Rendering
 
 			if (_dragStarted)
 			{
-				_linePoint = new PointF(
+				_linePoint = new Vector2(
 					MathUtilF.Clamp(_linePointDragStart.X + MouseDragDeltaX, VW(0.25f), VW(0.75f)),
 					MathUtilF.Clamp(_linePointDragStart.Y + MouseDragDeltaY, VH(0.25f), VH(0.75f))
 				);
@@ -80,7 +85,7 @@ namespace MinimalAF.VisualTests.Rendering
 			SetDrawColor(0, 0, 1, 0.5f);
 
 			int i = 0;
-			foreach (PointF p in _points)
+			foreach (Vector2 p in _points)
 			{
 				if (i == 0)
 				{

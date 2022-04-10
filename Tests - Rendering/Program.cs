@@ -1,4 +1,5 @@
 ﻿using MinimalAF;
+using MinimalAF.Testing;
 using MinimalAF.VisualTests.Rendering;
 
 namespace RenderingEngineVisualTests
@@ -7,29 +8,10 @@ namespace RenderingEngineVisualTests
     {
         static void Main(string[] args)
         {
-            Element[] tests =
-            {
-                new PolylineTest(),
-				new NestingTest(),
-                new StencilTest(),
-                new TextureTest(),
-                new GeometryAndTextTest(),
-                new TextTest(),
-                new PolylineSelfIntersectionAlgorithmTest(),
-                new ArcTest(),
-                new FramebufferTest(),
-                new KeyboardTest(),
-                new Benchmark(5),
-                new GeometryOutlineTest(),
-            };
-
-
+            VisualTestRunner runner = new VisualTestRunner();
             var window = new Window();
 
-            foreach (Element entryPoint in tests)
-            {
-                window.Run(entryPoint);
-            }
+            window.Run(runner);
         }
     }
 }

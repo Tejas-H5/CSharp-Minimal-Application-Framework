@@ -40,7 +40,7 @@
 
 
         public override void OnLayout() {
-            LayoutLinear(Children, (LayoutDirection)layouting);
+            LayoutLinear(_children, (LayoutDirection)layouting);
             LayoutChildren();
         }
     }

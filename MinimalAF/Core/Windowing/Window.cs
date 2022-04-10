@@ -41,6 +41,11 @@ namespace MinimalAF {
             }
         }
 
+        public void Close() {
+            _window.Close();
+        }
+
+
         public void Maximize() {
             _window.Maximize();
         }

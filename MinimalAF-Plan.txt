@@ -1,5 +1,5 @@
 TODO:
-- Meta-test that you can actually make cool stuff with this framework.
+	- Meta-test to make sure that you can actually make cool and useful things with this framework.
 	- Test harness that collates and allows for searching through all unit tests
 		-* Create An Attribute is used to mark tests
 		-* Create an element that can aggregate and show all unit tests

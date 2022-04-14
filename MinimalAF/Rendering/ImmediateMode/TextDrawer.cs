@@ -5,6 +5,7 @@ using System.Drawing;
 namespace MinimalAF.Rendering.ImmediateMode {
     public class TextDrawer : IDisposable {
         FontManager _fontManager;
+        RenderContext ctx;
 
         public FontAtlasTexture ActiveFont {
             get {
@@ -12,9 +13,10 @@ namespace MinimalAF.Rendering.ImmediateMode {
             }
         }
 
-        public TextDrawer() {
+        public TextDrawer(RenderContext context) {
             _fontManager = new FontManager();
             SetFont("", -1);
+            ctx = context;
         }
 
 
@@ -142,9 +144,9 @@ namespace MinimalAF.Rendering.ImmediateMode {
         }
 
         public PointF Draw(string text, int start, int end, float startX, float startY, float scale) {
-            Texture previousTexture = CTX.Texture.Get();
+            Texture previousTexture = ctx.Texture.Get();
 
-            CTX.Texture.Set(ActiveFont.FontTexture);
+            ctx.Texture.Set(ActiveFont.FontTexture);
 
             float x = startX;
             float y = startY;
@@ -164,7 +166,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
                 x += GetWidth(c);
             }
 
-            CTX.Texture.Set(previousTexture);
+            ctx.Texture.Set(previousTexture);
 
             return new PointF(x, y);
         }
@@ -173,7 +175,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
             SizeF size = GetSize(c);
             Rect uv = ActiveFont.FontAtlas.GetCharacterUV(c);
 
-            CTX.Rect.Draw(new Rect(x, y, x + size.Width * scale, y + size.Height * scale), uv);
+            ctx.Rect.Draw(new Rect(x, y, x + size.Width * scale, y + size.Height * scale), uv);
         }
 
         public void Dispose() {

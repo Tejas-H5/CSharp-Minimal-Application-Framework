@@ -8,7 +8,8 @@ TODO:
 			-* a side-panel that lists all tests that can be searched in
 				-* clicking on a test will change what is shown in the main window
 			-* a main view that shows the current element tree
-	
+			
+			
 	-* non-immediate support
 	
 	-* 3D viewport support

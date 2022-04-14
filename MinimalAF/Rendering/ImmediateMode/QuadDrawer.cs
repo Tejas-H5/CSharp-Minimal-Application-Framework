@@ -3,9 +3,11 @@
 namespace MinimalAF.Rendering.ImmediateMode {
     public class QuadDrawer {
         IGeometryOutput _outputStream;
+        RenderContext ctx;
 
-        public QuadDrawer(IGeometryOutput outputStream) {
+        public QuadDrawer(RenderContext context, IGeometryOutput outputStream) {
             _outputStream = outputStream;
+            ctx = context;
         }
 
         /// <summary>

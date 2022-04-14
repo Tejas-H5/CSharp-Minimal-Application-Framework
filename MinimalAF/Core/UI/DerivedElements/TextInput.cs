@@ -46,8 +46,8 @@ namespace MinimalAF {
         private void RenderCarat() {
             PointF caratPos = _textObject.GetCaratPos();
             float height = _textObject.GetCharacterHeight();
-            CTX.SetDrawColor(_textObject.TextColor);
-            CTX.Rect.Draw(caratPos.X, caratPos.Y, caratPos.X + 2, caratPos.Y + height);
+            ctx.SetDrawColor(_textObject.TextColor);
+            ctx.Rect.Draw(caratPos.X, caratPos.Y, caratPos.X + 2, caratPos.Y + height);
         }
 
         public override void OnUpdate() {

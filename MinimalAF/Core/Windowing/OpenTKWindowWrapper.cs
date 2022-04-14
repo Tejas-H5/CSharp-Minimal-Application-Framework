@@ -57,6 +57,7 @@ namespace MinimalAF {
                 StartVisible = false
             }) {
             _rootWindow = rootWindow;
+            ctx = new RenderContext(Context);
         }
 
         public event Action<uint> TextInputEvent;
@@ -72,7 +73,6 @@ namespace MinimalAF {
             TextInput += ProcessCharTextInputs;
             MouseWheel += WindowInstance_MouseWheel;
 
-            CTX.Init(Context);
             AudioCTX.Init();
             Input.HookToWindow(this);
             _init = true;
@@ -143,26 +143,26 @@ namespace MinimalAF {
 
         protected override void OnRenderFrame(FrameEventArgs args) {
             Time._deltaTime = (float)args.Time;
-            CTX.ContextWidth = Width;
-            CTX.ContextHeight = Height;
+            ctx.ContextWidth = Width;
+            ctx.ContextHeight = Height;
 
             base.OnRenderFrame(args);
 
-            CTX.SetViewport(Rect);
-            CTX.Clear();
+            ctx.SetViewport(Rect);
+            ctx.Clear();
 
-            CTX.Cartesian2D(Width, Height);
+            ctx.Cartesian2D(Width, Height);
 
             _rootWindow.RenderSelfAndChildren(new Rect(0, 0, Width, Height));
 
 
-            CTX.SwapBuffers();
+            ctx.SwapBuffers();
 
             renderFrames++;
         }
 
         void ResizeAction() {
-            CTX.SetViewport(Rect);
+            ctx.SetViewport(Rect);
 
             _rootWindow.RelativeRect = new Rect(0, 0, Width, Height);
             
@@ -195,7 +195,7 @@ namespace MinimalAF {
         private unsafe void Cleanup() {
             _rootWindow.Dismount();
 
-            CTX.Dispose(true);
+            ctx.Dispose(true);
             AudioCTX.Cleanup();
         }
 

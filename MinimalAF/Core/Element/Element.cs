@@ -13,6 +13,8 @@ namespace MinimalAF {
         protected bool _isVisible = true;
         private bool _shouldTriggerParentResize = false;
         private bool _mounted = false;
+        internal RenderContext ctx;
+
         internal bool Mounted {
             set {
                 _mounted = value;
@@ -33,7 +35,7 @@ namespace MinimalAF {
 
         // TODO: make this somewhat local, or come up with a good way to do that
         protected void SetClearColor(Color4 value) {
-            CTX.SetClearColor(value);
+            ctx.SetClearColor(value);
         }
 
         public ArraySlice<Element> Children {
@@ -98,7 +100,8 @@ namespace MinimalAF {
         private void Add(Element element) {
             _children.Add(element);
 
-            element.Mount();
+            // TODO: get these from the parent 
+            element.Mount(null, null);
 
             _shouldTriggerParentResize = true;
         }
@@ -261,7 +264,7 @@ namespace MinimalAF {
         }
 
         public void UseCoordinates(bool clipping=false) {
-            CTX.SetScreenRect(_screenRect, clipping);
+            ctx.SetScreenRect(_screenRect, clipping);
         }
 
         internal void RenderSelfAndChildren(RenderAccumulator acc) {
@@ -319,27 +322,29 @@ namespace MinimalAF {
         }
 #endif
 
-        public void Mount() {
-            ApplicationWindow w = GetAncestor<ApplicationWindow>();
+        public void Mount(ApplicationWindow w, Window mockWindow) {
+            if(w == null) {
+                w = GetAncestor<ApplicationWindow>();
+            }
 
             if (w == null) {
                 return;
             }
 
-            Window mockWindow = GetAncestor<Window>();
-            Mount(mockWindow);
-        }
+            ctx = w.ctx;
 
-        private void Mount(Window w) {
-            OnMount(w);
+            if(mockWindow == null) {
+                mockWindow = GetAncestor<Window>();
+            }
+
+            OnMount(mockWindow);
 
             for (int i = 0; i < _children.Count; i++) {
-                _children[i].Mount(w);
+                _children[i].Mount(w, mockWindow);
             }
 
             _mounted = true;
         }
-
 
         public void Dismount() {
             for (int i = 0; i < _children.Count; i++) {

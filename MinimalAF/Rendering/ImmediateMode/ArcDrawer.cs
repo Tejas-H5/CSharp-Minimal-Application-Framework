@@ -4,10 +4,12 @@ namespace MinimalAF.Rendering.ImmediateMode {
     public class ArcDrawer {
         int _circleEdgeLength;
         int _maxCircleEdgeCount;
+        RenderContext ctx;
 
-        public ArcDrawer(int circleEdgeLength, int maxCircleEdgeCount) {
+        public ArcDrawer(RenderContext context, int circleEdgeLength, int maxCircleEdgeCount) {
             _circleEdgeLength = circleEdgeLength;
             _maxCircleEdgeCount = maxCircleEdgeCount;
+            ctx = context;
         }
 
 
@@ -35,16 +37,16 @@ namespace MinimalAF.Rendering.ImmediateMode {
 
             float deltaAngle = (endAngle - startAngle) / edgeCount;
 
-            CTX.NGon.Begin(new Vertex(xCenter, yCenter, 0), edgeCount + 2);
+            ctx.NGon.Begin(new Vertex(xCenter, yCenter, 0), edgeCount + 2);
 
             for (float angle = startAngle; angle < endAngle + deltaAngle - 0.001f; angle += deltaAngle) {
                 float X = xCenter + radius * MathF.Sin(angle);
                 float Y = yCenter + radius * MathF.Cos(angle);
 
-                CTX.NGon.Continue(new Vertex(X, Y, 0));
+                ctx.NGon.Continue(new Vertex(X, Y, 0));
             }
 
-            CTX.NGon.End();
+            ctx.NGon.End();
         }
 
 
@@ -67,12 +69,12 @@ namespace MinimalAF.Rendering.ImmediateMode {
                 float Y = yCenter + radius * MathF.Cos(angle);
 
                 if (first) {
-                    CTX.NLine.Begin(X, Y, thickness, CapType.None);
+                    ctx.NLine.Begin(X, Y, thickness, CapType.None);
                     first = false;
                 } else if (angle + deltaAngle < endAngle + 0.00001f) {
-                    CTX.NLine.Continue(X, Y);
+                    ctx.NLine.Continue(X, Y);
                 } else {
-                    CTX.NLine.End(X, Y);
+                    ctx.NLine.End(X, Y);
                 }
             }
         }

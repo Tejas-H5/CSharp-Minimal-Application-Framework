@@ -5,9 +5,11 @@ namespace MinimalAF.Rendering.ImmediateMode {
     //TODO: add support for 3D lines if needed
     public class PolyLineDrawer {
         IGeometryOutput _geometryOutput;
+        RenderContext ctx;
 
-        public PolyLineDrawer(IGeometryOutput geometryOutput) {
+        public PolyLineDrawer(RenderContext context, IGeometryOutput geometryOutput) {
             _geometryOutput = geometryOutput;
+            ctx = context;
         }
 
 
@@ -104,7 +106,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
 
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
-            CTX.Line.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
+            ctx.Line.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
         }
 
         private void MoveLineSegmentInDirectionOf(float x, float y, bool averageAngle = true) {
@@ -200,10 +202,10 @@ namespace MinimalAF.Rendering.ImmediateMode {
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
 
             if (_count == 1) {
-                CTX.Line.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
+                ctx.Line.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
             }
 
-            CTX.Line.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle + MathF.PI);
+            ctx.Line.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle + MathF.PI);
 
             _canStart = true;
         }

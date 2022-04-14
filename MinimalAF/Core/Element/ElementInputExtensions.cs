@@ -4,13 +4,13 @@ namespace MinimalAF {
     public partial class Element {
         public float MouseX {
             get {
-                return Input.Mouse.X - CTX.CurrentScreenRect.X0;
+                return Input.Mouse.X - ctx.CurrentScreenRect.X0;
             }
         }
 
         public float MouseY {
             get {
-                return Input.Mouse.Y - CTX.CurrentScreenRect.Y0;
+                return Input.Mouse.Y - ctx.CurrentScreenRect.Y0;
             }
         }
 

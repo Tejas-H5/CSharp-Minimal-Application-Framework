@@ -5,6 +5,7 @@ namespace MinimalAF.Rendering {
     //TODO: implement multiple texture units if needed
     public class TextureManager : IDisposable {
         Texture _currentTexture = null;
+        RenderContext ctx;
 
         //Since the current texture can be changed outside of this class even though it shouldnt,
         //this can be used to inform this class of it
@@ -23,24 +24,27 @@ namespace MinimalAF.Rendering {
             return _currentTexture;
         }
 
-        public TextureManager() {
-            InitNullTexture();
+        public TextureManager(RenderContext context) {
+            InitNullTexture(true);
+            ctx = context;
         }
 
-        private void InitNullTexture() {
+        private void InitNullTexture(bool internalSet=false) {
             Bitmap white1x1 = new Bitmap(1, 1);
             white1x1.SetPixel(0, 0, Color.FromArgb(255, 255, 255, 255));
 
             _nullTexture = new Texture(white1x1, new TextureImportSettings { });
 
-            Set(null);
+            if (!internalSet) {
+                Set(null);
+            }
         }
 
         public void Set(Texture texture) {
             if (!TextureHasChanged(texture))
                 return;
 
-            CTX.Flush();
+            ctx.Flush();
 
             _currentTexture = texture;
 

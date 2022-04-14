@@ -1,10 +1,13 @@
 ﻿namespace MinimalAF.Rendering.ImmediateMode {
     public class RectangleDrawer {
-        public RectangleDrawer() {
+        RenderContext ctx;
+
+        public RectangleDrawer(RenderContext context) {
+            ctx = context;
         }
 
         public void Draw(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 0, float u1 = 1, float v1 = 1) {
-            CTX.Quad.Draw(
+            ctx.Quad.Draw(
                 x0, y0,
                 x0, y1,
                 x1, y1,

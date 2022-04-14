@@ -3,11 +3,13 @@ using System;
 using System.Collections.Generic;
 
 namespace MinimalAF.Rendering {
-    public class FramebufferManager : IDisposable {
+    internal class FramebufferManager : IDisposable {
         private Dictionary<int, Framebuffer> _framebufferList;
+        RenderContext ctx;
 
-        public FramebufferManager() {
+        internal FramebufferManager(RenderContext context) {
             _framebufferList = new Dictionary<int, Framebuffer>();
+            ctx = context;
         }
 
 
@@ -21,33 +23,33 @@ namespace MinimalAF.Rendering {
         /// </summary>
         public void Use(int index) {
             if (!_framebufferList.ContainsKey(index)) {
-                _framebufferList[index] = new Framebuffer(CTX.ContextWidth, CTX.ContextHeight,
+                _framebufferList[index] = new Framebuffer(ctx.ContextWidth, ctx.ContextHeight,
                     new TextureImportSettings {
                         Filtering = FilteringType.NearestNeighbour
                     });
             }
 
 
-            _framebufferList[index].ResizeIfRequired(CTX.ContextWidth, CTX.ContextHeight);
+            _framebufferList[index].ResizeIfRequired(ctx.ContextWidth, ctx.ContextHeight);
 
-            CTX.Flush();
+            ctx.Flush();
 
 
             _framebufferList[index].Use();
-            CTX.Clear();
+            ctx.Clear();
         }
 
         public void UseTransparent(int index) {
-            Color4 prevClearColor = CTX.ClearColor;
-            CTX.ClearColor = Color4.RGBA(0, 0, 0, 0);
+            Color4 prevClearColor = ctx.ClearColor;
+            ctx.ClearColor = Color4.RGBA(0, 0, 0, 0);
 
             Use(index);
 
-            CTX.ClearColor = prevClearColor;
+            ctx.ClearColor = prevClearColor;
         }
 
         public void StopUsing() {
-            CTX.Flush();
+            ctx.Flush();
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
@@ -65,7 +67,7 @@ namespace MinimalAF.Rendering {
             if (t == null)
                 return;
 
-            CTX.Texture.Set(t);
+            ctx.Texture.Set(t);
         }
 
         /// <summary>
@@ -73,12 +75,12 @@ namespace MinimalAF.Rendering {
         /// </summary>
         /// <param name="index"></param>
         public void DrawFramebufferToScreen2D(int index) {
-            Texture prevTexture = CTX.Texture.Get();
+            Texture prevTexture = ctx.Texture.Get();
 
-            CTX.Texture.Set(GetTexture(index));
-            CTX.Rect.Draw(0, 0, CTX.ContextWidth, CTX.ContextHeight);
+            ctx.Texture.Set(GetTexture(index));
+            ctx.Rect.Draw(0, 0, ctx.ContextWidth, ctx.ContextHeight);
 
-            CTX.Texture.Set(prevTexture);
+            ctx.Texture.Set(prevTexture);
         }
 
         /// <summary>
@@ -86,12 +88,12 @@ namespace MinimalAF.Rendering {
         /// </summary>
         /// <param name="index"></param>
         public void DrawFramebufferToScreen2D(int index, Rect screenRect) {
-            Texture prevTexture = CTX.Texture.Get();
+            Texture prevTexture = ctx.Texture.Get();
 
-            CTX.Texture.Set(GetTexture(index));
-            CTX.Rect.Draw(screenRect, new Rect(screenRect.X0 / CTX.ContextWidth, screenRect.Y0 / CTX.ContextHeight, screenRect.X1 / CTX.ContextWidth, screenRect.Y1 / CTX.ContextHeight));
+            ctx.Texture.Set(GetTexture(index));
+            ctx.Rect.Draw(screenRect, new Rect(screenRect.X0 / ctx.ContextWidth, screenRect.Y0 / ctx.ContextHeight, screenRect.X1 / ctx.ContextWidth, screenRect.Y1 / ctx.ContextHeight));
 
-            CTX.Texture.Set(prevTexture);
+            ctx.Texture.Set(prevTexture);
         }
 
         public void Dispose() {

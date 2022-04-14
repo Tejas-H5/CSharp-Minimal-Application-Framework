@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using MinimalAF.Rendering;
+using OpenTK.Mathematics;
 using System;
 
 namespace MinimalAF {
@@ -49,6 +50,7 @@ namespace MinimalAF {
             SetChildren(null);
             _window = null;
         }
+
 
         internal void StartMounting() {
             SetChildren(_rootElement);

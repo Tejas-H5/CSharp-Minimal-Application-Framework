@@ -6,9 +6,11 @@ namespace MinimalAF.Rendering.ImmediateMode {
     // When fillrate isn't a bottleneck, this is a great optimization
     public class TriangleDrawer {
         IGeometryOutput _outputStream;
+        RenderContext ctx;
 
-        public TriangleDrawer(IGeometryOutput outputStream) {
+        public TriangleDrawer(RenderContext context, IGeometryOutput outputStream) {
             _outputStream = outputStream;
+            this.ctx = context;
         }
 
         public void Draw(Vertex v1, Vertex v2, Vertex v3) {
@@ -33,10 +35,10 @@ namespace MinimalAF.Rendering.ImmediateMode {
         }
 
         public void DrawOutline(float thickness, float x0, float y0, float x1, float y1, float x2, float y2) {
-            CTX.NLine.Begin(x0, y0, thickness, CapType.None);
-            CTX.NLine.Continue(x1, y1);
-            CTX.NLine.Continue(x2, y2);
-            CTX.NLine.End(x0, y0);
+            ctx.NLine.Begin(x0, y0, thickness, CapType.None);
+            ctx.NLine.Continue(x1, y1);
+            ctx.NLine.Continue(x2, y2);
+            ctx.NLine.End(x0, y0);
         }
     }
 }

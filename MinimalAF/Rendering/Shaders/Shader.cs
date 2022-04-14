@@ -22,8 +22,8 @@ namespace MinimalAF.Rendering {
 
         private readonly Dictionary<string, int> _uniformLocations;
 
-        private static Matrix4[] _matrices = new Matrix4[CTX.NUM_MATRICES];
-        private static int[] _matrixUniforms = new int[CTX.NUM_MATRICES];
+        private static Matrix4[] _matrices = new Matrix4[RenderContext.NUM_MATRICES];
+        private static int[] _matrixUniforms = new int[RenderContext.NUM_MATRICES];
 
         public Matrix4 GetMatrix(int matrix) {
             return _matrices[matrix];
@@ -75,9 +75,9 @@ namespace MinimalAF.Rendering {
                 _uniformLocations.Add(key, location);
             }
 
-            _matrixUniforms[CTX.MODEL_MATRIX] = Loc("model");
-            _matrixUniforms[CTX.PROJECTION_MATRIX] = Loc("projection");
-            _matrixUniforms[CTX.VIEW_MATRIX] = Loc("view");
+            _matrixUniforms[RenderContext.MODEL_MATRIX] = Loc("model");
+            _matrixUniforms[RenderContext.PROJECTION_MATRIX] = Loc("projection");
+            _matrixUniforms[RenderContext.VIEW_MATRIX] = Loc("view");
 
             for (int i = 0; i < _matrices.Length; i++) {
                 _matrices[i] = Matrix4.Identity;
@@ -91,13 +91,13 @@ namespace MinimalAF.Rendering {
         protected abstract void InitShader();
 
         public void UpdateTransformUniforms() {
-            SetMatrix4(_matrixUniforms[CTX.PROJECTION_MATRIX], _matrices[CTX.PROJECTION_MATRIX]);
-            SetMatrix4(_matrixUniforms[CTX.VIEW_MATRIX], _matrices[CTX.VIEW_MATRIX]);
-            SetMatrix4(_matrixUniforms[CTX.MODEL_MATRIX], _matrices[CTX.MODEL_MATRIX]);
+            SetMatrix4(_matrixUniforms[RenderContext.PROJECTION_MATRIX], _matrices[RenderContext.PROJECTION_MATRIX]);
+            SetMatrix4(_matrixUniforms[RenderContext.VIEW_MATRIX], _matrices[RenderContext.VIEW_MATRIX]);
+            SetMatrix4(_matrixUniforms[RenderContext.MODEL_MATRIX], _matrices[RenderContext.MODEL_MATRIX]);
         }
 
         public void UpdateModel() {
-            SetMatrix4(_matrixUniforms[CTX.MODEL_MATRIX], _matrices[CTX.MODEL_MATRIX]);
+            SetMatrix4(_matrixUniforms[RenderContext.MODEL_MATRIX], _matrices[RenderContext.MODEL_MATRIX]);
         }
 
         private static void CompileShader(int shader) {

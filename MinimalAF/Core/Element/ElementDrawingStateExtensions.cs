@@ -5,7 +5,7 @@ using System;
 namespace MinimalAF {
     public partial class Element {
         protected void SetDrawColor(float r, float g, float b, float a) {
-            CTX.SetDrawColor(r, g, b, a);
+            ctx.SetDrawColor(r, g, b, a);
         }
 
         protected void SetDrawColor(Color4 col) {
@@ -13,63 +13,63 @@ namespace MinimalAF {
         }
 
         protected Texture GetTexture() {
-            return CTX.Texture.Get();
+            return ctx.Texture.Get();
         }
 
         protected void SetTexture(Texture texture) {
-            CTX.Texture.Set(texture);
+            ctx.Texture.Set(texture);
         }
 
         protected void SetFont(string name, int size=12) {
-            CTX.Text.SetFont(name, size);
+            ctx.Text.SetFont(name, size);
         }
 
         public float GetStringHeight(string s) {
-            return CTX.Text.GetStringHeight(s);
+            return ctx.Text.GetStringHeight(s);
         }
 
         public float GetStringHeight(string s, int start, int end) {
-            return CTX.Text.GetStringHeight(s, start, end);
+            return ctx.Text.GetStringHeight(s, start, end);
         }
 
         public float GetStringWidth(string s) {
-            return CTX.Text.GetStringWidth(s);
+            return ctx.Text.GetStringWidth(s);
         }
 
         public float GetStringWidth(string s, int start, int end) {
-            return CTX.Text.GetStringWidth(s, start, end);
+            return ctx.Text.GetStringWidth(s, start, end);
         }
 
         public float GetCharWidth(char c) {
-            return CTX.Text.GetWidth(c);
+            return ctx.Text.GetWidth(c);
         }
 
         public float GetCharHeight(char c) {
-            return CTX.Text.GetHeight(c);
+            return ctx.Text.GetHeight(c);
         }
 
         public float GetCharWidth() {
-            return CTX.Text.GetWidth();
+            return ctx.Text.GetWidth();
         }
 
         public float GetCharHeight() {
-            return CTX.Text.GetHeight();
+            return ctx.Text.GetHeight();
         }
 
         public IDisposable PushMatrix(Matrix4 value) {
-            return CTX.PushMatrix(CTX.MODEL_MATRIX, value);
+            return ctx.PushMatrix(RenderContext.MODEL_MATRIX, value);
         }
 
         public Matrix4 GetModelMatrix() {
-            return CTX.GetMatrix(CTX.MODEL_MATRIX);
+            return ctx.GetMatrix(RenderContext.MODEL_MATRIX);
         }
 
         public Matrix4 GetViewMatrix() {
-            return CTX.GetMatrix(CTX.VIEW_MATRIX);
+            return ctx.GetMatrix(RenderContext.VIEW_MATRIX);
         }
 
         public Matrix4 GeProjectionMatrix() {
-            return CTX.GetMatrix(CTX.PROJECTION_MATRIX);
+            return ctx.GetMatrix(RenderContext.PROJECTION_MATRIX);
         }
     }
 }

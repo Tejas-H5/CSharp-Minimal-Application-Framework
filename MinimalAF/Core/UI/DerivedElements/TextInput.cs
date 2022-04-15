@@ -54,9 +54,15 @@ namespace MinimalAF {
         }
 
         public override void OnRender() {
+            SetClippingRect(_screenRect);
+
             if (_uiState.CurrentlyFocused == this) {
                 RenderCarat();
             }
+        }
+
+        public override void AfterRender() {
+            ClearClippingRect();
         }
 
         private void RenderCarat() {

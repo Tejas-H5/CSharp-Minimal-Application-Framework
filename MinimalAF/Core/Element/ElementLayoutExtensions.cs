@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace MinimalAF {
-    public enum LayoutDirection {
+    public enum Direction {
         Up, Down, Left, Right
     }
 
@@ -16,9 +16,9 @@ namespace MinimalAF {
         /// <param name="elements"></param>
         /// <param name="layoutDirection"></param>
         /// <param name="offsets"></param>
-        public void LayoutLinear(ArraySlice<Element> elements, LayoutDirection layoutDirection = LayoutDirection.Right, float[] offsets = null, bool normalizedOffsets = false) {
-            bool vertical = layoutDirection == LayoutDirection.Up || layoutDirection == LayoutDirection.Down;
-            bool reverse = layoutDirection == LayoutDirection.Down || layoutDirection == LayoutDirection.Left;
+        public void LayoutLinear(ArraySlice<Element> elements, Direction layoutDirection = Direction.Right, float[] offsets = null, bool normalizedOffsets = false) {
+            bool vertical = layoutDirection == Direction.Up || layoutDirection == Direction.Down;
+            bool reverse = layoutDirection == Direction.Down || layoutDirection == Direction.Left;
 
             if (offsets == null) {
                 normalizedOffsets = false;
@@ -113,16 +113,16 @@ namespace MinimalAF {
             }
         }
 
-        public void LayoutSplit(Element el0, Element el1, LayoutDirection layoutDirection, float splitAmount) {
+        public void LayoutSplit(Element el0, Element el1, Direction layoutDirection, float splitAmount) {
             Rect wanted0 = el0.RelativeRect;
             Rect wanted1 = el1.RelativeRect;
-            if (layoutDirection == LayoutDirection.Down) {
+            if (layoutDirection == Direction.Down) {
                 wanted0.Y0 += VH(1) - splitAmount;
                 wanted1.Y1 -= splitAmount;
-            } else if (layoutDirection == LayoutDirection.Up) {
+            } else if (layoutDirection == Direction.Up) {
                 wanted0.Y0 += splitAmount;
                 wanted1.Y1 -= VH(1) - splitAmount;
-            } else if (layoutDirection == LayoutDirection.Left) {
+            } else if (layoutDirection == Direction.Left) {
                 wanted0.X0 += VW(1) - splitAmount;
                 wanted1.X1 -= splitAmount;
             } else {

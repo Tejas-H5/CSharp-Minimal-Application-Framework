@@ -208,6 +208,7 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void SetScissor(Rect screenRect) {
+            Flush();
             GL.Scissor((int)screenRect.X0, (int)screenRect.Y0, (int)screenRect.Width, (int)screenRect.Height);
             GL.Enable(EnableCap.ScissorTest);
         }

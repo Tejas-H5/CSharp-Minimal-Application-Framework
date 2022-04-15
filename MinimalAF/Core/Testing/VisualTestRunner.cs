@@ -12,7 +12,10 @@ namespace MinimalAF {
         public override void OnRender() {
             SetFont("Consolas", 24);
 
-            Text("No more tests. Press esc to close", VW(0.5f), VH(0.5f), HorizontalAlignment.Center, VerticalAlignment.Center);
+            string text = "No tests. Give the [" + typeof(VisualTestAttribute).Name + "] attribute to an element"
+                + "in order to make it show up here. ";
+
+            Text(text, VW(0.5f), VH(0.5f), HorizontalAlignment.Center, VerticalAlignment.Center);
         }
 
         public override void OnUpdate() {
@@ -58,15 +61,15 @@ namespace MinimalAF {
             scrollAmount += MousewheelNotches * textHeight;
 
             float maxScroll = -(textHeight + gap) * visualTestElements.Count;
-            if(scrollAmount < maxScroll) {
+            if (scrollAmount < maxScroll) {
                 scrollAmount = maxScroll;
             }
 
-            if(scrollAmount > 0) {
+            if (scrollAmount > 0) {
                 scrollAmount = 0;
             }
 
-            foreach((float y, Type test, bool isOver) in IterateTypes()) {
+            foreach ((float y, Type test, bool isOver) in IterateTypes()) {
                 if (MouseButtonPressed(MouseButton.Left)) {
                     if (isOver) {
                         OnSelect?.Invoke(test);
@@ -104,7 +107,7 @@ namespace MinimalAF {
             filter = value.Trim();
 
             visualTestElements.Clear();
-            foreach(Type t in visualTestElementsUnfiltered) {
+            foreach (Type t in visualTestElementsUnfiltered) {
                 if (filter != "" && !t.Name.Contains(filter, StringComparison.OrdinalIgnoreCase)) {
                     continue;
                 }
@@ -114,14 +117,149 @@ namespace MinimalAF {
         }
     }
 
-    public class VisualTestRunner : Window {
+
+    class TestMounting : Window {
+        ApplicationWindow window;
+        public (float, float) WantedSize;
+
+        public override void OnRender() {
+            RenderDragHandle(Direction.Left);
+            RenderDragHandle(Direction.Up);
+            RenderDragHandle(Direction.Right);
+            RenderDragHandle(Direction.Down);
+
+            SetDrawColor(Color4.Black);
+
+            string infoText = "size: " + WantedSize.Item1.ToString("0.00") + ", " + WantedSize.Item2.ToString("0.00")
+                + "(WindowState." + WindowState.ToString()
+                + ") U:" + UpdateFrequency.ToString("0.0") + "FPS R:"
+                + RenderFrequency.ToString("0.0") + "FPS";
+
+            SetFont("Consolas", 12);
+            Text(infoText, 0, 0, HorizontalAlignment.Left, VerticalAlignment.Top);
+
+            SetClippingRect(_screenRect);
+        }
+
+
+        public override void OnUpdate() {
+            UpdateDragHandle(Direction.Left);
+            UpdateDragHandle(Direction.Up);
+            UpdateDragHandle(Direction.Right);
+            UpdateDragHandle(Direction.Down);
+
+            if (isDragging) {
+                float newWantedX = 2 * dragX * MouseDragDeltaX + startWidth;
+                float newWantedY = 2 * dragY * MouseDragDeltaY + startHeight;
+
+                WantedSize = (newWantedX, newWantedY);
+
+                TriggerLayoutRecalculation();
+            }
+
+
+        }
+
+        public override void AfterUpdate() {
+            ClearClippingRect();
+        }
+
+
+        const float EDGE_WIDTH = 40;
+
+        (Rect, float, float) DragParameters(Direction direction) {
+            switch (direction) {
+                case Direction.Up:
+                    return (new Rect(-EDGE_WIDTH, Height, Width + EDGE_WIDTH, Height + EDGE_WIDTH), 0, 1);
+                case Direction.Down:
+                    return (new Rect(-EDGE_WIDTH, -EDGE_WIDTH, Width + EDGE_WIDTH, 0), 0, -1);
+                case Direction.Left:
+                    return (new Rect(-EDGE_WIDTH, -EDGE_WIDTH, 0, Height + EDGE_WIDTH), -1, 0);
+                case Direction.Right:
+                    return (new Rect(Width, -EDGE_WIDTH, Width + EDGE_WIDTH, Height + EDGE_WIDTH), 1, 0);
+                default:
+                    throw new Exception("Invalid direction " + direction.ToString());
+            }
+        }
+
+        void RenderDragHandle(Direction dir) {
+            (Rect hitbox, float x, float y) = DragParameters(dir);
+
+            if (MouseOver(hitbox)) {
+                SetDrawColor(Color4.RGBA(0, 0, 1, 0.5f));
+                Rect(hitbox);
+            }
+        }
+
+        bool isDragging = false;
+        float dragX = 0, dragY = 0;
+        float startWidth, startHeight;
+
+        void UpdateDragHandle(Direction dir) {
+            (Rect hitbox, float x, float y) = DragParameters(dir);
+
+            if (Input.Mouse.StartedDragging && MouseOver(hitbox)) {
+                isDragging = true;
+                if (dir == Direction.Left || dir == Direction.Right) {
+                    dragX = x;
+                } else {
+                    dragY = y;
+                }
+
+                startWidth = WantedSize.Item1;
+                startHeight = WantedSize.Item2;
+            }
+
+            if (MouseFinishedDragging) {
+                isDragging = false;
+                dragX = 0;
+                dragY = 0;
+            }
+        }
+
+        public override string Title {
+            get => window.Title;
+            set => window.Title = value;
+        }
+
+        public override double UpdateFrequency {
+            get => window.UpdateFrequency;
+            set => window.UpdateFrequency = value;
+        }
+
+        public override double RenderFrequency {
+            get => window.RenderFrequency;
+            set => window.RenderFrequency = value;
+        }
+
+        public override WindowState WindowState {
+            get;
+            set;
+        }
+
+        public override (int, int) Size {
+            get => ((int)RelativeRect.Width, (int)RelativeRect.Height);
+            set {
+                WantedSize = value;
+                Layout();
+            }
+        }
+
+        public override void OnMount(Window w) {
+            window = Parent.GetAncestor<ApplicationWindow>();
+            window.Title = "Visual Test Runner";
+            window.Size = (900, 600);
+            window.WindowState = WindowState.Maximized;
+        }
+    }
+
+    [VisualTest]
+    public class VisualTestRunner : Element {
         List<Type> visualTestElements = new List<Type>();
 
         TestList testList;
         TextInput<string> searchbox;
-        ApplicationWindow window;
-        Element currentTestElement;
-        (int, int) wantedSize;
+        TestMounting mounting;
 
         public VisualTestRunner() {
             testList = new TestList(visualTestElements);
@@ -136,7 +274,9 @@ namespace MinimalAF {
             searchbox.Placeholder = "Search for a test";
             searchbox.OnTextChanged += Searchbox_OnTextChanged;
 
-            SetChildren(testList, searchbox);
+            mounting = new TestMounting();
+
+            SetChildren(testList, searchbox, mounting);
         }
 
         private void Searchbox_OnTextChanged(string value) {
@@ -148,13 +288,18 @@ namespace MinimalAF {
         }
 
         void StartTest(int index) {
-            RemoveChild(currentTestElement);
-            currentTestElement = null;
+            mounting.SetChildren(null);
+
+            // a funny recursive case I added. this is so we won't get a stack overflow with 0
+            // other test cases. TODO: remove this 
+            int count = visualTestElements.Count;
+            if (count == 1 && visualTestElements[0].GetType() == typeof(VisualTestRunner)) {
+                count = 0;
+            }
 
             if (index < 0 || index >= visualTestElements.Count) {
                 ranOutOfTests = true;
-                currentTestElement = new NoMoreTests();
-                AddChild(currentTestElement);
+                mounting.SetChildren(new NoMoreTests());
                 return;
             }
 
@@ -163,9 +308,8 @@ namespace MinimalAF {
 
             try {
                 Element test = (Element)Activator.CreateInstance(t);
-                currentTestElement = test;
 
-                AddChild(test);
+                mounting.SetChildren(test);
             } catch (MissingMethodException) {
                 throw new Exception("The class " + t.Name + " needs to have a parameterless constructor" +
                     "( e.g. var x = new " + t.Name + "() ) in order to be instantiated by this test harness.");
@@ -194,13 +338,8 @@ namespace MinimalAF {
 
 
 
-        public override void OnMount(Window w) {
+        public override void AfterMount(Window w) {
             MinimalAFEnvironment.Debug = true;
-
-            window = Parent.GetAncestor<ApplicationWindow>();
-            window.Title = "Visual Test Runner";
-            window.Size = (900, 600);
-            window.WindowState = WindowState.Maximized;
 
             FindAllVisualTests();
 
@@ -218,49 +357,19 @@ namespace MinimalAF {
             SetDrawColor(Color4.VA(0, 1));
 
             RectOutline(1, rightSectionRect);
-            RectOutline(1, testRect);
+            RectOutline(1, mounting.RelativeRect);
             RectOutline(1, testList.RelativeRect);
             RectOutline(1, searchbox.RelativeRect);
 
             SetDrawColor(Color4.VA(1, .5f));
             Rect(searchbox.RelativeRect);
-
-            if (!ranOutOfTests)
-                return;
         }
 
         int currentTest = 0;
         bool ranOutOfTests = false;
 
-        public override string Title {
-            get => window.Title;
-            set => window.Title = value;
-        }
 
-        public override double UpdateFrequency {
-            get => window.UpdateFrequency;
-            set => window.UpdateFrequency = value;
-        }
-
-        public override double RenderFrequency {
-            get => window.RenderFrequency;
-            set => window.RenderFrequency = value;
-        }
-
-        public override WindowState WindowState {
-            get;
-            set;
-        }
-
-        public override (int, int) Size {
-            get => ((int)RelativeRect.Width, (int)RelativeRect.Height);
-            set {
-                wantedSize = value;
-                Layout();
-            }
-        }
-
-        Rect rightSectionRect, testRect;
+        Rect rightSectionRect;
 
         public override void OnLayout() {
             float sidePanelWidth = VW(0.25f);
@@ -274,10 +383,10 @@ namespace MinimalAF {
             searchbox.RelativeRect = new Rect(0, VH(1) - 50, sidePanelWidth, VH(1))
                 .Inset(inset);
 
-            testRect = rightSectionRect;
-            testRect.SetWidth(wantedSize.Item1, 0.5f);
-            testRect.SetHeight(wantedSize.Item2, 0.5f);
-            currentTestElement.RelativeRect = testRect;
+            Rect mountingRect = rightSectionRect;
+            mountingRect.SetWidth(mounting.WantedSize.Item1, 0.5f);
+            mountingRect.SetHeight(mounting.WantedSize.Item2, 0.5f);
+            mounting.RelativeRect = mountingRect;
 
             LayoutChildren();
         }

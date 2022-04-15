@@ -2,14 +2,14 @@
 	[VisualTest]
     public class UISplittingTest : Element {
         class SplitContainer : Element {
-            LayoutDirection dir;
+            Direction dir;
             float splitAmount;
 
             Panel GeneratePanel(Color4 col) {
                 return new Panel(Color4.VA(0, 0.1f), col, Color4.RGBA(0, 1, 0, 0.5f));
             }
 
-            public SplitContainer(LayoutDirection dir, float splitAmount) {
+            public SplitContainer(Direction dir, float splitAmount) {
                 this.dir = dir;
                 this.splitAmount = splitAmount;
 
@@ -41,10 +41,10 @@
         }
 
         public UISplittingTest() {
-            Element down = new SplitContainer(LayoutDirection.Down, 70);
-            Element left = new SplitContainer(LayoutDirection.Left, 200);
-            Element up = new SplitContainer(LayoutDirection.Up, 100);
-            Element right = new SplitContainer(LayoutDirection.Right, 150);
+            Element down = new SplitContainer(Direction.Down, 70);
+            Element left = new SplitContainer(Direction.Left, 200);
+            Element up = new SplitContainer(Direction.Up, 100);
+            Element right = new SplitContainer(Direction.Right, 150);
 
             down[1].SetChildren(left);
             left[1].SetChildren(up);

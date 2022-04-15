@@ -30,18 +30,18 @@
             SetClearColor(Color4.RGBA(1, 1, 1, 1));
         }
 
-        int layouting = (int)LayoutDirection.Right;
+        int layouting = (int)Direction.Right;
 
         public override void OnUpdate() {
             if (KeyPressed(KeyCode.Space)) {
-                layouting = (layouting + 1) % ((int)(LayoutDirection.Right + 1));
+                layouting = (layouting + 1) % ((int)(Direction.Right + 1));
                 Layout();
             }
         }
 
 
         public override void OnLayout() {
-            LayoutLinear(_children, (LayoutDirection)layouting);
+            LayoutLinear(_children, (Direction)layouting);
             LayoutChildren();
         }
     }

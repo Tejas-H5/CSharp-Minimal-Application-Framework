@@ -12,6 +12,12 @@ namespace MinimalAF {
         public bool IsVisibleNextFrame = true;
         protected bool _isVisible = true;
         private bool _shouldTriggerParentResize = false;
+
+        // IDK a better name for this
+        public void TriggerLayoutRecalculation() {
+            _shouldTriggerParentResize = true;
+        }
+
         private bool _mounted = false;
         internal bool Mounted {
             set {
@@ -213,7 +219,7 @@ namespace MinimalAF {
                 _shouldTriggerParentResize = false;
 
                 if (Parent != null) {
-                    OnChildResize();
+                    Parent.OnChildResize();
                 }
             }
 
@@ -347,6 +353,8 @@ namespace MinimalAF {
                 _children[i].Mount(w);
             }
 
+            AfterMount(w);
+
             _mounted = true;
         }
 
@@ -446,14 +454,20 @@ namespace MinimalAF {
 
         /// <summary>
         /// <para>
-        /// Is called after this element hooks to the element tree.
+        /// Is called when this element is added to the main element tree, and before it's children
+        /// have mounted
         /// </para>
         /// </summary>
         public virtual void OnMount(Window w) {
 
         }
 
-        public virtual void AfterMount() {
+
+        /// <summary>
+        /// Is called after all children have mounted
+        /// </summary>
+        /// <param name="w"></param>
+        public virtual void AfterMount(Window w) {
 
         }
 

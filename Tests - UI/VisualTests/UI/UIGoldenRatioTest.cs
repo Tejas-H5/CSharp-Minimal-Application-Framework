@@ -10,9 +10,9 @@ namespace MinimalAF.VisualTests.UI {
                 return new Panel(Color4.VA(0, 0.1f), col, Color4.RGBA(0, 1, 0, 0.5f));
             }
 
-            LayoutDirection _dir;
+            Direction _dir;
 
-            public SplitContainer(LayoutDirection dir) {
+            public SplitContainer(Direction dir) {
                 _dir = dir;
 
                 SetChildren(
@@ -40,10 +40,10 @@ namespace MinimalAF.VisualTests.UI {
             Element container = this[0];
 
             for (int i = 0; i < 5; i++) {
-                var right = new SplitContainer(LayoutDirection.Right);
-                var down = new SplitContainer(LayoutDirection.Down);
-                var left = new SplitContainer(LayoutDirection.Left);
-                var up = new SplitContainer(LayoutDirection.Up);
+                var right = new SplitContainer(Direction.Right);
+                var down = new SplitContainer(Direction.Down);
+                var left = new SplitContainer(Direction.Left);
+                var up = new SplitContainer(Direction.Up);
 
                 container.SetChildren(right);
                 right[1].SetChildren(down);

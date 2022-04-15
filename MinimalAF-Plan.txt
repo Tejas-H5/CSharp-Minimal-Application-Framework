@@ -5,10 +5,13 @@ TODO:
 		- Create an element that can aggregate and show all unit tests
 		- Allow multiple windows, make a side-window that controls the main window
 		- create a Debug window
-			-> Some way to pass constructor args and then restart the test.
-			-* Some way to resize the window
-			-* Some way to see a DOM tree
-			
+			- Some way to resize the window
+			- Some way to pass constructor args and then restart the test.
+			-* Some way to see the element tree
+	
+	-* remove underscore from all the field names. It's awful to look at and type
+	
+Amazin'		
 			
 	-* non-immediate support
 	

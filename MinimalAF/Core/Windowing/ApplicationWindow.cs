@@ -40,7 +40,8 @@ namespace MinimalAF {
         public void Run(Element rootElement) {
             using (OpenTKWindowWrapper window = new OpenTKWindowWrapper(this)) {
                 _window = window;
-                _rootElement = rootElement;
+                _rootElement = new UIRootElement()
+                    .SetChildren(rootElement);
 
                 // event loop that polls
                 window.Run();

@@ -144,8 +144,6 @@ namespace MinimalAF {
             }
         }
 
-        public bool Clipping { get; set; } = false;
-
         public Rect RelativeRect {
             get {
                 return _relativeRect;
@@ -160,6 +158,18 @@ namespace MinimalAF {
                 _rectModified = true;
             }
         }
+
+        public float Width {
+            get {
+                return RelativeRect.Width;
+            }
+        }
+        public float Height {
+            get {
+                return RelativeRect.Height;
+            }
+        }
+
 
         public Element() {
         }
@@ -260,8 +270,8 @@ namespace MinimalAF {
             _screenRect.Move(parentScreenRect.X0 + Offset.X, parentScreenRect.Y0 + Offset.Y);
         }
 
-        public void UseCoordinates(bool clipping=false) {
-            CTX.SetScreenRect(_screenRect, clipping);
+        public void UseCoordinates() {
+            CTX.SetScreenRect(_screenRect);
         }
 
         internal void RenderSelfAndChildren(RenderAccumulator acc) {

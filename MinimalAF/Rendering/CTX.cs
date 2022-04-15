@@ -212,12 +212,11 @@ namespace MinimalAF.Rendering {
             GL.Enable(EnableCap.ScissorTest);
         }
 
-        internal static void SetScreenRect(Rect screenRect, bool clipping) {
-            if (clipping) {
-                Flush();
-                SetScissor(screenRect);
-            }
+        internal static void ClearScissor() {
+            GL.Disable(EnableCap.ScissorTest);
+        }
 
+        internal static void SetScreenRect(Rect screenRect) {
             Cartesian2D(ContextWidth, ContextHeight, screenRect.X0, screenRect.Y0);
             _currentScreenRect = screenRect;
         }

@@ -39,7 +39,6 @@ namespace MinimalAF.VisualTests.Rendering
             _tex = TextureMap.GetTexture("placeholder");
         }
 
-        double timer = 0;
         public override void OnUpdate()
         {
             a += (float)Time.DeltaTime;

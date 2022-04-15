@@ -50,11 +50,26 @@ namespace MinimalAF {
 
         public bool MouseOverSelf => Input.Mouse.IsOver(_screenRect);
 
+        public bool MouseOver(float x0, float y0, float x1, float y1) {
+            return PointOver(MouseX, MouseY, x0, y0, x1, y1);
+        }
+
+        public bool PointOver(float px, float py, float x0, float y0, float x1, float y1) {
+            return Intersections.IsInsideRect(
+                px,
+                py,
+                _screenRect.X0 + x0,
+                _screenRect.Y0 + y0,
+                _screenRect.X0 + x1,
+                _screenRect.Y0 + y1
+            );
+        }
+
         public void CancelDrag() {
             Input.Mouse.CancelDrag();
         }
 
-        public float MouseWheelNotches => Input.Mouse.WheelNotches;
+        public float MousewheelNotches => Input.Mouse.WheelNotches;
 
         public bool KeyPressed(KeyCode key) {
             return Input.Keyboard.IsPressed(key);

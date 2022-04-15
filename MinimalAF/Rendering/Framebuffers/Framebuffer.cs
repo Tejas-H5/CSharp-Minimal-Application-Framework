@@ -11,10 +11,6 @@ namespace MinimalAF.Rendering {
     public class Framebuffer : IDisposable {
         int _width = -1, _height = -1;
 
-        //int _backingWidth = 0, _backingHeight = 0;
-
-        bool _init = false;
-
         public int Width {
             get {
                 return _width;

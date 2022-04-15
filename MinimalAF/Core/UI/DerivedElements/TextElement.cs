@@ -26,11 +26,11 @@ namespace MinimalAF {
 
         }
 
-        public TextElement(string text, Color4 textColor, VerticalAlignment vAlign, HorizontalAlignment hAlign)
+        public TextElement(string text, Color4 textColor, VerticalAlignment vAlign = VerticalAlignment.Bottom, HorizontalAlignment hAlign = HorizontalAlignment.Left)
             : this(text, textColor, "", -1, vAlign, hAlign) {
         }
 
-        public TextElement(string text, Color4 textColor, string fontName, int fontSize, VerticalAlignment vAlign, HorizontalAlignment hAlign) {
+        public TextElement(string text, Color4 textColor, string fontName, int fontSize, VerticalAlignment vAlign = VerticalAlignment.Bottom, HorizontalAlignment hAlign = HorizontalAlignment.Left) {
             TextColor = textColor;
             String = text;
             VerticalAlignment = vAlign;
@@ -88,7 +88,8 @@ namespace MinimalAF {
         }
 
         public float GetCharacterHeight() {
-            return GetCharHeight('|');
+            SetFont(Font, FontSize);
+            return GetCharHeight();
         }
     }
 }

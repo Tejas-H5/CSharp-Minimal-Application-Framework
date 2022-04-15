@@ -52,7 +52,7 @@ namespace MinimalAF.VisualTests.Rendering
                 float x2 = VW((float)rand.NextDouble());
                 float y2 = VH((float)rand.NextDouble());
 
-                Line(x1, y1, x2, y2, _lineThiccness, CapType.Circle);
+                Line(x1, y1, x2, y2, _lineThiccness, CapType.None);
             }
 
             double FPS = frames / time;

@@ -5,13 +5,17 @@ using System.Drawing;
 
 namespace MinimalAF {
     public class TextInput<T> : Element {
-        TextElement _textObject;
+        TextElement _textObject, placeholderTextObject;
 
-        bool _shouldClear;
         bool _endsTypingOnNewline = true;
+        float blinkPhase = 0, blinkSpeed = 3;
+        public event Action<T> OnTextChanged;
+        public event Action<T> OnTextFinalized;
 
-        public event Action OnTextChanged;
-        public event Action OnTextFinalized;
+        public string Placeholder {
+            get => placeholderTextObject.String;
+            set => placeholderTextObject.String = value;
+        }
 
         Property<T> _property;
         Func<string, T> _parser;
@@ -28,13 +32,25 @@ namespace MinimalAF {
             _parser = parser;
             _endsTypingOnNewline = endsTypingOnNewline;
 
-            this.SetChildren(
-                _textObject
+
+            Color4 placeholderCol = _textObject.TextColor;
+            placeholderCol.A *= 0.5f;
+
+            placeholderTextObject = new TextElement(
+                "", placeholderCol, _textObject.Font, _textObject.FontSize, _textObject.VerticalAlignment, _textObject.HorizontalAlignment
             );
+
+            this.SetChildren(
+                _textObject,
+                placeholderTextObject
+            );
+
+            //Clipping = true;
         }
 
+
         public override void OnMount(Window w) {
-			_uiState = GetResource<UIState>();
+            _uiState = GetResource<UIState>();
         }
 
         public override void OnRender() {
@@ -46,29 +62,43 @@ namespace MinimalAF {
         private void RenderCarat() {
             PointF caratPos = _textObject.GetCaratPos();
             float height = _textObject.GetCharacterHeight();
-            CTX.SetDrawColor(_textObject.TextColor);
-            CTX.Rect.Draw(caratPos.X, caratPos.Y, caratPos.X + 2, caratPos.Y + height);
+
+            Color4 col = _textObject.TextColor;
+            col.A *= MathF.Sin(blinkPhase);
+            col.A *= col.A;
+
+            SetDrawColor(col);
+            Rect(caratPos.X, caratPos.Y, caratPos.X + 2, caratPos.Y + height);
         }
 
         public override void OnUpdate() {
+            blinkPhase += Time.DeltaTime * blinkSpeed;
+            if (blinkPhase > MathF.PI) {
+                blinkPhase -= MathF.PI;
+            }
+
             if (MouseButtonPressed(MouseButton.Any) && MouseOverSelf) {
                 _uiState.CurrentlyFocused = this;
             }
 
+
             if (_uiState.CurrentlyFocused != this)
                 return;
 
-
             if (TypeKeystrokes() || Input.Keyboard.IsPressed(KeyCode.Escape)) {
                 EndTyping();
+            }
+
+            if (Input.Mouse.IsAnyPressed && !MouseOverSelf) {
+                _uiState.CurrentlyFocused = null;
             }
         }
 
 
         private bool TypeKeystrokes() {
             string typed = Input.Keyboard.CharactersTyped;
-			if (typed.Length == 0)
-				return false;
+            if (typed.Length == 0)
+                return false;
 
             for (int i = 0; i < typed.Length; i++) {
                 if (typed[i] == '\b') {
@@ -86,30 +116,40 @@ namespace MinimalAF {
             if (s.Length > 0 && s[s.Length - 1] == '\n') {
                 _textObject.String = s.Substring(0, s.Length - 1);
 
-				if (_endsTypingOnNewline)
-					return true;
+                if (_endsTypingOnNewline)
+                    return true;
             }
 
-            OnTextChanged?.Invoke();
-			return false;
+            try {
+                OnTextChanged?.Invoke(_parser(s));
+                placeholderTextObject.IsVisible = (s == "");
+            } catch (Exception) {
+
+            }
+
+            return false;
         }
 
 
         protected void EndTyping() {
-			if (_uiState.CurrentlyFocused != this)
-				return;
+            if (_uiState.CurrentlyFocused != this)
+                return;
 
-			_uiState.CurrentlyFocused = null;
+            _uiState.CurrentlyFocused = null;
+            bool changed = false;
 
-			try {
-				_property.Value = _parser(_textObject.String);
-			} catch (Exception e) {
-				// validation error. 
-			}
+            try {
+                _property.Value = _parser(_textObject.String);
+                changed = true;
+            } catch (Exception) {
+                // validation error. 
+            }
 
-			_textObject.String = _property.Value.ToString();
+            _textObject.String = _property.Value.ToString();
 
-			OnTextFinalized?.Invoke();
+            if (changed) {
+                OnTextFinalized?.Invoke(_property.Value);
+            }
         }
     }
 }

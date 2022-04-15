@@ -17,7 +17,7 @@ namespace MinimalAF {
             return RelativeRect.Width * amount;
         }
 
-		public void UseFramebuffer(int index) {
+        public void UseFramebuffer(int index) {
             CTX.Framebuffer.Use(index);
         }
 
@@ -59,6 +59,18 @@ namespace MinimalAF {
 
         public void LiftStencil() {
             CTX.LiftStencil();
+        }
+
+        public void SetClippingRect(float x0, float y0, float x1, float y1) {
+            SetClippingRect(new Rect(x0, y0, x1, y1));
+        }
+
+        public void SetClippingRect(Rect rect) {
+            CTX.SetScissor(rect);
+        }
+
+        public void ClearClippingRect() {
+            CTX.ClearScissor();
         }
 
         public void Arc(float xCenter, float yCenter, float radius, float startAngle, float endAngle) {

@@ -100,8 +100,8 @@ namespace MinimalAF.AudioTests {
                 }
             }
 
-            if (MouseWheelNotches != 0) {
-                _streamedSource.SetPlaybackPosition(_streamedSource.GetPlaybackPosition() - MouseWheelNotches * 0.5);
+            if (MousewheelNotches != 0) {
+                _streamedSource.SetPlaybackPosition(_streamedSource.GetPlaybackPosition() - MousewheelNotches * 0.5);
             }
         }
     }

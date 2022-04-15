@@ -15,6 +15,7 @@ namespace MinimalAF {
 
     internal class OpenTKWindowWrapper : GameWindow {
         ApplicationWindow _rootWindow;
+        internal RenderContext ctx;
 
         double time = 0;
         int renderFrames = 0;
@@ -57,7 +58,6 @@ namespace MinimalAF {
                 StartVisible = false
             }) {
             _rootWindow = rootWindow;
-            ctx = new RenderContext(Context);
         }
 
         public event Action<uint> TextInputEvent;
@@ -73,8 +73,10 @@ namespace MinimalAF {
             TextInput += ProcessCharTextInputs;
             MouseWheel += WindowInstance_MouseWheel;
 
+            ctx = new RenderContext(Context);
             AudioCTX.Init();
             Input.HookToWindow(this);
+
             _init = true;
 
             ResizeAction();

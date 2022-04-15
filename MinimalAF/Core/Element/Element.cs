@@ -164,6 +164,17 @@ namespace MinimalAF {
             }
         }
 
+        public float Width {
+            get {
+                return RelativeRect.Width;
+            }
+        }
+        public float Height {
+            get {
+                return RelativeRect.Height;
+            }
+        }
+
         public Element() {
         }
 

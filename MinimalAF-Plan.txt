@@ -4,7 +4,10 @@ TODO:
 		- Create An Attribute is used to mark tests
 		- Create an element that can aggregate and show all unit tests
 		- Allow multiple windows, make a side-window that controls the main window
-		-* create a Debug window
+		-> create a Debug window
+			- Make graphics context a normal class and not static
+			-* Make input non-static
+		
 			-* a side-panel that lists all tests that can be searched in
 				-* clicking on a test will change what is shown in the main window
 			-* a main view that shows the current element tree

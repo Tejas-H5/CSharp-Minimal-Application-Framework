@@ -1,8 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 
 namespace MinimalAF {
+
+    class DebugPanel : Element {
+        public override void OnRender() {
+            SetFont("Consolas", 24);
+            SetDrawColor(Color4.VA(0, 1));
+
+            Text("No more tests. Press esc to close", VW(0.5f), VH(0.5f), HorizontalAlignment.Center, VerticalAlignment.Center);
+        }
+
+        public override void OnUpdate() {
+            if (KeyPressed(KeyCode.Escape)) {
+                GetAncestor<ApplicationWindow>().Close();
+            }
+        }
+    }
 
     class NoMoreTests : Element {
         public override void OnMount(Window w) {
@@ -25,6 +41,12 @@ namespace MinimalAF {
 
     public class VisualTestRunner : Window {
         List<Type> visualTestElements = new List<Type>();
+        ApplicationWindow window;
+        Element currentTestElement;
+        (int, int) wantedSize;
+
+        ApplicationWindow debugWindow;
+        Thread debugWindowThread;
 
         public void FindAllVisualTests() {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
@@ -42,14 +64,20 @@ namespace MinimalAF {
             }
         }
 
-        ApplicationWindow window;
-        Element currentTestElement;
-        (int, int) wantedSize;
+
 
         public override void OnMount(Window w) {
             MinimalAFEnvironment.Debug = true;
 
             window = Parent.GetAncestor<ApplicationWindow>();
+
+            debugWindowThread = new Thread(() => {
+                debugWindow = new ApplicationWindow();
+                debugWindow.Context.MakeCurrent();
+                debugWindow.Run(new DebugPanel());
+            });
+
+            debugWindowThread.Start();
 
             FindAllVisualTests();
 
@@ -146,6 +174,14 @@ namespace MinimalAF {
             } catch (Exception e) {
                 throw e;
             }
+        }
+
+        public override void OnDismount() {
+            Println("Joining Debug window thread...");
+            debugWindow.Close();
+
+            Println("Joining Debug window thread...");
+            debugWindowThread.Join();
         }
     }
 }

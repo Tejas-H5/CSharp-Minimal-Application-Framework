@@ -1,5 +1,6 @@
 ﻿using MinimalAF.Rendering;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using System;
 
 namespace MinimalAF {
@@ -29,23 +30,24 @@ namespace MinimalAF {
     /// Only be getting this and modifying stuff if the element is a root-level element
     /// of your program.
     /// </summary>
-    public class ApplicationWindow : Window {
+    public class ApplicationWindow : Window, IDisposable {
         OpenTKWindowWrapper _window;
         Element _rootElement;
+        private bool disposedValue;
+
+        internal IGraphicsContext Context => _window.Context;
 
         public override bool SingleChild => true;
 
         public ApplicationWindow() {
+            _window = new OpenTKWindowWrapper(this);
         }
 
         public void Run(Element rootElement) {
-            using (OpenTKWindowWrapper window = new OpenTKWindowWrapper(this)) {
-                _window = window;
-                _rootElement = rootElement;
+            _rootElement = rootElement;
 
-                // event loop that polls
-                window.Run();
-            }
+            // This call is actually a blocking event loop
+            _window.Run();
 
             SetChildren(null);
             _window = null;
@@ -53,6 +55,7 @@ namespace MinimalAF {
 
 
         internal void StartMounting() {
+            ctx = _window.ctx;
             SetChildren(_rootElement);
             Mounted = true;
         }
@@ -143,6 +146,31 @@ namespace MinimalAF {
                     _window.MouseWheelVertical -= value;
                 }
             }
+        }
+
+        protected virtual void Dispose(bool disposing) {
+            if (!disposedValue) {
+                if (disposing) {
+                    // TODO: dispose managed state (managed objects)
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~ApplicationWindow()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose() {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

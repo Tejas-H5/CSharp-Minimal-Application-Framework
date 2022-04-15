@@ -1,6 +1,7 @@
 ﻿using MinimalAF.Rendering.ImmediateMode;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using System;
 
@@ -15,7 +16,7 @@ namespace MinimalAF.Rendering {
         public const int NUM_MATRICES = 3;
 
         //Here solely for the SwapBuffers function
-        private IGLFWGraphicsContext _glContext;
+        private IGraphicsContext _glContext;
 
         private int _contextWidth, _contextHeight;
         private Rect _currentScreenRect;
@@ -101,10 +102,11 @@ namespace MinimalAF.Rendering {
         }
 
 
-        public RenderContext(IGLFWGraphicsContext context) {
+        public RenderContext(IGraphicsContext context) {
             InitDrawers();
 
             _glContext = context;
+
             _solidShader = new ImmediateModeShader();
             _solidShader.Use();
             _textureManager = new TextureManager(this);
@@ -123,7 +125,6 @@ namespace MinimalAF.Rendering {
             GL.DepthFunc(DepthFunction.Lequal);
 
             _disposed = false; // To detect redundant calls to Dispose()
-
 
             Console.WriteLine("Context initialized");
         }

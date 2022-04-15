@@ -20,32 +20,20 @@ namespace MinimalAF {
         public float MouseDragStartY => Input.Mouse.DragStartY;
         public float MouseDragDeltaX => Input.Mouse.DragDeltaX;
         public float MouseDragDeltaY => Input.Mouse.DragDeltaY;
-        public bool MouseIsDragging => Input.Mouse.IsDragging;
-        public bool MouseStartedDragging => Input.Mouse.StartedDragging;
-        public bool MouseFinishedDragging => Input.Mouse.FinishedDragging;
+        public bool MouseIsDragging => MouseOverSelf && Input.Mouse.IsDragging;
+        public bool MouseStartedDragging => MouseOverSelf && Input.Mouse.StartedDragging;
+        public bool MouseFinishedDragging => MouseOverSelf && Input.Mouse.FinishedDragging;
 
         public bool MouseButtonPressed(MouseButton b) {
-            if (!MouseOverSelf) {
-                return false;
-            }
-
-            return Input.Mouse.IsPressed(b);
+            return MouseOverSelf && Input.Mouse.IsPressed(b);
         }
 
         public bool MouseButtonReleased(MouseButton b) {
-            if (!MouseOverSelf) {
-                return false;
-            }
-
-            return Input.Mouse.IsReleased(b);
+            return MouseOverSelf && Input.Mouse.IsReleased(b);
         }
 
         public bool MouseButtonHeld(MouseButton b) {
-            if (!MouseOverSelf) {
-                return false;
-            }
-
-            return Input.Mouse.IsHeld(b);
+            return MouseOverSelf && Input.Mouse.IsHeld(b);
         }
 
         public bool MouseOverSelf => Input.Mouse.IsOver(_screenRect);
@@ -69,9 +57,16 @@ namespace MinimalAF {
             Input.Mouse.CancelDrag();
         }
 
-        public float MousewheelNotches => Input.Mouse.WheelNotches;
+        public float MousewheelNotches {
+            get {
+                if (!MouseOverSelf)
+                    return 0;
 
-        public bool KeyPressed(KeyCode key) {
+                return Input.Mouse.WheelNotches;
+            }
+        }
+
+                public bool KeyPressed(KeyCode key) {
             return Input.Keyboard.IsPressed(key);
         }
 

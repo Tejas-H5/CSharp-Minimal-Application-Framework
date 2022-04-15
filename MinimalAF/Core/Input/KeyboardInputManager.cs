@@ -2,7 +2,7 @@
 using System.Text;
 
 namespace MinimalAF {
-    internal class KeyboardInputManager {
+    public class KeyboardInputManager {
         const string KEYBOARD_CHARS = "\t\b\n `1234567890-=qwertyuiop[]asdfghjkl;'\\zxcvbnm,./";
 
         OpenTKWindowWrapper _window;

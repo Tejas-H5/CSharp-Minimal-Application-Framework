@@ -37,12 +37,10 @@ namespace MinimalAF.VisualTests.UI {
                 startY0 = RelativeRect.Y0;
                 _dragState.CurrentlyDraggedContent = this;
                 isDragging = true;
-            } else if (MouseFinishedDragging) {
+            } else if (Input.Mouse.FinishedDragging) {
                 isDragging = false;
                 Offset = (0, 0);
-            }
-
-            if (isDragging) {
+            } else if (isDragging) {
                 float offsetX = startX0 + MouseDragDeltaX;
                 float offsetY = startY0 + MouseDragDeltaY;
 
@@ -87,7 +85,7 @@ namespace MinimalAF.VisualTests.UI {
 
 
         public override void OnUpdate() {
-            if (MouseOverSelf && MouseFinishedDragging) {
+            if (MouseFinishedDragging) {
                 if (_dragState.CurrentlyDraggedContent != null) {
                     _dragState.CurrentlyDraggedContent.Parent = this;
                     _dragState.CurrentlyDraggedContent = null;

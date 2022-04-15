@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace MinimalAF {
-    internal class MouseInputManager {
+    public class MouseInputManager {
         OpenTKWindowWrapper _window;
 
         float _incomingWheelNotches = 0;
@@ -26,7 +26,7 @@ namespace MinimalAF {
         //Mainly used to tell if we started dragging or not, and 
         //not meant to be an accurate representation of total distance dragged
 
-        internal float WheelNotches {
+        public float WheelNotches {
             get {
                 return _wheelNotches;
             }
@@ -43,66 +43,66 @@ namespace MinimalAF {
             }
         }
 
-        internal bool IsAnyDown {
+        public bool IsAnyDown {
             get {
                 return _anyHeld;
             }
         }
-        internal bool IsAnyPressed {
+        public bool IsAnyPressed {
             get {
                 return _anyPressed;
             }
         }
-        internal bool IsAnyReleased {
+        public bool IsAnyReleased {
             get {
                 return _anyReleased;
             }
         }
 
         // TODO low priority: Think of a better name for this private field (HAHAHA)
-        private bool CurrentlyDragging {
+        public bool CurrentlyDragging {
             get {
                 return _isAnyHeld && !_dragCancelled && ((MathF.Abs(DragDeltaX) + MathF.Abs(DragDeltaX)) > 1);
             }
         }
 
-        internal bool StartedDragging => !_wasAnyHeld && _isAnyHeld;
-        internal bool IsDragging => _wasAnyHeld && CurrentlyDragging;
-        internal bool FinishedDragging => _wasAnyHeld && !_isAnyHeld;
+        public bool StartedDragging => !_wasAnyHeld && _isAnyHeld;
+        public bool IsDragging => _wasAnyHeld && CurrentlyDragging;
+        public bool FinishedDragging => _wasAnyHeld && !_isAnyHeld;
 
-        internal float X {
+        public float X {
             get {
                 return _window.MouseState.Position.X;
             }
         }
-        internal float Y {
+        public float Y {
             get {
                 return _window.Height - _window.MouseState.Position.Y;
             }
         }
 
-        internal float XDelta {
+        public float XDelta {
             get {
                 return _window.MouseState.Delta.X;
             }
         }
-        internal float YDelta {
+        public float YDelta {
             get {
                 return _window.MouseState.Delta.Y;
             }
         }
 
-        internal float DragStartX {
+        public float DragStartX {
             get {
                 return _dragStartX;
             }
         }
-        internal float DragStartY {
+        public float DragStartY {
             get {
                 return _dragStartY;
             }
         }
-        internal float DragDeltaX {
+        public float DragDeltaX {
             get {
                 return _dragDeltaX;
             }
@@ -120,7 +120,7 @@ namespace MinimalAF {
             _incomingWheelNotches += obj.OffsetY;
         }
 
-        internal bool IsOver(Rect rect) {
+        public bool IsOver(Rect rect) {
             return Intersections.IsInsideRect(X, Y, rect);
         }
 
@@ -141,28 +141,28 @@ namespace MinimalAF {
             _mouseButtonStates = temp;
         }
 
-        internal bool IsPressed(MouseButton b) {
+        public bool IsPressed(MouseButton b) {
             if (b == MouseButton.Any)
                 return _anyPressed;
 
             return (!_prevMouseButtonStates[(int)b]) && _mouseButtonStates[(int)b];
         }
 
-        internal bool IsReleased(MouseButton b) {
+        public bool IsReleased(MouseButton b) {
             if (b == MouseButton.Any)
                 return _anyReleased;
 
             return _prevMouseButtonStates[(int)b] && (!_mouseButtonStates[(int)b]);
         }
 
-        internal bool IsHeld(MouseButton b) {
+        public bool IsHeld(MouseButton b) {
             if (b == MouseButton.Any)
                 return _anyHeld;
 
             return _mouseButtonStates[(int)b];
         }
 
-        internal void CancelDrag() {
+        public void CancelDrag() {
             _dragCancelled = true;
             SetDragDeltas(_dragStartX, _dragStartY);
         }

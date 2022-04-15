@@ -4,7 +4,6 @@ using System.Text;
 
 namespace MinimalAF.AudioTests {
     [VisualTest]
-	[VisualTest]
     public class BasicWavPlayingTest : Element {
         AudioSourceOneShot _clackSound;
 

@@ -1,6 +1,6 @@
 ﻿namespace MinimalAF {
 
-    internal static class Input {
+    public static class Input {
         private static MouseInputManager _mouseInputManager;
         private static KeyboardInputManager _keyboardManager;
 
@@ -22,13 +22,13 @@
             _keyboardManager.Update();
         }
 
-        internal static MouseInputManager Mouse {
+        public static MouseInputManager Mouse {
             get {
                 return _mouseInputManager;
             }
         }
 
-        internal static KeyboardInputManager Keyboard {
+        public static KeyboardInputManager Keyboard {
             get {
                 return _keyboardManager;
             }

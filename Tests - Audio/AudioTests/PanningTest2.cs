@@ -2,6 +2,7 @@
 using OpenTK.Mathematics;
 
 namespace MinimalAF.AudioTests {
+    [VisualTest]
     public class PanningTest2 : Element {
         AudioSourceOneShot _clackSound;
         AudioListener _listener;

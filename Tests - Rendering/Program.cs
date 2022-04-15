@@ -6,10 +6,7 @@ namespace RenderingEngineVisualTests
     {
         static void Main(string[] args)
         {
-            VisualTestRunner runner = new VisualTestRunner();
-            var window = new ApplicationWindow();
-
-            window.Run(runner);
+            new ApplicationWindow().Run(new VisualTestRunner());
         }
     }
 }

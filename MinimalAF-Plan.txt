@@ -6,10 +6,12 @@ TODO:
 		- Allow multiple windows, make a side-window that controls the main window
 		- create a Debug window
 			- Some way to resize the window
-			- Some way to pass constructor args and then restart the test.
+			-> Some way to pass constructor args and then restart the test.
 			-* Some way to see the element tree
 	
 	-* remove underscore from all the field names. It's awful to look at and type
+	
+	-* Profile the benchmark. It used to be able to draw 10000 lines at 60fps, now its real slow for some reason
 	
 Amazin'		
 			

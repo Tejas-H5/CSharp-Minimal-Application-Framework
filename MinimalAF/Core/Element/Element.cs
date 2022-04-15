@@ -299,7 +299,11 @@ namespace MinimalAF {
 #endif
 
             for (int i = 0; i < _children.Count; i++) {
-                _children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, _screenRect, acc.HoverDepth));
+                _children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, _screenRect
+#if DEBUG
+                    , acc.HoverDepth
+#endif           
+                ));
             }
 
             AfterRender();

@@ -1,4 +1,5 @@
 ﻿using MinimalAF.Rendering.ImmediateMode;
+using MinimalAF.Rendering.Text;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
@@ -20,10 +21,24 @@ namespace MinimalAF.Rendering {
         private static IGLFWGraphicsContext _glContext;
 
         private static int _contextWidth, _contextHeight;
-        private static Rect _currentScreenRect;
 
-        internal static Rect CurrentScreenRect {
-            get => _currentScreenRect;
+        private static Rect _currentClippingRect;
+        internal static Rect CurrentClippingRect {
+            get => _currentClippingRect;
+            set {
+                _currentClippingRect = value;
+
+                Flush();
+
+                GL.Scissor(
+                    (int)_currentClippingRect.X0, 
+                    (int)_currentClippingRect.Y0, 
+                    (int)_currentClippingRect.Width, 
+                    (int)_currentClippingRect.Height
+                );
+
+                GL.Enable(EnableCap.ScissorTest);
+            }
         }
 
         internal static int ContextWidth {
@@ -65,6 +80,10 @@ namespace MinimalAF.Rendering {
         private static ImmediateModeShader _solidShader;
         private static TextureManager _textureManager;
         private static FramebufferManager _framebufferManager;
+
+        public static FontAtlasTexture InternalFontAtlas {
+            get => _textDrawer.ActiveFont;
+        }
 
         internal static Matrix4 GetMatrix(int matrix) {
             return _solidShader.GetMatrix(matrix);
@@ -151,7 +170,6 @@ namespace MinimalAF.Rendering {
             ClearColor = color;
         }
 
-
         internal static void Clear() {
             GL.StencilMask(1);
             GL.ClearColor(ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A);
@@ -204,22 +222,11 @@ namespace MinimalAF.Rendering {
             screenRect = screenRect.Rectify();
 
             GL.Viewport((int)screenRect.X0, (int)screenRect.Y0, (int)screenRect.Width, (int)screenRect.Height);
-            SetScissor(screenRect);
-        }
-
-        internal static void SetScissor(Rect screenRect) {
-            Flush();
-            GL.Scissor((int)screenRect.X0, (int)screenRect.Y0, (int)screenRect.Width, (int)screenRect.Height);
-            GL.Enable(EnableCap.ScissorTest);
-        }
-
-        internal static void ClearScissor() {
-            GL.Disable(EnableCap.ScissorTest);
+            CurrentClippingRect = screenRect;
         }
 
         internal static void SetScreenRect(Rect screenRect) {
             Cartesian2D(ContextWidth, ContextHeight, screenRect.X0, screenRect.Y0);
-            _currentScreenRect = screenRect;
         }
 
         internal static void Cartesian2D(float width, float height, float offsetX = 0, float offsetY = 0) {

@@ -9,10 +9,7 @@ namespace MinimalAF.VisualTests.Rendering
     {
         private int _lineThiccness;
 
-        public Benchmark()
-            : this(5) { }
-
-        public Benchmark(int thickness)
+        public Benchmark(int thickness = 5)
         {
             _lineThiccness = thickness;
         }

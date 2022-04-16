@@ -6,12 +6,19 @@ TODO:
 		- Allow multiple windows, make a side-window that controls the main window
 		- create a Debug window
 			- Some way to resize the window
-			-> Some way to pass constructor args and then restart the test.
+			- Some way to pass constructor args and then restart the test.
+				- start making the clipping rect stack-based, and remove SetClippingRect and ClearClippingRect
+				-> make some things
+				
 			-* Some way to see the element tree
+				-* Will need to be root-node-state based and done in AfterRender. Also figure out some way to move debug overlay to here as well
 	
 	-* remove underscore from all the field names. It's awful to look at and type
+
 	
-	-* Profile the benchmark. It used to be able to draw 10000 lines at 60fps, now its real slow for some reason
+	-* profiling 
+		-* Why is it taking up so much memory in RAM
+		-* Why is the benchmark so much slower now than it was before?
 	
 Amazin'		
 			

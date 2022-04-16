@@ -12,7 +12,7 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Stencil rendering test";
 
-            SetClearColor(Color4.RGBA(0,0,0,0));
+            SetClearColor(Color4.White);
             SetFont("Consolas", 24);
 
 			SetChildren(geometryAndTextTest);

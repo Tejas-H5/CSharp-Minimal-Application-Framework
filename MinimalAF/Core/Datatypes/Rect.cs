@@ -134,6 +134,9 @@ namespace MinimalAF {
             Y1 += y;
         }
 
+        /// <summary>
+        /// Returns the union intersect of two rectangles
+        /// </summary>
         public Rect Intersect(Rect other) {
             return new Rect(
                 MathF.Max(Left, other.Left),

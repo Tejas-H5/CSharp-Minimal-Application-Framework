@@ -31,6 +31,10 @@ namespace MinimalAF {
         protected Rect _screenRect; // this is auto-calculated
         bool _rectModified = false;
 
+        public bool Clipping {
+            get; set;
+        }
+
         public void SetRelativeRect(Rect value) {
             if (RelativeRect != value) {
                 RelativeRect = value;
@@ -270,16 +274,6 @@ namespace MinimalAF {
             ));
         }
 
-
-        private void RecalcScreenRect(Rect parentScreenRect) {
-            _screenRect = RelativeRect;
-            _screenRect.Move(parentScreenRect.X0 + Offset.X, parentScreenRect.Y0 + Offset.Y);
-        }
-
-        public void UseCoordinates() {
-            CTX.SetScreenRect(_screenRect);
-        }
-
         internal void RenderSelfAndChildren(RenderAccumulator acc) {
             if (!IsVisible) {
                 return;
@@ -289,6 +283,11 @@ namespace MinimalAF {
             UseCoordinates();
 
             SetTexture(null);
+
+            Rect previousClippingRect = CTX.CurrentClippingRect;
+            if (Clipping) {
+                CTX.CurrentClippingRect = CTX.CurrentClippingRect.Intersect(_screenRect);
+            }
 
             OnRender();
 
@@ -307,7 +306,21 @@ namespace MinimalAF {
             }
 
             AfterRender();
+
+            if (Clipping) {
+                CTX.CurrentClippingRect = previousClippingRect;
+            }
         }
+
+        private void RecalcScreenRect(Rect parentScreenRect) {
+            _screenRect = RelativeRect;
+            _screenRect.Move(parentScreenRect.X0 + Offset.X, parentScreenRect.Y0 + Offset.Y);
+        }
+
+        public void UseCoordinates() {
+            CTX.SetScreenRect(_screenRect);
+        }
+
 
 #if DEBUG
         RenderAccumulator DrawDebugStuff(RenderAccumulator acc, Rect newScreenRect) {

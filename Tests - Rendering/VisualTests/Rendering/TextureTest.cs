@@ -18,7 +18,7 @@ namespace MinimalAF.VisualTests.Rendering
             //w.RenderFrequency = 120; 60;
             //w.UpdateFrequency = 120; 120;
 
-           SetClearColor(Color4.RGBA(0, 0, 0, 1));
+           SetClearColor(Color4.White);
 
             TextureMap.LoadTexture("placeholder", "./Res/settings_icon.png", new TextureImportSettings());
             TextureMap.LoadTexture("placeholderNN", "./Res/settings_icon.png", new TextureImportSettings { Filtering = FilteringType.NearestNeighbour });

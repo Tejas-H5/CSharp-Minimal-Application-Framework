@@ -16,7 +16,7 @@ namespace MinimalAF {
         /// <param name="elements"></param>
         /// <param name="layoutDirection"></param>
         /// <param name="offsets"></param>
-        public void LayoutLinear(ArraySlice<Element> elements, Direction layoutDirection = Direction.Right, float[] offsets = null, bool normalizedOffsets = false) {
+        public void LayoutSplit(ArraySlice<Element> elements, Direction layoutDirection = Direction.Right, float[] offsets = null, bool normalizedOffsets = false) {
             bool vertical = layoutDirection == Direction.Up || layoutDirection == Direction.Down;
             bool reverse = layoutDirection == Direction.Down || layoutDirection == Direction.Left;
 
@@ -113,7 +113,7 @@ namespace MinimalAF {
             }
         }
 
-        public void LayoutSplit(Element el0, Element el1, Direction layoutDirection, float splitAmount) {
+        public void LayoutTwoSplit(Element el0, Element el1, Direction layoutDirection, float splitAmount) {
             Rect wanted0 = el0.RelativeRect;
             Rect wanted1 = el1.RelativeRect;
             if (layoutDirection == Direction.Down) {
@@ -193,6 +193,58 @@ namespace MinimalAF {
             }
 
             element.RelativeRect = wanted;
+        }
+
+
+        /// <summary>
+        /// Use <see cref="LayoutSplit"/> if you need control on each individual size.
+        /// 
+        /// 
+        /// </summary>
+        public void LayoutLinear(ArraySlice<Element> elements, Direction layoutDirection, float elementSizing, float scrollOffset = 0, float gap = 0) {
+            bool vertical = layoutDirection == Direction.Up || layoutDirection == Direction.Down;
+            bool reverse = layoutDirection == Direction.Down || layoutDirection == Direction.Left;
+
+            float dir;
+            float previousEnd = scrollOffset;
+            if(reverse) {
+                dir = -1;
+
+                if (vertical) {
+                    previousEnd = VH(1) - scrollOffset;
+                } else {
+                    previousEnd = VW(1) - scrollOffset;
+                }
+            } else {
+                dir = 1;
+            }
+
+
+            foreach (Element e in elements) {
+                float end = previousEnd + elementSizing * dir;
+
+                Rect wanted = e.RelativeRect;
+                if(layoutDirection == Direction.Left) {
+                    wanted.X1 = previousEnd;
+                    wanted.X0 = end;
+                } else if (layoutDirection == Direction.Right) {
+                    wanted.X0 = previousEnd;
+                    wanted.X1 = end;
+                } else if (layoutDirection == Direction.Up) {
+                    wanted.Y0 = previousEnd;
+                    wanted.Y1 = end;
+                } else {
+                    wanted.Y1 = previousEnd;
+                    wanted.Y0 = end;
+                }
+
+                e.RelativeRect = wanted;
+
+
+                // TODO: Set elementSizing=-1 to call Layout on the child to figure out it's size and place accordingly
+
+                previousEnd = end + gap * dir;
+            }
         }
     }
 }

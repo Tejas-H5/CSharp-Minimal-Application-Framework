@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+// Warning: Tight coupling. Not for the faint of heart
 namespace MinimalAF {
     class NoMoreTests : Element {
         public override void OnMount(Window w) {
@@ -12,8 +13,8 @@ namespace MinimalAF {
         public override void OnRender() {
             SetFont("Consolas", 24);
 
-            string text = "No tests. Give the [" + typeof(VisualTestAttribute).Name + "] attribute to an element"
-                + "in order to make it show up here. ";
+            string text = "No tests.\nGive the [" + typeof(VisualTestAttribute).Name + "] attribute to an element"
+                + "\nin order to make it show up here. ";
 
             Text(text, VW(0.5f), VH(0.5f), HorizontalAlignment.Center, VerticalAlignment.Center);
         }
@@ -34,6 +35,7 @@ namespace MinimalAF {
 
         public TestList(List<Type> tests) {
             UpdateTests(tests);
+            Clipping = true;
         }
 
         public void UpdateTests(List<Type> tests) {
@@ -58,7 +60,7 @@ namespace MinimalAF {
         }
 
         public override void OnUpdate() {
-            scrollAmount += MousewheelNotches * textHeight;
+            scrollAmount += MousewheelNotches * textHeight * 5;
 
             float maxScroll = -(textHeight + gap) * visualTestElements.Count;
             if (scrollAmount < maxScroll) {
@@ -81,7 +83,6 @@ namespace MinimalAF {
         public override void OnRender() {
             SetDrawColor(Color4.VA(1, 0.5f));
             Rect(0, 0, VW(1), VH(1));
-            SetClippingRect(_screenRect);
 
             SetFont("Consolas", 12);
             textHeight = GetCharHeight();
@@ -97,10 +98,6 @@ namespace MinimalAF {
 
                 Text(test.Name, 10, y);
             }
-        }
-
-        public override void AfterRender() {
-            ClearClippingRect();
         }
 
         internal void SetFilter(string value) {
@@ -131,14 +128,12 @@ namespace MinimalAF {
             SetDrawColor(Color4.Black);
 
             string infoText = "size: " + WantedSize.Item1.ToString("0.00") + ", " + WantedSize.Item2.ToString("0.00")
-                + "(WindowState." + WindowState.ToString()
-                + ") U:" + UpdateFrequency.ToString("0.0") + "FPS R:"
-                + RenderFrequency.ToString("0.0") + "FPS";
+                + "\n(WindowState." + WindowState.ToString()
+                + ") \nUpdateFPS:" + UpdateFrequency.ToString("0.0") + "\nRenderFPS:"
+                + RenderFrequency.ToString("0.0");
 
             SetFont("Consolas", 12);
             Text(infoText, 0, 0, HorizontalAlignment.Left, VerticalAlignment.Top);
-
-            SetClippingRect(_screenRect);
         }
 
 
@@ -156,14 +151,7 @@ namespace MinimalAF {
 
                 TriggerLayoutRecalculation();
             }
-
-
         }
-
-        public override void AfterUpdate() {
-            ClearClippingRect();
-        }
-
 
         const float EDGE_WIDTH = 40;
 
@@ -253,13 +241,121 @@ namespace MinimalAF {
         }
     }
 
-    [VisualTest]
+    class Button : Element {
+        public event Action OnClick;
+
+        public Button(string text) {
+            SetChildren(new TextElement(text, Color4.VA(0, 1), "Consolas", 12, VerticalAlignment.Center, HorizontalAlignment.Center));
+        }
+
+        public override void OnRender() {
+            //SetDrawColor(Color4.VA(1, 0.5f));
+            //if(MouseOverSelf) {
+            //    SetDrawColor(Color4.VA(0.5f, 0.5f));
+            //    if(MouseButtonHeld(MouseButton.Any)) {
+            //        SetDrawColor(Color4.VA(0.5f, 1f));
+            //    }
+            //}
+
+            SetDrawColor(Color4.Red);
+
+            Rect(0, 0, Width, Height);
+        }
+
+        public override void OnUpdate() {
+            if (MouseOverSelf && MouseButtonPressed(MouseButton.Any)) {
+                OnClick?.Invoke();
+            }
+        }
+    }
+
+    class Reflector : Element {
+        VisualTestRunner testRuner;
+        Button restartButton;
+        Type currentTestClass;
+        float scrollOffset = 0;
+
+        public Reflector() {
+            restartButton = new Button("Restart");
+            restartButton.OnClick += RestartButton_OnClick;
+        }
+
+        private void RestartButton_OnClick() {
+            testRuner.StartTest(currentTestClass);
+        }
+
+        public override void OnMount(Window w) {
+            testRuner = GetAncestor<VisualTestRunner>();
+            testRuner.OnTestcaseChanged += TestRuner_OnTestcaseChanged; //
+
+
+        }
+
+        private void TestRuner_OnTestcaseChanged(Element obj) {
+            if (obj.GetType() == currentTestClass) {
+                return;
+            }
+            currentTestClass = obj.GetType();
+
+            SetChildren(null);
+
+            var constructor = currentTestClass.GetConstructors()[0];
+            
+            // TODO: add editable fields for all the constructor parameters
+            var parameters = constructor.GetParameters();
+            foreach(var parameter in parameters) {
+
+            }
+
+            AddChild(restartButton);
+        }
+
+        public override void OnLayout() {
+            LayoutLinear(Children, Direction.Down, 40, scrollOffset, 5);
+            LayoutInset(Children, 5);
+
+            LayoutChildren();
+        }
+    }
+
+    class MountingContainer : Element {
+        TestMounting mounting;
+
+        public TestMounting TestMounting => mounting;
+
+        public MountingContainer() {
+            mounting = new TestMounting();
+            Clipping = true;
+
+            SetChildren(mounting);
+        }
+
+        public override void OnRender() {
+            SetDrawColor(Color4.Black);
+            RectOutline(1, mounting.RelativeRect);
+        }
+
+        public override void OnLayout() {
+            Rect wanted = mounting.RelativeRect;
+            wanted.SetWidth(mounting.WantedSize.Item1, 0.5f);
+            wanted.SetHeight(mounting.WantedSize.Item2, 0.5f);
+            mounting.RelativeRect = wanted;
+
+            LayoutChildren();
+        }
+    }
+
+
+    // [VisualTest] This actually works btw.
     public class VisualTestRunner : Element {
         List<Type> visualTestElements = new List<Type>();
 
         TestList testList;
         TextInput<string> searchbox;
-        TestMounting mounting;
+        Reflector reflectionPanel;
+        MountingContainer mountingContainer;
+
+        public event Action<Element> OnTestcaseChanged;
 
         public VisualTestRunner() {
             testList = new TestList(visualTestElements);
@@ -274,10 +370,15 @@ namespace MinimalAF {
             searchbox.Placeholder = "Search for a test";
             searchbox.OnTextChanged += Searchbox_OnTextChanged;
 
-            mounting = new TestMounting();
+            mountingContainer = new MountingContainer();
 
-            SetChildren(testList, searchbox, mounting);
+
+            reflectionPanel = new Reflector();
+
+            SetChildren(testList, searchbox, mountingContainer, reflectionPanel);
         }
+
+
 
         private void Searchbox_OnTextChanged(string value) {
             testList.SetFilter(value);
@@ -287,8 +388,12 @@ namespace MinimalAF {
             StartTest(visualTestElements.IndexOf(obj));
         }
 
+        public void StartTest(Type type) {
+            StartTest(visualTestElements.IndexOf(type));
+        }
+
         void StartTest(int index) {
-            mounting.SetChildren(null);
+            mountingContainer.TestMounting.SetChildren(null);
 
             // a funny recursive case I added. this is so we won't get a stack overflow with 0
             // other test cases. TODO: remove this 
@@ -298,18 +403,42 @@ namespace MinimalAF {
             }
 
             if (index < 0 || index >= visualTestElements.Count) {
-                ranOutOfTests = true;
-                mounting.SetChildren(new NoMoreTests());
+                mountingContainer.TestMounting.SetChildren(new NoMoreTests());
+                OnTestcaseChanged?.Invoke(mountingContainer.TestMounting[0]);
                 return;
             }
 
             currentTest = index;
             Type t = visualTestElements[currentTest];
 
-            try {
-                Element test = (Element)Activator.CreateInstance(t);
+            var constructors = t.GetConstructors();
+            if (constructors.Length == 0) {
+                throw new Exception("The class " + t.Name + " needs to have at least one constructor");
+            } else if (constructors.Length > 1) {
+                throw new Exception("The class " + t.Name + " cannot have more than one constructor to be testable here.");
+            }
 
-                mounting.SetChildren(test);
+            try {
+                var constructor = constructors[0];
+                var expectedArgs = constructor.GetParameters();
+                object[] args = new object[expectedArgs.Length];
+
+                for (int i = 0; i < expectedArgs.Length; i++) {
+                    var exArg = expectedArgs[i];
+
+                    if (exArg.RawDefaultValue != null) {
+                        args[i] = exArg.RawDefaultValue;
+                        continue;
+                    }
+
+                    object defaultVal = Activator.CreateInstance(exArg.ParameterType);
+                    args[i] = defaultVal;
+                }
+
+                Element test = (Element)Activator.CreateInstance(t, args);
+
+                mountingContainer.TestMounting.SetChildren(test);
+                OnTestcaseChanged?.Invoke(test);
             } catch (MissingMethodException) {
                 throw new Exception("The class " + t.Name + " needs to have a parameterless constructor" +
                     "( e.g. var x = new " + t.Name + "() ) in order to be instantiated by this test harness.");
@@ -356,37 +485,31 @@ namespace MinimalAF {
         public override void OnRender() {
             SetDrawColor(Color4.VA(0, 1));
 
-            RectOutline(1, rightSectionRect);
-            RectOutline(1, mounting.RelativeRect);
             RectOutline(1, testList.RelativeRect);
             RectOutline(1, searchbox.RelativeRect);
+            RectOutline(1, reflectionPanel.RelativeRect);
+            RectOutline(1, mountingContainer.RelativeRect);
 
             SetDrawColor(Color4.VA(1, .5f));
             Rect(searchbox.RelativeRect);
         }
 
         int currentTest = 0;
-        bool ranOutOfTests = false;
-
-
-        Rect rightSectionRect;
 
         public override void OnLayout() {
             float sidePanelWidth = VW(0.25f);
             float inset = 5;
-            rightSectionRect = new Rect(sidePanelWidth, 0, VW(1), VH(1))
+            mountingContainer.RelativeRect = new Rect(sidePanelWidth, 0, VW(1), VH(1))
                 .Inset(inset);
 
-            testList.RelativeRect = new Rect(0, 0, sidePanelWidth, VH(1) - 50)
+            testList.RelativeRect = new Rect(0, VH(0.5f), sidePanelWidth, VH(1) - 50)
                 .Inset(inset);
 
             searchbox.RelativeRect = new Rect(0, VH(1) - 50, sidePanelWidth, VH(1))
                 .Inset(inset);
 
-            Rect mountingRect = rightSectionRect;
-            mountingRect.SetWidth(mounting.WantedSize.Item1, 0.5f);
-            mountingRect.SetHeight(mounting.WantedSize.Item2, 0.5f);
-            mounting.RelativeRect = mountingRect;
+            reflectionPanel.RelativeRect = new Rect(0, 0, sidePanelWidth, VH(0.5f))
+                .Inset(inset);
 
             LayoutChildren();
         }

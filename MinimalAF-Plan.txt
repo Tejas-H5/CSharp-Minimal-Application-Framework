@@ -2,12 +2,15 @@ TODO:
 	- Meta-test to make sure that you can actually make cool and useful things with this framework.
 		- DONE. didnt think it could be done lol
 	
-	-* remove underscore from all the field names. It's awful to look at and type
-
+	-> remove underscore from all the field names. It's awful to look at and type
 	
 	-* profiling 
 		-* Why is it taking up so much memory in RAM
 		-* Why is the benchmark so much slower now than it was before?
+	
+	
+	-* Try to understand how the depth is working, and why it doesnt work for 
+	numbers greater than 1. Near far clipping planes?
 	
 Amazin'		
 			

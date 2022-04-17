@@ -399,7 +399,10 @@ namespace MinimalAF {
         public event Action<T> OnFinalized;
         bool stayOpen = false;
 
-        public ChoiceInput(string[] names, T[] values, int selected = 0) {
+        public ChoiceInput(string[] names, T[] values, T selected)
+            : this(names, values, Array.IndexOf(values, selected)) { }
+
+        public ChoiceInput(string[] names, T[] values, int selected) {
             allNames = names;
             this.values = values;
 
@@ -529,6 +532,7 @@ namespace MinimalAF {
                 || type == typeof(double)
                 || type == typeof(long)
                 || type == typeof(string)
+                || type == typeof(bool)
                 || type.IsEnum;
         }
 
@@ -546,6 +550,8 @@ namespace MinimalAF {
                 input = new TextInput<object>(CreateText(""), defaultValue, (string s) => long.Parse(s));
             } else if (type == typeof(string)) {
                 input = new TextInput<object>(CreateText(""), defaultValue, (string s) => s);
+            } else if (type == typeof(bool)) {
+                input = new ChoiceInput<object>(new string[] { "True", "False" }, new object[] { true, false }, defaultValue);
             } else if (type.IsEnum) {
                 input = ChoiceInput<object>.FromEnum(type, defaultValue);
             }

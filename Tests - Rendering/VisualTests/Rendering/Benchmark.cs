@@ -9,11 +9,13 @@ namespace MinimalAF.VisualTests.Rendering
     {
         private int lineThiccness;
         CapType capType;
+        bool testBool;
 
-        public Benchmark(CapType capType = CapType.Circle, int thickness = 5)
+        public Benchmark(bool testBoolean, CapType capType = CapType.Circle, int thickness = 5)
         {
             lineThiccness = thickness;
             this.capType = capType;
+            testBool = testBoolean;
         }
 
         public override void OnMount(Window w)
@@ -21,7 +23,7 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Rendering Engine Line benchmark";
 
-           SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
             SetFont("Consolas", 24);
         }
 
@@ -57,7 +59,8 @@ namespace MinimalAF.VisualTests.Rendering
 
             string text = "FPS: " + FPS.ToString("0.000") +
                 "\nLines drawn: " + amount + 
-                "\nCapType: " + capType.ToString();
+                "\nCapType: " + capType.ToString() + 
+                "\nTest bool: " + testBool.ToString();
 
             Text(text, 10, Height - 50);
 

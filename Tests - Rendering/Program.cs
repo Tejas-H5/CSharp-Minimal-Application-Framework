@@ -1,4 +1,5 @@
 ﻿using MinimalAF;
+using MinimalAF.VisualTests.Rendering;
 
 namespace RenderingEngineVisualTests
 {
@@ -6,7 +7,7 @@ namespace RenderingEngineVisualTests
     {
         static void Main(string[] args)
         {
-            new ApplicationWindow().Run(new VisualTestRunner());
+            new ApplicationWindow().Run(new VisualTestRunner(typeof(Benchmark)));
         }
     }
 }

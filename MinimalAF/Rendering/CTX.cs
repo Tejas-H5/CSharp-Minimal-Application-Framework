@@ -139,9 +139,7 @@ namespace MinimalAF.Rendering {
             GL.Enable(EnableCap.StencilTest);
             GL.StencilFunc(StencilFunction.Equal, 0, 0xFF);
 
-            GL.Enable(EnableCap.DepthTest);
-            //TODO: change this to DepthFunction.Less for viewport3D
-            GL.DepthFunc(DepthFunction.Lequal);
+            GL.Enable(EnableCap.DepthTest);            
 
             disposed = false; // To detect redundant calls to Dispose()
 
@@ -236,6 +234,8 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void Cartesian2D(float width, float height, float offsetX = 0, float offsetY = 0) {
+            Flush();
+
             Matrix4 projectionMatrix = Matrix4.Identity;
 
             Matrix4 viewMatrix = Matrix4.Identity;
@@ -250,6 +250,23 @@ namespace MinimalAF.Rendering {
 
             SetMatrix(VIEW_MATRIX, viewMatrix);
             SetMatrix(PROJECTION_MATRIX, projectionMatrix);
+
+            GL.DepthFunc(DepthFunction.Lequal);
+        }
+
+
+        public static void Perspective3D() {
+            Flush();
+
+            GL.DepthFunc(DepthFunction.Less);
+
+
+        }
+
+        public static void Orthographic3D() {
+            Flush();
+
+            GL.DepthFunc(DepthFunction.Less);
         }
 
 

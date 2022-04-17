@@ -1,7 +1,12 @@
 TODO:	
 	- non-immediate mode support - retained I think it's called ?
-		-> 3D viewport support
+		- 3D viewport support
+			- Perspective camera.
+				-> move to System.Numerics if possbile. Maybe I could contribute this to OpenTK directly? I have heard that they had already planned to do this
+		
 		-* 3D mesh rendering support
+		
+		
 			-* 3D mesh rendering API
 			
 		-* Fix framebuffer. I

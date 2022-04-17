@@ -628,7 +628,6 @@ namespace MinimalAF {
     }
 
 
-    // [VisualTest] // (This funny recursion thing actually works btw.)
     public class VisualTestRunner : Element {
         List<Type> visualTestElements = new List<Type>();
 
@@ -639,7 +638,9 @@ namespace MinimalAF {
 
         public event Action<Element, object[]> OnTestcaseChanged;
 
-        public VisualTestRunner() {
+        int initialTest = 0;
+
+        public VisualTestRunner(Type initialTestType = null) {
             testList = new TestList(visualTestElements);
             testList.OnSelect += TestList_OnSelect;
 
@@ -657,6 +658,19 @@ namespace MinimalAF {
             reflectionPanel = new Reflector();
 
             SetChildren(testList, searchbox, mountingContainer, reflectionPanel);
+
+            MinimalAFEnvironment.Debug = true;
+
+            FindAllVisualTests();
+
+            Console.WriteLine("Found " + visualTestElements.Count + " tests:");
+            foreach (Type t in visualTestElements) {
+                Console.WriteLine("\t" + t.Name);
+            }
+
+            if(initialTestType != null) {
+                initialTest = visualTestElements.IndexOf(initialTestType);
+            }
         }
 
 
@@ -676,12 +690,7 @@ namespace MinimalAF {
         void StartTest(int index, object[] args = null) {
             try {
                 mountingContainer.TestMounting.SetChildren(null);
-
-                // accounting for a recursive case I was trying out
                 int count = visualTestElements.Count;
-                if (count == 1 && visualTestElements[0].GetType() == typeof(VisualTestRunner)) {
-                    count = 0;
-                }
 
                 currentTest = index;
                 Type t = visualTestElements[currentTest];
@@ -744,18 +753,7 @@ namespace MinimalAF {
 
 
         public override void AfterMount(Window w) {
-            MinimalAFEnvironment.Debug = true;
-
-            FindAllVisualTests();
-
-            Console.WriteLine("Found " + visualTestElements.Count + " tests:");
-            foreach (Type t in visualTestElements) {
-                Console.WriteLine("\t" + t.Name);
-            }
-
-            Console.WriteLine("Press escape to go to the next test");
-
-            StartTest(0);
+            StartTest(initialTest);
         }
 
         public override void OnRender() {

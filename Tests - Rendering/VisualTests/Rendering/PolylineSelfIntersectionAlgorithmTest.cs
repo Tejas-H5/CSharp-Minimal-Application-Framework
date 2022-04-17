@@ -1,64 +1,67 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.Logic;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using MinimalAF.Util;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
+using OpenTK.Graphics.OpenGL;
+
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    public class PolylineSelfIntersectionAlgorithmTest : EntryPoint
+	[VisualTest]
+	public class PolylineSelfIntersectionAlgorithmTest : Element
     {
-        public override void Start()
+        public override void OnMount(Window w)
         {
-            Window.Size = (800, 600);
-            Window.Title = "PolylineSelfIntersectionAlgorithmTest";
-            CTX.SetClearColor(1, 1, 1, 1);
-            CTX.SetCurrentFont("Segoe UI", 24);
+            
+            w.Size = (800, 600);
+            w.Title = "PolylineSelfIntersectionAlgorithmTest";
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetFont("Segoe UI", 24);
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
-            CTX.SetDrawColor(0, 0, 0, 1f);
-            for (int i = 0; i < _points.Length; i++)
+            SetDrawColor(0, 0, 0, 1f);
+            for (int i = 0; i < points.Length; i++)
             {
-                CTX.DrawCircle(_points[i].X, _points[i].Y, 10);
-                CTX.DrawText(i.ToString(), _points[i].X + 20, _points[i].Y + 20);
+                Circle(points[i].X, points[i].Y, 10);
+                Text(i.ToString(), points[i].X + 20, points[i].Y + 20);
             }
 
-            CTX.SetDrawColor(0, 0, 1, 0.5f);
+			int fbbinding = GL.GetInteger(GetPName.DrawFramebufferBinding);
+			int readfbbinding = GL.GetInteger(GetPName.ReadFramebufferBinding);
 
-            PointF p1 = _points[0];
-            PointF p2 = _points[1];
-            PointF p3 = _points[2];
-            PointF p4 = _points[3];
+			SetDrawColor(0, 0, 1, 0.5f);
 
-            float thickness = 200;
+            PointF p1 = points[0];
+            PointF p2 = points[1];
+            PointF p3 = points[2];
+            PointF p4 = points[3];
 
-            CTX.BeginPolyLine(p1.X, p1.Y, thickness, CapType.None);
-            CTX.AppendToPolyLine(p2.X, p2.Y);
-            CTX.AppendToPolyLine(p3.X, p3.Y);
-            CTX.EndPolyLine(p4.X, p4.Y);
+            float radius = 100;
+
+            StartPolyLine(p1.X, p1.Y, radius, CapType.None);
+            ContinuePolyLine(p2.X, p2.Y);
+            ContinuePolyLine(p3.X, p3.Y);
+            EndPolyLine(p4.X, p4.Y);
 
 
             PointF lastPerp;
 
-            lastPerp = DrawFirstPerpendicular(p1, p2, thickness/2);
-            lastPerp = DrawAndDebugPerpendicular(p1, p2, p3, lastPerp, thickness / 2);
-            lastPerp = DrawAndDebugPerpendicular(p2, p3, p4, lastPerp, thickness / 2);
+            lastPerp = DrawFirstPerpendicular(p1, p2, radius);
+            lastPerp = DrawAndDebugPerpendicular(p1, p2, p3, lastPerp, radius);
+            lastPerp = DrawAndDebugPerpendicular(p2, p3, p4, lastPerp, radius);
 
             DrawAlgorithmDebug();
         }
 
-        private static PointF DrawFirstPerpendicular(PointF p1, PointF p2, float thickness)
+        private PointF DrawFirstPerpendicular(PointF p1, PointF p2, float thickness)
         {
             PointF perp = CalculatePerpVector(p1, p2, thickness);
 
-            CTX.SetDrawColor(0, 1, 0, 1);
+            SetDrawColor(0, 1, 0, 1);
 
-            CTX.DrawLine(p1.X, p1.Y, p1.X + perp.X, p1.Y + perp.Y, 2, CapType.None);
-            CTX.DrawLine(p1.X, p1.Y, p1.X - perp.X, p1.Y - perp.Y, 2, CapType.None);
+            Line(p1.X, p1.Y, p1.X + perp.X, p1.Y + perp.Y, 2, CapType.None);
+            Line(p1.X, p1.Y, p1.X - perp.X, p1.Y - perp.Y, 2, CapType.None);
 
             return perp;
         }
@@ -73,7 +76,7 @@ namespace MinimalAF.VisualTests.Rendering
             return perp;
         }
 
-        private static PointF DrawAndDebugPerpendicular(PointF p1, PointF p2, PointF p3, PointF lastPerp, float thickness)
+        private PointF DrawAndDebugPerpendicular(PointF p1, PointF p2, PointF p3, PointF lastPerp, float thickness)
         {
             PointF perp1 = CalculatePerpVector(p1, p2, thickness);
             PointF perp2 = CalculatePerpVector(p2, p3, thickness);
@@ -93,16 +96,16 @@ namespace MinimalAF.VisualTests.Rendering
             bool isSelfIntersecting = (dotp1 < 0 || dotp2 < 0);
 
             if (!isSelfIntersecting)
-                CTX.SetDrawColor(0, 1, 0, 1);
+                SetDrawColor(0, 1, 0, 1);
             else
-                CTX.SetDrawColor(1, 0, 0, 1);
+                SetDrawColor(1, 0, 0, 1);
 
-            CTX.DrawLine(p2.X, p2.Y, p2.X + perp.X, p2.Y + perp.Y, 2, CapType.None);
-            CTX.DrawLine(p2.X, p2.Y, p2.X - perp.X, p2.Y - perp.Y, 2, CapType.None);
+            Line(p2.X, p2.Y, p2.X + perp.X, p2.Y + perp.Y, 2, CapType.None);
+            Line(p2.X, p2.Y, p2.X - perp.X, p2.Y - perp.Y, 2, CapType.None);
 
-            CTX.SetDrawColor(new Color4(0, 0.5f));
-            CTX.DrawLine(p1.X, p1.Y, p1.X + vec1.X, p1.Y + vec1.Y, 2, CapType.None);
-            CTX.DrawLine(p1.X, p1.Y, p1.X + vec2.X, p1.Y + vec2.Y, 2, CapType.None);
+            SetDrawColor(Color4.VA(0, 0.5f));
+            Line(p1.X, p1.Y, p1.X + vec1.X, p1.Y + vec1.Y, 2, CapType.None);
+            Line(p1.X, p1.Y, p1.X + vec2.X, p1.Y + vec2.Y, 2, CapType.None);
 
             return perp;
         }
@@ -111,16 +114,16 @@ namespace MinimalAF.VisualTests.Rendering
         {
         }
 
-        int _currentPoint = 0;
+        int currentPoint = 0;
 
-        PointF[] _points = new PointF[4];
+        PointF[] points = new PointF[4];
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
-            if (Input.IsMouseClicked(MouseButton.Left))
+            if (MouseButtonPressed(MouseButton.Left))
             {
-                _points[_currentPoint] = new PointF(Input.MouseX, Input.MouseY);
-                _currentPoint = (_currentPoint + 1) % _points.Length;
+                points[currentPoint] = new PointF(MouseX, MouseY);
+                currentPoint = (currentPoint + 1) % points.Length;
             }
         }
     }

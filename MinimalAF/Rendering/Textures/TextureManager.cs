@@ -1,75 +1,66 @@
 ﻿using System;
 using System.Drawing;
 
-namespace MinimalAF.Rendering
-{
-    //TODO: implement multiple units if needed
-    class TextureManager : IDisposable
-    {
-        Texture _currentTexture = null;
+namespace MinimalAF.Rendering {
+    //TODO: implement multiple texture units if needed
+    public class TextureManager : IDisposable {
+        Texture currentTexture = null;
 
         //Since the current texture can be changed outside of this class even though it shouldnt,
         //this can be used to inform this class of it
-        internal static void SetCurrentTextureChangedFlag()
-        {
-            _globalTextureChanged = true;
+        internal static void SetCurrentTextureChangedFlag() {
+            globalTextureChanged = true;
         }
 
-        static Texture _nullTexture = null;
-        static bool _globalTextureChanged = false;
+        static Texture nullTexture = null;
+        static bool globalTextureChanged = false;
 
-        public static bool GlobalTextureHasChanged()
-        {
-            return _globalTextureChanged;
+        public static bool GlobalTextureHasChanged() {
+            return globalTextureChanged;
         }
 
-        public Texture CurrentTexture()
-        {
-            return _currentTexture;
+        public Texture Get() {
+            return currentTexture;
         }
 
-        public TextureManager()
-        {
+        public TextureManager() {
             InitNullTexture();
         }
 
-        private void InitNullTexture()
-        {
+        private void InitNullTexture() {
             Bitmap white1x1 = new Bitmap(1, 1);
             white1x1.SetPixel(0, 0, Color.FromArgb(255, 255, 255, 255));
 
-            _nullTexture = new Texture(white1x1, new TextureImportSettings { });
+            nullTexture = new Texture(white1x1, new TextureImportSettings { });
 
-            SetTexture(null);
+            Set(null);
         }
 
-        public bool IsCurrentTexture(Texture texture)
-        {
-            return (_currentTexture == texture);
-        }
+        public void Set(Texture texture) {
+            if (!TextureHasChanged(texture))
+                return;
 
-        public void SetTexture(Texture texture)
-        {
-            _currentTexture = texture;
+            CTX.Flush();
+
+            currentTexture = texture;
 
             UseCurrentTexture();
         }
 
-        public void UseCurrentTexture()
-        {
-            if (_currentTexture == null)
-            {
-                _nullTexture.Use(0);
-            }
-            else
-            {
-                _currentTexture.Use(0);
+        public bool TextureHasChanged(Texture texture) {
+            return currentTexture != texture || GlobalTextureHasChanged();
+        }
+
+        private void UseCurrentTexture() {
+            if (currentTexture == null) {
+                nullTexture.Use(0);
+            } else {
+                currentTexture.Use(0);
             }
         }
 
-        public void Dispose()
-        {
-            _nullTexture.Dispose();
+        public void Dispose() {
+            nullTexture.Dispose();
         }
     }
 }

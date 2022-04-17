@@ -1,51 +1,51 @@
-﻿using MinimalAF.Logic;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    class ArcTest : EntryPoint
+	[VisualTest]
+	class ArcTest : Element
     {
-        public override void Start()
+        public override void OnMount(Window w)
         {
-            Window.Size = (800, 600);
-            Window.Title = "Arc Test";
+            w.Size = (800, 600);
+            w.Title = "Arc Test";
 
-            CTX.SetClearColor(1, 1, 1, 1);
+           SetClearColor(Color4.RGBA(1, 1, 1, 1));
         }
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
         }
 
         float a;
         float b;
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
-            CTX.SetDrawColor(1, 0, 0, 0.5f);
+            SetDrawColor(1, 0, 0, 0.5f);
 
-            float x0 = Window.Width / 2;
-            float y0 = Window.Height / 2;
-            float r = MathF.Min(Window.Height, Window.Width) * 0.45f;
+            float x0 = VW(0.5f);
+            float y0 = VH(0.5f);
+            float r = MathF.Min(Height, Width) * 0.45f;
 
-            CTX.DrawArc(x0, y0, r, a, b);
+            Arc(x0, y0, r, a, b);
 
-            CTX.SetDrawColor(0, 0, 0, 0.5f);
+            SetDrawColor(0, 0, 0, 0.5f);
             DrawHand(x0, y0, r, a);
             DrawHand(x0, y0, r, b);
 
-            CTX.SetDrawColor(0, 0, 0, 1);
-            CTX.DrawText($"Angle a: {a}", 0, Window.Height - 30);
-            CTX.DrawText($"Angle b: {b}", 0, Window.Height - 50);
+            SetDrawColor(0, 0, 0, 1);
+            Text($"Angle a: {a}", 0, Height - 30);
+            Text($"Angle b: {b}", 0, Height - 50);
 
-            a += (float)deltaTime;
-            b += (float)deltaTime * 2;
+            a += (float)Time.DeltaTime;
+            b += (float)Time.DeltaTime * 2;
         }
 
         private void DrawHand(float x0, float y0, float r, float angle)
         {
-            CTX.DrawLine(x0, y0, x0 + r * MathF.Sin(angle), y0 + r * MathF.Cos(angle), 15f, CapType.Circle);
+            Line(x0, y0, x0 + r * MathF.Sin(angle), y0 + r * MathF.Cos(angle), 15f, CapType.Circle);
         }
     }
 }

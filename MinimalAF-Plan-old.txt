@@ -1,0 +1,289 @@
+Anything cluttering up MinimalAF plan is just thrown in here
+=======================================================
+	- Start using  List instead of an array to store children
+	- Remove constructors, make sure that mounting only happens when the window is opened and not as soon as the class is created.
+	
+	- testcase where I drag a thing from one container to another
+
+-> Give Elements their own coordinate systems, and drawing capabilities. Elements should be able to work anywhere in the subtree.
+	- Get the UI tests passing
+		- Update loop: set a flag hasResizedManually = false
+		- RelativeRect :: set: set hasResizedManually = true
+		- If !hasResizedManually: default resizing action else nothing
+		- Fix the split test
+		
+
+	- Improve coordinate system usage
+		- Allow any element to be able to draw to any other element's coordinate system when needed
+			- using(element.PushCoordinateSystem())
+			
+			
+			
+			
+
+	-> Give Elements their own coordinate systems, and drawing capabilities. Elements should be able to work anywhere in the subtree.
+		- If they are all grounding themselves using Width and Height, I should just be able to give them a different width and height (Happens automatically so I dont have to do anything really), and make the offset based on the screen position. Then use a GLScissor to constrain the drawing. Can still work with 3D cause of viewports.
+		
+		- It kinda works, I just need to get the stencilling to work.
+		- make input work no matter where the rect is
+			- drawing needs to be relative to a rect
+				- We shouldnt need to do any calls to CTX. we should just be able to do Rect() from inside the class. may also be helpful to be able to do VW() and VH()
+					- make all drawing classes internal static
+						- remove references to them in ctx
+							- Don't do this. We made those classes, so that we can reuse them in a procedural mesh generation context.
+					- copy-paste all the calls into a seperate element partial class. it is mainly for syntactic sugar.
+						- view, model, projection matriceis need to be put into an array so that the PushMatrix code can be cleaned up
+					- fix tests
+					- change all getters and setters to be like Jquery where its like method() is a getter and method(value) is a setter
+						- terrible idea. Only do this for methods that invoke drawing related sideeffects or set things elsewhere rather than just raw getters and setters, we should still use Get and Set for state retrieval
+					
+			- input needs to be relative to a rect, and should be invokeable in the same way as those other draw calls cause it looks nice
+				- mouse input mainly. use the same syntactic sugar as the drawing API and add input methods directly to the class in a partial extension
+					- Wrap the mouse X, Y to make it relative
+					- Remove all the redundant methods in the mouse, then copy those over too
+						- filter them as we transfer them to ElementInputExtensions
+					- do it all for keyboard input as well for consistency.
+					- Create a visual test to test the mouse input, dragging in particular
+						- make it so you need to drag the polyline
+			
+			- switch brackets back to method() 
+				- add .editorconfig
+
+		-> Fix the UI Lifecycle functions
+			-> remove OnStart, replace it with OnMount, OnDismount like REACT, also makes more sense when logically reasoning about object lifetimes.
+				- And remove the need to call base. anything
+				-> Remove IWindowResources. Why is this even a thing
+					-> looks like it has a reason to be there, but I dont buy it. I think any element should be able to have state. Make an interface IResource, and GetResource<IResource> functions that go up the tree and check if a node has a resource. 
+						- Don't. MAke a UIState element that we can get to do these things. This pattern may lead to long chains of 1 like Window=>resource->resource->resource->resource->resource appearing everywhere.
+						For this reason, we should make a State element that can store arbitrary state. And only if things need to have to keep state up to date based on lifecycle methods do we need to make them a Element of their own.
+						- unit test?
+							- not yet, we can use this feature when we update the unit test for text inptus though
+				
+			- fix UI API to calculate layout during OnResize and not in an initialization phase. This will allow us to have more flexibility with layout in future
+				- Make all the 'in-rows' whatever methods not be initialziation methods but resizing methods
+				- Fix up the UI tests. I can't think of any other way to do this. We can work backwards, by typing in our ideal API there and then makeing the necessary refactorings as we did before
+					- The UI system shouldn't be a part of MinimalAF. It should ship seperately.
+						- maybe it should come with it, since I want to ship it with everything I need to make anything ever.
+						- I will figure out some way to seperate the styling from the logic, and we can ship the logic and none of the styling
+						- Remove unity inspired RectTransform. It may actually be hindering us rather than helping us. 
+							- replace it with layout methods. Right now we are doing this with anchors, but we don't need to. 
+								- renamed Rect2D to Rect. Rects can only be 2D lol so its redundant you see (nerd emoji)
+				- Start going through the tests one by one and fixing them
+					- the layout logic is still wack. if elemetns are driving their children's layout, it doesnt matter because the recursion will just undo those changes. Also, if the window moves alittle, should every single object really update it's layout ?
+						- also, every rectangle is going to be relative to the previous rectangle. 
+						
+New layouting algorithm:
+Imagine: rectangle with several textboxes whose width match the rectangle but they are arranged vertically on after the other. This algorithm should work for scaling of this rectangle:
+
+	1) scale rectangle, trigger update in all children
+	2) expand all children to fill all directions
+	3) expand the text within to fill all directions, recalculate it
+	4) make the text to have the same dimensions as the strign width and height
+	5) Arrange chldren
+	
+it looks kinad recursive:
+fill parent
+	fill-parent
+		recalc text
+	fit-to-text-size
+arrange-children
+
+So then in OnLayout, parents calculate child sizes, and then in AfterLayout, each item is arranging it's child objects and then fixing up their sizes for the parent to arrange them.
+	- get code compiling, and fix issues
+		- add a new method Parent subtree changed, When a parent is assigned, we call OnAncestorChanged (actually we no longer need this cause OnMount and OnDismount will now be called recursively, and only when connected to the main application (i.e window)) for all children nodes so they can get resources there
+		
+		- fix first test
+		- fix rendering tests
+		- fix stencil test
+		- fix nesting test
+			- fix LayoutLinear
+				- It may be working fine, it is being overridden by Element's default layout method. There needs to be a better way to define layout. We are close but this aint it
+					- Make a function PreventDefaultLayout();
+						- 
+		for some reason I can't think of what to do here.
+		So the way I would define a layout is, there is a rectangle, and it defines where all of it's
+		child rectangles go
+		But, sometimes you need to know how big a child rectangle is going to be before you can palce it anywhere
+		But if we can assume that a node that is 1 level deep will have the window's size to reference
+		and then any n+1 deep will have the n-1th node's size to reference
+		This means that if a node can figure out it's size from it's parent, then we wont have to do any insane recursion.
+		So if I have a box with some textboxes, I can do textbox.getExpectedSize() and it will do 
+		rect = new rect (parent.rect) and then it will do parent.rect <- inwards
+			then it will do wrap text().
+		
+Ok I think we hit a dead end here and we need to do a rething/rewrite again
+
+So the way this was going to work was, we can have recursive processing scetches.
+	basically, when I make a cool processing sketch< I can have it open alongside other processing
+	sketches and they can interact with one another. In that sense, I have already finished. 
+
+but then I started doing UI.
+I think each UI needs to be deliberate, and we should stop wondering about infinite recursion
+or anything like that. There is only so much space on a screen.
+I think my main intension was to remove the code required for converting between the different
+coordinate systems all the time, but this thing of having UI seems to have sidetracked me a lot.
+It is probably important to have the ability to do any kind of layout. but I wonder to what extent
+I really need to be making it all now. I think I should develop a UI library on the side while
+I am using this to make a bunch of other things.
+
+	-> Wait NVM I just realized how I am going to solve this problem. What we do is:
+		- let's take another look the example above. 
+		"rectangle with several textboxes whose width 
+		match the rectangle but they are arranged vertically 
+		on after the other. "
+		
+		The rectangle is responsible for layouting everything vertically
+		The contents of the rectangle are responsible for having a size. 
+			Optionally, the rectangle can just override the sizes to be height over n for example, but not in this case.
+			So the rectangle will set all of these rects to be the width of the rectangle, and leaves the height untouched.
+			better yet, it iwll make those rects fill the full vertical height, so that the rectangles themselves can decide hwo to 
+			ration their space.
+		1) 	the rectange layouts everything to fill itself, possibly with padding.
+		2) 	the rectangle asks each textbox to resize itself
+				- the textbox is supposed to fit the size of it's contents. It asks what size it's contents are, and 
+				assumes that it has been scaled into place
+					- the text calculates it's size. It's size is now concrete.
+					It only needs to recalculate it's size if the width ever changes, since
+					the height is not something that it has control over.
+				- the textbox will then use the correct text size to calculate it's own height.
+					it only needs to recalculate it's height if the width is changed, as it's height will
+					be driven by another entity. This can be specified somewhere in a layout method or in a parent constructor
+			The rectangle now knows how big each of the text boxes need to be, and can slot them into place, and optionally calculate it's own height.
+			It only needs to recalculate itself when it's parent changes size. Even then, it may not change in width at all.
+			This means that when we go to calculate each of the boxes, we can check that the parent width is
+			identical to what it was before, so we don't need to do anything. (I stole this from REACT memo)
+		But now, the screen rects need to be updated.
+		Now that all the relative rects are calculated, we should be able to just recalculate the screen rects in a second pass, but is there a way to
+		do this on the first one?
+		Assuming that each parent will scale thier childs/set their layout, then we can just recalculate the rects right after the things are calculated.
+
+	-> Rewrite the interfaces to recalculate the sizes
+	
+
+Lets write some pseudo code, cause I am having a hard time seeing where to put the memoizatio code
+
+// make this optional
+RecalculateChildLayouts(parentSize):
+	for child in children:
+		child.RecalculateLayout(parentSize);
+	
+RecalculateLayout: 
+	LayoutMargin(10);
+	RecalculateChildLayouts(parentSize)
+
+	// arrange thie children now
+	newHeight = 0;
+	for child in children:
+		newHeight += etc
+	
+	relativeRect.size.height = newHeight
+
+RecalculateScreenRects():
+	ScreenRect = GetParentRect() + RelativeRect.pos
+	for child in children:	
+		child.RecalculateScreenRects()
+		
+	- new idea: recalculate layout as part of a setter method.
+	- It will be called Resize and not SetRect, beacuse Resize implies that we aren't
+simply setting a rect, but we are giving it a rect we want it to fill and it will try it's best to fit there	
+
+// default action
+Layout(newScreenRect):
+	ScreenRect = newScreenRect
+	for child in children:	
+		child.Layout(ScreenRect)
+		
+		
+	Now the problem is that I have RelativeRect as well as ScreenRect. I
+	need to keep those two in sync somehow. I use the ScreenRect to OpenGL rendering
+	but I use RelativeRect to position the rectangles relative to one another so that moving
+	the rects doesn't need a full UI recalculation, and because it is more intuitive on a 
+	individual element basis.
+	When I set the screen rect, I could Update the relative rect to be screenRect - parentRect
+	
+	and when I set the relativeRect, I could set the screen Rect to be parentRect + ScreenRect
+	so that it they are always insync
+	
+	The assumption being made is that the parent screen rect won't change. When I change the parent screen rect,
+	I necessarily have to change all the screen rects below.
+	
+	So I guess we can't really keep those things in sync, nor will the UI recalc saving save very much at all
+	So I guess we can just recalculate the screen rects directly after we invoke a resize.
+	I might just remove RelativeRect, and use it just as a getter
+	
+	So here is what will happen:
+	
+	-> Element resizes for any reason
+		-> Trigger OnChildResize in parent.
+			-> Trigger OnChildResize in parent.
+				... if parent needs to resize.
+			else
+				call TriggerLayout()
+		-> All children must update their relative rects
+			-> All children must update their relative rects
+				...
+		-> All children must update their screen rects
+			-> All children must update their screen rects
+				...
+
+	So that whole children updating + screen rect updating needs to be a method
+	Also most UI would be updating from the bottom up, right
+	So if an element resizes, it should call parent.OnChildLayout
+		and then the default OnChildLayout would be 
+			Layout() -> 
+				for child: child.RelativeRect = whatever
+		or it would be 
+			parent.OnChildLayout
+			
+			and then the Latyout method would go back down the tree
+	
+	Ok so I spent some time on a literal whiteboard, and I think I've come up with something.
+	
+	The layout method will assume that it's been sized correctly, and that it
+	is to expand/contract along one or two axes. It does not assume
+	that it has a valid positon, or that it's parents have a valid position unless that parent is the root-level element.
+	(We need this to be the case for the induction to work)
+	We can assume that after the Layout method has completed,
+	that the element has a final size, but not that it is in it's final position.
+	We can however assume that all of it's children are in their final positions.
+	Layout():
+		-> call child.Layout() for each child
+		-> position children as required
+		-> resize ourselves as requied.
+		
+	Therefore, if the root element is in it's valid position, when it calls
+	Layout(), all of it's children will be in valid positions.
+	So we have kind-of inductively proven that the layouting will work downwards.
+	
+	Now what about when a text changes, and now it's text-box needs to change?	
+	When an element changes size for whatever reason other than in child.Layout:
+	call parent.OnChildResize()
+	
+	This method assumes that all the children are no longer the correct size, or in valid positions.
+	Usually, this will only be the case with one child.
+	
+	OnChildResize():
+		rect = Size;
+		Layout();	// TODO: memoize this as well.
+		if (rect != Rect):
+			Parent.OnChildResize();
+			
+	In the above example, if Layout() is consistenly resulting in an incorrect size,
+	no memoization will prevent a recursive back and forth.
+	Eventually, one of the layout functions won't change the rect of the container.
+	And this will mean that we can stop calling OnChildResize recursively upwards.
+
+Done so far:
+	- Seperate app config and window management from Rendering and updating code. 
+		- Move all drawing code into UIElement
+		- Split UIElement into multiple files, since it will be big
+	- Enough with this wrapper pattern in CTX and Input.
+		- rather than CTX.DrawRectangle, do 
+			CTX.Rectangle.Draw();
+			So I have far less code to maintain
+			
+	- Move datatypes to where they are needed. Make them Core if they are cross-cutting
+		- Removed useless/bad datastructures
+	
+	- Figure out some way to use System.Drawing.Color because it has a lot more builtin colors
+		- added all named colors from wikipedia

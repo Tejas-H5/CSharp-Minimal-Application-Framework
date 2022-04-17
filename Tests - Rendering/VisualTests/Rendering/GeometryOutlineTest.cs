@@ -1,54 +1,54 @@
-﻿using MinimalAF.Logic;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    class GeometryOutlineTest : EntryPoint
+	[VisualTest]
+	class GeometryOutlineTest : Element
     {
-        public override void Start()
+        public override void OnMount(Window w)
         {
-            Window.Size = (800, 600);
-            Window.Title = "Triangle";
+            w.Size = (800, 600);
+            w.Title = "Triangle";
 
-            CTX.SetClearColor(1, 1, 1, 1);
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
         }
 
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
-            CTX.SetDrawColor(1, 0, 0, 0.5f);
+            SetDrawColor(1, 0, 0, 0.5f);
 
-            CTX.DrawRect(20, 20, 100, 100);
-            CTX.DrawCircle(500, 500, 200);
-            CTX.DrawArc(200, 200, 50, MathF.PI / 2, 3 * MathF.PI / 2, 3);
-            CTX.DrawArc(300, 300, 50, MathF.PI / 2, 3 * MathF.PI / 2, 2);
-            CTX.DrawArc(400, 400, 50, MathF.PI / 2, 3 * MathF.PI / 2, 1);
+            Rect(20, 20, 100, 100);
+            Circle(500, 500, 200);
+            Arc(200, 200, 50, MathF.PI / 2, 3 * MathF.PI / 2, 3);
+            Arc(300, 300, 50, MathF.PI / 2, 3 * MathF.PI / 2, 2);
+            Arc(400, 400, 50, MathF.PI / 2, 3 * MathF.PI / 2, 1);
 
-            CTX.DrawLine(Window.Width - 60, 600, Window.Width - 100, 200, 10.0f, CapType.None);
-            CTX.DrawLine(Window.Width - 100, 600, Window.Width - 130, 200, 10.0f, CapType.Circle);
+            Line(Width - 60, 600, Width - 100, 200, 10.0f, CapType.None);
+            Line(Width - 100, 600, Width - 130, 200, 10.0f, CapType.Circle);
 
 
             int lineSize = 100;
-            CTX.DrawLine(lineSize, lineSize, Window.Width - lineSize, Window.Height - lineSize, lineSize / 2, CapType.Circle);
+            Line(lineSize, lineSize, Width - lineSize, Height - lineSize, lineSize / 2, CapType.Circle);
 
 
-            CTX.SetDrawColor(0, 0, 1, 1f);
+            SetDrawColor(0, 0, 1, 1f);
 
-            CTX.DrawRectOutline(5, 20, 20, 100, 100);
-            CTX.DrawCircleOutline(10, 500, 500, 200);
-            CTX.DrawArcOutline(10, 200, 200, 50, MathF.PI / 2, 3 * MathF.PI / 2, 3);
-            CTX.DrawArcOutline(10, 300, 300, 50, MathF.PI / 2, 3 * MathF.PI / 2, 2);
-            CTX.DrawArcOutline(10, 400, 400, 50, MathF.PI / 2, 3 * MathF.PI / 2, 1);
+            RectOutline(5, 20, 20, 100, 100);
+            CircleOutline(10, 500, 500, 200);
+            ArcOutline(10, 200, 200, 50, MathF.PI / 2, 3 * MathF.PI / 2, 3);
+            ArcOutline(10, 300, 300, 50, MathF.PI / 2, 3 * MathF.PI / 2, 2);
+            ArcOutline(10, 400, 400, 50, MathF.PI / 2, 3 * MathF.PI / 2, 1);
 
-            CTX.DrawLineOutline(10, Window.Width - 60, 600, Window.Width - 100, 200, 10.0f, CapType.None);
-            CTX.DrawLineOutline(10, Window.Width - 100, 600, Window.Width - 130, 200, 10.0f, CapType.Circle);
+            LineOutline(10, Width - 60, 600, Width - 100, 200, 10.0f, CapType.None);
+            LineOutline(10, Width - 100, 600, Width - 130, 200, 10.0f, CapType.Circle);
 
-            CTX.DrawLineOutline(10, lineSize, lineSize, Window.Width - lineSize, Window.Height - lineSize, lineSize / 2, CapType.Circle);
+            LineOutline(10, lineSize, lineSize, Width - lineSize, Height - lineSize, lineSize / 2, CapType.Circle);
         }
     }
 }

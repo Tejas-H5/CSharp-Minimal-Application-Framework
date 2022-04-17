@@ -1,38 +1,31 @@
 ﻿using MinimalAF.Audio;
-using MinimalAF.Logic;
-using MinimalAF.Rendering;
 using System;
 using System.Text;
 
-namespace MinimalAF.AudioTests
-{
-    public class BasicWavPlayingTest : EntryPoint
-    {
-        AudioSourceOneShot _clackSound;
+namespace MinimalAF.AudioTests {
+    [VisualTest]
+    public class BasicWavPlayingTest : Element {
+        AudioSourceOneShot clackSound;
 
-        public override void Start()
-        {
-            Window.Size = (800, 600);
-            Window.Title = "Keyboard test";
+        public override void OnMount(Window w) {
+            w.Size = (800, 600);
+            w.Title = "Keyboard test";
 
-            CTX.SetClearColor(0, 0, 0, 0);
-            CTX.SetCurrentFont("Consolas", 36);
+            SetClearColor(Color4.RGBA(0, 0, 0, 0));
+            SetFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
-            _clackSound = new AudioSourceOneShot(true, false, clip);
+            clackSound = new AudioSourceOneShot(true, false, clip);
         }
 
 
         string oldString = "";
 
-        string KeysToString(string s)
-        {
+        string KeysToString(string s) {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < s.Length; i++)
-            {
+            for (int i = 0; i < s.Length; i++) {
                 char c = s[i];
-                if (Input.IsShiftDown)
-                {
+                if (KeyHeld(KeyCode.Shift)) {
                     c = char.ToUpper(c);
                 }
 
@@ -42,32 +35,27 @@ namespace MinimalAF.AudioTests
             return sb.ToString();
         }
 
-        public override void Render(double deltaTime)
-        {
-            CTX.SetDrawColor(1, 1, 1, 1);
+        public override void OnRender() {
+            SetDrawColor(1, 1, 1, 1);
 
-            CTX.DrawText("Press some keys:", Window.Width / 2, Window.Height / 2 + 200);
+            Text("Press some keys:", Width / 2, Height / 2 + 200);
 
-            string newString = KeysToString(Input.CharactersDown);
-            if (newString != oldString)
-            {
+            string newString = KeysToString(KeyboardCharactersHeld);
+            if (newString != oldString) {
                 oldString = newString;
-                _clackSound.Play();
+                clackSound.Play();
             }
 
-            CTX.DrawText(newString, Window.Width / 2, Window.Height / 2);
+            Text(newString, Width / 2, Height / 2);
         }
 
-        public override void Update(double deltaTime)
-        {
-            if (Input.IsAnyKeyPressed)
-            {
-                Console.WriteLine("Pressed: " + Input.CharactersPressed);
+        public override void OnUpdate() {
+            if (KeyPressed(KeyCode.Any)) {
+                Console.WriteLine("Pressed: " + KeyboardCharactersPressed);
             }
 
-            if (Input.IsAnyKeyReleased)
-            {
-                Console.WriteLine("Released: " + Input.CharactersReleased);
+            if (KeyReleased(KeyCode.Any)) {
+                Console.WriteLine("Released: " + KeyboardCharactersReleased);
             }
         }
     }

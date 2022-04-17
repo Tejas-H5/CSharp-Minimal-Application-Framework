@@ -1,74 +1,64 @@
 ﻿using System;
 
-namespace MinimalAF.Rendering.ImmediateMode
-{
-    public class MeshOutputStream : IGeometryOutput, IDisposable
-    {
-        private Mesh _backingMesh;
-        private uint _currentVertexIndex = 0;
-        private uint _currentIndexIndex = 0;
+namespace MinimalAF.Rendering.ImmediateMode {
+    public class MeshOutputStream : IGeometryOutput, IDisposable {
+        private Mesh backingMesh;
+        private uint currentVertexIndex = 0;
+        private uint currentIndexIndex = 0;
 
-        private double _utilization = 0;
+        private double utilization = 0;
 
         public double Utilization {
             get {
-                return _utilization;
+                return utilization;
             }
         }
 
-        public Vertex GetVertex(uint i)
-        {
-            return _backingMesh.Vertices[i];
+        public Vertex GetVertex(uint i) {
+            return backingMesh.Vertices[i];
         }
 
-        public uint GetIndex(uint i)
-        {
-            return _backingMesh.Indices[i];
+        public uint GetIndex(uint i) {
+            return backingMesh.Indices[i];
         }
 
-        public MeshOutputStream(int vertexBufferSize, int indexBufferSize)
-        {
+        public MeshOutputStream(int vertexBufferSize, int indexBufferSize) {
             vertexBufferSize /= 3;
             vertexBufferSize *= 3;
 
-            _backingMesh = new Mesh(new Vertex[vertexBufferSize], new uint[indexBufferSize], stream: true);
+            backingMesh = new Mesh(new Vertex[vertexBufferSize], new uint[indexBufferSize], stream: true);
         }
 
-        public uint AddVertex(Vertex v)
-        {
-            _backingMesh.Vertices[_currentVertexIndex] = v;
-            return _currentVertexIndex++;
+        public uint AddVertex(Vertex v) {
+            backingMesh.Vertices[currentVertexIndex] = v;
+            return currentVertexIndex++;
         }
 
-        public void MakeTriangle(uint v1, uint v2, uint v3)
-        {
-            _backingMesh.Indices[_currentIndexIndex] = v1;
-            _backingMesh.Indices[_currentIndexIndex + 1] = v2;
-            _backingMesh.Indices[_currentIndexIndex + 2] = v3;
+        public void MakeTriangle(uint v1, uint v2, uint v3) {
+            backingMesh.Indices[currentIndexIndex] = v1;
+            backingMesh.Indices[currentIndexIndex + 1] = v2;
+            backingMesh.Indices[currentIndexIndex + 2] = v3;
 
-            _currentIndexIndex += 3;
+            currentIndexIndex += 3;
         }
 
-        public void Flush()
-        {
-            if (_currentIndexIndex == 0)
+        public void Flush() {
+            if (currentIndexIndex == 0)
                 return;
 
-            _backingMesh.UpdateBuffers(_currentVertexIndex, _currentIndexIndex);
+            // actually draw what we have so far
+            backingMesh.UpdateBuffers(currentVertexIndex, currentIndexIndex);
+            backingMesh.Draw();
 
-            _backingMesh.Draw();
+            utilization = currentIndexIndex / (double)currentVertexIndex;
 
-            _utilization = _currentIndexIndex / (double)_currentVertexIndex;
-
-            _currentVertexIndex = 0;
-            _currentIndexIndex = 0;
+            currentVertexIndex = 0;
+            currentIndexIndex = 0;
         }
 
-        public bool FlushIfRequired(int numIncomingVerts, int numIncomingIndices)
-        {
-            if (_currentIndexIndex + numIncomingIndices >= _backingMesh.Indices.Length ||
-                    _currentVertexIndex + numIncomingVerts >= _backingMesh.Vertices.Length)
-            {
+        public bool FlushIfRequired(int numIncomingVerts, int numIncomingIndices) {
+            if (currentIndexIndex + numIncomingIndices >= backingMesh.Indices.Length ||
+                    currentVertexIndex + numIncomingVerts >= backingMesh.Vertices.Length) {
                 Flush();
                 return true;
             }
@@ -76,19 +66,16 @@ namespace MinimalAF.Rendering.ImmediateMode
             return false;
         }
 
-        public uint CurrentV()
-        {
-            return _currentVertexIndex;
+        public uint CurrentV() {
+            return currentVertexIndex;
         }
 
-        public uint CurrentI()
-        {
-            return _currentIndexIndex;
+        public uint CurrentI() {
+            return currentIndexIndex;
         }
 
-        public void Dispose()
-        {
-            _backingMesh.Dispose();
+        public void Dispose() {
+            backingMesh.Dispose();
         }
     }
 }

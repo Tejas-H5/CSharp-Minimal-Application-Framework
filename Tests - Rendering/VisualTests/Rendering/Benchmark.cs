@@ -1,30 +1,35 @@
-﻿using MinimalAF.Logic;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
     //Performs a binary search to see the max number of random lines that can be drawn for 60FPS
-    class Benchmark : EntryPoint
+    [VisualTest]
+    class Benchmark : Element
     {
-        private int _lineThiccness;
-        public Benchmark(int thickness)
+        private int lineThiccness;
+        CapType capType;
+        bool testBool;
+
+        public Benchmark(bool testBoolean, CapType capType = CapType.Circle, int thickness = 5)
         {
-            _lineThiccness = thickness;
+            lineThiccness = thickness;
+            this.capType = capType;
+            testBool = testBoolean;
         }
 
-        public override void Start()
+        public override void OnMount(Window w)
         {
-            Window.Size = (800, 600);
-            Window.Title = "Rendering Engine Line benchmark";
+            w.Size = (800, 600);
+            w.Title = "Rendering Engine Line benchmark";
 
-            CTX.SetClearColor(1, 1, 1, 1);
-            CTX.SetCurrentFont("Consolas", 24);
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetFont("Consolas", 24);
         }
 
         Random rand = new Random(1);
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
         }
 
@@ -34,27 +39,32 @@ namespace MinimalAF.VisualTests.Rendering
         int amount = 10000;
         int jump = 6000;
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
-            CTX.SetDrawColor(1, 0, 0, 0.1f);
+            SetDrawColor(1, 0, 0, 0.1f);
 
             for (int i = 0; i < amount; i++)
             {
-                float x1 = (float)rand.NextDouble() * Window.Width;
-                float y1 = (float)rand.NextDouble() * Window.Height;
+                float x1 = VW((float)rand.NextDouble());
+                float y1 = VH((float)rand.NextDouble());
 
-                float x2 = (float)rand.NextDouble() * Window.Width;
-                float y2 = (float)rand.NextDouble() * Window.Height;
+                float x2 = VW((float)rand.NextDouble());
+                float y2 = VH((float)rand.NextDouble());
 
-                CTX.DrawLine(x1, y1, x2, y2, _lineThiccness, CapType.Circle);
+                Line(x1, y1, x2, y2, lineThiccness, capType);
             }
 
             double FPS = frames / time;
-            CTX.SetDrawColor(0, 0, 0, 1f);
-            CTX.DrawText($"FPS: {FPS.ToString("0.000")}", 10, Window.Height - 50);
-            CTX.DrawText($"Lines drawn: {amount}", 10, Window.Height - 100);
+            SetDrawColor(0, 0, 0, 1f);
 
-            time += deltaTime;
+            string text = "FPS: " + FPS.ToString("0.000") +
+                "\nLines drawn: " + amount + 
+                "\nCapType: " + capType.ToString() + 
+                "\nTest bool: " + testBool.ToString();
+
+            Text(text, 10, Height - 50);
+
+            time += Time.DeltaTime;
             frames++;
 
             float requiredFPS = 60;
@@ -83,7 +93,7 @@ namespace MinimalAF.VisualTests.Rendering
 
             //RenderingContext.DrawLine(-size, -size, size, size, 0.02f, CapType.Circle);
 
-            //RenderingContext.DrawFilledArc(window.Width/2, window.Height/2, size, 0, MathF.PI * 2);
+            //RenderingContext.DrawFilledArc(Width/2, Height/2, size, 0, MathF.PI * 2);
         }
     }
 }

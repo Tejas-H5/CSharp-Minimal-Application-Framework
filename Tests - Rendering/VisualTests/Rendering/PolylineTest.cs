@@ -1,68 +1,108 @@
-﻿using MinimalAF.Logic;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
+using MinimalAF.Util;
+using OpenTK.Mathematics;
 using System.Collections.Generic;
 using System.Drawing;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    public class PolylineTest : EntryPoint
-    {
-        public override void Start()
-        {
-            Window.Size = (800, 600);
-            Window.Title = "Polyline";
+	[VisualTest]
+	public class PolylineTest : Element
+	{
+		Queue<Vector2> points = new Queue<Vector2>();
+		Queue<double> times = new Queue<double>();
 
-            Window.RenderFrequency = 120;
-            //Window.UpdateFrequency = 20;
+		Vector2 linePoint, linePointDragStart;
+		bool dragStarted;
+		float radius = 50;
 
-            CTX.SetClearColor(1, 1, 1, 1);
-        }
+		double timer = 0;
 
-        Queue<PointF> _points = new Queue<PointF>();
-        Queue<double> _times = new Queue<double>();
+		public override void OnMount(Window w)
+		{
+			
+			w.Size = (800, 600);
+			w.Title = "Mouse test";
+
+			w.RenderFrequency = 120;
+			//w.UpdateFrequency = 120; 20;
+
+			SetClearColor(Color4.RGBA(1, 1, 1, 1));
+			SetFont("Consolas", 16);
+
+			// TODO: get this working
+			linePoint = (0,0);
+			//_linePoint = new Vector2(400, 300);
+		}
 
 
-        double timer = 0;
+		public override void OnUpdate()
+		{
+			timer += Time.DeltaTime;
 
-        public override void Update(double deltaTime)
-        {
-            timer += deltaTime;
-
-            _points.Enqueue(new PointF(Input.MouseX, Input.MouseY));
-            _times.Enqueue(timer);
-            
-            if (timer - _times.Peek() > 0.5f)
-            {
-                _points.Dequeue();
-                _times.Dequeue();
+            if (linePoint == new Vector2(0, 0)) {
+                linePoint = new Vector2(VW(0.5f), VH(0.5f));
             }
-        }
 
-        public override void Render(double deltaTime)
-        {
-            if (_points.Count < 2)
-                return;
+			points.Enqueue(linePoint);
+			times.Enqueue(timer);
 
-            CTX.SetDrawColor(0, 0, 1, 0.5f);
+			if (timer - times.Peek() > 0.5f)
+			{
+				points.Dequeue();
+				times.Dequeue();
+			}
 
-            int i = 0;
-            foreach (PointF p in _points)
-            {
-                if (i == 0)
-                {
-                    CTX.BeginPolyLine(p.X, p.Y, 50, CapType.Circle);
-                }
-                else if(i == _points.Count - 1)
-                {
-                    CTX.EndPolyLine(p.X, p.Y);
-                }
-                else
-                {
-                    CTX.AppendToPolyLine(p.X, p.Y);
-                }
+			if (Intersections.IsInsideCircle(MouseX, MouseY, linePoint.X, linePoint.Y, radius) && MouseStartedDragging)
+			{
+				linePointDragStart = linePoint;
+				dragStarted = true;
+			}
 
-                i++;
-            }
-        }
-    }
+			if(MouseFinishedDragging)
+			{
+				dragStarted = false;
+			}
+
+			if (dragStarted)
+			{
+				linePoint = new Vector2(
+					MathUtilF.Clamp(linePointDragStart.X + MouseDragDeltaX, VW(0.25f), VW(0.75f)),
+					MathUtilF.Clamp(linePointDragStart.Y + MouseDragDeltaY, VH(0.25f), VH(0.75f))
+				);
+			}
+		}
+
+		public override void OnRender()
+		{
+			if (points.Count < 2)
+				return;
+
+			SetDrawColor(0,0,0,1);
+			Text("Mouse test (And polyline test) - Drag that point with your mouse", 0, Height, HorizontalAlignment.Left, VerticalAlignment.Top);
+
+			RectOutline(5, new Rect(VW(0.25f), VH(0.25f), VW(0.75f), VH(0.75f)));
+
+			SetDrawColor(0, 0, 1, 0.5f);
+
+			int i = 0;
+			foreach (Vector2 p in points)
+			{
+				if (i == 0)
+				{
+					StartPolyLine(p.X, p.Y, radius, CapType.Circle);
+				}
+				else if (i == points.Count - 1)
+				{
+					EndPolyLine(p.X, p.Y);
+				}
+				else
+				{
+					ContinuePolyLine(p.X, p.Y);
+				}
+
+				i++;
+			}
+		}
+	}
 }

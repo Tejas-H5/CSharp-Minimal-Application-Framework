@@ -1,16 +1,13 @@
-﻿using MinimalAF.Datatypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.IO;
 
-namespace MinimalAF.Rendering.Text
-{
+namespace MinimalAF.Rendering.Text {
     //taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
-    public class FontImportSettings
-    {
+    public class FontImportSettings {
         public static string Text = "GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);";
 
         //Font import settings
@@ -24,20 +21,26 @@ namespace MinimalAF.Rendering.Text
     }
 
     //concept taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
-    public class FontAtlas
-    {
+    public class FontAtlas {
         public const string DefaultCharacters = "!#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'";
-        private Font _systemFont;
-        private Bitmap _bitmap;
-        private Dictionary<char, Rect2D> _characterQuadCoords;
+        private Font systemFont;
+        private Bitmap bitmap;
+        private Dictionary<char, Rect> characterQuadCoords;
 
-        public Font SystemFont { get => _systemFont; }
-        public Bitmap Image { get => _bitmap; }
-        public float CharWidth { get; internal set; }
-        public float CharHeight { get; internal set; }
+        public Font SystemFont {
+            get => systemFont;
+        }
+        public Bitmap Image {
+            get => bitmap;
+        }
+        public float CharWidth {
+            get; internal set;
+        }
+        public float CharHeight {
+            get; internal set;
+        }
 
-        public static FontAtlas CreateFontAtlas(FontImportSettings importSettings, string characters = DefaultCharacters)
-        {
+        public static FontAtlas CreateFontAtlas(FontImportSettings importSettings, string characters = DefaultCharacters) {
             Font systemFont = TryGenerateSystemFontObject(importSettings);
             if (systemFont == null)
                 return null;
@@ -45,66 +48,57 @@ namespace MinimalAF.Rendering.Text
             return new FontAtlas(importSettings, systemFont, characters);
         }
 
-        private FontAtlas(FontImportSettings importSettings, Font systemFont, string characters)
-        {
+        private FontAtlas(FontImportSettings importSettings, Font systemFont, string characters) {
             //Used to handle the error of invalid characters being looked up
             if (!characters.Contains('?'))
                 characters += '?';
 
-            _systemFont = systemFont;
+            this.systemFont = systemFont;
 
             int padding = importSettings.Padding;
 
-            _bitmap = CreateAtlasBaseImage(importSettings, characters, _systemFont, padding);
+            bitmap = CreateAtlasBaseImage(importSettings, characters, systemFont, padding);
 
-            _characterQuadCoords = new Dictionary<char, Rect2D>();
+            characterQuadCoords = new Dictionary<char, Rect>();
 
-            RenderAtlas(importSettings, characters, _systemFont, _characterQuadCoords, padding, _bitmap);
+            RenderAtlas(importSettings, characters, systemFont, characterQuadCoords, padding, bitmap);
         }
 
-        public Rect2D GetCharacterUV(char c)
-        {
-            if (!IsValidCharacter(c))
-            {
+        public Rect GetCharacterUV(char c) {
+            if (!IsValidCharacter(c)) {
                 c = '?';
             }
 
-            return _characterQuadCoords[c];
+            return characterQuadCoords[c];
         }
 
-        public SizeF GetCharacterSize(char c)
-        {
-            Rect2D normalized = GetCharacterUV(c);
+        public SizeF GetCharacterSize(char c) {
+            Rect normalized = GetCharacterUV(c);
+            float width = bitmap.Width;
+            float height = bitmap.Height;
+
             return new SizeF(
-                normalized.Width * _bitmap.Width,
-                normalized.Height * _bitmap.Height
+                normalized.Width * width,
+                normalized.Height * height
                 );
         }
 
-        public bool IsValidCharacter(char c)
-        {
-            return _characterQuadCoords.ContainsKey(c);
+        public bool IsValidCharacter(char c) {
+            return characterQuadCoords.ContainsKey(c);
         }
 
-        private static Font TryGenerateSystemFontObject(FontImportSettings fontSettings)
-        {
+        private static Font TryGenerateSystemFontObject(FontImportSettings fontSettings) {
             Font font;
 
-            if (!string.IsNullOrWhiteSpace(fontSettings.FromFile))
-            {
+            if (!string.IsNullOrWhiteSpace(fontSettings.FromFile)) {
                 var collection = new PrivateFontCollection();
                 collection.AddFontFile(fontSettings.FromFile);
                 var fontFamily = new FontFamily(Path.GetFileNameWithoutExtension(fontSettings.FromFile), collection);
                 font = new Font(fontFamily, fontSettings.FontSize);
-            }
-            else
-            {
-                try
-                {
+            } else {
+                try {
                     font = new Font(new FontFamily(fontSettings.FontName), fontSettings.FontSize);
-                }
-                catch
-                {
+                } catch {
                     return null;
                 }
             }
@@ -112,16 +106,13 @@ namespace MinimalAF.Rendering.Text
             return font;
         }
 
-        private void RenderAtlas(FontImportSettings fontSettings, string characters, Font font, Dictionary<char, Rect2D> coordMap, int padding, Bitmap bitmap)
-        {
-            using (var g = Graphics.FromImage(bitmap))
-            {
+        private void RenderAtlas(FontImportSettings fontSettings, string characters, Font font, Dictionary<char, Rect> coordMap, int padding, Bitmap bitmap) {
+            using (var g = Graphics.FromImage(bitmap)) {
                 ConfigureGraphicsWithFontSettings(fontSettings, g);
 
                 float currentY = padding;
 
-                for (int i = 0; i < characters.Length; i++)
-                {
+                for (int i = 0; i < characters.Length; i++) {
                     char c = characters[i];
                     SizeF size = GetCharcterSize(fontSettings, font, g, c);
 
@@ -134,8 +125,8 @@ namespace MinimalAF.Rendering.Text
                     float u1 = (currentX + size.Width) / bitmap.Width;
                     float v1 = (currentY + size.Height) / bitmap.Height;
 
-                    Rect2D uv = new Rect2D(u0, v0, u1, v1);
-                    Rect2D correctedUV = new Rect2D(uv.Left, uv.Top, uv.Right, uv.Bottom);
+                    Rect uv = new Rect(u0, v0, u1, v1);
+                    Rect correctedUV = new Rect(uv.Left, uv.Top, uv.Right, uv.Bottom);
 
                     coordMap[c] = correctedUV;
 
@@ -144,8 +135,7 @@ namespace MinimalAF.Rendering.Text
             }
         }
 
-        private Bitmap CreateAtlasBaseImage(FontImportSettings fontSettings, string characters, Font font, int padding)
-        {
+        private Bitmap CreateAtlasBaseImage(FontImportSettings fontSettings, string characters, Font font, int padding) {
             int bitmapWidth = 0;
             int bitmapHeight = 0;
             CalculateImageDimensions(fontSettings, characters, font, padding, out bitmapWidth, out bitmapHeight);
@@ -155,20 +145,17 @@ namespace MinimalAF.Rendering.Text
         }
 
         //Assumes that the letters will be vertically packed
-        private void CalculateImageDimensions(FontImportSettings fontSettings, string characters, Font font, int padding, out int bitmapWidth, out int bitmapHeight)
-        {
+        private void CalculateImageDimensions(FontImportSettings fontSettings, string characters, Font font, int padding, out int bitmapWidth, out int bitmapHeight) {
             float height = padding;
             float width = 0;
 
             float maxWidth = 0;
             float maxHeight = 0;
 
-            using (var g = Graphics.FromImage(new Bitmap(1, 1)))
-            {
+            using (var g = Graphics.FromImage(new Bitmap(1, 1))) {
                 ConfigureGraphicsWithFontSettings(fontSettings, g);
 
-                for (int i = 0; i < characters.Length; i++)
-                {
+                for (int i = 0; i < characters.Length; i++) {
                     char c = characters[i];
                     SizeF size = GetCharcterSize(fontSettings, font, g, c);
 
@@ -187,23 +174,18 @@ namespace MinimalAF.Rendering.Text
             CharHeight = maxHeight;
         }
 
-        private SizeF GetCharcterSize(FontImportSettings fontSettings, Font font, Graphics g, char c)
-        {
+        private SizeF GetCharcterSize(FontImportSettings fontSettings, Font font, Graphics g, char c) {
             return g.MeasureString(c.ToString(), font, fontSettings.FontSize, StringFormat.GenericTypographic);
         }
 
-        private void ConfigureGraphicsWithFontSettings(FontImportSettings fontSettings, Graphics g)
-        {
+        private void ConfigureGraphicsWithFontSettings(FontImportSettings fontSettings, Graphics g) {
             g.PageUnit = GraphicsUnit.Pixel;
             g.PageScale = 1.0f;
 
-            if (fontSettings.BitmapFont)
-            {
+            if (fontSettings.BitmapFont) {
                 g.SmoothingMode = SmoothingMode.None;
                 g.TextRenderingHint = TextRenderingHint.SingleBitPerPixel;
-            }
-            else
-            {
+            } else {
                 g.SmoothingMode = SmoothingMode.HighQuality;
                 g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
             }

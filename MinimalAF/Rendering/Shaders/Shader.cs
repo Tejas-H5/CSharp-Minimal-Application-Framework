@@ -3,51 +3,49 @@ using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Color4 = MinimalAF.Datatypes.Color4;
 
-namespace MinimalAF.Rendering
-{
+namespace MinimalAF.Rendering {
+    public struct ShaderFiles {
+        public string VertPath, FragPath;
+
+        public ShaderFiles(string vertPath, string fragPath) {
+            VertPath = vertPath;
+            FragPath = fragPath;
+        }
+    }
+
+
     //Taken from https://github.com/opentk/LearnOpenTK/blob/master/Common/Shader.cs
     //The destructor code was modified to be more like https://docs.microsoft.com/en-us/dotnet/api/system.idisposable.dispose?view=net-5.0
-    public class Shader
-    {
+    public abstract class Shader {
         public readonly int Handle;
 
-        private readonly Dictionary<string, int> _uniformLocations;
+        private readonly Dictionary<string, int> uniformLocations;
 
-        public static Shader FromFile(string vertPath, string fragPath)
-        {
-            // Load vertex shader and compile
-            var vertSource = File.ReadAllText(vertPath);
-            // We do the same for the fragment shader
-            var fragSource = File.ReadAllText(fragPath);
+        private static Matrix4[] matrices = new Matrix4[CTX.NUM_MATRICES];
+        private static int[] matrixUniforms = new int[CTX.NUM_MATRICES];
 
-            return new Shader(vertSource, fragSource);
+        public Matrix4 GetMatrix(int matrix) {
+            return matrices[matrix];
         }
 
-        // This is how you create a simple shader.
-        // Shaders are written in GLSL, which is a language very similar to C in its semantics.
-        // The GLSL source is compiled *at runtime*, so it can optimize itself for the graphics card it's currently being used on.
-        // A commented example of GLSL can be found in shader.vert
-        public Shader(string vertexSource, string fragSource)
-        {
-            // There are several different types of shaders, but the only two you need for basic rendering are the vertex and fragment shaders.
-            // The vertex shader is responsible for moving around vertices, and uploading that data to the fragment shader.
-            //   The vertex shader won't be too important here, but they'll be more important later.
-            // The fragment shader is responsible for then converting the vertices to "fragments", which represent all the data OpenGL needs to draw a pixel.
-            //   The fragment shader is what we'll be using the most here.
+        public void SetMatrix(int matrix, Matrix4 value) {
+            matrices[matrix] = value;
+            SetMatrix4(matrixUniforms[matrix], value);
+        }
 
+        public Shader(ShaderFiles files)
+            : this(File.ReadAllText(files.VertPath), File.ReadAllText(files.FragPath)) {
+        }
+
+        public Shader(string vertexSource, string fragSource) {
             var shaderSource = vertexSource;
 
-            // GL.CreateShader will create an empty shader (obviously). The ShaderType enum denotes which type of shader will be created.
             var vertexShader = GL.CreateShader(ShaderType.VertexShader);
 
-            // Now, bind the GLSL source code
             GL.ShaderSource(vertexShader, shaderSource);
 
-            // And then compile
             CompileShader(vertexShader);
-
 
             shaderSource = fragSource;
 
@@ -55,87 +53,77 @@ namespace MinimalAF.Rendering
             GL.ShaderSource(fragmentShader, shaderSource);
             CompileShader(fragmentShader);
 
-            // These two shaders must then be merged into a shader program, which can then be used by OpenGL.
-            // To do this, create a program...
             Handle = GL.CreateProgram();
 
-            // Attach both shaders...
             GL.AttachShader(Handle, vertexShader);
             GL.AttachShader(Handle, fragmentShader);
 
-            // And then link them together.
             LinkProgram(Handle);
 
-            // When the shader program is linked, it no longer needs the individual shaders attacked to it; the compiled code is copied into the shader program.
-            // Detach them, and then delete them.
             GL.DetachShader(Handle, vertexShader);
             GL.DetachShader(Handle, fragmentShader);
             GL.DeleteShader(fragmentShader);
             GL.DeleteShader(vertexShader);
 
-            // The shader is now ready to go, but first, we're going to cache all the shader uniform locations.
-            // Querying this from the shader is very slow, so we do it once on initialization and reuse those values
-            // later.
-
-            // First, we have to get the number of active uniforms in the shader.
             GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
 
-            // Next, allocate the dictionary to hold the locations.
-            _uniformLocations = new Dictionary<string, int>();
+            uniformLocations = new Dictionary<string, int>();
 
-            // Loop over all the uniforms,
-            for (var i = 0; i < numberOfUniforms; i++)
-            {
-                // get the name of this uniform,
+            for (var i = 0; i < numberOfUniforms; i++) {
                 var key = GL.GetActiveUniform(Handle, i, out _, out _);
-
-                // get the location,
                 var location = GL.GetUniformLocation(Handle, key);
-
-                // and then add it to the dictionary.
-                _uniformLocations.Add(key, location);
+                uniformLocations.Add(key, location);
             }
+
+            matrixUniforms[CTX.MODEL_MATRIX] = Loc("model");
+            matrixUniforms[CTX.PROJECTION_MATRIX] = Loc("projection");
+            matrixUniforms[CTX.VIEW_MATRIX] = Loc("view");
+
+            for (int i = 0; i < matrices.Length; i++) {
+                matrices[i] = Matrix4.Identity;
+            }
+
+            UpdateTransformUniforms();
+
+            InitShader();
         }
 
-        private static void CompileShader(int shader)
-        {
-            // Try to compile the shader
+        protected abstract void InitShader();
+
+        public void UpdateTransformUniforms() {
+            SetMatrix4(matrixUniforms[CTX.PROJECTION_MATRIX], matrices[CTX.PROJECTION_MATRIX]);
+            SetMatrix4(matrixUniforms[CTX.VIEW_MATRIX], matrices[CTX.VIEW_MATRIX]);
+            SetMatrix4(matrixUniforms[CTX.MODEL_MATRIX], matrices[CTX.MODEL_MATRIX]);
+        }
+
+        public void UpdateModel() {
+            SetMatrix4(matrixUniforms[CTX.MODEL_MATRIX], matrices[CTX.MODEL_MATRIX]);
+        }
+
+        private static void CompileShader(int shader) {
             GL.CompileShader(shader);
 
-            // Check for compilation errors
             GL.GetShader(shader, ShaderParameter.CompileStatus, out var code);
-            if (code != (int)All.True)
-            {
-                // We can use `GL.GetShaderInfoLog(shader)` to get information about the error.
+            if (code != (int)All.True) {
                 var infoLog = GL.GetShaderInfoLog(shader);
                 throw new Exception($"Error occurred whilst compiling Shader({shader}).\n\n{infoLog}");
             }
         }
 
-        private static void LinkProgram(int program)
-        {
-            // We link the program
+        private static void LinkProgram(int program) {
             GL.LinkProgram(program);
 
-            // Check for linking errors
             GL.GetProgram(program, GetProgramParameterName.LinkStatus, out var code);
-            if (code != (int)All.True)
-            {
-                // We can use `GL.GetProgramInfoLog(program)` to get information about the error.
+            if (code != (int)All.True) {
                 throw new Exception($"Error occurred whilst linking Program({program})");
             }
         }
 
-        // A wrapper function that enables the shader program.
-        public void Use()
-        {
+        public void Use() {
             GL.UseProgram(Handle);
         }
 
-        // The shader sources provided with this project use hardcoded layout(location)-s. If you want to do it dynamically,
-        // you can omit the layout(location=X) lines in the vertex shader, and use this in VertexAttribPointer instead of the hardcoded values.
-        public int GetAttribLocation(string attribName)
-        {
+        public int GetAttribLocation(string attribName) {
             return GL.GetAttribLocation(Handle, attribName);
         }
 
@@ -143,9 +131,8 @@ namespace MinimalAF.Rendering
         /// <summary>
         /// A micro-optimization that can be used to reduce hashmap lookups by getting the location just once
         /// </summary>
-        public int Loc(string name)
-        {
-            return _uniformLocations[name];
+        protected int Loc(string name) {
+            return uniformLocations[name];
         }
 
         /// <summary>
@@ -153,8 +140,7 @@ namespace MinimalAF.Rendering
         /// </summary>
         /// <param name="name">The name of the uniform</param>
         /// <param name="data">The data to set</param>
-        public void SetInt(int location, int data)
-        {
+        public void SetInt(int location, int data) {
             GL.UseProgram(Handle);
             GL.Uniform1(location, data);
         }
@@ -164,8 +150,7 @@ namespace MinimalAF.Rendering
         /// </summary>
         /// <param name="name">The name of the uniform</param>
         /// <param name="data">The data to set</param>
-        public void SetFloat(int location, float data)
-        {
+        public void SetFloat(int location, float data) {
             GL.UseProgram(Handle);
             GL.Uniform1(location, data);
         }
@@ -180,8 +165,7 @@ namespace MinimalAF.Rendering
         ///   The matrix is transposed before being sent to the shader.
         ///   </para>
         /// </remarks>
-        public void SetMatrix4(int location, Matrix4 data)
-        {
+        public void SetMatrix4(int location, Matrix4 data) {
             GL.UseProgram(Handle);
             GL.UniformMatrix4(location, true, ref data);
         }
@@ -191,8 +175,7 @@ namespace MinimalAF.Rendering
         /// </summary>
         /// <param name="name">The name of the uniform</param>
         /// <param name="data">The data to set</param>
-        public void SetVector3(int location, Vector3 data)
-        {
+        public void SetVector3(int location, Vector3 data) {
             GL.UseProgram(Handle);
             GL.Uniform3(location, data);
         }
@@ -202,8 +185,7 @@ namespace MinimalAF.Rendering
         /// </summary>
         /// <param name="name">The name of the uniform</param>
         /// <param name="data">The data to set</param>
-        public void SetVector4(int location, Vector4 data)
-        {
+        public void SetVector4(int location, Vector4 data) {
             GL.UseProgram(Handle);
             GL.Uniform4(location, data);
         }
@@ -215,16 +197,14 @@ namespace MinimalAF.Rendering
         /// </summary>
         /// <param name="name">The name of the uniform</param>
         /// <param name="data">The data to set</param>
-        public void SetVector4(int location, Color4 data)
-        {
+        public void SetVector4(int location, Color4 data) {
             GL.UseProgram(Handle);
             GL.Uniform4(location, new Vector4(data.R, data.G, data.B, data.A));
         }
 
 
         private bool disposed = false;
-        public virtual void Dispose(bool disposing)
-        {
+        public virtual void Dispose(bool disposing) {
             if (disposed)
                 return;
 
@@ -234,13 +214,11 @@ namespace MinimalAF.Rendering
             disposed = true;
         }
 
-        ~Shader()
-        {
+        ~Shader() {
             Dispose(false);
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }

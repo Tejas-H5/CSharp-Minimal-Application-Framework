@@ -1,29 +1,25 @@
-﻿using MinimalAF.Logic;
+﻿using MinimalAF;
 using MinimalAF.Rendering;
 using System;
 using System.Text;
 
-namespace RenderingEngineRenderingTests.VisualTests.Rendering
-{
-    public class KeyboardTest : EntryPoint
-    {
-        public override void Start()
-        {
-            Window.Size = (800, 600);
-            Window.Title = "Keyboard test";
+namespace MinimalAF.VisualTests.Rendering {
+    [VisualTest]
+    public class KeyboardTest : Element {
+        public override void OnMount(Window w) {
 
-            CTX.SetClearColor(0, 0, 0, 0);
-            CTX.SetCurrentFont("Consolas", 36);
+            w.Size = (800, 600);
+            w.Title = "Keyboard test";
+
+            SetClearColor(Color4.White);
+            SetFont("Consolas", 36);
         }
 
-        string KeysToString(string s)
-        {
+        string KeysToString(string s) {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < s.Length; i++)
-            {
+            for (int i = 0; i < s.Length; i++) {
                 char c = s[i];
-                if (Input.IsShiftDown)
-                {
+                if (KeyHeld(KeyCode.Shift)) {
                     c = char.ToUpper(c);
                 }
 
@@ -32,25 +28,21 @@ namespace RenderingEngineRenderingTests.VisualTests.Rendering
             return sb.ToString();
         }
 
-        public override void Render(double deltaTime)
-        {
-            CTX.SetDrawColor(1, 1, 1, 1);
+        public override void OnRender() {
+            SetDrawColor(0, 0, 0, 1);
 
-            CTX.DrawText("Press some keys:", Window.Width / 2, Window.Height / 2 + 200);
+            Text("Press some keys:", VW(0.5f), VH(0.75f), HorizontalAlignment.Center, VerticalAlignment.Center);
 
-            CTX.DrawText(KeysToString(Input.CharactersDown), Window.Width / 2, Window.Height / 2);
+            Text(KeysToString(KeyboardCharactersHeld), Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
         }
 
-        public override void Update(double deltaTime)
-        {
-            if (Input.IsAnyKeyPressed)
-            {
-                Console.WriteLine("PRessed: " + Input.CharactersPressed);
+        public override void OnUpdate() {
+            if (KeyPressed(KeyCode.Any)) {
+                Console.WriteLine("PRessed: " + KeyboardCharactersPressed);
             }
 
-            if (Input.IsAnyKeyReleased)
-            {
-                Console.WriteLine("Released: " + Input.CharactersReleased);
+            if (KeyPressed(KeyCode.Any)) {
+                Console.WriteLine("Released: " + KeyboardCharactersReleased);
             }
         }
     }

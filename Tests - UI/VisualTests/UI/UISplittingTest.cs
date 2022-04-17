@@ -1,92 +1,71 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.Logic;
-using MinimalAF.Rendering;
-using MinimalAF.UI;
+﻿namespace MinimalAF.VisualTests.UI {
+	[VisualTest]
+    public class UISplittingTest : Element {
+        class SplitContainer : Element {
+            Direction dir;
+            float splitAmount;
 
-namespace MinimalAF.VisualTests.UI
-{
-    public class UISplittingTest : EntryPoint
-    {
-        UIElement _root;
+            Panel GeneratePanel(Color4 col) {
+                return new Panel(Color4.VA(0, 0.1f), col, Color4.RGBA(0, 1, 0, 0.5f));
+            }
 
-        UIElement CreateRect(int thicnkess)
-        {
-            return UICreator.CreateUIElement(
-                new UIRect(new Color4(0, 0), new Color4(0, 1), thicnkess)
-            );
+            public SplitContainer(Direction dir, float splitAmount) {
+                this.dir = dir;
+                this.splitAmount = splitAmount;
+
+                SetChildren(
+                    GeneratePanel(Color4.RGBA(1, 0, 0, 0.5f)),
+                    GeneratePanel(Color4.RGBA(0, 0, 1, 0.5f))
+                );
+            }
+
+            public override void OnRender() {
+                this[0].UseCoordinates();
+
+                SetDrawColor(Color4.VA(0, 1));
+                Text("Split " + dir.ToString() + " " + splitAmount.ToString("0.00"),
+                    this[0].VW(0.5f), this[0].VH(0.5f),
+                    HorizontalAlignment.Center,
+                    VerticalAlignment.Center
+                );
+
+                UseCoordinates();
+            }
+
+            public override void OnLayout() {
+                LayoutTwoSplit(children[0], children[1], dir, splitAmount);
+                LayoutInset(children, 10);
+
+                LayoutChildren();
+            }
         }
 
-        public override void Start()
-        {
-            Window.Size = (800, 600);
-            Window.Title = "Text input ui element test";
+        public UISplittingTest() {
+            Element down = new SplitContainer(Direction.Down, 70);
+            Element left = new SplitContainer(Direction.Left, 200);
+            Element up = new SplitContainer(Direction.Up, 100);
+            Element right = new SplitContainer(Direction.Right, 150);
 
-            Window.RenderFrequency = 120;
-            Window.UpdateFrequency = 120;
+            down[1].SetChildren(left);
+            left[1].SetChildren(up);
+            up[1].SetChildren(right);
 
-            CTX.SetClearColor(1, 0, 0, 1);
-
-            _root = UICreator.CreatePanel(new Color4(1))
-                .AddComponent(new UIGraphicsRaycaster());
-
-            UIElement autoResizingElement;
-
-
-            _root.Anchors(new Rect2D(0, 0, 1, 1))
-            .Offsets(new Rect2D(0, 0, 0, 0))
-            .AddChildren(
-                CreateRect(5).TopSplit(70,
-                    CreateTextElement("Top-Split 70")
-                    ,
-                    CreateRect(4).LeftSplit(200,
-                        CreateTextElement("Left-Split 200")
-                        ,
-                        CreateRect(3).BottomSplit(100,
-                            CreateRect(2).RightSplit(150,
-                                CreateRect(1).AddChild(
-                                    CreateTextElement("Null")
-                                )
-                                ,
-                                CreateRect(1).AddChild(
-                                    CreateTextElement("Right-Split 150")
-                                )
-                            )
-                            ,
-                            CreateTextElement("Bottom-Split 100")
-                        )
-                    )
+            SetChildren(
+                new UIRootElement().SetChildren(
+                    down
                 )
             );
         }
 
+        public override void OnMount(Window w) {
 
-        UIElement CreateTextElement(string s)
-        {
-            Color4 textColor = new Color4(0, 1);
+            w.Size = (800, 600);
+            w.Title = "Splitting test";
 
-            return UICreator.CreateUIElement().AddChild(
-                UICreator.CreateUIElement(
-                    new UIText(s, textColor)
-                )
-                .Offsets(5)
-            );
-        }
+            w.RenderFrequency = 120;
+            w.UpdateFrequency = 120;
 
-        public override void Render(double deltaTime)
-        {
-            _root.DrawIfVisible(deltaTime);
-        }
-
-        public override void Update(double deltaTime)
-        {
-            _root.Update(deltaTime);
-        }
-
-        public override void Resize()
-        {
-            base.Resize();
-
-            _root.Resize();
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
         }
     }
 }

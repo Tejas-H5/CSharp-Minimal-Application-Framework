@@ -1,93 +1,45 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.Logic;
-using MinimalAF.Rendering;
-using MinimalAF.UI;
+﻿namespace MinimalAF.VisualTests.UI {
+	[VisualTest]
+    public class UILinearArrangeNestedTest : Element {
+        Element root;
+        Element textInputElement;
 
-namespace MinimalAF.VisualTests.UI
-{
-    public class UILinearArrangeNestedTest : EntryPoint
-    {
-        UIElement _root;
-        UIElement _textInputElement;
+        Element GenerateElement(string text) {
+            return new UILinearArrangeTest();
+        }
 
-        public override void Start()
-        {
-            Window.Size = (800, 600);
-            Window.Title = "xd lmao xdxdxd";
-
-            Window.RenderFrequency = 120;
-            Window.UpdateFrequency = 120;
-
-            CTX.SetClearColor(1, 1, 1, 1);
-
-            _root = UICreator.CreateUIElement();
-            UIElement fitChildren = UICreator.CreateUIElement(
-                new UIGraphicsRaycaster()
-            ///new UIFitChildren(false, true, new Rect2D(10,10,10,10))
+        public UILinearArrangeNestedTest() {
+            SetChildren(
+                GenerateElement("0 (Press space to toggle layout)   "),
+                GenerateElement("1"),
+                GenerateElement("2"),
+                GenerateElement("3")
             );
+        }
 
-            _root.AddChild(fitChildren);
+        public override void OnMount(Window w) {
 
-            UIElement linearArrange;
+            w.Size = (800, 600);
+            w.Title = "Text input ui element test";
 
-            fitChildren
-            .AddChildren(
-                linearArrange = UICreator.CreateRectOutline(new Color4(0, 1))
-                .AddComponent(new UILinearArrangement(true, false, -1, 5))
-                .AnchorsX(0.25f, 0.75f)
-                .OffsetsX(10, 10)
-                .AnchoredPosCenterY(1f, 1f)
-                .PosSizeY(-10f, 1f)
-            );
+            w.RenderFrequency = 120;
+            w.UpdateFrequency = 120;
 
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
+        }
 
-            for (int i = 0; i < 2; i++)
-            {
-                UIElement linearArrange2;
+        int layouting = (int)Direction.Down;
 
-                linearArrange
-                .AddChildren(
-                    linearArrange2 = UICreator.CreateRectOutline(new Color4(0, 1))
-                    .AddComponent(new UILinearArrangement(true, false, -1, 5))
-                    .AnchorsX(0, 1)
-                    .OffsetsX(10, 10)
-                    .AnchoredPosCenterY(1f, 1f)
-                    .PosSizeY(-10f, 1f)
-                );
-
-                //*
-                for (int j = 0; j < 5; j++)
-                {
-                    UIElement button;
-                    linearArrange2.AddChild(
-                        button = UICreator.CreateButton(j.ToString(), "Consolas", 10)
-                        .AnchoredPosCenterY(1, 1)
-                        .PosSizeY(0, 20)
-                    );
-
-                    button.GetComponentOfType<UIMouseListener>().OnMousePressed += (MouseEventArgs e) => {
-                        button.PosSizeY(0, button.Rect.Height + 10);
-                    };
-                }
-                //*/
+        public override void OnUpdate() {
+            if (KeyPressed(KeyCode.Space)) {
+                layouting = (layouting + 1) % ((int)(Direction.Right + 1));
+                Layout();
             }
         }
 
-        public override void Render(double deltaTime)
-        {
-            _root.DrawIfVisible(deltaTime);
-        }
-
-        public override void Update(double deltaTime)
-        {
-            _root.Update(deltaTime);
-        }
-
-        public override void Resize()
-        {
-            base.Resize();
-
-            _root.Resize();
+        public override void OnLayout() {
+            LayoutSplit(children, (Direction)layouting);
+            LayoutChildren();
         }
     }
 }

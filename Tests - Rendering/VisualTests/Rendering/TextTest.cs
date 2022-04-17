@@ -1,23 +1,23 @@
-﻿using MinimalAF.Logic;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    class TextTest : EntryPoint
+	[VisualTest]
+	class TextTest : Element
     {
         List<string> rain;
 
-        public override void Start()
+        public override void OnMount(Window w)
         {
-            Window.Size = (800, 600);
-            Window.Title = "Matrix rain test";
+            w.Size = (800, 600);
+            w.Title = "Matrix rain test";
 
-            CTX.SetClearColor(0, 0, 0, 0);
+           SetClearColor(Color4.White);
 
-            CTX.SetCurrentFont("Consolas", 24);
+            SetFont("Consolas", 24);
 
             rain = new List<string>();
         }
@@ -29,20 +29,21 @@ namespace MinimalAF.VisualTests.Rendering
             sb.Clear();
 
             float totalLength = 0;
-            while (totalLength < Window.Width)
+            while (totalLength < Width)
             {
                 int character = rand.Next(0, 512);
-                char c = (char)character;
+				//int character = rand.Next(0, 144697);
+				char c = (char)character;
                 if (character > 126)
                     c = ' ';
 
                 sb.Append(c);
 
-                totalLength += CTX.GetCharWidth(c);
+                totalLength += GetCharWidth(c);
             }
 
             rain.Insert(0, sb.ToString());
-            if ((rain.Count - 2) * CTX.GetCharHeight() > Window.Height)
+            if ((rain.Count - 2) * GetCharHeight() > Height)
             {
                 rain.RemoveAt(rain.Count - 1);
             }
@@ -50,10 +51,10 @@ namespace MinimalAF.VisualTests.Rendering
 
 
         double timer = 0;
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
             //*
-            timer += deltaTime;
+            timer += Time.DeltaTime;
             if (timer < 0.05)
                 return;
             //*/
@@ -62,18 +63,18 @@ namespace MinimalAF.VisualTests.Rendering
             PushGibberish();
         }
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
 
 
-            CTX.SetDrawColor(0, 1, 0, 0.8f);
+            SetDrawColor(0, 1, 0, 0.8f);
 
             for (int i = 0; i < rain.Count; i++)
             {
-                CTX.DrawText(rain[i], 0, Window.Height - CTX.GetCharHeight() * i);
+                Text(rain[i], 0, Height - GetCharHeight() * i);
             }
 
-            CTX.SetDrawColor(1, 0, 0, 1);
+            SetDrawColor(1, 0, 0, 1);
 
         }
     }

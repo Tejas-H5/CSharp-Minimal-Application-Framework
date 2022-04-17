@@ -1,27 +1,33 @@
-﻿using MinimalAF.Logic;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    class GeometryAndTextTest : EntryPoint
+	[VisualTest]
+	class GeometryAndTextTest : Element
     {
         List<string> rain = new List<string>();
-        Texture _tex;
+        Texture tex;
+		TextTest textTest;
 
-        public override void Start()
-        {
-            Window.Size = (800, 600);
-            Window.Title = "Text and geometry test";
+        public override void OnMount(Window w)
+		{
+			w.Size = (800, 600);
+			w.Title = "Text and geometry test"; 
 
-            CTX.SetClearColor(0, 0, 0, 0);
+		    SetClearColor(Color4.White);
 
-            CTX.SetCurrentFont("Consolas", 24);
+            SetFont("Consolas", 24);
+			textTest = new TextTest();
+			Init();
 
-            Init();
-        }
+			SetChildren(textTest);
+
+            // remove when we start using OnMount
+			w.Title = "Text and geometry test"; 
+		}
 
         public void Init()
         {
@@ -30,69 +36,35 @@ namespace MinimalAF.VisualTests.Rendering
                 Filtering = FilteringType.NearestNeighbour
             });
 
-            _tex = TextureMap.GetTexture("placeholder");
+            tex = TextureMap.GetTexture("placeholder");
         }
 
-        StringBuilder sb = new StringBuilder();
-        Random rand = new Random();
-        void PushGibberish()
+        public override void OnUpdate()
         {
-            sb.Clear();
+            a += (float)Time.DeltaTime;
 
-            float totalLength = 0;
-            while (totalLength < Window.Width)
-            {
-                int character = rand.Next(0, 512);
-                char c = (char)character;
-                if (character > 126)
-                    c = ' ';
-
-                sb.Append(c);
-
-                totalLength += CTX.GetCharWidth(c);
-            }
-
-            rain.Insert(0, sb.ToString());
-            if ((rain.Count - 2) * CTX.GetCharHeight() > Window.Height)
-            {
-                rain.RemoveAt(rain.Count - 1);
-            }
-        }
-
-        double timer = 0;
-        public override void Update(double deltaTime)
-        {
-            //*
-            timer += deltaTime;
-            a += (float)deltaTime;
-            if (timer < 0.05)
-                return;
-            //*/
-            timer = 0;
-
-            PushGibberish();
-        }
+			base.OnUpdate();
+		}
 
         float a = 0;
-        public override void Render(double deltaTime)
+        public override void AfterRender()
         {
-            CTX.SetDrawColor(0, 1, 0, 0.8f);
-            CTX.SetTexture(null);
+            SetTexture(null);
+            SetDrawColor(Color4.RGBA(0,1,0,0.5f));
+            Arc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f), a, MathF.PI * 2 + a, 6);
 
-            for (int i = 0; i < rain.Count; i++)
-            {
-                CTX.DrawText(rain[i], 0, Window.Height - CTX.GetCharHeight() * i);
-            }
+			SetTexture(tex);
+            //RenderingContext.DrawFilledArc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f)/2f, a/2f, MathF.PI * 2 + a/2f, 6);
 
+            Rect(VW(0.5f) - 50, VH(0.5f) - 50, VW(0.5f) + 50, VH(0.5f) + 50);
 
-            CTX.DrawArc(Window.Width / 2, Window.Height / 2, MathF.Min(Window.Height / 2f, Window.Width / 2f), a, MathF.PI * 2 + a, 6);
+            //RenderingContext.DrawRect(100,100,Width-100, Height-100);
+        }
 
-            CTX.SetTexture(_tex);
-            //RenderingContext.DrawFilledArc(window.Width / 2, window.Height / 2, MathF.Min(window.Height / 2f, window.Width / 2f)/2f, a/2f, MathF.PI * 2 + a/2f, 6);
+        public override void OnLayout() {
+            textTest.RelativeRect = new Rect(0, 0, VW(1), VH(1));
 
-            CTX.DrawRect(Window.Width / 2 - 50, Window.Height / 2 - 50, Window.Width / 2 + 50, Window.Height / 2 + 50);
-
-            //RenderingContext.DrawRect(100,100,window.Width-100, window.Height-100);
+            LayoutChildren();
         }
     }
 }

@@ -1,45 +1,33 @@
-﻿using MinimalAF.Logic;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    class TextFontAtlasText : EntryPoint
+    [VisualTest]
+	class TextFontAtlasText : Element
     {
-        public override void Start()
+        public override void OnMount(Window w)
         {
+            
+            w.Size = (800, 600);
+            w.Title = "text font atlas test";
+            //w.RenderFrequency = 120; 60;
+            //w.UpdateFrequency = 120; 120;
 
-            Window.Size = (800, 600);
-            Window.Title = "text font atlas test";
-            //window.RenderFrequency = 60;
-            //window.UpdateFrequency = 120;
-
-            CTX.SetClearColor(0, 0, 0, 0);
-
-            CTX.SetCurrentFont("Consolas", 24);
-        }
-
-
-        double timer = 0;
-        public override void Update(double deltaTime)
-        {
-            //*
-            timer += deltaTime;
-            if (timer < 0.05)
-                return;
-            //*/
-            timer = 0;
-
-            if (Input.MouseWheelNotches != 0)
-            {
-                pos += 50 * Input.MouseWheelNotches;
-            }
+            SetClearColor(Color4.White);
         }
 
         float pos = 0;
+        public override void OnUpdate()
+        {
+             pos += 50 * MousewheelNotches;
+        }
 
-        public override void Render(double deltaTime)
+
+        public override void OnRender()
         {
             //Draw font atlas offset by vertical scroll in pos variable
+            SetDrawColor(0, 0, 0, 1);
+            SetFont("Consolas", 24);
         }
     }
 }

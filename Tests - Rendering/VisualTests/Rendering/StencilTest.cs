@@ -1,77 +1,90 @@
-﻿using MinimalAF.Logic;
-using MinimalAF.Rendering;
+﻿using MinimalAF.Rendering;
 using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    public class StencilTest : EntryPoint
+	[VisualTest]
+	public class StencilTest : Element
     {
-        public override void Start()
+        public override void OnMount(Window w)
         {
-            Window.Size = (800, 600);
-            Window.Title = "Stencil rendering test";
+            
+            w.Size = (800, 600);
+            w.Title = "Stencil rendering test";
 
-            CTX.SetClearColor(0, 0, 0, 1);
-            CTX.SetCurrentFont("Consolas", 24);
+            SetClearColor(Color4.White);
+            SetFont("Consolas", 24);
 
-            geometryAndTextTest.Init();
+			SetChildren(geometryAndTextTest);
+
+			base.OnMount(w);
+
         }
 
         GeometryAndTextTest geometryAndTextTest = new GeometryAndTextTest();
 
-        float _xPos = 0;
+        float xPos = 0;
 
-        public override void Render(double deltaTime)
+        public override void OnRender()
         {
-            CTX.StartStencillingWithoutDrawing(true);
+			SetDrawColor(1, 1, 1, 1);
+			Text("Stencil test", 0, Height, HorizontalAlignment.Left, VerticalAlignment.Top);
 
-            float barSize = MathF.Abs((Window.Height / 2 - 5) * MathF.Sin(_time / 4f));
-            CTX.DrawRect(0, Window.Height, Window.Width, Window.Height - barSize);
-            CTX.DrawRect(0, 0, Window.Width, barSize);
+			StartStencillingWithoutDrawing(true);
 
-            CTX.StartUsingStencil();
+            float barSize = MathF.Abs((Height / 2 - 5) * MathF.Sin(time / 4f));
+            Rect(0, Height, Width, Height - barSize);
+            Rect(0, 0, Width, barSize);
 
-            geometryAndTextTest.Render(deltaTime);
+            StartUsingStencil();
+        }
 
-            CTX.LiftStencil();
+        public override void AfterRender() {
+            // TODO low priority: make this stack based. Any of the children elements could have called this and made wierd stuff happen
+            LiftStencil();
 
-            CTX.StartStencillingWhileDrawing();
+            StartStencillingWhileDrawing();
 
             float size = 60;
-            DrawRedRectangle(size, _xPos);
+            DrawRedRectangle(size, xPos);
 
-            CTX.StartUsingStencil();
+            StartUsingStencil();
 
             size = 70;
-            DrawBlueRectangle(size, _xPos);
+            DrawBlueRectangle(size, xPos);
 
-            CTX.LiftStencil();
+            LiftStencil();
         }
 
-        private static void DrawBlueRectangle(float size, float xPos)
+        private void DrawBlueRectangle(float size, float xPos)
         {
-            CTX.SetTexture(null);
-            CTX.SetDrawColor(0, 0, 1, 1);
-            CTX.DrawRect(Window.Width / 2 - size + xPos, Window.Height / 2 - size,
-                Window.Width / 2 + size + xPos, Window.Height / 2 + size);
+            SetTexture(null);
+            SetDrawColor(0, 0, 1, 1);
+            Rect(Width / 2 - size + xPos, Height / 2 - size,
+                Width / 2 + size + xPos, Height / 2 + size);
         }
 
-        private static void DrawRedRectangle(float size, float xPos)
+        private void DrawRedRectangle(float size, float xPos)
         {
-            CTX.SetTexture(null);
-            CTX.SetDrawColor(1, 0, 0, 1);
-            CTX.DrawRect(Window.Width / 2 - size + xPos, Window.Height / 2 - size,
-                Window.Width / 2 + size + xPos, Window.Height / 2 + size);
+            SetTexture(null);
+            SetDrawColor(1, 0, 0, 1);
+            Rect(Width / 2 - size + xPos, Height / 2 - size,
+                Width / 2 + size + xPos, Height / 2 + size);
         }
 
-        float _time = 0;
+        float time = 0;
 
-        public override void Update(double deltaTime)
+        public override void OnUpdate()
         {
-            _time += (float)deltaTime;
-
-            geometryAndTextTest.Update(deltaTime);
-            _xPos = 200 * MathF.Sin(_time / 2.0f);
+            time += (float)Time.DeltaTime;
+			xPos = 200 * MathF.Sin(time / 2.0f);
         }
+
+        public override void OnLayout() {
+            geometryAndTextTest.RelativeRect = new Rect(0, 0, VW(1), VH(1));
+
+            LayoutChildren();
+        }
+
     }
 }

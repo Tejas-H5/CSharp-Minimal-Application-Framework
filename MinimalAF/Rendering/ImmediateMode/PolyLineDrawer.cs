@@ -1,65 +1,57 @@
 ﻿using MinimalAF.Util;
 using System;
 
-namespace MinimalAF.Rendering.ImmediateMode
-{
+namespace MinimalAF.Rendering.ImmediateMode {
     //TODO: add support for 3D lines if needed
-    class PolyLineDrawer : GeometryDrawer
-    {
-        IGeometryOutput _geometryOutput;
-        LineDrawer _lineDrawer;
+    public class PolyLineDrawer {
+        IGeometryOutput geometryOutput;
 
-        public PolyLineDrawer(LineDrawer lineDrawer, IGeometryOutput geometryOutput)
-        {
-            _lineDrawer = lineDrawer;
-            _geometryOutput = geometryOutput;
+        public PolyLineDrawer(IGeometryOutput geometryOutput) {
+            this.geometryOutput = geometryOutput;
         }
 
 
-        bool _canStart = true;
-        bool _canEnd = true;
+        bool canStart = true;
+        bool canEnd = true;
 
-        float _thickness = 0;
+        float thickness = 0;
 
-        float _lastLastX;
-        float _lastLastY;
-        float _lastX;
-        float _lastY;
-        float _lastPerpX;
-        float _lastPerpY;
+        float lastLastX;
+        float lastLastY;
+        float lastX;
+        float lastY;
+        float lastPerpX;
+        float lastPerpY;
 
-        uint _lastV1;
-        uint _lastV2;
-        Vertex _lastV1Vert;
-        Vertex _lastV2Vert;
-        uint _lastV3;
-        uint _lastV4;
-        uint _count = 0;
+        uint lastV1;
+        uint lastV2;
+        Vertex lastV1Vert;
+        Vertex lastV2Vert;
+        uint lastV3;
+        uint lastV4;
+        uint count = 0;
 
 
-        CapType _capType;
+        CapType capType;
 
         //Can also be used to continue an unfinished polyline
-        public void BeginPolyLine(float x, float y, float thickness, CapType cap)
-        {
-            if (!_canStart)
-            {
-                ContinuePolyline(x, y);
+        public void Begin(float x, float y, float thickness, CapType cap) {
+            if (!canStart) {
+                Continue(x, y);
                 return;
             }
 
-            _thickness = thickness /= 2;
-            _lastLastX = x;
-            _lastLastY = y;
-            _lastX = x;
-            _lastY = y;
-            _capType = cap;
-            _count = 1;
+            this.thickness = thickness;
+            lastLastX = x;
+            lastLastY = y;
+            lastX = x;
+            lastY = y;
+            capType = cap;
+            count = 1;
         }
 
 
-        public void ContinuePolyline(float x, float y, bool useAverage = true)
-        {
+        public void Continue(float x, float y, bool useAverage = true) {
             float dirX, dirY, perpX, perpY;
             CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
 
@@ -69,189 +61,167 @@ namespace MinimalAF.Rendering.ImmediateMode
                 return;
 
 
-            if (_count == 1)
-            {
+            if (count == 1) {
                 StartLineSegment(x, y);
-            }
-            else
-            {
+            } else {
                 MoveLineSegmentInDirectionOf(x, y, useAverage);
             }
 
-            _lastLastX = _lastX;
-            _lastLastY = _lastY;
+            lastLastX = lastX;
+            lastLastY = lastY;
 
-            _lastX = x;
-            _lastY = y;
-            _count++;
+            lastX = x;
+            lastY = y;
+            count++;
         }
 
-        private void CalculateLineParameters(float x, float y, out float dirX, out float dirY, out float perpX, out float perpY)
-        {
-            dirX = x - _lastX;
-            dirY = y - _lastY;
+        private void CalculateLineParameters(float x, float y, out float dirX, out float dirY, out float perpX, out float perpY) {
+            dirX = x - lastX;
+            dirY = y - lastY;
 
             float mag = MathF.Sqrt(dirX * dirX + dirY * dirY);
 
-            perpX = -_thickness * dirY / mag;
-            perpY = _thickness * dirX / mag;
+            perpX = -thickness * dirY / mag;
+            perpY = thickness * dirX / mag;
         }
 
-        private void StartLineSegment(float x, float y)
-        {
+        private void StartLineSegment(float x, float y) {
             float dirX, dirY, perpX, perpY;
             CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
 
 
-            Vertex v1 = new Vertex(_lastX + perpX, _lastY + perpY, 0);
-            Vertex v2 = new Vertex(_lastX - perpX, _lastY - perpY, 0);
+            Vertex v1 = new Vertex(lastX + perpX, lastY + perpY, 0);
+            Vertex v2 = new Vertex(lastX - perpX, lastY - perpY, 0);
 
-            _geometryOutput.FlushIfRequired(2, 0);
-            _lastV1 = _geometryOutput.AddVertex(v1);
-            _lastV2 = _geometryOutput.AddVertex(v2);
+            geometryOutput.FlushIfRequired(2, 0);
+            lastV1 = geometryOutput.AddVertex(v1);
+            lastV2 = geometryOutput.AddVertex(v2);
 
-            _lastV1Vert = v1;
-            _lastV2Vert = v2;
-            _lastPerpX = perpX;
-            _lastPerpY = perpY;
+            lastV1Vert = v1;
+            lastV2Vert = v2;
+            lastPerpX = perpX;
+            lastPerpY = perpY;
 
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
-            _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
+            CTX.Line.DrawCap(lastX, lastY, thickness, capType, startAngle);
         }
 
-        private void MoveLineSegmentInDirectionOf(float x, float y, bool averageAngle = true)
-        {
+        private void MoveLineSegmentInDirectionOf(float x, float y, bool averageAngle = true) {
             float dirX, dirY, perpX, perpY;
             CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
 
 
             float perpUsedX, perpUsedY;
 
-            if (averageAngle)
-            {
-                perpUsedX = (perpX + _lastPerpX) / 2f;
-                perpUsedY = (perpY + _lastPerpY) / 2f;
+            if (averageAngle) {
+                perpUsedX = (perpX + lastPerpX) / 2f;
+                perpUsedY = (perpY + lastPerpY) / 2f;
 
                 float mag = MathUtilF.Mag(perpUsedX, perpUsedY);
-                perpUsedX = _thickness * perpUsedX / mag;
-                perpUsedY = _thickness * perpUsedY / mag;
-            }
-            else
-            {
+                perpUsedX = thickness * perpUsedX / mag;
+                perpUsedY = thickness * perpUsedY / mag;
+            } else {
                 perpUsedX = perpX;
                 perpUsedY = perpY;
             }
 
 
-            Vertex v3 = new Vertex(_lastX + perpUsedX, _lastY + perpUsedY, 0);
-            Vertex v4 = new Vertex(_lastX - perpUsedX, _lastY - perpUsedY, 0);
+            Vertex v3 = new Vertex(lastX + perpUsedX, lastY + perpUsedY, 0);
+            Vertex v4 = new Vertex(lastX - perpUsedX, lastY - perpUsedY, 0);
 
-            if (_geometryOutput.FlushIfRequired(4, 6))
-            {
-                _lastV1 = _geometryOutput.AddVertex(_lastV1Vert);
-                _lastV2 = _geometryOutput.AddVertex(_lastV2Vert);
+            if (geometryOutput.FlushIfRequired(4, 6)) {
+                lastV1 = geometryOutput.AddVertex(lastV1Vert);
+                lastV2 = geometryOutput.AddVertex(lastV2Vert);
             }
 
 
             //check if v3 and v4 intersect with v1 and v2
-            float lastDirX = -_lastPerpY;
-            float lastDirY = _lastPerpX;
-            float vec1X = (_lastX + perpUsedX) - _lastLastX;
-            float vec1Y = (_lastY + perpUsedY) - _lastLastY;
-            float vec2X = (_lastX - perpUsedX) - _lastLastX;
-            float vec2Y = (_lastY - perpUsedY) - _lastLastY;
+            float lastDirX = -lastPerpY;
+            float lastDirY = lastPerpX;
+            float vec1X = (lastX + perpUsedX) - lastLastX;
+            float vec1Y = (lastY + perpUsedY) - lastLastY;
+            float vec2X = (lastX - perpUsedX) - lastLastX;
+            float vec2Y = (lastY - perpUsedY) - lastLastY;
 
             bool v3IsArtifacting = ((vec1X * lastDirX + vec1Y * lastDirY) > 0);
             bool v4IsArtifacting = ((vec2X * lastDirX + vec2Y * lastDirY) > 0);
 
-            if(v3IsArtifacting || v4IsArtifacting)
-            {
-                if (v3IsArtifacting)
-                {
-                    _lastV4 = _geometryOutput.AddVertex(v4);
-                    _geometryOutput.MakeTriangle(_lastV1, _lastV2, _lastV4);
-                    _lastV2 = _lastV4;
-                    _lastV2Vert = v4;
+            if (v3IsArtifacting || v4IsArtifacting) {
+                if (v3IsArtifacting) {
+                    lastV4 = geometryOutput.AddVertex(v4);
+                    geometryOutput.MakeTriangle(lastV1, lastV2, lastV4);
+                    lastV2 = lastV4;
+                    lastV2Vert = v4;
+                } else if (v4IsArtifacting) {
+                    lastV3 = geometryOutput.AddVertex(v3);
+                    geometryOutput.MakeTriangle(lastV1, lastV2, lastV3);
+                    lastV1 = lastV3;
+                    lastV1Vert = v3;
                 }
-                else if (v4IsArtifacting)
-                {
-                    _lastV3 = _geometryOutput.AddVertex(v3);
-                    _geometryOutput.MakeTriangle(_lastV1, _lastV2, _lastV3);
-                    _lastV1 = _lastV3;
-                    _lastV1Vert = v3;
-                }
-            }
-            else
-            {
-                _lastV3 = _geometryOutput.AddVertex(v3);
-                _lastV4 = _geometryOutput.AddVertex(v4);
+            } else {
+                lastV3 = geometryOutput.AddVertex(v3);
+                lastV4 = geometryOutput.AddVertex(v4);
 
-                _geometryOutput.MakeTriangle(_lastV1, _lastV2, _lastV3);
-                _geometryOutput.MakeTriangle(_lastV3, _lastV2, _lastV4);
+                geometryOutput.MakeTriangle(lastV1, lastV2, lastV3);
+                geometryOutput.MakeTriangle(lastV3, lastV2, lastV4);
 
-                _lastV1 = _lastV3;
-                _lastV2 = _lastV4;
-                _lastV1Vert = v3;
-                _lastV2Vert = v4;
+                lastV1 = lastV3;
+                lastV2 = lastV4;
+                lastV1Vert = v3;
+                lastV2Vert = v4;
             }
 
-            _lastPerpX = perpX;
-            _lastPerpY = perpY;
+            lastPerpX = perpX;
+            lastPerpY = perpY;
         }
 
-        public void EndPolyLine(float x, float y)
-        {
-            if (!_canEnd)
-            {
-                ContinuePolyline(x, y);
+        public void End(float x, float y) {
+            if (!canEnd) {
+                Continue(x, y);
                 return;
             }
 
-            float dirX = x - _lastX;
-            float dirY = y - _lastY;
+            float dirX = x - lastX;
+            float dirY = y - lastY;
 
             float mag = MathUtilF.Mag(dirX, dirY);
-            if(mag < 0.001f)
-            {
-                dirX = x - _lastLastX;
-                dirY = y - _lastLastY;
+            if (mag < 0.001f) {
+                dirX = x - lastLastX;
+                dirY = y - lastLastY;
             }
 
-            ContinuePolyline(x, y);
-            ContinuePolyline(x + dirX, y + dirY, false);
+            Continue(x, y);
+            Continue(x + dirX, y + dirY, false);
 
-            _lastX = x;
-            _lastY = y;
+            lastX = x;
+            lastY = y;
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
 
-            if(_count == 1)
-            {
-                _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle);
+            if (count == 1) {
+                CTX.Line.DrawCap(lastX, lastY, thickness, capType, startAngle);
             }
 
-            _lineDrawer.DrawCap(_lastX, _lastY, _thickness, _capType, startAngle + MathF.PI);
+            CTX.Line.DrawCap(lastX, lastY, thickness, capType, startAngle + MathF.PI);
 
-            _canStart = true;
+            canStart = true;
         }
 
 
         /// <summary>
         /// Use very carefully.
         /// </summary>
-        public void DisableEnding()
-        {
-            _canEnd = false;
-            _canStart = false;
+        public void DisableEnding() {
+            canEnd = false;
+            canStart = false;
         }
 
         /// <summary>
         /// Use very carefully.
         /// </summary>
-        public void EnableEnding()
-        {
-            _canEnd = true;
+        public void EnableEnding() {
+            canEnd = true;
         }
     }
 }

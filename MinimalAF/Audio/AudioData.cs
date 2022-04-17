@@ -1,50 +1,48 @@
-﻿using MinimalAF.Datatypes;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using OpenTK.Audio.OpenAL;
 using System;
 
-namespace MinimalAF.Audio
-{
+namespace MinimalAF.Audio {
     /// <summary>
     /// Represents audio as an array of shorts.
     /// 
     /// Overrides GetHashCode to be a constant ID, so this can be used as a HashMap/Dictionary key
     /// </summary>
-    public class AudioData
-    {
-        private static int _nextAudioDataID = 1;
+    public class AudioData {
+        private static int nextAudioDataID = 1;
         public int ID;
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             return ID;
         }
 
 
-        short[] _rawData;
+        short[] rawData;
         public short[] RawData {
             get {
-                return _rawData;
+                return rawData;
             }
         }
 
-        private int _sampleRate;
-        private int _channels;
-        private int _len;
-        private ALFormat _format;
+        private int sampleRate;
+        private int channels;
+        private int len;
+        private ALFormat format;
 
         public ALFormat Format {
-            get { return _format; }
+            get {
+                return format;
+            }
         }
 
 
-        public int Length => _len;
+        public int Length => len;
 
         public int SampleRate {
-            get => _sampleRate;
+            get => sampleRate;
         }
 
         public int Channels {
-            get => _channels;
+            get => channels;
         }
 
         public double Duration {
@@ -52,76 +50,55 @@ namespace MinimalAF.Audio
         }
 
         public int DurationSamples {
-            get => _rawData.Length / Channels;
+            get => rawData.Length / Channels;
         }
 
-
-        public Slice<short> GetChannel(int c)
-        {
-            return new Slice<short>(_rawData, c, _rawData.Length - _channels + c + 1, _channels);
-        }
-
-        public double SampleToSeconds(int sample)
-        {
+        public double SampleToSeconds(int sample) {
             return sample / (double)SampleRate;
         }
 
-        public int ToSample(double seconds)
-        {
+        public int ToSample(double seconds) {
             return (int)(seconds * SampleRate);
         }
 
-        public float GetSample(int sample, int channel)
-        {
-            return _rawData[channel % Channels + sample * Channels];
+        public float GetSample(int sample, int channel) {
+            return rawData[channel % Channels + sample * Channels];
         }
 
-        public AudioData(short[] rawInterleavedData, int sampleRate, int numChannels)
-        {
-            ID = _nextAudioDataID;
-            _nextAudioDataID++;
+        public AudioData(short[] rawInterleavedData, int sampleRate, int numChannels) {
+            ID = nextAudioDataID;
+            nextAudioDataID++;
 
-            _sampleRate = sampleRate;
-            _channels = numChannels;
-            _rawData = rawInterleavedData;
-            _len = _rawData.Length / numChannels;
+            this.sampleRate = sampleRate;
+            channels = numChannels;
+            rawData = rawInterleavedData;
+            len = rawData.Length / numChannels;
 
-            if (_channels == 2)
-            {
-                _format = ALFormat.Stereo16;
-            }
-            else
-            {
-                _format = ALFormat.Stereo8;
+            if (channels == 2) {
+                format = ALFormat.Stereo16;
+            } else {
+                format = ALFormat.Stereo8;
             }
         }
 
-        public static AudioData FromFile(string filepath, AudioDataImportSettings importSettings = null)
-        {
-            if (importSettings == null)
-            {
-                importSettings = new AudioDataImportSettings()
-                {
+        public static AudioData FromFile(string filepath, AudioDataImportSettings importSettings = null) {
+            if (importSettings == null) {
+                importSettings = new AudioDataImportSettings() {
                     ForceMono = false
                 };
             }
 
-            try
-            {
+            try {
                 return LoadAudioClip(filepath, importSettings);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Console.WriteLine($"Error:\n {e.ToString()}");
                 return null;
             }
         }
 
         //Code partially taken from https://stackoverflow.com/questions/42483778/how-to-get-float-array-of-samples-from-audio-file
-        private static AudioData LoadAudioClip(string filepath, AudioDataImportSettings importSettings)
-        {
-            using (MediaFoundationReader media = new MediaFoundationReader(filepath))
-            {
+        private static AudioData LoadAudioClip(string filepath, AudioDataImportSettings importSettings) {
+            using (MediaFoundationReader media = new MediaFoundationReader(filepath)) {
                 WaveFormat metadata = media.WaveFormat;
                 int sampleRate = metadata.SampleRate;
                 int channels = metadata.Channels;
@@ -135,22 +112,17 @@ namespace MinimalAF.Audio
                 isp.Read(rawData, 0, rawData.Length);
 
                 short[] rawData16bit = new short[rawData.Length];
-                for (int i = 0; i < rawData.Length; i++)
-                {
+                for (int i = 0; i < rawData.Length; i++) {
                     rawData16bit[i] = (short)(rawData[i] * short.MaxValue);
                 }
 
-                if (importSettings.ForceMono)
-                {
-                    if (channels > 1)
-                    {
+                if (importSettings.ForceMono) {
+                    if (channels > 1) {
                         short[] rawData16BitMono = new short[rawData16bit.Length / channels];
 
-                        for (int i = 0; i < rawData16BitMono.Length; i++)
-                        {
+                        for (int i = 0; i < rawData16BitMono.Length; i++) {
                             short data = 0;
-                            for (int j = 0; j < channels; j++)
-                            {
+                            for (int j = 0; j < channels; j++) {
                                 data += (short)(rawData16bit[i * channels + j] / channels);
                             }
 

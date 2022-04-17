@@ -1,89 +1,72 @@
-﻿using MinimalAF.Datatypes;
-using MinimalAF.Logic;
-using MinimalAF.Rendering;
-using MinimalAF.Util;
-using OpenTK.Graphics.OpenGL;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using MinimalAF.Rendering;
 
-namespace MinimalAF.VisualTests.Rendering
-{
-    public class FramebufferTest : EntryPoint
-    {
-        public override void Start()
-        {
-            Window.Size = (800, 600);
-            Window.Title = "FramebufferTest";
+namespace MinimalAF.VisualTests.Rendering {
+    [VisualTest]
+    public class FramebufferTest : Element {
+        public override void OnMount(Window w) {
 
-            //Window.RenderFrequency = 120;
-            //Window.UpdateFrequency = 20;
+            w.Size = (800, 600);
+            w.Title = "FramebufferTest";
 
-            CTX.SetClearColor(1, 1, 1, 1);
+            //w.RenderFrequency = 120;
+            //w.UpdateFrequency = 120; 20;
+
+            SetClearColor(Color4.RGBA(1, 1, 1, 1));
         }
 
 
         double timer = 0;
 
-        public override void Update(double deltaTime)
-        {
-            timer += deltaTime;
+        public override void OnUpdate() {
+            timer += Time.DeltaTime;
         }
 
-        public override void Render(double deltaTime)
-        {
-            CTX.UseFramebufferTransparent(0);
+        public override void OnRender() {
+            UseTransparentFramebuffer(0);
 
-            CTX.SetDrawColor(0, 0, 1, 1);
+            SetDrawColor(0, 0, 1, 1);
 
-            float wCX = Window.Width / 2;
-            float wCY = Window.Height / 2;
+            float wCX = VW(0.5f);
+            float wCY = VH(0.5f);
             DrawDualCirclesCenter(wCX, wCY);
-            CTX.SetDrawColor(1, 1, 0, 1);
-            CTX.DrawRect(wCX, wCY, wCX + 50, wCY + 25);
+            SetDrawColor(1, 1, 0, 1);
+            Rect(wCX, wCY, wCX + 50, wCY + 25);
 
-            CTX.StopUsingFramebuffer();
+            StopUsingFramebuffer();
 
-            CTX.SetDrawColor(new Color4(0, 0, 0, 1));
-            CTX.SetCurrentFont("Consolas", 12);
-            CTX.DrawText("The red square must be fully visible under the circles.\n" +
+            SetDrawColor(Color4.RGBA(0, 0, 0, 1));
+            SetFont("Consolas", 12);
+
+            string assertThat = "The red square must be fully visible under the circles.\n" +
                 "The part where the circles overlap must not be visible.\n" +
                 "There must be a small orange rectangle in the middle\n" +
-                "This text must be 0,0,0 black \n",
-                0, Window.Height - 20);
+                "It must all be inside the green square\n" +
+                "This text must be 0,0,0 black \n" +
+                "The circles must actually be circular, and not distorted ovals \n";
 
-            CTX.SetDrawColor(1, 0, 0, 1);
+            Text(assertThat, 0, Height - 20);
+
+            SetDrawColor(1, 0, 0, 1);
 
             float rectSize = 200;
 
 
-            CTX.DrawRect(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
-            CTX.SetDrawColor(1, 1, 1, 0.5f);
-            CTX.SetTextureToFramebuffer(0);
-            
-            CTX.DrawRect(0, 0, Window.Width,Window.Height);
+            Rect(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
+            SetDrawColor(1, 1, 1, 0.5f);
+            SetTexture(GetFramebufferTexture(0));
 
-            CTX.SetTexture(null);
+            Rect(0, 0, Width, Height);
 
-            CTX.SetDrawColor(0, 1, 0, 0.5f);
-            CTX.DrawRectOutline(10, wCX - 300, wCY - 300, wCX + 300, wCY + 300);
+            SetTexture(null);
+
+            SetDrawColor(0, 1, 0, 0.5f);
+            RectOutline(10, wCX - 300, wCY - 300, wCX + 300, wCY + 300);
         }
 
 
-        private static void DrawDualCirclesCenter(float x, float y)
-        {
-            CTX.DrawCircle(x - 100, y - 100, 200);
-            CTX.DrawCircle(x + 100, y + 100, 200);
-        }
-
-        private static void DrawDualCircles()
-        {
-            CTX.DrawCircle(300 - 100, 300 - 100, 200);
-            CTX.DrawCircle(300 + 100, 300 + 100, 200);
-        }
-
-        public override void Resize()
-        {
-            base.Resize();
+        private void DrawDualCirclesCenter(float x, float y) {
+            Circle(x - 100, y - 100, 200);
+            Circle(x + 100, y + 100, 200);
         }
     }
 }

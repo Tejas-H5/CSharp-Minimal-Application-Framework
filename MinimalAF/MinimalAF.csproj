@@ -10,15 +10,15 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <WarningsAsErrors>$(WarningsAsErrors);NU1605;CS1717;</WarningsAsErrors>
+    <WarningsAsErrors>$(WarningsAsErrors);NU1605;CS1717;CS1718;</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <WarningsAsErrors>$(WarningsAsErrors);NU1605;CS1717;</WarningsAsErrors>
+    <WarningsAsErrors>$(WarningsAsErrors);NU1605;CS1717;CS1718;</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Debug symbols|AnyCPU'">
-    <WarningsAsErrors>$(WarningsAsErrors);NU1605;CS1717;</WarningsAsErrors>
+    <WarningsAsErrors>$(WarningsAsErrors);NU1605;CS1717;CS1718;</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

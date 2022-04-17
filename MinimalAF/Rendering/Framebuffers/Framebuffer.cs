@@ -60,7 +60,7 @@ namespace MinimalAF.Rendering {
         /// if the current dimensions are different.
         /// </summary>
         public void ResizeIfRequired(int width, int height) {
-            if (width == width && height == height)
+            if (this.width == width && this.height == height)
                 return;
 
             this.width = width;

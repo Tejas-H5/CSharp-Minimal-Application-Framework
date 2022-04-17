@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace MinimalAF.Rendering {
     public class FramebufferManager : IDisposable {
-        private Dictionary<int, Framebuffer> _framebufferList;
+        private Dictionary<int, Framebuffer> framebufferList;
 
         public FramebufferManager() {
-            _framebufferList = new Dictionary<int, Framebuffer>();
+            framebufferList = new Dictionary<int, Framebuffer>();
         }
 
 
@@ -20,20 +20,20 @@ namespace MinimalAF.Rendering {
         /// As of now, drawing to a framebuffer of any size other than the window size does not work
         /// </summary>
         public void Use(int index) {
-            if (!_framebufferList.ContainsKey(index)) {
-                _framebufferList[index] = new Framebuffer(CTX.ContextWidth, CTX.ContextHeight,
+            if (!framebufferList.ContainsKey(index)) {
+                framebufferList[index] = new Framebuffer(CTX.ContextWidth, CTX.ContextHeight,
                     new TextureImportSettings {
                         Filtering = FilteringType.NearestNeighbour
                     });
             }
 
 
-            _framebufferList[index].ResizeIfRequired(CTX.ContextWidth, CTX.ContextHeight);
+            framebufferList[index].ResizeIfRequired(CTX.ContextWidth, CTX.ContextHeight);
 
             CTX.Flush();
 
 
-            _framebufferList[index].Use();
+            framebufferList[index].Use();
             CTX.Clear();
         }
 
@@ -53,11 +53,11 @@ namespace MinimalAF.Rendering {
         }
 
         public Texture GetTexture(int framebufferIndex) {
-            if (!_framebufferList.ContainsKey(framebufferIndex)) {
+            if (!framebufferList.ContainsKey(framebufferIndex)) {
                 return null;
             }
 
-            return _framebufferList[framebufferIndex].Texture;
+            return framebufferList[framebufferIndex].Texture;
         }
 
         public void UseTexture(int framebufferIndex) {
@@ -95,11 +95,11 @@ namespace MinimalAF.Rendering {
         }
 
         public void Dispose() {
-            foreach (var intFramebufferPair in _framebufferList) {
+            foreach (var intFramebufferPair in framebufferList) {
                 intFramebufferPair.Value.Dispose();
             }
 
-            _framebufferList.Clear();
+            framebufferList.Clear();
         }
     }
 }

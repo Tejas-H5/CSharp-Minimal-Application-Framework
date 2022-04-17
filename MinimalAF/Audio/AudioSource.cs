@@ -2,7 +2,7 @@
 
 namespace MinimalAF.Audio {
     public abstract class AudioSource {
-        private static int _nextAudioSourceID = 1;
+        private static int nextAudioSourceID = 1;
 
 
         public int SourceID = -1;
@@ -26,8 +26,8 @@ namespace MinimalAF.Audio {
         public Vector3 Direction { get; set; } = Vector3.Zero;
 
         protected AudioSource(bool relative = false, bool looping = false) {
-            SourceID = _nextAudioSourceID;
-            _nextAudioSourceID++;
+            SourceID = nextAudioSourceID;
+            nextAudioSourceID++;
         }
 
         public abstract void Play();

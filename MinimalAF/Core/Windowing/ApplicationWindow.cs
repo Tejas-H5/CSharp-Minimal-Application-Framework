@@ -29,8 +29,8 @@ namespace MinimalAF {
     /// of your program.
     /// </summary>
     public class ApplicationWindow : Window {
-        OpenTKWindowWrapper _window;
-        Element _rootElement;
+        OpenTKWindowWrapper window;
+        Element rootElement;
 
         public override bool SingleChild => true;
 
@@ -39,8 +39,8 @@ namespace MinimalAF {
 
         public void Run(Element rootElement) {
             using (OpenTKWindowWrapper window = new OpenTKWindowWrapper(this)) {
-                _window = window;
-                _rootElement = new UIRootElement()
+                this.window = window;
+                this.rootElement = new UIRootElement()
                     .SetChildren(rootElement);
 
                 // event loop that polls
@@ -48,98 +48,98 @@ namespace MinimalAF {
             }
 
             SetChildren(null);
-            _window = null;
+            window = null;
         }
 
         internal void StartMounting() {
-            SetChildren(_rootElement);
+            SetChildren(rootElement);
             Mounted = true;
         }
 
         public override (int, int) Size {
             get {
-                return (_window.Size.X, _window.Size.Y);
+                return (window.Size.X, window.Size.Y);
             }
             set {
-                _window.Size = new OpenTK.Mathematics.Vector2i(value.Item1, value.Item2);
+                window.Size = new OpenTK.Mathematics.Vector2i(value.Item1, value.Item2);
             }
         }
 
         public void Close() {
-            _window.Close();
+            window.Close();
         }
 
         public override WindowState WindowState {
-            get => (WindowState)_window.WindowState;
+            get => (WindowState)window.WindowState;
             set {
-                _window.WindowState = (OpenTK.Windowing.Common.WindowState)value;
+                window.WindowState = (OpenTK.Windowing.Common.WindowState)value;
             }
         }
 
         public override string Title {
             get {
-                return _window.Title;
+                return window.Title;
             }
             set {
-                _window.Title = value;
+                window.Title = value;
             }
         }
         new public int Width {
             get {
-                return _window.Width;
+                return window.Width;
             }
         }
         new public int Height {
             get {
-                return _window.Height;
+                return window.Height;
             }
         }
 
         public float CurrentFPS {
             get {
-                return _window.CurrentFPS;
+                return window.CurrentFPS;
             }
         }
 
         public float CurrentUpdateFPS {
             get {
-                return _window.CurrentUpdateFPS;
+                return window.CurrentUpdateFPS;
             }
         }
         public override double UpdateFrequency {
             get {
-                return _window.UpdateFrequency;
+                return window.UpdateFrequency;
             }
             set {
-                _window.UpdateFrequency = value;
+                window.UpdateFrequency = value;
             }
         }
         public override double RenderFrequency {
             get {
-                return _window.RenderFrequency;
+                return window.RenderFrequency;
             }
             set {
-                _window.RenderFrequency = value;
+                window.RenderFrequency = value;
             }
         }
         public string ClipboardString {
             get {
-                return _window.ClipboardString;
+                return window.ClipboardString;
             }
             set {
-                _window.ClipboardString = value;
+                window.ClipboardString = value;
             }
         }
 
         internal event Action<float> MouseWheel {
             add {
-                lock (_window) {
-                    _window.MouseWheelVertical += value;
+                lock (window) {
+                    window.MouseWheelVertical += value;
                 }
             }
             remove {
-                lock (_window) {
-                    _window.MouseWheelVertical -= value;
+                lock (window) {
+                    window.MouseWheelVertical -= value;
                 }
             }
         }

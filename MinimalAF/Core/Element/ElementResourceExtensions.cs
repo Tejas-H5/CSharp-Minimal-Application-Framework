@@ -4,14 +4,14 @@ using System.Text;
 
 namespace MinimalAF {
     public partial class Element {
-		private List<object> _resources = new List<object>();
+		private List<object> resources = new List<object>();
 
 		public void AddResource(object res) {
 			if (GetResourceAtElement(res.GetType()) != null) {
 				throw new Exception("This resource is already present on this object");
 			}
 
-			_resources.Add(res);
+			resources.Add(res);
 		}
 
 		public bool AddResourceIfNotPresent(object res) {
@@ -19,13 +19,13 @@ namespace MinimalAF {
 				return false;
 			}
 
-			_resources.Add(res);
+			resources.Add(res);
 			return true;
 		}
 
 		private object GetResourceAtElement(Type tType) {
 
-			foreach (var r in _resources) {
+			foreach (var r in resources) {
 				if (tType.IsAssignableFrom(r.GetType()))
 					return r;
 			}

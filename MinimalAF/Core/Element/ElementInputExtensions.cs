@@ -4,13 +4,13 @@ namespace MinimalAF {
     public partial class Element {
         public float MouseX {
             get {
-                return Input.Mouse.X - _screenRect.X0;
+                return Input.Mouse.X - screenRect.X0;
             }
         }
 
         public float MouseY {
             get {
-                return Input.Mouse.Y - _screenRect.Y0;
+                return Input.Mouse.Y - screenRect.Y0;
             }
         }
 
@@ -36,7 +36,7 @@ namespace MinimalAF {
             return MouseOverSelf && Input.Mouse.ButtonHeld(b);
         }
 
-        public bool MouseOverSelf => Input.Mouse.IsOver(_screenRect);
+        public bool MouseOverSelf => Input.Mouse.IsOver(screenRect);
 
         public bool MouseOver(Rect r) {
             return MouseOver(r.X0, r.Y0, r.X1, r.Y1);

@@ -9,8 +9,8 @@ namespace MinimalAF.VisualTests.Rendering
 	class GeometryAndTextTest : Element
     {
         List<string> rain = new List<string>();
-        Texture _tex;
-		TextTest _textTest;
+        Texture tex;
+		TextTest textTest;
 
         public override void OnMount(Window w)
 		{
@@ -20,10 +20,10 @@ namespace MinimalAF.VisualTests.Rendering
 		    SetClearColor(Color4.White);
 
             SetFont("Consolas", 24);
-			_textTest = new TextTest();
+			textTest = new TextTest();
 			Init();
 
-			SetChildren(_textTest);
+			SetChildren(textTest);
 
             // remove when we start using OnMount
 			w.Title = "Text and geometry test"; 
@@ -36,7 +36,7 @@ namespace MinimalAF.VisualTests.Rendering
                 Filtering = FilteringType.NearestNeighbour
             });
 
-            _tex = TextureMap.GetTexture("placeholder");
+            tex = TextureMap.GetTexture("placeholder");
         }
 
         public override void OnUpdate()
@@ -53,7 +53,7 @@ namespace MinimalAF.VisualTests.Rendering
             SetDrawColor(Color4.RGBA(0,1,0,0.5f));
             Arc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f), a, MathF.PI * 2 + a, 6);
 
-			SetTexture(_tex);
+			SetTexture(tex);
             //RenderingContext.DrawFilledArc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f)/2f, a/2f, MathF.PI * 2 + a/2f, 6);
 
             Rect(VW(0.5f) - 50, VH(0.5f) - 50, VW(0.5f) + 50, VH(0.5f) + 50);
@@ -62,7 +62,7 @@ namespace MinimalAF.VisualTests.Rendering
         }
 
         public override void OnLayout() {
-            _textTest.RelativeRect = new Rect(0, 0, VW(1), VH(1));
+            textTest.RelativeRect = new Rect(0, 0, VW(1), VH(1));
 
             LayoutChildren();
         }

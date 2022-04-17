@@ -1,9 +1,9 @@
 ﻿namespace MinimalAF {
     public static class Time {
-        internal static float _deltaTime;
+        internal static float deltaTime;
         public static float DeltaTime {
             get {
-                return _deltaTime;
+                return deltaTime;
             }
         }
     }

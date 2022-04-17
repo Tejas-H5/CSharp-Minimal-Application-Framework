@@ -1,8 +1,8 @@
 ﻿namespace MinimalAF.VisualTests.UI {
 	[VisualTest]
     public class UIResizingTest : Element {
-        Element _root;
-        Element _textInputElement;
+        Element root;
+        Element textInputElement;
 
         Element GenerateElement(string text) {
             return new OutlineRect(Color4.VA(0, 1), 1).SetChildren(

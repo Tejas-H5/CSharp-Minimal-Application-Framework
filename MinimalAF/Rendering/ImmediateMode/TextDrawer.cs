@@ -4,16 +4,16 @@ using System.Drawing;
 
 namespace MinimalAF.Rendering.ImmediateMode {
     public class TextDrawer : IDisposable {
-        FontManager _fontManager;
+        FontManager fontManager;
 
         public FontAtlasTexture ActiveFont {
             get {
-                return _fontManager.ActiveFont;
+                return fontManager.ActiveFont;
             }
         }
 
         public TextDrawer() {
-            _fontManager = new FontManager();
+            fontManager = new FontManager();
             SetFont("", -1);
         }
 
@@ -22,7 +22,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
             if (size < 0)
                 size = 12;
 
-            _fontManager.SetCurrentFont(name, size);
+            fontManager.SetCurrentFont(name, size);
         }
 
 
@@ -177,7 +177,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
         }
 
         public void Dispose() {
-            _fontManager.Dispose();
+            fontManager.Dispose();
         }
 
         public float GetStringHeight(string s) {
@@ -185,7 +185,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
         }
 
         public float GetStringHeight(string s, int start, int end) {
-            return _fontManager.GetStringHeight(s, start, end);
+            return fontManager.GetStringHeight(s, start, end);
         }
 
 
@@ -194,7 +194,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
         }
 
         public float GetStringWidth(string s, int start, int end) {
-            return _fontManager.GetStringWidth(s, start, end);
+            return fontManager.GetStringWidth(s, start, end);
         }
     }
 }

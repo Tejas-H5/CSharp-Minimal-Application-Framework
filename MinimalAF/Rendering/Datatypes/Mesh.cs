@@ -3,32 +3,32 @@ using System;
 
 namespace MinimalAF.Rendering {
     public class Mesh : IDisposable {
-        Vertex[] _vertices;
-        uint[] _indices;
+        Vertex[] vertices;
+        uint[] indices;
 
-        int _vbo;
-        int _ebo;
+        int vbo;
+        int ebo;
 
-        int _vao;
+        int vao;
 
-        uint _indexCount;
-        uint _vertexCount;
+        uint indexCount;
+        uint vertexCount;
 
         public int Handle {
             get {
-                return _vao;
+                return vao;
             }
         }
 
         public Vertex[] Vertices {
             get {
-                return _vertices;
+                return vertices;
             }
         }
 
         public uint[] Indices {
             get {
-                return _indices;
+                return indices;
             }
         }
 
@@ -41,11 +41,11 @@ namespace MinimalAF.Rendering {
             if (stream)
                 bufferUsage = BufferUsageHint.StreamDraw;
 
-            _vertices = data;
-            _indices = indices;
+            vertices = data;
+            this.indices = indices;
 
-            _indexCount = (uint)_indices.Length;
-            _vertexCount = (uint)_vertices.Length;
+            indexCount = (uint)indices.Length;
+            vertexCount = (uint)vertices.Length;
 
             InitMeshOpenGL(bufferUsage);
         }
@@ -65,17 +65,17 @@ namespace MinimalAF.Rendering {
         }
 
         private void GenerateAndBindVertexBuffer() {
-            _vbo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+            vbo = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
         }
 
         private void SendDataToBoundBuffer(BufferUsageHint bufferUsage) {
-            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * Vertex.SizeOf(), _vertices, bufferUsage);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Vertex.SizeOf(), vertices, bufferUsage);
         }
 
         private void GenerateAndBindVertexArray() {
-            _vao = GL.GenVertexArray();
-            GL.BindVertexArray(_vao);
+            vao = GL.GenVertexArray();
+            GL.BindVertexArray(vao);
         }
 
         private static void RegisterVertexAttributes() {
@@ -94,32 +94,32 @@ namespace MinimalAF.Rendering {
         }
 
         private void GenerateAndBindIndexBuffer() {
-            _ebo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
+            ebo = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
         }
 
         private void SendIndicesToBoundIndexBuffer(BufferUsageHint bufferUsage) {
-            GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, bufferUsage);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, bufferUsage);
         }
 
         public void UpdateBuffers() {
-            UpdateBuffers((uint)_vertices.Length, (uint)_indices.Length);
+            UpdateBuffers((uint)vertices.Length, (uint)indices.Length);
         }
 
         /// <summary>
         /// newVertexCount and newIndexCount MUST be less than the total number of vertices and indices on this mesh object.
         /// </summary>
         public void UpdateBuffers(uint newVertexCount, uint newIndexCount) {
-            _indexCount = newIndexCount;
-            _vertexCount = newVertexCount;
+            indexCount = newIndexCount;
+            vertexCount = newVertexCount;
 
-            if (_indexCount > _indices.Length || _vertexCount > _vertices.Length) {
+            if (indexCount > indices.Length || vertexCount > vertices.Length) {
                 throw new Exception("The mesh buffer does not have this many vertices."
                     + "you may only specify new index and vertex counts that are less than the amount initially allocated");
             }
 
 
-            GL.BindVertexArray(_vao);
+            GL.BindVertexArray(vao);
 
             UpdateVertexBuffer();
 
@@ -127,18 +127,18 @@ namespace MinimalAF.Rendering {
         }
 
         private void UpdateVertexBuffer() {
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (int)_vertexCount * Vertex.SizeOf(), _vertices);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (int)vertexCount * Vertex.SizeOf(), vertices);
         }
 
         private void UpdateIndexBuffer() {
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
-            GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)0, (int)_indexCount * sizeof(uint), _indices);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
+            GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)0, (int)indexCount * sizeof(uint), indices);
         }
 
         public void Draw() {
-            GL.BindVertexArray(_vao);
-            GL.DrawElements(PrimitiveType.Triangles, (int)_indexCount, DrawElementsType.UnsignedInt, (IntPtr)0);
+            GL.BindVertexArray(vao);
+            GL.DrawElements(PrimitiveType.Triangles, (int)indexCount, DrawElementsType.UnsignedInt, (IntPtr)0);
         }
 
 
@@ -148,9 +148,9 @@ namespace MinimalAF.Rendering {
                 return;
 
             GL.BindVertexArray(0);
-            GL.DeleteBuffer(_vbo);
-            GL.DeleteBuffer(_ebo);
-            GL.DeleteVertexArray(_vao);
+            GL.DeleteBuffer(vbo);
+            GL.DeleteBuffer(ebo);
+            GL.DeleteVertexArray(vao);
 
             Console.WriteLine("Mesh destructed");
 

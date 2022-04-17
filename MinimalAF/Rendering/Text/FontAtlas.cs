@@ -23,15 +23,15 @@ namespace MinimalAF.Rendering.Text {
     //concept taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
     public class FontAtlas {
         public const string DefaultCharacters = "!#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'";
-        private Font _systemFont;
-        private Bitmap _bitmap;
-        private Dictionary<char, Rect> _characterQuadCoords;
+        private Font systemFont;
+        private Bitmap bitmap;
+        private Dictionary<char, Rect> characterQuadCoords;
 
         public Font SystemFont {
-            get => _systemFont;
+            get => systemFont;
         }
         public Bitmap Image {
-            get => _bitmap;
+            get => bitmap;
         }
         public float CharWidth {
             get; internal set;
@@ -53,15 +53,15 @@ namespace MinimalAF.Rendering.Text {
             if (!characters.Contains('?'))
                 characters += '?';
 
-            _systemFont = systemFont;
+            this.systemFont = systemFont;
 
             int padding = importSettings.Padding;
 
-            _bitmap = CreateAtlasBaseImage(importSettings, characters, _systemFont, padding);
+            bitmap = CreateAtlasBaseImage(importSettings, characters, systemFont, padding);
 
-            _characterQuadCoords = new Dictionary<char, Rect>();
+            characterQuadCoords = new Dictionary<char, Rect>();
 
-            RenderAtlas(importSettings, characters, _systemFont, _characterQuadCoords, padding, _bitmap);
+            RenderAtlas(importSettings, characters, systemFont, characterQuadCoords, padding, bitmap);
         }
 
         public Rect GetCharacterUV(char c) {
@@ -69,13 +69,13 @@ namespace MinimalAF.Rendering.Text {
                 c = '?';
             }
 
-            return _characterQuadCoords[c];
+            return characterQuadCoords[c];
         }
 
         public SizeF GetCharacterSize(char c) {
             Rect normalized = GetCharacterUV(c);
-            float width = _bitmap.Width;
-            float height = _bitmap.Height;
+            float width = bitmap.Width;
+            float height = bitmap.Height;
 
             return new SizeF(
                 normalized.Width * width,
@@ -84,7 +84,7 @@ namespace MinimalAF.Rendering.Text {
         }
 
         public bool IsValidCharacter(char c) {
-            return _characterQuadCoords.ContainsKey(c);
+            return characterQuadCoords.ContainsKey(c);
         }
 
         private static Font TryGenerateSystemFontObject(FontImportSettings fontSettings) {

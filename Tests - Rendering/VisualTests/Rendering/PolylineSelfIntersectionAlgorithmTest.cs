@@ -21,10 +21,10 @@ namespace MinimalAF.VisualTests.Rendering
         public override void OnRender()
         {
             SetDrawColor(0, 0, 0, 1f);
-            for (int i = 0; i < _points.Length; i++)
+            for (int i = 0; i < points.Length; i++)
             {
-                Circle(_points[i].X, _points[i].Y, 10);
-                Text(i.ToString(), _points[i].X + 20, _points[i].Y + 20);
+                Circle(points[i].X, points[i].Y, 10);
+                Text(i.ToString(), points[i].X + 20, points[i].Y + 20);
             }
 
 			int fbbinding = GL.GetInteger(GetPName.DrawFramebufferBinding);
@@ -32,10 +32,10 @@ namespace MinimalAF.VisualTests.Rendering
 
 			SetDrawColor(0, 0, 1, 0.5f);
 
-            PointF p1 = _points[0];
-            PointF p2 = _points[1];
-            PointF p3 = _points[2];
-            PointF p4 = _points[3];
+            PointF p1 = points[0];
+            PointF p2 = points[1];
+            PointF p3 = points[2];
+            PointF p4 = points[3];
 
             float radius = 100;
 
@@ -114,16 +114,16 @@ namespace MinimalAF.VisualTests.Rendering
         {
         }
 
-        int _currentPoint = 0;
+        int currentPoint = 0;
 
-        PointF[] _points = new PointF[4];
+        PointF[] points = new PointF[4];
 
         public override void OnUpdate()
         {
             if (MouseButtonPressed(MouseButton.Left))
             {
-                _points[_currentPoint] = new PointF(MouseX, MouseY);
-                _currentPoint = (_currentPoint + 1) % _points.Length;
+                points[currentPoint] = new PointF(MouseX, MouseY);
+                currentPoint = (currentPoint + 1) % points.Length;
             }
         }
     }

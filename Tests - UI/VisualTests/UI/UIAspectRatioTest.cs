@@ -1,11 +1,11 @@
 ﻿namespace MinimalAF.VisualTests.UI {
     class AspectRatioContent : Element {
-        TextElement _text;
-        Element _child;
+        TextElement text;
+        Element child;
         public AspectRatioContent() {
             SetChildren(
-                _child = new OutlineRect(Color4.RGBA(1, 0, 0, 1), 2).SetChildren(
-                    _text = new TextElement("4 : 3 Aspect ratio", Color4.RGBA(1, 0, 0, 1))
+                child = new OutlineRect(Color4.RGBA(1, 0, 0, 1), 2).SetChildren(
+                    text = new TextElement("4 : 3 Aspect ratio", Color4.RGBA(1, 0, 0, 1))
                 )
             );
         }
@@ -42,12 +42,12 @@
         }
 
         public override void OnLayout() {
-            LayoutAspectRatio(_child, 4f / 3f, AspectRatioMethod.FitInside);
-            LayoutInset(_child, 10);
+            LayoutAspectRatio(child, 4f / 3f, AspectRatioMethod.FitInside);
+            LayoutInset(child, 10);
 
-            LayoutInset(_child, 0);
-            _text.HorizontalAlignment = HorizontalAlignment.Left;
-            _text.VerticalAlignment = VerticalAlignment.Bottom;
+            LayoutInset(child, 0);
+            text.HorizontalAlignment = HorizontalAlignment.Left;
+            text.VerticalAlignment = VerticalAlignment.Bottom;
 
             LayoutChildren();
         }
@@ -55,12 +55,12 @@
 
 	[VisualTest]
     public class UIAspectRatioTest : Element {
-        Element _container;
-        Element _aspectRatio;
+        Element container;
+        Element aspectRatio;
 
         public UIAspectRatioTest() {
             SetChildren(
-                _container = new OutlineRect(Color4.RGBA(1, 1, 1, 1), 2)
+                container = new OutlineRect(Color4.RGBA(1, 1, 1, 1), 2)
                 .SetChildren(
                     new AspectRatioContent()
                 )
@@ -77,7 +77,7 @@
         }
 
         public override void OnLayout() {
-            LayoutInset(_container, 10);
+            LayoutInset(container, 10);
             LayoutChildren();
         }
     }

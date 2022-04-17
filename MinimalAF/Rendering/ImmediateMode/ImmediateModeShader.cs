@@ -28,22 +28,22 @@
             "}" +
             "";
 
-        Color4 _color;
-        int _colorLoc;
+        Color4 color;
+        int colorLoc;
 
         public ImmediateModeShader()
             : base(vertSource, fragSource) {
         }
 
         public Color4 Color {
-            get => _color; set {
-                _color = value;
-                SetVector4(_colorLoc, _color);
+            get => color; set {
+                color = value;
+                SetVector4(colorLoc, color);
             }
         }
 
         protected override void InitShader() {
-            _colorLoc = Loc("color");
+            colorLoc = Loc("color");
         }
     }
 }

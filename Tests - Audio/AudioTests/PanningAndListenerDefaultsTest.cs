@@ -3,8 +3,8 @@
 namespace MinimalAF.AudioTests {
 	[VisualTest]
     public class PanningAndListenerDefaultsTest : Element {
-        AudioSourceOneShot _clackSound;
-        AudioListener _listener;
+        AudioSourceOneShot clackSound;
+        AudioListener listener;
 
         public override void OnMount(Window w) {
             
@@ -15,9 +15,9 @@ namespace MinimalAF.AudioTests {
             SetFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
-            _clackSound = new AudioSourceOneShot(false, false, clip);
+            clackSound = new AudioSourceOneShot(false, false, clip);
 
-            _listener = new AudioListener().MakeCurrent();
+            listener = new AudioListener().MakeCurrent();
         }
 
         double timer = 0;
@@ -27,13 +27,13 @@ namespace MinimalAF.AudioTests {
             timer += Time.DeltaTime;
             if (timer > 0.5f) {
                 timer = 0;
-                _clackSound.Play();
+                clackSound.Play();
             }
 
             listenerX = 10 * ((MouseX / Width) - 0.5f);
             listenerZ = 10 * ((MouseY / Height) - 0.5f);
 
-            _listener.SetPosition(listenerX, 0, listenerZ);
+            listener.SetPosition(listenerX, 0, listenerZ);
         }
 
         public override void OnRender() {

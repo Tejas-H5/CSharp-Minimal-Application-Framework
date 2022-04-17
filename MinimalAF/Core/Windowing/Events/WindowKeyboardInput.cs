@@ -1,13 +1,13 @@
 ﻿namespace MinimalAF {
     public class WindowKeyboardInput {
-        Element _currentlyFocused = null;
+        Element currentlyFocused = null;
 
         public void FocusElement(Element el) {
-            _currentlyFocused = el;
+            currentlyFocused = el;
         }
 
         public bool IsFocused(Element el) {
-            return el == _currentlyFocused;
+            return el == currentlyFocused;
         }
     }
 }

@@ -2,25 +2,25 @@
 
 namespace MinimalAF.Rendering.ImmediateMode {
     public class QuadDrawer {
-        IGeometryOutput _outputStream;
+        IGeometryOutput outputStream;
 
         public QuadDrawer(IGeometryOutput outputStream) {
-            _outputStream = outputStream;
+            this.outputStream = outputStream;
         }
 
         /// <summary>
         /// Assumes the verts are defined clockwise
         /// </summary>
         public void Draw(Vertex v1, Vertex v2, Vertex v3, Vertex v4) {
-            _outputStream.FlushIfRequired(4, 6);
+            outputStream.FlushIfRequired(4, 6);
 
-            uint i1 = _outputStream.AddVertex(v1);
-            uint i2 = _outputStream.AddVertex(v2);
-            uint i3 = _outputStream.AddVertex(v3);
-            uint i4 = _outputStream.AddVertex(v4);
+            uint i1 = outputStream.AddVertex(v1);
+            uint i2 = outputStream.AddVertex(v2);
+            uint i3 = outputStream.AddVertex(v3);
+            uint i4 = outputStream.AddVertex(v4);
 
-            _outputStream.MakeTriangle(i1, i2, i3);
-            _outputStream.MakeTriangle(i3, i4, i1);
+            outputStream.MakeTriangle(i1, i2, i3);
+            outputStream.MakeTriangle(i3, i4, i1);
         }
 
         public void Draw(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,

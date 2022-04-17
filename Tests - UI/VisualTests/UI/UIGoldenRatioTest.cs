@@ -10,10 +10,10 @@ namespace MinimalAF.VisualTests.UI {
                 return new Panel(Color4.VA(0, 0.1f), col, Color4.RGBA(0, 1, 0, 0.5f));
             }
 
-            Direction _dir;
+            Direction dir;
 
             public SplitContainer(Direction dir) {
-                _dir = dir;
+                this.dir = dir;
 
                 SetChildren(
                     GeneratePanel(Color4.RGBA(1, 0, 0, 0.5f)),
@@ -25,8 +25,8 @@ namespace MinimalAF.VisualTests.UI {
 
 
             public override void OnLayout() {
-                LayoutSplit(_children, _dir, goldenRatioSplit, true);
-                LayoutInset(_children, 10);
+                LayoutSplit(children, dir, goldenRatioSplit, true);
+                LayoutInset(children, 10);
 
                 LayoutChildren();
             }

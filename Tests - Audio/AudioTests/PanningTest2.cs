@@ -4,8 +4,8 @@ using OpenTK.Mathematics;
 namespace MinimalAF.AudioTests {
     [VisualTest]
     public class PanningTest2 : Element {
-        AudioSourceOneShot _clackSound;
-        AudioListener _listener;
+        AudioSourceOneShot clackSound;
+        AudioListener listener;
 
         public override void OnMount(Window w) {
             
@@ -16,9 +16,9 @@ namespace MinimalAF.AudioTests {
             SetFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
-            _clackSound = new AudioSourceOneShot(false, false, clip);
+            clackSound = new AudioSourceOneShot(false, false, clip);
 
-            _listener = new AudioListener().MakeCurrent();
+            listener = new AudioListener().MakeCurrent();
         }
 
         double timer = 0;
@@ -29,7 +29,7 @@ namespace MinimalAF.AudioTests {
             timer += Time.DeltaTime;
             if (timer > 0.5f) {
                 timer = 0;
-                _clackSound.Play();
+                clackSound.Play();
             }
 
             prevListenerX = listenerX;
@@ -38,8 +38,8 @@ namespace MinimalAF.AudioTests {
             listenerX = 10 * ((MouseX / Width) - 0.5f);
             listenerZ = 10 * ((MouseY / Height) - 0.5f);
 
-            _clackSound.Position = new Vector3(listenerX, 0, listenerZ);
-            _clackSound.Velocity = new Vector3((listenerX - prevListenerX) / Time.DeltaTime, 0, (listenerZ - prevListenerZ) / Time.DeltaTime);
+            clackSound.Position = new Vector3(listenerX, 0, listenerZ);
+            clackSound.Velocity = new Vector3((listenerX - prevListenerX) / Time.DeltaTime, 0, (listenerZ - prevListenerZ) / Time.DeltaTime);
         }
 
         public override void OnRender() {

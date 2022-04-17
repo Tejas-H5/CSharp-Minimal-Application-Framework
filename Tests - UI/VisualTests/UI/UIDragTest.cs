@@ -14,10 +14,10 @@ namespace MinimalAF.VisualTests.UI {
             SetChildren(GeneratePanel("Drag component"));
         }
 
-        UIDragTestProgram _dragState;
+        UIDragTestProgram dragState;
         public override void OnMount(Window w) {
             Console.WriteLine("Mount");
-            _dragState = GetAncestor<UIDragTestProgram>();
+            dragState = GetAncestor<UIDragTestProgram>();
         }
 
         public override void OnDismount() {
@@ -35,7 +35,7 @@ namespace MinimalAF.VisualTests.UI {
             if (MouseStartedDragging) {
                 startX0 = RelativeRect.X0;
                 startY0 = RelativeRect.Y0;
-                _dragState.CurrentlyDraggedContent = this;
+                dragState.CurrentlyDraggedContent = this;
                 isDragging = true;
             } else if (MouseFinishedDragging) {
                 isDragging = false;
@@ -54,7 +54,7 @@ namespace MinimalAF.VisualTests.UI {
             if (MouseFinishedDragging) {
                 setNullNextFrame = true;
             } else if(setNullNextFrame) {
-                _dragState.CurrentlyDraggedContent = null;
+                dragState.CurrentlyDraggedContent = null;
                 setNullNextFrame = false;
             }
         }
@@ -78,17 +78,17 @@ namespace MinimalAF.VisualTests.UI {
             );
         }
 
-        UIDragTestProgram _dragState;
+        UIDragTestProgram dragState;
         public override void OnMount(Window w) {
-            _dragState = GetAncestor<UIDragTestProgram>();
+            dragState = GetAncestor<UIDragTestProgram>();
         }
 
 
         public override void OnUpdate() {
             if (MouseOverSelf && MouseFinishedDragging) {
-                if (_dragState.CurrentlyDraggedContent != null) {
-                    _dragState.CurrentlyDraggedContent.Parent = this;
-                    _dragState.CurrentlyDraggedContent = null;
+                if (dragState.CurrentlyDraggedContent != null) {
+                    dragState.CurrentlyDraggedContent.Parent = this;
+                    dragState.CurrentlyDraggedContent = null;
                 }
             }
         }
@@ -97,34 +97,34 @@ namespace MinimalAF.VisualTests.UI {
     public class UIDragTestProgram : Element {
         public DraggedContent CurrentlyDraggedContent = null;
 
-        DraggedContent _thinggo;
+        DraggedContent thinggo;
 
         public UIDragTestProgram() {
-            _thinggo = new DraggedContent();
+            thinggo = new DraggedContent();
             Element area1;
             SetChildren(
                 area1 = new DragReciever("Area 1"),
                 new DragReciever("Area 2")
             );
 
-            area1.AddChild(_thinggo);
+            area1.AddChild(thinggo);
         }
 
         public override void OnUpdate() {
             if (KeyPressed(KeyCode.Space)) {
-                int index = _thinggo.Parent.Index();
+                int index = thinggo.Parent.Index();
 
                 if (index == 0) {
-                    _thinggo.Parent = this[1];
+                    thinggo.Parent = this[1];
                 } else {
-                    _thinggo.Parent = this[0];
+                    thinggo.Parent = this[0];
                 }
             }
         }
 
         public override void OnLayout() {
-            LayoutSplit(_children, Direction.Left);
-            LayoutInset(_children, 50);
+            LayoutSplit(children, Direction.Left);
+            LayoutInset(children, 50);
 
             LayoutChildren();
         }
@@ -132,12 +132,12 @@ namespace MinimalAF.VisualTests.UI {
 
 	[VisualTest]
     public class UIDragTest : Element {
-        Element _container;
+        Element container;
 
         public UIDragTest() {
             SetChildren(
                 new UIRootElement().SetChildren(
-                    _container = new OutlineRect(Color4.RGBA(1, 1, 1, 1), 2)
+                    container = new OutlineRect(Color4.RGBA(1, 1, 1, 1), 2)
                     .SetChildren(
                         new UIDragTestProgram()
                     )
@@ -155,7 +155,7 @@ namespace MinimalAF.VisualTests.UI {
         }
 
         public override void OnLayout() {
-            LayoutInset(_container, 10);
+            LayoutInset(container, 10);
 
             LayoutChildren();
         }

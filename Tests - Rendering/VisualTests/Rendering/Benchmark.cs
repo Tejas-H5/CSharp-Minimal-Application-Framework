@@ -7,13 +7,13 @@ namespace MinimalAF.VisualTests.Rendering
     [VisualTest]
     class Benchmark : Element
     {
-        private int _lineThiccness;
-        CapType _capType;
+        private int lineThiccness;
+        CapType capType;
 
         public Benchmark(CapType capType = CapType.Circle, int thickness = 5)
         {
-            _lineThiccness = thickness;
-            _capType = capType;
+            lineThiccness = thickness;
+            this.capType = capType;
         }
 
         public override void OnMount(Window w)
@@ -49,7 +49,7 @@ namespace MinimalAF.VisualTests.Rendering
                 float x2 = VW((float)rand.NextDouble());
                 float y2 = VH((float)rand.NextDouble());
 
-                Line(x1, y1, x2, y2, _lineThiccness, _capType);
+                Line(x1, y1, x2, y2, lineThiccness, capType);
             }
 
             double FPS = frames / time;
@@ -57,7 +57,7 @@ namespace MinimalAF.VisualTests.Rendering
 
             string text = "FPS: " + FPS.ToString("0.000") +
                 "\nLines drawn: " + amount + 
-                "\nCapType: " + _capType.ToString();
+                "\nCapType: " + capType.ToString();
 
             Text(text, 10, Height - 50);
 

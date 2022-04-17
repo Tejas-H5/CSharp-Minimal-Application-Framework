@@ -10,9 +10,9 @@ namespace MinimalAF {
     }
 
     public class TextInput<T> : Element, IInput<T> {
-        TextElement _textObject, placeholderTextObject;
+        TextElement textObject, placeholderTextObject;
 
-        bool _endsTypingOnNewline = true;
+        bool endsTypingOnNewline = true;
         float blinkPhase = 0, blinkSpeed = 3;
         public event Action<T> OnChanged;
         public event Action<T> OnFinalized;
@@ -24,32 +24,32 @@ namespace MinimalAF {
         }
 
         public string String {
-            get => _textObject.String;
-            set => _textObject.String = value;
+            get => textObject.String;
+            set => textObject.String = value;
         }
 
-        Property<T> _property;
+        Property<T> property;
         public Property<T> Property;
 
-        Func<string, T> _parser;
+        Func<string, T> parser;
 
-        UIState _uiState;
+        UIState uiState;
 
         public bool HasFocus {
             get {
-                if (_uiState == null) {
+                if (uiState == null) {
                     return false;
                 }
 
-                return _uiState.CurrentlyFocused == this;
+                return uiState.CurrentlyFocused == this;
             }
         }
 
         public void Focus(bool focus = true) {
             if (focus) {
-                _uiState.CurrentlyFocused = this;
-            } else if (_uiState.CurrentlyFocused == this) {
-                _uiState.CurrentlyFocused = null;
+                uiState.CurrentlyFocused = this;
+            } else if (uiState.CurrentlyFocused == this) {
+                uiState.CurrentlyFocused = null;
                 OnDefocused?.Invoke();
             }
         }
@@ -61,21 +61,21 @@ namespace MinimalAF {
         /// ToString is being used to convert from the value back to a string.
         /// </summary>
         public TextInput(TextElement child, T defaultValue, Func<string, T> parser, Func<T, T> validator = null, bool endsTypingOnNewline = true) {
-            _textObject = child;
-            _property = new Property<T>(defaultValue, validator);
-            _parser = parser;
-            _endsTypingOnNewline = endsTypingOnNewline;
+            textObject = child;
+            property = new Property<T>(defaultValue, validator);
+            this.parser = parser;
+            this.endsTypingOnNewline = endsTypingOnNewline;
 
 
-            Color4 placeholderCol = _textObject.TextColor;
+            Color4 placeholderCol = textObject.TextColor;
             placeholderCol.A *= 0.5f;
 
             placeholderTextObject = new TextElement(
-                "", placeholderCol, _textObject.Font, _textObject.FontSize, _textObject.VerticalAlignment, _textObject.HorizontalAlignment
+                "", placeholderCol, textObject.Font, textObject.FontSize, textObject.VerticalAlignment, textObject.HorizontalAlignment
             );
 
             SetChildren(
-                _textObject,
+                textObject,
                 placeholderTextObject
             );
 
@@ -86,7 +86,7 @@ namespace MinimalAF {
 
 
         public override void OnMount(Window w) {
-            _uiState = GetResource<UIState>();
+            uiState = GetResource<UIState>();
         }
 
         public override void OnRender() {
@@ -96,10 +96,10 @@ namespace MinimalAF {
         }
 
         private void RenderCarat() {
-            PointF caratPos = _textObject.GetCaratPos();
-            float height = _textObject.GetCharacterHeight();
+            PointF caratPos = textObject.GetCaratPos();
+            float height = textObject.GetCharacterHeight();
 
-            Color4 col = _textObject.TextColor;
+            Color4 col = textObject.TextColor;
             col.A *= MathF.Sin(blinkPhase);
             col.A *= col.A;
 
@@ -114,7 +114,7 @@ namespace MinimalAF {
             }
 
             if (MouseButtonPressed(MouseButton.Any) && MouseOverSelf) {
-                _uiState.CurrentlyFocused = this;
+                uiState.CurrentlyFocused = this;
             }
 
 
@@ -157,12 +157,12 @@ namespace MinimalAF {
             if (s.Length > 0 && s[s.Length - 1] == '\n') {
                 String = s.Substring(0, s.Length - 1);
 
-                if (_endsTypingOnNewline)
+                if (endsTypingOnNewline)
                     return true;
             }
 
             try {
-                OnChanged?.Invoke(_parser(s));
+                OnChanged?.Invoke(parser(s));
                 placeholderTextObject.IsVisible = (s == "");
             } catch (Exception) {
 
@@ -180,16 +180,16 @@ namespace MinimalAF {
             bool changed = false;
 
             try {
-                _property.Value = _parser(String);
+                property.Value = parser(String);
                 changed = true;
             } catch (Exception) {
                 // validation error. 
             }
 
-            String = _property.Value.ToString();
+            String = property.Value.ToString();
 
             if (changed) {
-                OnFinalized?.Invoke(_property.Value);
+                OnFinalized?.Invoke(property.Value);
             }
         }
     }

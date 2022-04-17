@@ -9,6 +9,18 @@
     <Configurations>Debug;Release;Release with Debug symbols</Configurations>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors>$(WarningsAsErrors);NU1605;CS1717;</WarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningsAsErrors>$(WarningsAsErrors);NU1605;CS1717;</WarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Debug symbols|AnyCPU'">
+    <WarningsAsErrors>$(WarningsAsErrors);NU1605;CS1717;</WarningsAsErrors>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Rendering\ImmediateMode\LineDrawer.cs~RF1af1429b.TMP" />
   </ItemGroup>

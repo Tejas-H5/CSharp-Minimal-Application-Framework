@@ -1,8 +1,8 @@
 ﻿namespace MinimalAF.VisualTests.UI {
 	[VisualTest]
     public class UILinearArrangeTest : Element {
-        Element _root;
-        Element _textInputElement;
+        Element root;
+        Element textInputElement;
 
         public UILinearArrangeTest() {
             SetChildren(
@@ -41,7 +41,7 @@
 
 
         public override void OnLayout() {
-            LayoutSplit(_children, (Direction)layouting);
+            LayoutSplit(children, (Direction)layouting);
             LayoutChildren();
         }
     }

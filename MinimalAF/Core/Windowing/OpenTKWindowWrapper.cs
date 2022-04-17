@@ -14,13 +14,13 @@ namespace MinimalAF {
     }
 
     internal class OpenTKWindowWrapper : GameWindow {
-        ApplicationWindow _rootWindow;
+        ApplicationWindow rootWindow;
 
         double time = 0;
         int renderFrames = 0;
         int updateFrames = 0;
-        float _fps;
-        float _updateFps;
+        float fps;
+        float updateFps;
 
         public int Height {
             get {
@@ -39,13 +39,13 @@ namespace MinimalAF {
         }
         public float CurrentFPS {
             get {
-                return _fps;
+                return fps;
             }
         }
 
         public float CurrentUpdateFPS {
             get {
-                return _updateFps;
+                return updateFps;
             }
         }
 
@@ -56,14 +56,14 @@ namespace MinimalAF {
             new NativeWindowSettings {
                 StartVisible = false
             }) {
-            _rootWindow = rootWindow;
+            this.rootWindow = rootWindow;
         }
 
         public event Action<uint> TextInputEvent;
 
         public event Action<float> MouseWheelVertical;
 
-        bool _init = false;
+        bool init = false;
 
         protected unsafe override void OnLoad() {
             base.OnLoad();
@@ -75,11 +75,11 @@ namespace MinimalAF {
             CTX.Init(Context);
             AudioCTX.Init();
             Input.HookToWindow(this);
-            _init = true;
+            init = true;
 
             ResizeAction();
 
-            _rootWindow.StartMounting();
+            rootWindow.StartMounting();
 
             IsVisible = true;
         }
@@ -113,8 +113,8 @@ namespace MinimalAF {
             Input.Update();
             AudioCTX.Update();
 
-            Time._deltaTime = (float)args.Time;
-            _rootWindow.UpdateSelfAndChildren(new Rect(0, 0, Width, Height));
+            Time.deltaTime = (float)args.Time;
+            rootWindow.UpdateSelfAndChildren(new Rect(0, 0, Width, Height));
 
             TrackUpdateFPS(args);
         }
@@ -129,10 +129,10 @@ namespace MinimalAF {
             time += args.Time;
 
             if (time >= 1) {
-                _fps = renderFrames / (float)time;
-                _updateFps = updateFrames / (float)time;
+                fps = renderFrames / (float)time;
+                updateFps = updateFrames / (float)time;
 
-                Console.WriteLine($"Render FPS: {_fps}, Update FPS: {updateFrames / time}");
+                Console.WriteLine($"Render FPS: {fps}, Update FPS: {updateFrames / time}");
 
                 time = 0;
                 renderFrames = 0;
@@ -142,7 +142,7 @@ namespace MinimalAF {
 
 
         protected override void OnRenderFrame(FrameEventArgs args) {
-            Time._deltaTime = (float)args.Time;
+            Time.deltaTime = (float)args.Time;
             CTX.ContextWidth = Width;
             CTX.ContextHeight = Height;
 
@@ -153,7 +153,7 @@ namespace MinimalAF {
 
             CTX.Cartesian2D(Width, Height);
 
-            _rootWindow.RenderSelfAndChildren(new Rect(0, 0, Width, Height));
+            rootWindow.RenderSelfAndChildren(new Rect(0, 0, Width, Height));
 
 
             CTX.SwapBuffers();
@@ -164,14 +164,14 @@ namespace MinimalAF {
         void ResizeAction() {
             CTX.SetViewport(Rect);
 
-            _rootWindow.RelativeRect = new Rect(0, 0, Width, Height);
+            rootWindow.RelativeRect = new Rect(0, 0, Width, Height);
             
-            _rootWindow.Layout();
+            rootWindow.Layout();
         }
 
 
         protected override void OnResize(ResizeEventArgs e) {
-            if (!_init)
+            if (!init)
                 return;
 
             base.OnResize(e);
@@ -193,7 +193,7 @@ namespace MinimalAF {
         }
 
         private unsafe void Cleanup() {
-            _rootWindow.Dismount();
+            rootWindow.Dismount();
 
             CTX.Dispose(true);
             AudioCTX.Cleanup();

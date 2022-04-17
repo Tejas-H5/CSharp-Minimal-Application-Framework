@@ -2,114 +2,114 @@
 
 namespace MinimalAF {
     public class MouseInputManager {
-        OpenTKWindowWrapper _window;
+        OpenTKWindowWrapper window;
 
-        float _incomingWheelNotches = 0;
-        float _wheelNotches = 0;
+        float incomingWheelNotches = 0;
+        float wheelNotches = 0;
 
-        bool[] _prevMouseButtonStates = new bool[3];
-        bool[] _mouseButtonStates = new bool[3];
+        bool[] prevMouseButtonStates = new bool[3];
+        bool[] mouseButtonStates = new bool[3];
 
-        bool _dragCancelled;
-        bool _wasAnyDown = false;
-        bool _anyHeld = false;
-        bool _wasAnyHeld = false;
-        bool _isAnyHeld = false;
-        bool _wasDragging = false;
-        bool _anyPressed = false;
-        bool _anyReleased = false;
+        bool dragCancelled;
+        bool wasAnyDown = false;
+        bool anyHeld = false;
+        bool wasAnyHeld = false;
+        bool isAnyHeld = false;
+        bool wasDragging = false;
+        bool anyPressed = false;
+        bool anyReleased = false;
 
-        float _dragStartX;
-        float _dragStartY;
-        float _dragDeltaX = 0;
-        float _dragDeltaY = 0;
+        float dragStartX;
+        float dragStartY;
+        float dragDeltaX = 0;
+        float dragDeltaY = 0;
         //Mainly used to tell if we started dragging or not, and 
         //not meant to be an accurate representation of total distance dragged
 
         public float WheelNotches {
             get {
-                return _wheelNotches;
+                return wheelNotches;
             }
         }
 
         internal bool[] ButtonStates {
             get {
-                return _mouseButtonStates;
+                return mouseButtonStates;
             }
         }
         internal bool[] PrevButtonStates {
             get {
-                return _prevMouseButtonStates;
+                return prevMouseButtonStates;
             }
         }
 
         public bool IsAnyDown {
             get {
-                return _anyHeld;
+                return anyHeld;
             }
         }
         public bool IsAnyPressed {
             get {
-                return _anyPressed;
+                return anyPressed;
             }
         }
         public bool IsAnyReleased {
             get {
-                return _anyReleased;
+                return anyReleased;
             }
         }
 
         // TODO low priority: Think of a better name for this private field (HAHAHA)
         public bool CurrentlyDragging {
             get {
-                return _isAnyHeld && !_dragCancelled && ((MathF.Abs(DragDeltaX) + MathF.Abs(DragDeltaX)) > 1);
+                return isAnyHeld && !dragCancelled && ((MathF.Abs(DragDeltaX) + MathF.Abs(DragDeltaX)) > 1);
             }
         }
 
-        public bool StartedDragging => !_wasAnyHeld && _isAnyHeld;
-        public bool IsDragging => _wasAnyHeld && CurrentlyDragging;
-        public bool FinishedDragging => _wasAnyHeld && !_isAnyHeld;
+        public bool StartedDragging => !wasAnyHeld && isAnyHeld;
+        public bool IsDragging => wasAnyHeld && CurrentlyDragging;
+        public bool FinishedDragging => wasAnyHeld && !isAnyHeld;
 
         public float X {
             get {
-                return _window.MouseState.Position.X;
+                return window.MouseState.Position.X;
             }
         }
         public float Y {
             get {
-                return _window.Height - _window.MouseState.Position.Y;
+                return window.Height - window.MouseState.Position.Y;
             }
         }
 
         public float XDelta {
             get {
-                return _window.MouseState.Delta.X;
+                return window.MouseState.Delta.X;
             }
         }
         public float YDelta {
             get {
-                return _window.MouseState.Delta.Y;
+                return window.MouseState.Delta.Y;
             }
         }
 
         public float DragStartX {
             get {
-                return _dragStartX;
+                return dragStartX;
             }
         }
         public float DragStartY {
             get {
-                return _dragStartY;
+                return dragStartY;
             }
         }
         public float DragDeltaX {
             get {
-                return _dragDeltaX;
+                return dragDeltaX;
             }
         }
         internal float DragDeltaY {
             get {
-                return _dragDeltaY;
+                return dragDeltaY;
             }
         }
 
@@ -117,7 +117,7 @@ namespace MinimalAF {
         }
 
         private void OnWindowMouseWheel(OpenTK.Windowing.Common.MouseWheelEventArgs obj) {
-            _incomingWheelNotches += obj.OffsetY;
+            incomingWheelNotches += obj.OffsetY;
         }
 
         public bool IsOver(Rect rect) {
@@ -125,58 +125,58 @@ namespace MinimalAF {
         }
 
         internal void Hook(OpenTKWindowWrapper window) {
-            _window = window;
-            _window.MouseWheel += OnWindowMouseWheel;
+            this.window = window;
+            window.MouseWheel += OnWindowMouseWheel;
         }
 
         internal void Unhook() {
-            if (_window != null)
-                _window.MouseWheel -= OnWindowMouseWheel;
+            if (window != null)
+                window.MouseWheel -= OnWindowMouseWheel;
         }
 
 
         private void SwapInputBuffers() {
-            bool[] temp = _prevMouseButtonStates;
-            _prevMouseButtonStates = _mouseButtonStates;
-            _mouseButtonStates = temp;
+            bool[] temp = prevMouseButtonStates;
+            prevMouseButtonStates = mouseButtonStates;
+            mouseButtonStates = temp;
         }
 
         public bool ButtonPressed(MouseButton b) {
             if (b == MouseButton.Any)
-                return _anyPressed;
+                return anyPressed;
 
-            return (!_prevMouseButtonStates[(int)b]) && _mouseButtonStates[(int)b];
+            return (!prevMouseButtonStates[(int)b]) && mouseButtonStates[(int)b];
         }
 
         public bool ButtonReleased(MouseButton b) {
             if (b == MouseButton.Any)
-                return _anyReleased;
+                return anyReleased;
 
-            return _prevMouseButtonStates[(int)b] && (!_mouseButtonStates[(int)b]);
+            return prevMouseButtonStates[(int)b] && (!mouseButtonStates[(int)b]);
         }
 
         public bool ButtonHeld(MouseButton b) {
             if (b == MouseButton.Any)
-                return _anyHeld;
+                return anyHeld;
 
-            return _mouseButtonStates[(int)b];
+            return mouseButtonStates[(int)b];
         }
 
         public void CancelDrag() {
-            _dragCancelled = true;
-            SetDragDeltas(_dragStartX, _dragStartY);
+            dragCancelled = true;
+            SetDragDeltas(dragStartX, dragStartY);
         }
 
         private void SetDragDeltas(float x, float y) {
-            _dragStartX = x;
-            _dragStartY = y;
-            _dragDeltaX = 0;
-            _dragDeltaY = 0;
+            dragStartX = x;
+            dragStartY = y;
+            dragDeltaX = 0;
+            dragDeltaY = 0;
         }
 
         private void CalculateDragDeltas(float x, float y) {
-            _dragDeltaY = y - _dragStartY;
-            _dragDeltaX = x - _dragStartX;
+            dragDeltaY = y - dragStartY;
+            dragDeltaX = x - dragStartX;
         }
 
         internal void Update() {
@@ -190,43 +190,43 @@ namespace MinimalAF {
         }
 
         private void UpdateDragDeltas() {
-            if (!_isAnyHeld) {
-                _dragCancelled = false;
+            if (!isAnyHeld) {
+                dragCancelled = false;
             }
 
             if (StartedDragging) {
                 SetDragDeltas(X, Y);
-            } else if (_wasAnyHeld && _isAnyHeld && !_dragCancelled) {
+            } else if (wasAnyHeld && isAnyHeld && !dragCancelled) {
                 CalculateDragDeltas(X, Y);
             }
         }
 
         private void UpdatePressedStates() {
-            _wasDragging = CurrentlyDragging;
-            _wasAnyHeld = _isAnyHeld;
-            _wasAnyDown = _anyHeld;
+            wasDragging = CurrentlyDragging;
+            wasAnyHeld = isAnyHeld;
+            wasAnyDown = anyHeld;
 
-            _anyHeld = false;
-            _anyPressed = false;
-            _anyReleased = false;
+            anyHeld = false;
+            anyPressed = false;
+            anyReleased = false;
 
-            for (int i = 0; i < _mouseButtonStates.Length; i++) {
-                _mouseButtonStates[i] = _window.MouseState.IsButtonDown(
+            for (int i = 0; i < mouseButtonStates.Length; i++) {
+                mouseButtonStates[i] = window.MouseState.IsButtonDown(
                         (OpenTK.Windowing.GraphicsLibraryFramework.MouseButton)i
                     );
 
-                _anyHeld = _anyHeld || _mouseButtonStates[i];
+                anyHeld = anyHeld || mouseButtonStates[i];
 
-                _anyPressed = _anyPressed || (!_prevMouseButtonStates[i] && _mouseButtonStates[i]);
-                _anyReleased = _anyReleased || (_prevMouseButtonStates[i] && !_mouseButtonStates[i]);
+                anyPressed = anyPressed || (!prevMouseButtonStates[i] && mouseButtonStates[i]);
+                anyReleased = anyReleased || (prevMouseButtonStates[i] && !mouseButtonStates[i]);
             }
 
-            _isAnyHeld = _wasAnyDown && _anyHeld;
+            isAnyHeld = wasAnyDown && anyHeld;
         }
 
         private void UpdateMousewheelNotches() {
-            _wheelNotches = _incomingWheelNotches;
-            _incomingWheelNotches = 0;
+            wheelNotches = incomingWheelNotches;
+            incomingWheelNotches = 0;
         }
     }
 }

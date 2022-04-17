@@ -8,8 +8,8 @@ namespace MinimalAF.Audio {
     /// Multiple AudioClipStreamed instances can however point to the same AudioData.
     /// </summary>
     public class AudioClipStream : IAudioStreamProvider {
-        AudioData _data;
-        int _cursor = 0;
+        AudioData data;
+        int cursor = 0;
 
         /// <summary>
         /// Can the playback position go negative?
@@ -27,39 +27,39 @@ namespace MinimalAF.Audio {
         }
 
         public AudioClipStream(AudioData data) {
-            _data = data;
+            this.data = data;
         }
 
         public double PlaybackPosition {
             get {
-                return _cursor / (double)_data.SampleRate / _data.Channels;
+                return cursor / (double)data.SampleRate / data.Channels;
             }
 
             set {
-                _cursor = _data.Channels * (int)(value * _data.SampleRate);
+                cursor = data.Channels * (int)(value * data.SampleRate);
                 ConstrainSlack();
             }
         }
 
         private void ConstrainSlack() {
-            if (!UseSlackAtBegining && _cursor < 0)
-                _cursor = 0;
+            if (!UseSlackAtBegining && cursor < 0)
+                cursor = 0;
 
-            if (!UseSlackAtEnd && (_cursor >= _data.RawData.Length - _data.Channels))
-                _cursor = _data.RawData.Length - _data.Channels;
+            if (!UseSlackAtEnd && (cursor >= data.RawData.Length - data.Channels))
+                cursor = data.RawData.Length - data.Channels;
         }
 
-        public double Duration => _data.Duration;
+        public double Duration => data.Duration;
 
-        public ALFormat Format => _data.Format;
+        public ALFormat Format => data.Format;
 
-        public int SampleRate => _data.SampleRate;
+        public int SampleRate => data.SampleRate;
 
-        public int Channels => _data.Channels;
+        public int Channels => data.Channels;
 
         public int AdvanceStream(short[] outputBuffer, int dataToWrite) {
-            if (_cursor < 0) {
-                int zeroesToWrite = -_cursor;
+            if (cursor < 0) {
+                int zeroesToWrite = -cursor;
                 if (zeroesToWrite > dataToWrite)
                     zeroesToWrite = dataToWrite;
 
@@ -67,7 +67,7 @@ namespace MinimalAF.Audio {
                     outputBuffer[i] = 0;
                 }
 
-                _cursor += zeroesToWrite;
+                cursor += zeroesToWrite;
 
                 if (zeroesToWrite == dataToWrite)
                     return dataToWrite;
@@ -75,7 +75,7 @@ namespace MinimalAF.Audio {
                 dataToWrite -= zeroesToWrite;
             }
 
-            int dataLeft = _data.RawData.Length - _cursor;
+            int dataLeft = data.RawData.Length - cursor;
 
             if (dataLeft <= 0)
                 return 0;
@@ -85,10 +85,10 @@ namespace MinimalAF.Audio {
             }
 
             for (int i = 0; i < dataToWrite; i++) {
-                outputBuffer[i] = _data.RawData[_cursor + i];
+                outputBuffer[i] = data.RawData[cursor + i];
             }
 
-            _cursor += dataToWrite;
+            cursor += dataToWrite;
 
             return dataToWrite;
         }

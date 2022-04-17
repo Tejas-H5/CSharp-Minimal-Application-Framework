@@ -2,10 +2,10 @@
 
 namespace MinimalAF.Audio {
     internal static class ALAudioListener {
-        private static AudioListener _currentSelectedListener;
+        private static AudioListener currentSelectedListener;
         public static AudioListener CurrentSelectedInstance {
             get {
-                return _currentSelectedListener;
+                return currentSelectedListener;
             }
             set {
                 SetCurrentListener(value);
@@ -22,21 +22,21 @@ namespace MinimalAF.Audio {
 
 
         public static void SetCurrentListener(AudioListener instance) {
-            _currentSelectedListener = instance;
+            currentSelectedListener = instance;
             SendCurrentListenerDataToOpenAL();
         }
 
         private static void SendCurrentListenerDataToOpenAL() {
-            if (_currentSelectedListener == null)
+            if (currentSelectedListener == null)
                 return;
 
-            AL.Listener(ALListenerf.Gain, _currentSelectedListener.Gain);
-            AL.Listener(ALListenerf.EfxMetersPerUnit, _currentSelectedListener.EfxMetersPerUnit);
-            AL.Listener(ALListener3f.Position, _currentSelectedListener.Position.X, _currentSelectedListener.Position.Y, _currentSelectedListener.Position.Z);
-            AL.Listener(ALListener3f.Velocity, _currentSelectedListener.Velocity.X, _currentSelectedListener.Velocity.Y, _currentSelectedListener.Velocity.Z);
+            AL.Listener(ALListenerf.Gain, currentSelectedListener.Gain);
+            AL.Listener(ALListenerf.EfxMetersPerUnit, currentSelectedListener.EfxMetersPerUnit);
+            AL.Listener(ALListener3f.Position, currentSelectedListener.Position.X, currentSelectedListener.Position.Y, currentSelectedListener.Position.Z);
+            AL.Listener(ALListener3f.Velocity, currentSelectedListener.Velocity.X, currentSelectedListener.Velocity.Y, currentSelectedListener.Velocity.Z);
 
-            var at = _currentSelectedListener.OrientationLookAt;
-            var up = _currentSelectedListener.OrientationUp;
+            var at = currentSelectedListener.OrientationLookAt;
+            var up = currentSelectedListener.OrientationUp;
             AL.Listener(ALListenerfv.Orientation, ref at, ref up);
         }
     }

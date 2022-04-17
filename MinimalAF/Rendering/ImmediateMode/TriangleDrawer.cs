@@ -5,20 +5,20 @@ namespace MinimalAF.Rendering.ImmediateMode {
     // And with slightly different intentions.
     // When fillrate isn't a bottleneck, this is a great optimization
     public class TriangleDrawer {
-        IGeometryOutput _outputStream;
+        IGeometryOutput outputStream;
 
         public TriangleDrawer(IGeometryOutput outputStream) {
-            _outputStream = outputStream;
+            this.outputStream = outputStream;
         }
 
         public void Draw(Vertex v1, Vertex v2, Vertex v3) {
-            _outputStream.FlushIfRequired(3, 3);
+            outputStream.FlushIfRequired(3, 3);
 
-            uint i1 = _outputStream.AddVertex(v1);
-            uint i2 = _outputStream.AddVertex(v2);
-            uint i3 = _outputStream.AddVertex(v3);
+            uint i1 = outputStream.AddVertex(v1);
+            uint i2 = outputStream.AddVertex(v2);
+            uint i3 = outputStream.AddVertex(v3);
 
-            _outputStream.MakeTriangle(i1, i2, i3);
+            outputStream.MakeTriangle(i1, i2, i3);
         }
 
 

@@ -5,7 +5,7 @@ using System.Text;
 namespace MinimalAF.AudioTests {
     [VisualTest]
     public class BasicWavPlayingTest : Element {
-        AudioSourceOneShot _clackSound;
+        AudioSourceOneShot clackSound;
 
         public override void OnMount(Window w) {
             w.Size = (800, 600);
@@ -15,7 +15,7 @@ namespace MinimalAF.AudioTests {
             SetFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
-            _clackSound = new AudioSourceOneShot(true, false, clip);
+            clackSound = new AudioSourceOneShot(true, false, clip);
         }
 
 
@@ -43,7 +43,7 @@ namespace MinimalAF.AudioTests {
             string newString = KeysToString(KeyboardCharactersHeld);
             if (newString != oldString) {
                 oldString = newString;
-                _clackSound.Play();
+                clackSound.Play();
             }
 
             Text(newString, Width / 2, Height / 2);

@@ -5,34 +5,34 @@ namespace MinimalAF {
     public class KeyboardInputManager {
         const string KEYBOARD_CHARS = "\t\b\n `1234567890-=qwertyuiop[]asdfghjkl;'\\zxcvbnm,./";
 
-        OpenTKWindowWrapper _window;
+        OpenTKWindowWrapper window;
 
-        bool[] _prevKeyStates = new bool[(int)KeyCode.LastKey];
-        bool[] _keyStates = new bool[(int)KeyCode.LastKey];
+        bool[] prevKeyStates = new bool[(int)KeyCode.LastKey];
+        bool[] keyStates = new bool[(int)KeyCode.LastKey];
 
 
-        StringBuilder _charactersTypedSB = new StringBuilder();
-        string _charactersTyped = "";
+        StringBuilder charactersTypedSB = new StringBuilder();
+        string charactersTyped = "";
 
-        bool _anyKeyHeld = false;
-        bool _anyKeyPressed = false;
-        bool _anyKeyReleased = false;
+        bool anyKeyHeld = false;
+        bool anyKeyPressed = false;
+        bool anyKeyReleased = false;
 
         internal KeyboardInputManager() {
         }
 
         private void OnWindowTextInput(uint c) {
-            _charactersTypedSB.Append((char)c);
+            charactersTypedSB.Append((char)c);
         }
 
         internal void Hook(OpenTKWindowWrapper window) {
-            _window = window;
-            _window.TextInputEvent += OnWindowTextInput;
+            this.window = window;
+            window.TextInputEvent += OnWindowTextInput;
         }
 
         internal void Unhook() {
-            if (_window != null)
-                _window.TextInputEvent -= OnWindowTextInput;
+            if (window != null)
+                window.TextInputEvent -= OnWindowTextInput;
         }
 
         internal bool IsPressed(KeyCode key) {
@@ -46,13 +46,13 @@ namespace MinimalAF {
                 return IsPressed(KeyCode.LeftAlt) || IsPressed(KeyCode.RightAlt);
             }
             if (key == KeyCode.Any) {
-                return _anyKeyPressed;
+                return anyKeyPressed;
             }
             return (!WasHeld(key)) && (IsHeld(key));
         }
 
         private bool WasHeld(KeyCode key) {
-            return _prevKeyStates[(int)key];
+            return prevKeyStates[(int)key];
         }
 
         internal bool IsReleased(KeyCode key) {
@@ -66,7 +66,7 @@ namespace MinimalAF {
                 return IsReleased(KeyCode.LeftAlt) || IsReleased(KeyCode.RightAlt);
             }
             if (key == KeyCode.Any) {
-                return _anyKeyReleased;
+                return anyKeyReleased;
             }
 
             return WasHeld(key) && (!IsHeld(key));
@@ -83,23 +83,23 @@ namespace MinimalAF {
                 return IsHeld(KeyCode.LeftAlt) || IsHeld(KeyCode.RightAlt);
             }
             if (key == KeyCode.Any) {
-                return _anyKeyHeld;
+                return anyKeyHeld;
             }
 
-            return _keyStates[(int)key];
+            return keyStates[(int)key];
         }
 
         internal string CharactersTyped {
             get {
-                return _charactersTyped;
+                return charactersTyped;
             }
         }
 
         internal string CharactersPressed {
             get {
                 var pressed = new StringBuilder();
-                for (int i = 0; i < _keyStates.Length - 1; i++) {
-                    if (_prevKeyStates[i] || !_keyStates[i]) {
+                for (int i = 0; i < keyStates.Length - 1; i++) {
+                    if (prevKeyStates[i] || !keyStates[i]) {
                         continue;
                     }
 
@@ -113,8 +113,8 @@ namespace MinimalAF {
         internal string CharactersReleased {
             get {
                 var released = new StringBuilder();
-                for (int i = 0; i < _keyStates.Length - 1; i++) {
-                    if (!_prevKeyStates[i] || _keyStates[i]) {
+                for (int i = 0; i < keyStates.Length - 1; i++) {
+                    if (!prevKeyStates[i] || keyStates[i]) {
                         continue;
                     }
 
@@ -128,8 +128,8 @@ namespace MinimalAF {
         internal string CharactersHeld {
             get {
                 var held = new StringBuilder();
-                for (int i = 0; i < _keyStates.Length - 1; i++) {
-                    if (!_prevKeyStates[i] || !_keyStates[i]) {
+                for (int i = 0; i < keyStates.Length - 1; i++) {
+                    if (!prevKeyStates[i] || !keyStates[i]) {
                         continue;
                     }
 
@@ -141,31 +141,31 @@ namespace MinimalAF {
         }
 
         internal void Update() {
-            _anyKeyHeld = false;
-            _anyKeyPressed = false;
-            _anyKeyReleased = false;
+            anyKeyHeld = false;
+            anyKeyPressed = false;
+            anyKeyReleased = false;
 
-            _charactersTyped = _charactersTypedSB.ToString();
-            _charactersTypedSB.Clear();
+            charactersTyped = charactersTypedSB.ToString();
+            charactersTypedSB.Clear();
 
-            bool[] temp = _prevKeyStates;
-            _prevKeyStates = _keyStates;
-            _keyStates = temp;
+            bool[] temp = prevKeyStates;
+            prevKeyStates = keyStates;
+            keyStates = temp;
 
-            for (int i = 0; i < _keyStates.Length - 1; i++) {
+            for (int i = 0; i < keyStates.Length - 1; i++) {
                 KeyCode key = (KeyCode)i;
 
                 //This is where we use openTK
-                _keyStates[i] = _window.KeyboardState.IsKeyDown((Keys)key);
+                keyStates[i] = window.KeyboardState.IsKeyDown((Keys)key);
 
 
-                _anyKeyHeld = _anyKeyHeld || _keyStates[i];
+                anyKeyHeld = anyKeyHeld || keyStates[i];
 
-                bool pressed = (!_prevKeyStates[i] && _keyStates[i]);
-                bool released = (_prevKeyStates[i] && !_keyStates[i]);
+                bool pressed = (!prevKeyStates[i] && keyStates[i]);
+                bool released = (prevKeyStates[i] && !keyStates[i]);
 
-                _anyKeyPressed = _anyKeyPressed || pressed;
-                _anyKeyReleased = _anyKeyReleased || released;
+                anyKeyPressed = anyKeyPressed || pressed;
+                anyKeyReleased = anyKeyReleased || released;
             }
         }
     }

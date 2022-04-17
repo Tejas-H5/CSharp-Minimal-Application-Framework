@@ -7,8 +7,8 @@ namespace MinimalAF.VisualTests.Rendering
 	[VisualTest]
 	class TextureTest : Element
     {
-        Texture _tex;
-        Texture _tex2;
+        Texture tex;
+        Texture tex2;
 
         public override void OnMount(Window w)
         {
@@ -23,8 +23,8 @@ namespace MinimalAF.VisualTests.Rendering
             TextureMap.LoadTexture("placeholder", "./Res/settings_icon.png", new TextureImportSettings());
             TextureMap.LoadTexture("placeholderNN", "./Res/settings_icon.png", new TextureImportSettings { Filtering = FilteringType.NearestNeighbour });
 
-            _tex = TextureMap.GetTexture("placeholder");
-            _tex2 = TextureMap.GetTexture("placeholderNN");
+            tex = TextureMap.GetTexture("placeholder");
+            tex2 = TextureMap.GetTexture("placeholderNN");
         }
 
 
@@ -39,7 +39,7 @@ namespace MinimalAF.VisualTests.Rendering
         {
             SetDrawColor(1, 1, 1, 1);
 
-            SetTexture(_tex);
+            SetTexture(tex);
             Rect(20, 20, Width / 2 - 20, Height - 20);
 
             Rect rect2 = new Rect(Width / 2 + 20, 20, Width - 20, Height - 20);
@@ -52,7 +52,7 @@ namespace MinimalAF.VisualTests.Rendering
 
 			//using (PushMatrix(Matrix4.Identity))
 			{
-				SetTexture(_tex2);
+				SetTexture(tex2);
 				Rect(new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectify());
 			}
         }

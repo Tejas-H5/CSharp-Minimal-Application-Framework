@@ -12,8 +12,8 @@
     ///         - this use case requires AudioSourceStreamed
     /// </summary>
     public class AudioSourceOneShot : AudioSource {
-        AudioClipOneShot _clip;
-        float _pausedTime = 0;
+        AudioClipOneShot clip;
+        float pausedTime = 0;
 
         public AudioSourceOneShot(bool relative, bool looping, AudioClipOneShot sound = null)
             : base(relative, looping) {
@@ -21,7 +21,7 @@
         }
 
         public void SetAudioClip(AudioClipOneShot sound) {
-            _clip = sound;
+            clip = sound;
 
             if (sound == null)
                 return;
@@ -29,7 +29,7 @@
 
 
         public override void Play() {
-            playInternal(_pausedTime);
+            playInternal(pausedTime);
         }
 
         public void Play(float offset) {
@@ -37,14 +37,14 @@
         }
 
         private void playInternal(float offset) {
-            if (_clip == null)
+            if (clip == null)
                 return;
 
             OpenALSource alSource = ALAudioSourcePool.AcquireSource(this);
             if (alSource == null)
                 return;
 
-            alSource.SetBuffer(_clip.ALBuffer);
+            alSource.SetBuffer(clip.ALBuffer);
             alSource.SetSecOffset(offset);
 
             alSource.Play();
@@ -57,7 +57,7 @@
 
             alSource.Pause();
 
-            _pausedTime = alSource.GetSecOffset();
+            pausedTime = alSource.GetSecOffset();
         }
 
         public override void Stop() {
@@ -67,7 +67,7 @@
 
             alSource.StopAndUnqueueAllBuffers();
 
-            _pausedTime = 0;
+            pausedTime = 0;
         }
 
         public override double GetPlaybackPosition() {

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 namespace MinimalAF {
     public abstract partial class Element {
-        protected Element _parent = null;
-        protected List<Element> _children = new List<Element>();
+        protected Element parent = null;
+        protected List<Element> children = new List<Element>();
 
         internal static List<Element> RenderQueue = new List<Element>();
 
@@ -14,32 +14,32 @@ namespace MinimalAF {
         public virtual bool SingleChild => false;
 
         public bool IsVisibleNextFrame = true;
-        protected bool _isVisible = true;
-        private bool _shouldTriggerParentResize = false;
+        protected bool isVisible = true;
+        private bool shouldTriggerParentResize = false;
 
         // IDK a better name for this
         public void TriggerLayoutRecalculation() {
-            _shouldTriggerParentResize = true;
+            shouldTriggerParentResize = true;
         }
 
-        private bool _mounted = false;
+        private bool mounted = false;
         internal bool Mounted {
             set {
-                _mounted = value;
+                mounted = value;
             }
         }
 
         public Vector2 Pivot;
         public Vector2 Offset;
-        private Rect _relativeRect;
-        protected Rect _screenRect; // this is auto-calculated
+        private Rect relativeRect;
+        protected Rect screenRect; // this is auto-calculated
 
         /// <summary>
         /// This will be updated whenever everything is rendered
         /// </summary>
-        public Rect ScreenRect => _screenRect;
+        public Rect ScreenRect => screenRect;
 
-        bool _rectModified = false;
+        bool rectModified = false;
 
         public bool Clipping {
             get; set;
@@ -58,25 +58,25 @@ namespace MinimalAF {
 
         public ArraySlice<Element> Children {
             get {
-                return _children;
+                return children;
             }
         }
 
 
         public Element this[int index] {
             get {
-                return _children[index];
+                return children[index];
             }
         }
 
         public Element SetChildren(params Element[] newChildren) {
 #if DEBUG
-            if (SingleChild && _children != null && _children.Count > 1)
+            if (SingleChild && children != null && children.Count > 1)
                 throw new Exception("This element must only be given 1 child, possibly in the constructor.");
 #endif
 
-            // _children will be removed anyway, but this should give O(n) instead of O(n^2)
-            for (int i = _children.Count - 1; i >= 0; i--) {
+            // children will be removed anyway, but this should give O(n) instead of O(n^2)
+            for (int i = children.Count - 1; i >= 0; i--) {
                 Remove(i);
             }
 
@@ -90,7 +90,7 @@ namespace MinimalAF {
         }
 
         public void RemoveChild(Element child) {
-            int index = _children.IndexOf(child);
+            int index = children.IndexOf(child);
             if (index == -1) {
                 return;
             }
@@ -99,12 +99,12 @@ namespace MinimalAF {
         }
 
         private void Remove(int index) {
-            Element child = _children[index];
-            _children.RemoveAt(index);
+            Element child = children[index];
+            children.RemoveAt(index);
             child.Dismount();
-            child._parent = null;
+            child.parent = null;
 
-            _shouldTriggerParentResize = true;
+            shouldTriggerParentResize = true;
         }
 
         public int Index() {
@@ -112,15 +112,15 @@ namespace MinimalAF {
                 return 0;
             }
 
-            return Parent._children.IndexOf(this);
+            return Parent.children.IndexOf(this);
         }
 
         private void Add(Element element) {
-            _children.Add(element);
+            children.Add(element);
 
             element.Mount();
 
-            _shouldTriggerParentResize = true;
+            shouldTriggerParentResize = true;
         }
 
         public void AddChild(Element element) {
@@ -129,53 +129,53 @@ namespace MinimalAF {
 
         public Element Parent {
             get {
-                return _parent;
+                return parent;
             }
             set {
                 if (value == this) {
                     throw new Exception("DevIsStupid exception: An element can't be it's own parent, as this causes infinite recursion");
                 }
 
-                if (value == _parent)
+                if (value == parent)
                     return;
 
-                if (_parent != null) {
-                    _parent.RemoveChild(this);
+                if (parent != null) {
+                    parent.RemoveChild(this);
                 }
 
-                _parent = value;
+                parent = value;
 
-                if (_parent != null) {
-                    _parent.Add(this);
+                if (parent != null) {
+                    parent.Add(this);
                 }
             }
         }
 
         public bool IsVisible {
             get {
-                return _isVisible;
+                return isVisible;
             }
             set {
-                if (_isVisible == value)
+                if (isVisible == value)
                     return;
 
-                _isVisible = value;
+                isVisible = value;
                 IsVisibleNextFrame = value;
             }
         }
 
         public Rect RelativeRect {
             get {
-                return _relativeRect;
+                return relativeRect;
             }
             set {
-                _relativeRect = value;
+                relativeRect = value;
 
                 if (Parent != null) {
                     Parent.OnChildResize();
                 }
 
-                _rectModified = true;
+                rectModified = true;
             }
         }
 
@@ -229,8 +229,8 @@ namespace MinimalAF {
                 return;
             }
 
-            if (_shouldTriggerParentResize) {
-                _shouldTriggerParentResize = false;
+            if (shouldTriggerParentResize) {
+                shouldTriggerParentResize = false;
 
                 if (Parent != null) {
                     Parent.OnChildResize();
@@ -242,8 +242,8 @@ namespace MinimalAF {
 
             OnUpdate();
 
-            for (int i = 0; i < _children.Count; i++) {
-                _children[i].UpdateSelfAndChildren(_screenRect);
+            for (int i = 0; i < children.Count; i++) {
+                children[i].UpdateSelfAndChildren(screenRect);
             }
 
             AfterUpdate();
@@ -301,19 +301,19 @@ namespace MinimalAF {
 
             Rect previousClippingRect = CTX.CurrentClippingRect;
             if (Clipping) {
-                CTX.CurrentClippingRect = CTX.CurrentClippingRect.Intersect(_screenRect);
+                CTX.CurrentClippingRect = CTX.CurrentClippingRect.Intersect(screenRect);
             }
 
             OnRender();
 
 #if DEBUG
             if (MinimalAFEnvironment.Debug) {
-                acc = DrawDebugStuff(acc, _screenRect);
+                acc = DrawDebugStuff(acc, screenRect);
             }
 #endif
 
-            for (int i = 0; i < _children.Count; i++) {
-                _children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, _screenRect
+            for (int i = 0; i < children.Count; i++) {
+                children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, screenRect
 #if DEBUG
                     , acc.HoverDepth
 #endif           
@@ -330,12 +330,12 @@ namespace MinimalAF {
         }
 
         private void RecalcScreenRect(Rect parentScreenRect) {
-            _screenRect = RelativeRect;
-            _screenRect.Move(parentScreenRect.X0 + Offset.X, parentScreenRect.Y0 + Offset.Y);
+            screenRect = RelativeRect;
+            screenRect.Move(parentScreenRect.X0 + Offset.X, parentScreenRect.Y0 + Offset.Y);
         }
 
         public void UseCoordinates() {
-            CTX.SetScreenRect(_screenRect);
+            CTX.SetScreenRect(screenRect);
         }
 
 
@@ -383,47 +383,47 @@ namespace MinimalAF {
         private void Mount(Window w) {
             OnMount(w);
 
-            for (int i = 0; i < _children.Count; i++) {
-                _children[i].Mount(w);
+            for (int i = 0; i < children.Count; i++) {
+                children[i].Mount(w);
             }
 
             AfterMount(w);
 
-            _mounted = true;
+            mounted = true;
         }
 
 
         public void Dismount() {
-            for (int i = 0; i < _children.Count; i++) {
-                _children[i].Dismount();
+            for (int i = 0; i < children.Count; i++) {
+                children[i].Dismount();
             }
 
             OnDismount();
-            _mounted = false;
+            mounted = false;
         }
 
 
         public void Layout() {
-            if (!_mounted) {
+            if (!mounted) {
                 return;
             }
 
-            _onChildResizeLock = true;
+            onChildResizeLock = true;
 
-            for (int i = 0; i < _children.Count; i++) {
-                if (_children[i]._rectModified)
+            for (int i = 0; i < children.Count; i++) {
+                if (children[i].rectModified)
                     continue;
 
-                _children[i].RelativeRect = DefaultRect();
+                children[i].RelativeRect = DefaultRect();
             }
 
             OnLayout();
 
-            for (int i = 0; i < _children.Count; i++) {
-                _children[i]._rectModified = false;
+            for (int i = 0; i < children.Count; i++) {
+                children[i].rectModified = false;
             }
 
-            _onChildResizeLock = false;
+            onChildResizeLock = false;
         }
 
         /// <summary>
@@ -462,17 +462,17 @@ namespace MinimalAF {
         }
 
         protected void LayoutChildren() {
-            for (int i = 0; i < _children.Count; i++) {
-                _children[i].Layout();
+            for (int i = 0; i < children.Count; i++) {
+                children[i].Layout();
             }
         }
 
 
-        bool _onChildResizeLock = false;
+        bool onChildResizeLock = false;
         void OnChildResize() {
-            _shouldTriggerParentResize = false;
+            shouldTriggerParentResize = false;
 
-            if (_onChildResizeLock) {
+            if (onChildResizeLock) {
                 return;
             }
 

@@ -4,15 +4,15 @@ using System.Text;
 
 namespace MinimalAF {
     public class UIRootElement : Element {
-        UIState _state;
+        UIState state;
 
         public override void OnMount(Window w) {
-            _state = new UIState();
-            AddResource(_state);
+            state = new UIState();
+            AddResource(state);
         }
 
         public override void OnUpdate() {
-            _state.EventWasHandled = false;
+            state.EventWasHandled = false;
         }
     }
 }

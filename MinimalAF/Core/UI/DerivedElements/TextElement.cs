@@ -19,7 +19,7 @@ namespace MinimalAF {
         }
 
 
-        private PointF _caratPos = new PointF();
+        private PointF caratPos = new PointF();
 
         public TextElement(string text, Color4 textColor)
             : this(text, textColor, "", -1, VerticalAlignment.Bottom, HorizontalAlignment.Left) {
@@ -76,7 +76,7 @@ namespace MinimalAF {
                     break;
             }
 
-            _caratPos = Text(String, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
+            caratPos = Text(String, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
         }
 
         public float TextWidth() {
@@ -84,7 +84,7 @@ namespace MinimalAF {
         }
 
         public PointF GetCaratPos() {
-            return _caratPos;
+            return caratPos;
         }
 
         public float GetCharacterHeight() {

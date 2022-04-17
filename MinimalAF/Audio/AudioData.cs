@@ -9,40 +9,40 @@ namespace MinimalAF.Audio {
     /// Overrides GetHashCode to be a constant ID, so this can be used as a HashMap/Dictionary key
     /// </summary>
     public class AudioData {
-        private static int _nextAudioDataID = 1;
+        private static int nextAudioDataID = 1;
         public int ID;
         public override int GetHashCode() {
             return ID;
         }
 
 
-        short[] _rawData;
+        short[] rawData;
         public short[] RawData {
             get {
-                return _rawData;
+                return rawData;
             }
         }
 
-        private int _sampleRate;
-        private int _channels;
-        private int _len;
-        private ALFormat _format;
+        private int sampleRate;
+        private int channels;
+        private int len;
+        private ALFormat format;
 
         public ALFormat Format {
             get {
-                return _format;
+                return format;
             }
         }
 
 
-        public int Length => _len;
+        public int Length => len;
 
         public int SampleRate {
-            get => _sampleRate;
+            get => sampleRate;
         }
 
         public int Channels {
-            get => _channels;
+            get => channels;
         }
 
         public double Duration {
@@ -50,7 +50,7 @@ namespace MinimalAF.Audio {
         }
 
         public int DurationSamples {
-            get => _rawData.Length / Channels;
+            get => rawData.Length / Channels;
         }
 
         public double SampleToSeconds(int sample) {
@@ -62,22 +62,22 @@ namespace MinimalAF.Audio {
         }
 
         public float GetSample(int sample, int channel) {
-            return _rawData[channel % Channels + sample * Channels];
+            return rawData[channel % Channels + sample * Channels];
         }
 
         public AudioData(short[] rawInterleavedData, int sampleRate, int numChannels) {
-            ID = _nextAudioDataID;
-            _nextAudioDataID++;
+            ID = nextAudioDataID;
+            nextAudioDataID++;
 
-            _sampleRate = sampleRate;
-            _channels = numChannels;
-            _rawData = rawInterleavedData;
-            _len = _rawData.Length / numChannels;
+            this.sampleRate = sampleRate;
+            channels = numChannels;
+            rawData = rawInterleavedData;
+            len = rawData.Length / numChannels;
 
-            if (_channels == 2) {
-                _format = ALFormat.Stereo16;
+            if (channels == 2) {
+                format = ALFormat.Stereo16;
             } else {
-                _format = ALFormat.Stereo8;
+                format = ALFormat.Stereo8;
             }
         }
 

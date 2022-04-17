@@ -4,40 +4,40 @@ using System.Drawing;
 
 namespace MinimalAF.Rendering.Text {
     public class FontAtlasTexture {
-        FontAtlas _fontAtlas;
-        Texture _fontTexture;
+        FontAtlas fontAtlas;
+        Texture fontTexture;
 
         public FontAtlasTexture(FontAtlas fontAtlas, Texture fontTexture) {
-            _fontAtlas = fontAtlas;
-            _fontTexture = fontTexture;
+            this.fontAtlas = fontAtlas;
+            this.fontTexture = fontTexture;
         }
 
         public FontAtlas FontAtlas {
             get {
-                return _fontAtlas;
+                return fontAtlas;
             }
         }
         public Texture FontTexture {
             get {
-                return _fontTexture;
+                return fontTexture;
             }
         }
     }
 
     public class FontManager : IDisposable {
-        FontAtlasTexture _activeFont;
+        FontAtlasTexture activeFont;
 
         public FontAtlasTexture ActiveFont {
             get {
-                return _activeFont;
+                return activeFont;
             }
         }
 
-        Dictionary<string, FontAtlasTexture> _allLoadedFonts = new Dictionary<string, FontAtlasTexture>();
+        Dictionary<string, FontAtlasTexture> allLoadedFonts = new Dictionary<string, FontAtlasTexture>();
 
         public Texture UnderlyingFontAtlas {
             get {
-                return _activeFont.FontTexture;
+                return activeFont.FontTexture;
             }
         }
 
@@ -55,7 +55,7 @@ namespace MinimalAF.Rendering.Text {
             }
 
             string key = GenerateKey(fontName, fontSize);
-            if (!_allLoadedFonts.ContainsKey(key)) {
+            if (!allLoadedFonts.ContainsKey(key)) {
                 FontAtlas atlas = FontAtlas.CreateFontAtlas(
                         new FontImportSettings {
                             FontName = fontName,
@@ -65,15 +65,15 @@ namespace MinimalAF.Rendering.Text {
 
                 if (atlas == null) {
                     SetCurrentFont("", fontSize);
-                    _allLoadedFonts[key] = _activeFont;
+                    allLoadedFonts[key] = activeFont;
                     return;
                 }
 
                 Texture texture = new Texture(atlas.Image, new TextureImportSettings { Filtering = FilteringType.NearestNeighbour });
-                _allLoadedFonts[key] = new FontAtlasTexture(atlas, texture);
+                allLoadedFonts[key] = new FontAtlasTexture(atlas, texture);
             }
 
-            _activeFont = _allLoadedFonts[key];
+            activeFont = allLoadedFonts[key];
         }
 
 
@@ -118,23 +118,23 @@ namespace MinimalAF.Rendering.Text {
 
         public float CharWidth {
             get {
-                return _activeFont.FontAtlas.CharWidth;
+                return activeFont.FontAtlas.CharWidth;
             }
         }
 
         public float CharHeight {
             get {
-                return _activeFont.FontAtlas.CharHeight;
+                return activeFont.FontAtlas.CharHeight;
             }
         }
 
         public float GetCharWidth(char c) {
-            if (_activeFont.FontAtlas.IsValidCharacter(c)) {
-                return _activeFont.FontAtlas.GetCharacterSize(c).Width;
+            if (activeFont.FontAtlas.IsValidCharacter(c)) {
+                return activeFont.FontAtlas.GetCharacterSize(c).Width;
             }
 
 
-            float spaceWidth = _activeFont.FontAtlas.GetCharacterSize('|').Width;
+            float spaceWidth = activeFont.FontAtlas.GetCharacterSize('|').Width;
 
             switch (c) {
                 case ' ':
@@ -147,15 +147,15 @@ namespace MinimalAF.Rendering.Text {
         }
 
         public float GetCharHeight(char c) {
-            return _activeFont.FontAtlas.GetCharacterSize(c).Height;
+            return activeFont.FontAtlas.GetCharacterSize(c).Height;
         }
 
         public SizeF GetCharSize(char c) {
-            return _activeFont.FontAtlas.GetCharacterSize(c);
+            return activeFont.FontAtlas.GetCharacterSize(c);
         }
 
         public void Dispose() {
-            foreach (var item in _allLoadedFonts) {
+            foreach (var item in allLoadedFonts) {
                 item.Value.FontTexture.Dispose();
             }
         }

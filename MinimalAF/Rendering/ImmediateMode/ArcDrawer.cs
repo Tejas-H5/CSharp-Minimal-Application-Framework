@@ -2,12 +2,12 @@
 
 namespace MinimalAF.Rendering.ImmediateMode {
     public class ArcDrawer {
-        int _circleEdgeLength;
-        int _maxCircleEdgeCount;
+        int circleEdgeLength;
+        int maxCircleEdgeCount;
 
         public ArcDrawer(int circleEdgeLength, int maxCircleEdgeCount) {
-            _circleEdgeLength = circleEdgeLength;
-            _maxCircleEdgeCount = maxCircleEdgeCount;
+            this.circleEdgeLength = circleEdgeLength;
+            this.maxCircleEdgeCount = maxCircleEdgeCount;
         }
 
 
@@ -19,11 +19,11 @@ namespace MinimalAF.Rendering.ImmediateMode {
         }
 
         private int GetEdgeCount(float radius, float startAngle, float endAngle) {
-            float deltaAngle = _circleEdgeLength / radius;
+            float deltaAngle = circleEdgeLength / radius;
             int edgeCount = (int)((endAngle - startAngle) / deltaAngle) + 1;
 
-            if (edgeCount > _maxCircleEdgeCount) {
-                edgeCount = _maxCircleEdgeCount;
+            if (edgeCount > maxCircleEdgeCount) {
+                edgeCount = maxCircleEdgeCount;
             }
 
             return edgeCount;

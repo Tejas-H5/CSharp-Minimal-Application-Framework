@@ -18,25 +18,25 @@ namespace MinimalAF.Rendering {
         public const int NUM_MATRICES = 3;
 
         //Here solely for the SwapBuffers function
-        private static IGLFWGraphicsContext _glContext;
+        private static IGLFWGraphicsContext glContext;
 
-        private static int _contextWidth, _contextHeight;
+        private static int contextWidth, contextHeight;
 
         public static float Current2DDepth = 0;
 
-        private static Rect _currentClippingRect;
+        private static Rect currentClippingRect;
         internal static Rect CurrentClippingRect {
-            get => _currentClippingRect;
+            get => currentClippingRect;
             set {
-                _currentClippingRect = value;
+                currentClippingRect = value;
 
                 Flush();
 
                 GL.Scissor(
-                    (int)_currentClippingRect.X0, 
-                    (int)_currentClippingRect.Y0, 
-                    (int)_currentClippingRect.Width, 
-                    (int)_currentClippingRect.Height
+                    (int)currentClippingRect.X0, 
+                    (int)currentClippingRect.Y0, 
+                    (int)currentClippingRect.Width, 
+                    (int)currentClippingRect.Height
                 );
 
                 GL.Enable(EnableCap.ScissorTest);
@@ -44,56 +44,56 @@ namespace MinimalAF.Rendering {
         }
 
         internal static int ContextWidth {
-            get => _contextWidth;
-            set => _contextWidth = value;
+            get => contextWidth;
+            set => contextWidth = value;
         }
 
         internal static int ContextHeight {
-            get => _contextHeight;
-            set => _contextHeight = value;
+            get => contextHeight;
+            set => contextHeight = value;
         }
 
-        private static bool _disposed; // To detect redundant calls to Dispose()
+        private static bool disposed; // To detect redundant calls to Dispose()
         internal static Color4 ClearColor;
 
         //Composition
-        internal static TriangleDrawer Triangle => _triangle;
-        internal static QuadDrawer Quad => _quad;
-        internal static RectangleDrawer Rect => _rect;
-        internal static NGonDrawer NGon => _nGon;
-        internal static PolyLineDrawer NLine => _nLine;
-        internal static ArcDrawer Arc => _arc;
-        internal static CircleDrawer Circle => _circle;
-        internal static LineDrawer Line => _line;
-        internal static TextDrawer Text => _textDrawer;
-        internal static TextureManager Texture => _textureManager;
-        internal static FramebufferManager Framebuffer => _framebufferManager;
+        internal static TriangleDrawer Triangle => triangle;
+        internal static QuadDrawer Quad => quad;
+        internal static RectangleDrawer Rect => rect;
+        internal static NGonDrawer NGon => nGon;
+        internal static PolyLineDrawer NLine => nLine;
+        internal static ArcDrawer Arc => arc;
+        internal static CircleDrawer Circle => circle;
+        internal static LineDrawer Line => line;
+        internal static TextDrawer Text => textDrawer;
+        internal static TextureManager Texture => textureManager;
+        internal static FramebufferManager Framebuffer => framebufferManager;
 
-        internal static TriangleDrawer _triangle;
-        internal static QuadDrawer _quad;
-        internal static RectangleDrawer _rect;
-        internal static NGonDrawer _nGon;
-        internal static PolyLineDrawer _nLine;
-        internal static ArcDrawer _arc;
-        internal static CircleDrawer _circle;
-        internal static LineDrawer _line;
-        private static TextDrawer _textDrawer;
-        private static MeshOutputStream _meshOutputStream;
-        private static ImmediateModeShader _solidShader;
-        private static TextureManager _textureManager;
-        private static FramebufferManager _framebufferManager;
+        internal static TriangleDrawer triangle;
+        internal static QuadDrawer quad;
+        internal static RectangleDrawer rect;
+        internal static NGonDrawer nGon;
+        internal static PolyLineDrawer nLine;
+        internal static ArcDrawer arc;
+        internal static CircleDrawer circle;
+        internal static LineDrawer line;
+        private static TextDrawer textDrawer;
+        private static MeshOutputStream meshOutputStream;
+        private static ImmediateModeShader solidShader;
+        private static TextureManager textureManager;
+        private static FramebufferManager framebufferManager;
 
         public static FontAtlasTexture InternalFontAtlas {
-            get => _textDrawer.ActiveFont;
+            get => textDrawer.ActiveFont;
         }
 
         internal static Matrix4 GetMatrix(int matrix) {
-            return _solidShader.GetMatrix(matrix);
+            return solidShader.GetMatrix(matrix);
         }
 
         internal static void SetMatrix(int matrix, Matrix4 value) {
             Flush();
-            _solidShader.SetMatrix(matrix, value);
+            solidShader.SetMatrix(matrix, value);
         }
 
         internal struct MatrixPush : IDisposable {
@@ -125,11 +125,11 @@ namespace MinimalAF.Rendering {
         internal static void Init(IGLFWGraphicsContext context) {
             InitDrawers();
 
-            _glContext = context;
-            _solidShader = new ImmediateModeShader();
-            _solidShader.Use();
-            _textureManager = new TextureManager();
-            _framebufferManager = new FramebufferManager();
+            glContext = context;
+            solidShader = new ImmediateModeShader();
+            solidShader.Use();
+            textureManager = new TextureManager();
+            framebufferManager = new FramebufferManager();
 
             ClearColor = Color4.VA(0, 0);
 
@@ -143,25 +143,25 @@ namespace MinimalAF.Rendering {
             //TODO: change this to DepthFunction.Less for viewport3D
             GL.DepthFunc(DepthFunction.Lequal);
 
-            _disposed = false; // To detect redundant calls to Dispose()
+            disposed = false; // To detect redundant calls to Dispose()
 
 
             Console.WriteLine("Context initialized");
         }
 
         private static void InitDrawers() {
-            _meshOutputStream = new MeshOutputStream(4096, 4 * 4096);
+            meshOutputStream = new MeshOutputStream(4096, 4 * 4096);
 
-            _triangle = new TriangleDrawer(_meshOutputStream);
-            _nGon = new NGonDrawer(_meshOutputStream);
-            _quad = new QuadDrawer(_meshOutputStream);
-            _nLine = new PolyLineDrawer(_meshOutputStream);
+            triangle = new TriangleDrawer(meshOutputStream);
+            nGon = new NGonDrawer(meshOutputStream);
+            quad = new QuadDrawer(meshOutputStream);
+            nLine = new PolyLineDrawer(meshOutputStream);
 
-            _line = new LineDrawer();
-            _arc = new ArcDrawer(circleEdgeLength: 5, maxCircleEdgeCount: 32);
-            _rect = new RectangleDrawer();
-            _circle = new CircleDrawer();
-            _textDrawer = new TextDrawer();
+            line = new LineDrawer();
+            arc = new ArcDrawer(circleEdgeLength: 5, maxCircleEdgeCount: 32);
+            rect = new RectangleDrawer();
+            circle = new CircleDrawer();
+            textDrawer = new TextDrawer();
         }
 
         internal static Color4 GetClearColor() {
@@ -186,14 +186,14 @@ namespace MinimalAF.Rendering {
 
 
         internal static void Flush() {
-            _meshOutputStream.Flush();
+            meshOutputStream.Flush();
         }
 
         internal static void SwapBuffers() {
             Flush();
-            _framebufferManager.StopUsing();
+            framebufferManager.StopUsing();
             SetMatrix(MODEL_MATRIX, Matrix4.Identity);
-            _glContext.SwapBuffers();
+            glContext.SwapBuffers();
         }
 
 
@@ -255,12 +255,12 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void SetDrawColor(Color4 col) {
-            if (_solidShader.Color.Equals(col))
+            if (solidShader.Color.Equals(col))
                 return;
 
             Flush();
 
-            _solidShader.Color = col;
+            solidShader.Color = col;
         }
 
 
@@ -332,25 +332,25 @@ namespace MinimalAF.Rendering {
         #region IDisposable Support
 
         public static void Dispose(bool disposing) {
-            if (!_disposed) {
+            if (!disposed) {
                 if (disposing) {
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                _meshOutputStream.Dispose();
-                _solidShader.Dispose();
-                _textDrawer.Dispose();
-                _textureManager.Dispose();
+                meshOutputStream.Dispose();
+                solidShader.Dispose();
+                textDrawer.Dispose();
+                textureManager.Dispose();
 
                 TextureMap.UnloadTextures();
 
-                _framebufferManager.Dispose();
+                framebufferManager.Dispose();
 
                 Texture.Set(null);
                 // TODO: set large fields to null.
 
                 Console.WriteLine("Context disposed");
-                _disposed = true;
+                disposed = true;
             }
         }
         #endregion

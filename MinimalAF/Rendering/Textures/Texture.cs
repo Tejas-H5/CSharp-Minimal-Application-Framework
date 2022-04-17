@@ -8,32 +8,32 @@ namespace MinimalAF.Rendering {
     // And then modified
     // A helper class, much like Shader, meant to simplify loading textures.
     public class Texture : IDisposable {
-        int _handle;
-        private int _height;
-        private int _width;
-        TextureImportSettings _importSettings;
+        int handle;
+        private int height;
+        private int width;
+        TextureImportSettings importSettings;
 
         public int Handle {
             get {
-                return _handle;
+                return handle;
             }
         }
 
         public int Width {
             get {
-                return _width;
+                return width;
             }
         }
 
         public int Height {
             get {
-                return _height;
+                return height;
             }
         }
 
         public float AspectRatio {
             get {
-                return _width / (float)_height;
+                return width / (float)height;
             }
         }
 
@@ -61,8 +61,8 @@ namespace MinimalAF.Rendering {
         //TODO: implement this
         internal void Resize(int width, int height) {
             BindTextureHandle();
-            SendImageDataToOpenGL(width, height, (IntPtr)null, _importSettings);
-            SendTextureParamsToOpenGL(_importSettings);
+            SendImageDataToOpenGL(width, height, (IntPtr)null, importSettings);
+            SendTextureParamsToOpenGL(importSettings);
 
             TextureManager.SetCurrentTextureChangedFlag();
         }
@@ -80,8 +80,8 @@ namespace MinimalAF.Rendering {
         }
 
         private void Init(int width, int height, IntPtr data, TextureImportSettings settings) {
-            _handle = GL.GenTexture();
-            _importSettings = settings;
+            handle = GL.GenTexture();
+            importSettings = settings;
 
             BindTextureHandle();
             SendImageDataToOpenGL(width, height, data, settings);
@@ -92,13 +92,13 @@ namespace MinimalAF.Rendering {
 
         private void BindTextureHandle() {
             GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, _handle);
+            GL.BindTexture(TextureTarget.Texture2D, handle);
         }
 
 
         private void SendImageDataToOpenGL(int width, int height, IntPtr data, TextureImportSettings settings) {
-            _width = width;
-            _height = height;
+            this.width = width;
+            this.height = height;
 
             GL.TexImage2D(TextureTarget.Texture2D,
                             0,

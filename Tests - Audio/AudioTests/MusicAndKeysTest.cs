@@ -6,9 +6,9 @@ using System.Text;
 namespace MinimalAF.AudioTests {
 	[VisualTest]
     public class MusicAndKeysTest : Element {
-        AudioSourceOneShot _clackSound;
-        AudioSourceStreamed _streamedSource;
-        AudioClipStream _streamProvider;
+        AudioSourceOneShot clackSound;
+        AudioSourceStreamed streamedSource;
+        AudioClipStream streamProvider;
 
         public override void OnMount(Window w) {
             
@@ -19,13 +19,13 @@ namespace MinimalAF.AudioTests {
             SetFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
-            _clackSound = new AudioSourceOneShot(true, false, clip);
+            clackSound = new AudioSourceOneShot(true, false, clip);
 
             //music
             AudioData music = AudioData.FromFile("./Res/testMusicShort.mp3");
-            _streamProvider = new AudioClipStream(music);
+            streamProvider = new AudioClipStream(music);
 
-            _streamedSource = new AudioSourceStreamed(true, _streamProvider);
+            streamedSource = new AudioSourceStreamed(true, streamProvider);
         }
 
 
@@ -53,7 +53,7 @@ namespace MinimalAF.AudioTests {
             string newString = KeysToString(KeyboardCharactersHeld);
             if (newString != oldString) {
                 oldString = newString;
-                _clackSound.Play();
+                clackSound.Play();
             }
 
             Text(newString, Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
@@ -62,21 +62,21 @@ namespace MinimalAF.AudioTests {
             SetDrawColor(1, 1, 1, 1);
 
             string message = "Spacebar to Pause\n";
-            if (_streamedSource.GetSourceState() != AudioSourceState.Playing) {
+            if (streamedSource.GetSourceState() != AudioSourceState.Playing) {
                 message = "Spacebar to Play\nMousewheel to  move";
             }
 
-            message += "Time: " + _streamedSource.GetPlaybackPosition();
+            message += "Time: " + streamedSource.GetPlaybackPosition();
 
             Text(message, Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
 
             SetDrawColor(1, 0, 0, 1);
-            float amount = (float)(_streamedSource.GetPlaybackPosition() / _streamProvider.Duration);
+            float amount = (float)(streamedSource.GetPlaybackPosition() / streamProvider.Duration);
             float x = amount * Width;
             Line(x, 0, x, Height, 2, CapType.None);
 
             if (amount > 1) {
-                Text("Duration: " + _streamProvider.Duration, 0, 0);
+                Text("Duration: " + streamProvider.Duration, 0, 0);
             }
         }
 
@@ -90,18 +90,18 @@ namespace MinimalAF.AudioTests {
             }
 
             //music
-            _streamedSource.UpdateStream();
+            streamedSource.UpdateStream();
 
             if (KeyPressed(KeyCode.Space)) {
-                if (_streamedSource.GetSourceState() != AudioSourceState.Playing) {
-                    _streamedSource.Play();
+                if (streamedSource.GetSourceState() != AudioSourceState.Playing) {
+                    streamedSource.Play();
                 } else {
-                    _streamedSource.Pause();
+                    streamedSource.Pause();
                 }
             }
 
             if (MousewheelNotches != 0) {
-                _streamedSource.SetPlaybackPosition(_streamedSource.GetPlaybackPosition() - MousewheelNotches * 0.5);
+                streamedSource.SetPlaybackPosition(streamedSource.GetPlaybackPosition() - MousewheelNotches * 0.5);
             }
         }
     }

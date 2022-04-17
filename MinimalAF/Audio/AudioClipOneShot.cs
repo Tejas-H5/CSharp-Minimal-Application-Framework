@@ -9,10 +9,10 @@ namespace MinimalAF.Audio {
     /// Currently I have chosen to only support Mono16 and Stereo16 formats for simplicity
     /// </summary>
     public class AudioClipOneShot : IDisposable {
-        private int _ALBuffer = -1;
+        private int alBuffer = -1;
         internal int ALBuffer {
             get {
-                return _ALBuffer;
+                return alBuffer;
             }
         }
 
@@ -21,28 +21,28 @@ namespace MinimalAF.Audio {
         }
 
 
-        private static Dictionary<AudioData, AudioClipOneShot> _audioClipCache = new Dictionary<AudioData, AudioClipOneShot>();
+        private static Dictionary<AudioData, AudioClipOneShot> audioClipCache = new Dictionary<AudioData, AudioClipOneShot>();
         public static AudioClipOneShot FromAudioData(AudioData data) {
-            if (_audioClipCache.ContainsKey(data)) {
-                return _audioClipCache[data];
+            if (audioClipCache.ContainsKey(data)) {
+                return audioClipCache[data];
             }
 
             AudioClipOneShot clip = new AudioClipOneShot(data);
-            _audioClipCache[data] = clip;
+            audioClipCache[data] = clip;
             return clip;
         }
 
         private AudioClipOneShot(AudioData audioData) {
-            AudioCTX.ALCall(out _ALBuffer, () => { return AL.GenBuffer(); });
+            AudioCTX.ALCall(out alBuffer, () => { return AL.GenBuffer(); });
 
             short[] data = audioData.RawData;
             int sampleRate = audioData.SampleRate;
             int channels = audioData.Channels;
 
             if (channels == 1) {
-                AL.BufferData(_ALBuffer, ALFormat.Mono16, data, sampleRate);
+                AL.BufferData(alBuffer, ALFormat.Mono16, data, sampleRate);
             } else {
-                AL.BufferData(_ALBuffer, ALFormat.Stereo16, data, sampleRate);
+                AL.BufferData(alBuffer, ALFormat.Stereo16, data, sampleRate);
             }
 
             Data = audioData;
@@ -68,7 +68,7 @@ namespace MinimalAF.Audio {
 
                 Data = null;
                 //also detatch from source if possible
-                AL.DeleteBuffer(_ALBuffer);
+                AL.DeleteBuffer(alBuffer);
 
                 disposedValue = true;
             }

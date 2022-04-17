@@ -23,7 +23,7 @@ namespace MinimalAF.VisualTests.Rendering
 
         GeometryAndTextTest geometryAndTextTest = new GeometryAndTextTest();
 
-        float _xPos = 0;
+        float xPos = 0;
 
         public override void OnRender()
         {
@@ -32,7 +32,7 @@ namespace MinimalAF.VisualTests.Rendering
 
 			StartStencillingWithoutDrawing(true);
 
-            float barSize = MathF.Abs((Height / 2 - 5) * MathF.Sin(_time / 4f));
+            float barSize = MathF.Abs((Height / 2 - 5) * MathF.Sin(time / 4f));
             Rect(0, Height, Width, Height - barSize);
             Rect(0, 0, Width, barSize);
 
@@ -46,12 +46,12 @@ namespace MinimalAF.VisualTests.Rendering
             StartStencillingWhileDrawing();
 
             float size = 60;
-            DrawRedRectangle(size, _xPos);
+            DrawRedRectangle(size, xPos);
 
             StartUsingStencil();
 
             size = 70;
-            DrawBlueRectangle(size, _xPos);
+            DrawBlueRectangle(size, xPos);
 
             LiftStencil();
         }
@@ -72,12 +72,12 @@ namespace MinimalAF.VisualTests.Rendering
                 Width / 2 + size + xPos, Height / 2 + size);
         }
 
-        float _time = 0;
+        float time = 0;
 
         public override void OnUpdate()
         {
-            _time += (float)Time.DeltaTime;
-			_xPos = 200 * MathF.Sin(_time / 2.0f);
+            time += (float)Time.DeltaTime;
+			xPos = 200 * MathF.Sin(time / 2.0f);
         }
 
         public override void OnLayout() {

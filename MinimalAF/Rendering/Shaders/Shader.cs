@@ -20,18 +20,18 @@ namespace MinimalAF.Rendering {
     public abstract class Shader {
         public readonly int Handle;
 
-        private readonly Dictionary<string, int> _uniformLocations;
+        private readonly Dictionary<string, int> uniformLocations;
 
-        private static Matrix4[] _matrices = new Matrix4[CTX.NUM_MATRICES];
-        private static int[] _matrixUniforms = new int[CTX.NUM_MATRICES];
+        private static Matrix4[] matrices = new Matrix4[CTX.NUM_MATRICES];
+        private static int[] matrixUniforms = new int[CTX.NUM_MATRICES];
 
         public Matrix4 GetMatrix(int matrix) {
-            return _matrices[matrix];
+            return matrices[matrix];
         }
 
         public void SetMatrix(int matrix, Matrix4 value) {
-            _matrices[matrix] = value;
-            SetMatrix4(_matrixUniforms[matrix], value);
+            matrices[matrix] = value;
+            SetMatrix4(matrixUniforms[matrix], value);
         }
 
         public Shader(ShaderFiles files)
@@ -67,20 +67,20 @@ namespace MinimalAF.Rendering {
 
             GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
 
-            _uniformLocations = new Dictionary<string, int>();
+            uniformLocations = new Dictionary<string, int>();
 
             for (var i = 0; i < numberOfUniforms; i++) {
                 var key = GL.GetActiveUniform(Handle, i, out _, out _);
                 var location = GL.GetUniformLocation(Handle, key);
-                _uniformLocations.Add(key, location);
+                uniformLocations.Add(key, location);
             }
 
-            _matrixUniforms[CTX.MODEL_MATRIX] = Loc("model");
-            _matrixUniforms[CTX.PROJECTION_MATRIX] = Loc("projection");
-            _matrixUniforms[CTX.VIEW_MATRIX] = Loc("view");
+            matrixUniforms[CTX.MODEL_MATRIX] = Loc("model");
+            matrixUniforms[CTX.PROJECTION_MATRIX] = Loc("projection");
+            matrixUniforms[CTX.VIEW_MATRIX] = Loc("view");
 
-            for (int i = 0; i < _matrices.Length; i++) {
-                _matrices[i] = Matrix4.Identity;
+            for (int i = 0; i < matrices.Length; i++) {
+                matrices[i] = Matrix4.Identity;
             }
 
             UpdateTransformUniforms();
@@ -91,13 +91,13 @@ namespace MinimalAF.Rendering {
         protected abstract void InitShader();
 
         public void UpdateTransformUniforms() {
-            SetMatrix4(_matrixUniforms[CTX.PROJECTION_MATRIX], _matrices[CTX.PROJECTION_MATRIX]);
-            SetMatrix4(_matrixUniforms[CTX.VIEW_MATRIX], _matrices[CTX.VIEW_MATRIX]);
-            SetMatrix4(_matrixUniforms[CTX.MODEL_MATRIX], _matrices[CTX.MODEL_MATRIX]);
+            SetMatrix4(matrixUniforms[CTX.PROJECTION_MATRIX], matrices[CTX.PROJECTION_MATRIX]);
+            SetMatrix4(matrixUniforms[CTX.VIEW_MATRIX], matrices[CTX.VIEW_MATRIX]);
+            SetMatrix4(matrixUniforms[CTX.MODEL_MATRIX], matrices[CTX.MODEL_MATRIX]);
         }
 
         public void UpdateModel() {
-            SetMatrix4(_matrixUniforms[CTX.MODEL_MATRIX], _matrices[CTX.MODEL_MATRIX]);
+            SetMatrix4(matrixUniforms[CTX.MODEL_MATRIX], matrices[CTX.MODEL_MATRIX]);
         }
 
         private static void CompileShader(int shader) {
@@ -132,7 +132,7 @@ namespace MinimalAF.Rendering {
         /// A micro-optimization that can be used to reduce hashmap lookups by getting the location just once
         /// </summary>
         protected int Loc(string name) {
-            return _uniformLocations[name];
+            return uniformLocations[name];
         }
 
         /// <summary>

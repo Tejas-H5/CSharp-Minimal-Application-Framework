@@ -3,10 +3,10 @@
 namespace MinimalAF.Audio {
     internal static class ALAudioSourcePool {
         const int MAX_AUDIO_SOURCES = 256;
-        private static Stack<OpenALSource> _allAvailableOpenALSources = new Stack<OpenALSource>();
+        private static Stack<OpenALSource> allAvailableOpenALSources = new Stack<OpenALSource>();
 
-        private static Dictionary<AudioSource, OpenALSource> _activeSources = new Dictionary<AudioSource, OpenALSource>();
-        private static List<AudioSource> _unactiveList = new List<AudioSource>();
+        private static Dictionary<AudioSource, OpenALSource> activeSources = new Dictionary<AudioSource, OpenALSource>();
+        private static List<AudioSource> unactiveList = new List<AudioSource>();
 
         internal static void Init() {
             CreateAllOpenALSources();
@@ -19,7 +19,7 @@ namespace MinimalAF.Audio {
         }
 
         private static void SendAudioSourceDataToALSources() {
-            foreach (var items in _activeSources) {
+            foreach (var items in activeSources) {
                 AudioSource virtualSource = items.Key;
                 OpenALSource alSource = items.Value;
                 alSource.PullDataFrom(virtualSource);
@@ -41,13 +41,13 @@ namespace MinimalAF.Audio {
                 return active;
 
             if (PooledSourcesAreAvailable()) {
-                OpenALSource newALSource = _allAvailableOpenALSources.Pop();
+                OpenALSource newALSource = allAvailableOpenALSources.Pop();
                 return AssignALSourceToAudioSource(newALSource, audioSource);
             }
 
 
             AudioSource lowerPrioritiySource = null;
-            foreach (var pairs in _activeSources) {
+            foreach (var pairs in activeSources) {
                 bool isLowerPriority = pairs.Key.Priority < audioSource.Priority;
                 if (isLowerPriority) {
                     lowerPrioritiySource = pairs.Key;
@@ -56,7 +56,7 @@ namespace MinimalAF.Audio {
             }
 
             if (lowerPrioritiySource != null) {
-                OpenALSource newALSource = _activeSources[lowerPrioritiySource];
+                OpenALSource newALSource = activeSources[lowerPrioritiySource];
                 RemoveActiveSource(lowerPrioritiySource);
 
                 return AssignALSourceToAudioSource(newALSource, audioSource);
@@ -67,14 +67,14 @@ namespace MinimalAF.Audio {
 
         internal static OpenALSource GetActiveSource(AudioSource audioSource) {
             if (SourceAlreadyActive(audioSource))
-                return _activeSources[audioSource];
+                return activeSources[audioSource];
 
             return null;
         }
 
 
         private static bool SourceAlreadyActive(AudioSource source) {
-            return _activeSources.ContainsKey(source);
+            return activeSources.ContainsKey(source);
         }
 
 
@@ -85,41 +85,41 @@ namespace MinimalAF.Audio {
 
 
         private static void FindUnactiveSources() {
-            foreach (var pairs in _activeSources) {
+            foreach (var pairs in activeSources) {
                 if (SourceIsntPlayingAnything(pairs.Value)) {
-                    _unactiveList.Add(pairs.Key);
+                    unactiveList.Add(pairs.Key);
                 }
             }
         }
 
         private static void ReturnUnactiveSourcesToPool() {
-            foreach (AudioSource source in _unactiveList) {
+            foreach (AudioSource source in unactiveList) {
                 ReturnToPool(source);
             }
 
-            _unactiveList.Clear();
+            unactiveList.Clear();
         }
 
         private static void ReturnToPool(AudioSource connectedSource) {
-            OpenALSource source = _activeSources[connectedSource];
+            OpenALSource source = activeSources[connectedSource];
 
             RemoveActiveSource(connectedSource);
 
             source.StopAndUnqueueAllBuffers();
 
-            _allAvailableOpenALSources.Push(source);
+            allAvailableOpenALSources.Push(source);
         }
 
         private static void RemoveActiveSource(AudioSource connectedSource) {
             //Console.WriteLine("Source [" + connectedSource.SourceID + "] no longer active");
 
-            _activeSources.Remove(connectedSource);
+            activeSources.Remove(connectedSource);
         }
 
         private static OpenALSource AssignALSourceToAudioSource(OpenALSource alSource, AudioSource audioSource) {
             //Console.WriteLine("Made source [" + audioSource.SourceID + "] active");
 
-            _activeSources[audioSource] = alSource;
+            activeSources[audioSource] = alSource;
             alSource.StopAndUnqueueAllBuffers();
 
             return alSource;
@@ -134,29 +134,29 @@ namespace MinimalAF.Audio {
         private static void CreateAllOpenALSources() {
             OpenALSource source = null;
             while (SourceLimitNotReached() && (source = OpenALSource.CreateOpenALSource()) != null) {
-                _allAvailableOpenALSources.Push(source);
+                allAvailableOpenALSources.Push(source);
             }
         }
 
         private static void DisposeAllPooledSources() {
-            foreach (OpenALSource alSource in _allAvailableOpenALSources) {
+            foreach (OpenALSource alSource in allAvailableOpenALSources) {
                 alSource.Dispose();
             }
-            _allAvailableOpenALSources.Clear();
+            allAvailableOpenALSources.Clear();
         }
 
         private static void ReclaimAllSources() {
-            foreach (var items in _activeSources) {
+            foreach (var items in activeSources) {
                 ReturnToPool(items.Key);
             }
         }
 
         private static bool SourceLimitNotReached() {
-            return _allAvailableOpenALSources.Count < MAX_AUDIO_SOURCES;
+            return allAvailableOpenALSources.Count < MAX_AUDIO_SOURCES;
         }
 
         internal static bool PooledSourcesAreAvailable() {
-            return _allAvailableOpenALSources.Count > 0;
+            return allAvailableOpenALSources.Count > 0;
         }
     }
 }

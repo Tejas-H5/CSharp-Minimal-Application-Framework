@@ -9,34 +9,34 @@ namespace MinimalAF.Rendering {
     /// TODO: Make resizeing this more memory efficient
     /// </summary>
     public class Framebuffer : IDisposable {
-        int _width = -1, _height = -1;
+        int width = -1, height = -1;
 
         public int Width {
             get {
-                return _width;
+                return width;
             }
         }
         public int Height {
             get {
-                return _height;
+                return height;
             }
         }
 
-        int _fbo;
+        int fbo;
 
-        Texture _textureObject;
-        TextureImportSettings _textureSettings;
+        Texture textureObject;
+        TextureImportSettings textureSettings;
 
         public Texture Texture {
             get {
-                return _textureObject;
+                return textureObject;
             }
         }
 
-        int _renderBufferObject;
+        int renderBufferObject;
 
         public Framebuffer(int width, int height, TextureImportSettings textureSettings) {
-            _textureSettings = textureSettings;
+            this.textureSettings = textureSettings;
             /*
             new TextureImportSettings
             {
@@ -47,10 +47,10 @@ namespace MinimalAF.Rendering {
             }*/
 
 
-            _textureObject = new Texture(1, 1, _textureSettings);
+            textureObject = new Texture(1, 1, textureSettings);
 
-            _fbo = GL.GenFramebuffer();
-            _renderBufferObject = GL.GenRenderbuffer();
+            fbo = GL.GenFramebuffer();
+            renderBufferObject = GL.GenRenderbuffer();
 
             ResizeIfRequired(width, height);
         }
@@ -60,20 +60,20 @@ namespace MinimalAF.Rendering {
         /// if the current dimensions are different.
         /// </summary>
         public void ResizeIfRequired(int width, int height) {
-            if (_width == width && _height == height)
+            if (width == width && height == height)
                 return;
 
-            _width = width;
-            _height = height;
+            this.width = width;
+            this.height = height;
 
             BindFrameBuffer();
 
 
-            ReallocateRenderbuffer(_width, _height);
+            ReallocateRenderbuffer(width, height);
 
             //TODO: more efficient resizing
 
-            ReallocateTexture(_width, _height);
+            ReallocateTexture(width, height);
 
 
             ValidateFrameBuffer();
@@ -86,22 +86,22 @@ namespace MinimalAF.Rendering {
         }
 
         private void ReallocateTexture(int width, int height) {
-            _textureObject.Resize(width, height);
+            textureObject.Resize(width, height);
             GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0,
-                TextureTarget.Texture2D, _textureObject.Handle, 0);
+                TextureTarget.Texture2D, textureObject.Handle, 0);
         }
 
         private void ReallocateRenderbuffer(int width, int height) {
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, _renderBufferObject);
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, renderBufferObject);
             GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, width, height);
             GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment,
-                RenderbufferTarget.Renderbuffer, _renderBufferObject);
+                RenderbufferTarget.Renderbuffer, renderBufferObject);
 
             GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
         }
 
         private void BindFrameBuffer() {
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, _fbo);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbo);
         }
 
         private static void ValidateFrameBuffer() {
@@ -113,7 +113,7 @@ namespace MinimalAF.Rendering {
         }
 
         public void Bind() {
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, _fbo);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbo);
         }
 
 
@@ -128,7 +128,7 @@ namespace MinimalAF.Rendering {
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
                 // TODO: set large fields to null.
-                _textureObject.Dispose();
+                textureObject.Dispose();
 
                 disposedValue = true;
             }

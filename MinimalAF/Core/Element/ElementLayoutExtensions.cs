@@ -126,8 +126,8 @@ namespace MinimalAF {
                 wanted0.X0 += VW(1) - splitAmount;
                 wanted1.X1 -= splitAmount;
             } else {
-                wanted0.X0 += splitAmount;
-                wanted1.X1 -= VW(1) - splitAmount;
+                wanted1.X0 += splitAmount;
+                wanted0.X1 -= VW(1) - splitAmount;
             }
 
             el0.RelativeRect = wanted0;

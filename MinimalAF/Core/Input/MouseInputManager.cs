@@ -141,21 +141,21 @@ namespace MinimalAF {
             _mouseButtonStates = temp;
         }
 
-        public bool IsPressed(MouseButton b) {
+        public bool ButtonPressed(MouseButton b) {
             if (b == MouseButton.Any)
                 return _anyPressed;
 
             return (!_prevMouseButtonStates[(int)b]) && _mouseButtonStates[(int)b];
         }
 
-        public bool IsReleased(MouseButton b) {
+        public bool ButtonReleased(MouseButton b) {
             if (b == MouseButton.Any)
                 return _anyReleased;
 
             return _prevMouseButtonStates[(int)b] && (!_mouseButtonStates[(int)b]);
         }
 
-        public bool IsHeld(MouseButton b) {
+        public bool ButtonHeld(MouseButton b) {
             if (b == MouseButton.Any)
                 return _anyHeld;
 

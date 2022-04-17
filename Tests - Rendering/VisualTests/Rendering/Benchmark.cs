@@ -8,16 +8,16 @@ namespace MinimalAF.VisualTests.Rendering
     class Benchmark : Element
     {
         private int _lineThiccness;
+        CapType _capType;
 
-        public Benchmark(int thickness = 5)
+        public Benchmark(CapType capType = CapType.Circle, int thickness = 5)
         {
             _lineThiccness = thickness;
+            _capType = capType;
         }
 
         public override void OnMount(Window w)
         {
-            
-
             w.Size = (800, 600);
             w.Title = "Rendering Engine Line benchmark";
 
@@ -49,13 +49,17 @@ namespace MinimalAF.VisualTests.Rendering
                 float x2 = VW((float)rand.NextDouble());
                 float y2 = VH((float)rand.NextDouble());
 
-                Line(x1, y1, x2, y2, _lineThiccness, CapType.None);
+                Line(x1, y1, x2, y2, _lineThiccness, _capType);
             }
 
             double FPS = frames / time;
             SetDrawColor(0, 0, 0, 1f);
-            Text("FPS: " + FPS.ToString("0.000"), 10, Height - 50);
-            Text("Lines drawn: " + amount, 10, Height - 100);
+
+            string text = "FPS: " + FPS.ToString("0.000") +
+                "\nLines drawn: " + amount + 
+                "\nCapType: " + _capType.ToString();
+
+            Text(text, 10, Height - 50);
 
             time += Time.DeltaTime;
             frames++;

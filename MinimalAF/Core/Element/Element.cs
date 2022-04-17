@@ -7,6 +7,10 @@ namespace MinimalAF {
     public abstract partial class Element {
         protected Element _parent = null;
         protected List<Element> _children = new List<Element>();
+
+        internal static List<Element> RenderQueue = new List<Element>();
+
+
         public virtual bool SingleChild => false;
 
         public bool IsVisibleNextFrame = true;
@@ -29,6 +33,12 @@ namespace MinimalAF {
         public Vector2 Offset;
         private Rect _relativeRect;
         protected Rect _screenRect; // this is auto-calculated
+
+        /// <summary>
+        /// This will be updated whenever everything is rendered
+        /// </summary>
+        public Rect ScreenRect => _screenRect;
+
         bool _rectModified = false;
 
         public bool Clipping {
@@ -279,6 +289,11 @@ namespace MinimalAF {
                 return;
             }
 
+            // A hack that allows children to render above parents if needed.
+            // I am still not quite sure why it works.
+            // Side-effect: UIs can only be 100,000 elements deep
+            CTX.Current2DDepth = 1 - acc.Depth / 100000f;
+
             RecalcScreenRect(acc.ParentScreenRect);
             UseCoordinates();
 
@@ -306,6 +321,8 @@ namespace MinimalAF {
             }
 
             AfterRender();
+
+            CTX.Current2DDepth = 1 - acc.Depth / 100000f;
 
             if (Clipping) {
                 CTX.CurrentClippingRect = previousClippingRect;
@@ -505,6 +522,14 @@ namespace MinimalAF {
         /// Frequency is controlled by the window configuration's RenderFrequency.
         /// </summary>
         public virtual void OnRender() {
+
+        }
+
+        /// <summary>
+        /// A second render pass called after OnRender.
+        /// Frequency is controlled by the window configuration's RenderFrequency.
+        /// </summary>
+        public virtual void OnPostRender() {
 
         }
 

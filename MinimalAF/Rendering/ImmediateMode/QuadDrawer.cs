@@ -26,10 +26,10 @@ namespace MinimalAF.Rendering.ImmediateMode {
         public void Draw(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
       float u0 = 0.0f, float v0 = 0.0f, float u1 = 0.0f, float v1 = 1f, float u2 = 1, float v2 = 1, float u3 = 1, float v3 = 0) {
             Draw(
-               new Vertex(new Vector3(x0, y0, 0), new Vector2(u0, v0)),
-               new Vertex(new Vector3(x1, y1, 0), new Vector2(u1, v1)),
-               new Vertex(new Vector3(x2, y2, 0), new Vector2(u2, v2)),
-               new Vertex(new Vector3(x3, y3, 0), new Vector2(u3, v3))
+               new Vertex(new Vector3(x0, y0, CTX.Current2DDepth), new Vector2(u0, v0)),
+               new Vertex(new Vector3(x1, y1, CTX.Current2DDepth), new Vector2(u1, v1)),
+               new Vertex(new Vector3(x2, y2, CTX.Current2DDepth), new Vector2(u2, v2)),
+               new Vertex(new Vector3(x3, y3, CTX.Current2DDepth), new Vector2(u3, v3))
             );
         }
     }

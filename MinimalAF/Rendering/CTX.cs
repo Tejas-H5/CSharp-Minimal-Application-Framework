@@ -11,7 +11,7 @@ namespace MinimalAF.Rendering {
     /// It no longer needs to be short, we can rename to RenderContext later, or even turn this into an object and then a 
     /// singleton
     /// </summary>
-    internal static class CTX {
+    public static class CTX {
         public const int MODEL_MATRIX = 0;
         public const int VIEW_MATRIX = 1;
         public const int PROJECTION_MATRIX = 2;
@@ -21,6 +21,8 @@ namespace MinimalAF.Rendering {
         private static IGLFWGraphicsContext _glContext;
 
         private static int _contextWidth, _contextHeight;
+
+        public static float Current2DDepth = 0;
 
         private static Rect _currentClippingRect;
         internal static Rect CurrentClippingRect {

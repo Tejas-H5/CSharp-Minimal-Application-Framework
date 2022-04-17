@@ -1,17 +1,6 @@
 TODO:
 	- Meta-test to make sure that you can actually make cool and useful things with this framework.
-	- Test harness that collates and allows for searching through all unit tests
-		- Create An Attribute is used to mark tests
-		- Create an element that can aggregate and show all unit tests
-		- Allow multiple windows, make a side-window that controls the main window
-		- create a Debug window
-			- Some way to resize the window
-			- Some way to pass constructor args and then restart the test.
-				- start making the clipping rect stack-based, and remove SetClippingRect and ClearClippingRect
-				-> make some things
-				
-			-* Some way to see the element tree
-				-* Will need to be root-node-state based and done in AfterRender. Also figure out some way to move debug overlay to here as well
+		- DONE. didnt think it could be done lol
 	
 	-* remove underscore from all the field names. It's awful to look at and type
 
@@ -43,3 +32,7 @@ Amazin'
 					
 	-* Add dynamic compilation
 		-* find that ms doc page about c# dynamic compilation
+
+	Test framework future improvements:
+		-* Some way to see the element tree
+			-* Will need to be root-node-state based and done in AfterRender. Also figure out some way to move debug overlay to here as well

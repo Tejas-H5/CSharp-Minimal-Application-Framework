@@ -12,6 +12,10 @@
             _outputStream = outputStream;
         }
 
+        public void Begin(float centerX, float centerY, int n) {
+            Begin(new Vertex(centerX, centerY, CTX.Current2DDepth), n);
+        }
+
         public void Begin(Vertex v1, int n) {
             if (n < 3)
                 n = 3;
@@ -25,6 +29,11 @@
 
             _polygonCount = 1;
         }
+
+        public void Continue(float centerX, float centerY) {
+            Continue(new Vertex(centerX, centerY, CTX.Current2DDepth));
+        }
+
 
         public void Continue(Vertex v) {
             if (_polygonBegun == false) {

@@ -25,15 +25,15 @@ namespace MinimalAF {
         public bool MouseFinishedDragging => Input.Mouse.FinishedDragging;
 
         public bool MouseButtonPressed(MouseButton b) {
-            return MouseOverSelf && Input.Mouse.IsPressed(b);
+            return MouseOverSelf && Input.Mouse.ButtonPressed(b);
         }
 
         public bool MouseButtonReleased(MouseButton b) {
-            return MouseOverSelf && Input.Mouse.IsReleased(b);
+            return MouseOverSelf && Input.Mouse.ButtonReleased(b);
         }
 
         public bool MouseButtonHeld(MouseButton b) {
-            return MouseOverSelf && Input.Mouse.IsHeld(b);
+            return MouseOverSelf && Input.Mouse.ButtonHeld(b);
         }
 
         public bool MouseOverSelf => Input.Mouse.IsOver(_screenRect);

@@ -5,7 +5,13 @@ using System.Reflection;
 
 // Warning: Tight coupling. Not for the faint of heart
 namespace MinimalAF {
-    class NoMoreTests : Element {
+    class TestError : Element {
+        Exception exception;
+
+        public TestError(Exception exception) {
+            this.exception = exception;
+        }
+
         public override void OnMount(Window w) {
             SetClearColor(Color4.VA(1, 1));
         }
@@ -13,8 +19,8 @@ namespace MinimalAF {
         public override void OnRender() {
             SetFont("Consolas", 24);
 
-            string text = "No tests.\nGive the [" + typeof(VisualTestAttribute).Name + "] attribute to an element"
-                + "\nin order to make it show up here. ";
+            string text = "An exception occured:\n" +
+                exception.Message;
 
             Text(text, VW(0.5f), VH(0.5f), HorizontalAlignment.Center, VerticalAlignment.Center);
         }
@@ -249,17 +255,18 @@ namespace MinimalAF {
         }
 
         public override void OnRender() {
-            //SetDrawColor(Color4.VA(1, 0.5f));
-            //if(MouseOverSelf) {
-            //    SetDrawColor(Color4.VA(0.5f, 0.5f));
-            //    if(MouseButtonHeld(MouseButton.Any)) {
-            //        SetDrawColor(Color4.VA(0.5f, 1f));
-            //    }
-            //}
-
-            SetDrawColor(Color4.Red);
+            SetDrawColor(Color4.VA(1, 0.5f));
+            if (MouseOverSelf) {
+                SetDrawColor(Color4.VA(0.5f, 0.5f));
+                if (MouseButtonHeld(MouseButton.Any)) {
+                    SetDrawColor(Color4.VA(0.5f, 1f));
+                }
+            }
 
             Rect(0, 0, Width, Height);
+
+            SetDrawColor(Color4.Black);
+            RectOutline(1, 0, 0, Width, Height);
         }
 
         public override void OnUpdate() {
@@ -269,11 +276,234 @@ namespace MinimalAF {
         }
     }
 
+    class UIPair : Element {
+        public UIPair(Element el1, Element el2) {
+            SetChildren(el1, el2);
+        }
+
+        public override void OnRender() {
+            SetDrawColor(Color4.Black);
+
+            RectOutline(1, this[0].RelativeRect);
+            RectOutline(1, this[1].RelativeRect);
+        }
+
+        public override void OnLayout() {
+            LayoutTwoSplit(this[0], this[1], Direction.Right, VW(0.5f));
+            LayoutChildren();
+        }
+    }
+
+    class NameList : Element {
+        readonly string[] allNames;
+        List<string> filterednames = new List<string>();
+        float textHeight;
+        float wantedHeight;
+        public float WantedHeight => wantedHeight;
+
+        public Action<string> OnSelect;
+
+        public NameList(string[] names) {
+            allNames = names;
+
+            Filter("");
+        }
+
+        IEnumerable<(float, string, Rect)> IterateNames() {
+            float y = 0;
+            float gap = 5;
+            for (int i = 0; i < filterednames.Count; i++) {
+                yield return (y, filterednames[i], new Rect(0, y - textHeight - gap, VW(1), y));
+
+                y -= textHeight + gap;
+            }
+
+            wantedHeight = -y;
+        }
+
+        public override void OnUpdate() {
+            foreach ((float y, string name, Rect rect) in IterateNames()) {
+                if (MouseOver(rect) && Input.Mouse.ButtonPressed(MouseButton.Any)) {
+                    OnSelect?.Invoke(name);
+                    break;
+                }
+            }
+        }
+
+        public override void OnRender() {
+            float prevDepth = CTX.Current2DDepth;
+            CTX.Current2DDepth = 0;
+
+            SetFont("Consolas", 12);
+
+            if (GetCharHeight() != textHeight) {
+                textHeight = GetCharHeight();
+                Layout();
+            }
+
+            foreach ((float y, string name, Rect rect) in IterateNames()) {
+                SetDrawColor(Color4.White);
+                Rect(rect);
+
+                SetDrawColor(0, 0, 0, 1);
+                RectOutline(1, rect);
+
+                if (MouseOver(rect)) {
+                    SetDrawColor(0, 0, 0, 0.5f);
+
+                    if (MouseButtonHeld(MouseButton.Any)) {
+                        SetDrawColor(0.5f, 0.5f, 0.5f, 1);
+                    }
+                }
+
+                Text(name, VW(0.5f), y, HorizontalAlignment.Center, VerticalAlignment.Top);
+            }
+
+            CTX.Current2DDepth = prevDepth;
+        }
+
+        public void Filter(string str) {
+            filterednames.Clear();
+
+            for (int i = 0; i < allNames.Length && i < 5; i++) {
+                if (!allNames[i].Contains(str, StringComparison.OrdinalIgnoreCase)) {
+                    continue;
+                }
+
+                filterednames.Add(allNames[i]);
+            }
+        }
+    }
+
+    class ChoiceInput<T> : Element, IInput<T> {
+        readonly string[] allNames;
+        T[] values;
+
+        T GetValue(string name) {
+            return values[Array.IndexOf(allNames, name)];
+        }
+
+        string GetName(T obj) {
+            return allNames[Array.IndexOf(values, obj)];
+        }
+
+        T currentValue;
+        string currentName;
+
+        public T Value => currentValue;
+
+        TextInput<string> textInput;
+        NameList nameList;
+
+        public event Action<T> OnChanged;
+        public event Action<T> OnFinalized;
+        bool stayOpen = false;
+
+        public ChoiceInput(string[] names, T[] values, int selected = 0) {
+            allNames = names;
+            this.values = values;
+
+            string defaultValue = GetValue(names[selected]).ToString();
+
+            textInput = new TextInput<string>(
+                new TextElement("", Color4.VA(0, 1), "Consolas", 12, VerticalAlignment.Center, HorizontalAlignment.Center),
+                defaultValue,
+                (string s) => s
+            );
+
+            textInput.OnChanged += TextInput_OnTextChanged;
+            textInput.OnDefocused += TextInput_OnDefocused;
+
+            nameList = new NameList(allNames);
+            nameList.OnSelect += NameList_OnSelect;
+            nameList.IsVisible = false;
+
+            currentName = allNames[selected];
+            currentValue = this.values[selected];
+
+            SetChildren(textInput, nameList);
+        }
+
+        private void TextInput_OnDefocused() {
+            textInput.String = currentName;
+        }
+
+        public static ChoiceInput<object> FromEnum(Type enumType, object defaultValue) {
+            if (!enumType.IsEnum) {
+                throw new Exception("enumType must be an `enum`.");
+            }
+
+            // TODO: can be cached based on type
+            var mapping = new Dictionary<string, object>();
+            var names = enumType.GetEnumNames();
+            var values = new object[names.Length];
+            enumType.GetEnumValues().CopyTo(values, 0);
+
+            return new ChoiceInput<object>(names, values, Array.IndexOf(values, defaultValue));
+        }
+
+
+        void NameList_OnSelect(string name) {
+            textInput.EndTyping();
+
+            currentName = name;
+            textInput.String = name;
+            currentValue = GetValue(name);
+
+            OnChanged?.Invoke(currentValue);
+            OnFinalized?.Invoke(currentValue);
+        }
+
+
+        public override void OnUpdate() {
+            if (!textInput.HasFocus) {
+                if (stayOpen) {
+                    stayOpen = false;
+                } else {
+                    return;
+                }
+            } else {
+                stayOpen = true;
+            }
+
+            nameList.IsVisible = textInput.HasFocus || stayOpen;
+        }
+
+
+        public override void OnLayout() {
+            nameList.RelativeRect = new Rect(0, -nameList.WantedHeight, VW(1), 0);
+
+            LayoutChildren();
+        }
+
+
+        private void TextInput_OnTextChanged(string str) {
+            nameList.Filter(str);
+        }
+    }
+
+    static class TestRunerCommon {
+        public static object InstantiateDefaultParameterValue(ParameterInfo parameter) {
+            if (parameter.RawDefaultValue != DBNull.Value) {
+                if (parameter.ParameterType.IsEnum) {
+                    return Enum.ToObject(parameter.ParameterType, parameter.RawDefaultValue);
+                } else {
+                    return parameter.RawDefaultValue;
+                }
+            } else {
+                return Activator.CreateInstance(parameter.ParameterType);
+            }
+        }
+    }
+
     class Reflector : Element {
         VisualTestRunner testRuner;
         Button restartButton;
         Type currentTestClass;
         float scrollOffset = 0;
+        object[] args;
+
+        public object[] Args => args;
 
         public Reflector() {
             restartButton = new Button("Restart");
@@ -281,17 +511,49 @@ namespace MinimalAF {
         }
 
         private void RestartButton_OnClick() {
-            testRuner.StartTest(currentTestClass);
+            testRuner.StartTest(currentTestClass, args);
         }
 
         public override void OnMount(Window w) {
             testRuner = GetAncestor<VisualTestRunner>();
-            testRuner.OnTestcaseChanged += TestRuner_OnTestcaseChanged; //
-
-
+            testRuner.OnTestcaseChanged += TestRuner_OnTestcaseChanged;
         }
 
-        private void TestRuner_OnTestcaseChanged(Element obj) {
+        TextElement CreateText(string name) {
+            return new TextElement(name, Color4.Black, "Consolas", 12, VerticalAlignment.Center, HorizontalAlignment.Center);
+        }
+
+        public static bool SupportsType(Type type) {
+            return type == typeof(int)
+                || type == typeof(float)
+                || type == typeof(double)
+                || type == typeof(long)
+                || type == typeof(string)
+                || type.IsEnum;
+        }
+
+        IInput<object> CreateInput(Type type, object defaultValue) {
+            IInput<object> input = null;
+
+            // TODO: add a dropdown that lets you select from an enum for enums
+            if (type == typeof(int)) {
+                input = new TextInput<object>(CreateText(""), defaultValue, (string s) => int.Parse(s));
+            } else if (type == typeof(float)) {
+                input = new TextInput<object>(CreateText(""), defaultValue, (string s) => float.Parse(s));
+            } else if (type == typeof(double)) {
+                input = new TextInput<object>(CreateText(""), defaultValue, (string s) => double.Parse(s));
+            } else if (type == typeof(long)) {
+                input = new TextInput<object>(CreateText(""), defaultValue, (string s) => long.Parse(s));
+            } else if (type == typeof(string)) {
+                input = new TextInput<object>(CreateText(""), defaultValue, (string s) => s);
+            } else if (type.IsEnum) {
+                input = ChoiceInput<object>.FromEnum(type, defaultValue);
+            }
+
+            return input;
+        }
+
+        private void TestRuner_OnTestcaseChanged(Element obj, object[] args) {
             if (obj.GetType() == currentTestClass) {
                 return;
             }
@@ -300,15 +562,29 @@ namespace MinimalAF {
             SetChildren(null);
 
             var constructor = currentTestClass.GetConstructors()[0];
-            
-            // TODO: add editable fields for all the constructor parameters
-            var parameters = constructor.GetParameters();
-            foreach(var parameter in parameters) {
+            this.args = args;
 
+            var parameters = constructor.GetParameters();
+            for (int i = 0; i < args.Length; i++) {
+                var parameter = parameters[i];
+
+                args[i] = TestRunerCommon.InstantiateDefaultParameterValue(parameter);
+
+                var input = CreateInput(parameter.ParameterType, args[i]);
+                var label = CreateText(parameter.Name);
+                var pair = new UIPair(label, (Element)input);
+                // not a redundant assigment, requried by the following closure
+                int argumentIndex = i;
+                input.OnChanged += (object obj) => {
+                    args[argumentIndex] = obj;
+                };
+
+                AddChild(pair);
             }
 
             AddChild(restartButton);
         }
+
 
         public override void OnLayout() {
             LayoutLinear(Children, Direction.Down, 40, scrollOffset, 5);
@@ -346,7 +622,7 @@ namespace MinimalAF {
     }
 
 
-    // [VisualTest] This actually works btw.
+    // [VisualTest] // (This funny recursion thing actually works btw.)
     public class VisualTestRunner : Element {
         List<Type> visualTestElements = new List<Type>();
 
@@ -355,20 +631,19 @@ namespace MinimalAF {
         Reflector reflectionPanel;
         MountingContainer mountingContainer;
 
-        public event Action<Element> OnTestcaseChanged;
+        public event Action<Element, object[]> OnTestcaseChanged;
 
         public VisualTestRunner() {
             testList = new TestList(visualTestElements);
             testList.OnSelect += TestList_OnSelect;
 
             searchbox = new TextInput<string>(
-                new TextElement("", Color4.VA(0, 1), "Consolas", 24),
-                new Property<string>(""),
+                new TextElement("", Color4.VA(0, 1), "Consolas", 24), "",
                 (string s) => s
             );
 
             searchbox.Placeholder = "Search for a test";
-            searchbox.OnTextChanged += Searchbox_OnTextChanged;
+            searchbox.OnChanged += Searchbox_OnTextChanged;
 
             mountingContainer = new MountingContainer();
 
@@ -388,62 +663,57 @@ namespace MinimalAF {
             StartTest(visualTestElements.IndexOf(obj));
         }
 
-        public void StartTest(Type type) {
-            StartTest(visualTestElements.IndexOf(type));
+        public void StartTest(Type type, object[] args) {
+            StartTest(visualTestElements.IndexOf(type), args);
         }
 
-        void StartTest(int index) {
-            mountingContainer.TestMounting.SetChildren(null);
-
-            // a funny recursive case I added. this is so we won't get a stack overflow with 0
-            // other test cases. TODO: remove this 
-            int count = visualTestElements.Count;
-            if (count == 1 && visualTestElements[0].GetType() == typeof(VisualTestRunner)) {
-                count = 0;
-            }
-
-            if (index < 0 || index >= visualTestElements.Count) {
-                mountingContainer.TestMounting.SetChildren(new NoMoreTests());
-                OnTestcaseChanged?.Invoke(mountingContainer.TestMounting[0]);
-                return;
-            }
-
-            currentTest = index;
-            Type t = visualTestElements[currentTest];
-
-            var constructors = t.GetConstructors();
-            if (constructors.Length == 0) {
-                throw new Exception("The class " + t.Name + " needs to have at least one constructor");
-            } else if (constructors.Length > 1) {
-                throw new Exception("The class " + t.Name + " cannot have more than one constructor to be testable here.");
-            }
-
+        void StartTest(int index, object[] args = null) {
             try {
+                mountingContainer.TestMounting.SetChildren(null);
+
+                // accounting for a recursive case I was trying out
+                int count = visualTestElements.Count;
+                if (count == 1 && visualTestElements[0].GetType() == typeof(VisualTestRunner)) {
+                    count = 0;
+                }
+
+                currentTest = index;
+                Type t = visualTestElements[currentTest];
+
+                var constructors = t.GetConstructors();
+                if (constructors.Length == 0) {
+                    throw new Exception("The class " + t.Name + " needs to have at least one constructor");
+                } else if (constructors.Length > 1) {
+                    throw new Exception("The class " + t.Name + " cannot have more than one constructor to be testable here.");
+                }
+
                 var constructor = constructors[0];
                 var expectedArgs = constructor.GetParameters();
-                object[] args = new object[expectedArgs.Length];
+
+                if (args == null) {
+                    args = new object[expectedArgs.Length];
+                }
 
                 for (int i = 0; i < expectedArgs.Length; i++) {
-                    var exArg = expectedArgs[i];
-
-                    if (exArg.RawDefaultValue != null) {
-                        args[i] = exArg.RawDefaultValue;
+                    if (args[i] != null) {
                         continue;
                     }
 
-                    object defaultVal = Activator.CreateInstance(exArg.ParameterType);
-                    args[i] = defaultVal;
+                    Type paramType = expectedArgs[i].ParameterType;
+                    if (!Reflector.SupportsType(paramType)) {
+                        throw new Exception("The type " + paramType.Name + " on parameter " + expectedArgs[i].Name + " is not yet supported");
+                    }
+
+                    args[i] = TestRunerCommon.InstantiateDefaultParameterValue(expectedArgs[i]);
                 }
 
                 Element test = (Element)Activator.CreateInstance(t, args);
 
                 mountingContainer.TestMounting.SetChildren(test);
-                OnTestcaseChanged?.Invoke(test);
-            } catch (MissingMethodException) {
-                throw new Exception("The class " + t.Name + " needs to have a parameterless constructor" +
-                    "( e.g. var x = new " + t.Name + "() ) in order to be instantiated by this test harness.");
+                OnTestcaseChanged?.Invoke(test, args);
             } catch (Exception e) {
-                throw e;
+                mountingContainer.TestMounting.SetChildren(new TestError(e));
+                OnTestcaseChanged?.Invoke(mountingContainer.TestMounting[0], new object[0]);
             }
         }
 

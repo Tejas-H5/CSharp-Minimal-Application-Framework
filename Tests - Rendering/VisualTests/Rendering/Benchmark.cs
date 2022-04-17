@@ -9,13 +9,15 @@ namespace MinimalAF.VisualTests.Rendering
     {
         private int lineThiccness;
         CapType capType;
-        bool testBool;
+        int lineCount;
+        float requiredFPS;
 
-        public Benchmark(bool testBoolean, CapType capType = CapType.Circle, int thickness = 5)
+        public Benchmark(int lineCount = 0, CapType capType = CapType.Circle, int thickness = 5, float requiredFPS = 60)
         {
             lineThiccness = thickness;
             this.capType = capType;
-            testBool = testBoolean;
+            this.lineCount = lineCount;
+            this.requiredFPS = requiredFPS;
         }
 
         public override void OnMount(Window w)
@@ -29,10 +31,6 @@ namespace MinimalAF.VisualTests.Rendering
 
         Random rand = new Random(1);
 
-        public override void OnUpdate()
-        {
-        }
-
         int frames = 0;
         double time = 0;
 
@@ -41,6 +39,34 @@ namespace MinimalAF.VisualTests.Rendering
 
         public override void OnRender()
         {
+            time += Time.DeltaTime;
+            frames++;
+
+            double FPS = frames / time;
+
+            if (time > 0.5f) {
+                if (lineCount > 0) {
+                    amount = lineCount;
+                } else {
+                    if (FPS < requiredFPS) {
+                        amount -= jump;
+                    } else if (FPS > requiredFPS) {
+                        amount += jump;
+                    }
+
+                    jump /= 2;
+                    if (jump == 0) {
+                        Console.WriteLine($"Converged at {amount} lines required for {requiredFPS}");
+
+                        jump = 1000;
+                    }
+                }
+
+                time = 0;
+                frames = 0;
+            }
+
+
             SetDrawColor(1, 0, 0, 0.1f);
 
             for (int i = 0; i < amount; i++)
@@ -54,46 +80,13 @@ namespace MinimalAF.VisualTests.Rendering
                 Line(x1, y1, x2, y2, lineThiccness, capType);
             }
 
-            double FPS = frames / time;
             SetDrawColor(0, 0, 0, 1f);
 
             string text = "FPS: " + FPS.ToString("0.000") +
-                "\nLines drawn: " + amount + 
-                "\nCapType: " + capType.ToString() + 
-                "\nTest bool: " + testBool.ToString();
+                "\nLines drawn: " + amount +
+                "\nCapType: " + capType.ToString();
 
             Text(text, 10, Height - 50);
-
-            time += Time.DeltaTime;
-            frames++;
-
-            float requiredFPS = 60;
-            if (time > 0.5f)
-            {
-                if (FPS < requiredFPS)
-                {
-                    amount -= jump;
-                }
-                else if (FPS > requiredFPS)
-                {
-                    amount += jump;
-                }
-
-                jump /= 2;
-                if (jump == 0)
-                {
-                    Console.WriteLine($"Converged at {amount} lines required for {requiredFPS}");
-
-                    jump = 1000;
-                }
-
-                time = 0;
-                frames = 0;
-            }
-
-            //RenderingContext.DrawLine(-size, -size, size, size, 0.02f, CapType.Circle);
-
-            //RenderingContext.DrawFilledArc(Width/2, Height/2, size, 0, MathF.PI * 2);
         }
     }
 }

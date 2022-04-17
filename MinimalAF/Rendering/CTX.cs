@@ -146,11 +146,15 @@ namespace MinimalAF.Rendering {
             disposed = false; // To detect redundant calls to Dispose()
 
 
-            Console.WriteLine("Context initialized");
+            Console.WriteLine("Context initialized. OpenGL info: ");
+
+            string version = GL.GetString(StringName.Version);
+            string vendor = GL.GetString(StringName.Vendor);
+            Console.WriteLine("Vendor: " + vendor + ", Version: " + version);
         }
 
         private static void InitDrawers() {
-            meshOutputStream = new MeshOutputStream(4096, 4 * 4096);
+            meshOutputStream = new MeshOutputStream(4 * 4096, 16 * 4096);
 
             triangle = new TriangleDrawer(meshOutputStream);
             nGon = new NGonDrawer(meshOutputStream);

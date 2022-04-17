@@ -1,5 +1,13 @@
 Anything cluttering up MinimalAF plan is just thrown in here
 =======================================================
+
+- profiling 
+	- Why is the benchmark so much slower now than it was before?
+		- Why does it say rendered with software? lol
+		- IF I rendered it with nvidia, would it be faster?
+			- Yes. Before, the 'surface-area' I was drawing was the bottleneck.
+			After switching to NVidia, the data transfer became the bottleneck
+
 	- Start using  List instead of an array to store children
 	- Remove constructors, make sure that mounting only happens when the window is opened and not as soon as the class is created.
 	

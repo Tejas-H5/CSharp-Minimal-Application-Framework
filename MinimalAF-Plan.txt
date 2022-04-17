@@ -1,41 +1,34 @@
-TODO:
-	- Meta-test to make sure that you can actually make cool and useful things with this framework.
-		- DONE. didnt think it could be done lol
-	
-	-> remove underscore from all the field names. It's awful to look at and type
-	
-	-* profiling 
-		-* Why is it taking up so much memory in RAM
-		-* Why is the benchmark so much slower now than it was before?
-	
+TODO:	
+	- non-immediate mode support - retained I think it's called ?
+		-> 3D viewport support
+		-* 3D mesh rendering support
+			-* 3D mesh rendering API
+			
+		-* Fix framebuffer. I
+		-* texture buffer resizing [Texture.cs ln 68]
+			-* currently created with new() each time
+			
+	-* PushDepth, something like pushmatrix but we're settign the 2D depth temporarily. it's like Z-Index in HTML but actually useful
 	
 	-* Try to understand how the depth is working, and why it doesnt work for 
 	numbers greater than 1. Near far clipping planes?
 	
-Amazin'		
-			
-	-* non-immediate support
-	
-	-* 3D viewport support
-	
+Backlog: 
+		
 	-* implement Disposable for Audiosource and possibly other classes
 		since they are now pooled
-
-	-* clipping needs to be toggleable
-		-* remove setRect
-		
-	- Framebuffer optimization
-		- texture buffer resizing [Texture.cs ln 68]
-			- currently created with new() each time
 			
-	- Add unit tests for renderbuffer
-		- find rare memory corruption that may now be fixed
+	-* Add unit tests for renderbuffer
+		-* find rare memory corruption bug that may now be fixed
 		
-	- Strip down CTX class. Alot of useless stuff there imo
-					
-	-* Add dynamic compilation
-		-* find that ms doc page about c# dynamic compilation
-
 	Test framework future improvements:
 		-* Some way to see the element tree
-			-* Will need to be root-node-state based and done in AfterRender. Also figure out some way to move debug overlay to here as well
+			-* Will need to be root-node-state based and done in AfterRender. Also figure out some way to move debug overlay to here as well	
+	
+Distant future:
+	-* Add dynamic compilation
+		-* find that ms doc page about c# dynamic compilation
+		
+	-* Why is it taking up so much memory in RAM. reduce this
+	
+	

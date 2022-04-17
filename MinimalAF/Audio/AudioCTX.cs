@@ -69,7 +69,7 @@ namespace MinimalAF.Audio {
             if (version == null || vendor == null || renderer == null) {
                 Console.Write("OpenAL Version, vendor or renderer were null. Audio Engine was unable to initialize.");
             } else {
-                Console.WriteLine("Audio powered by OpenAL v" + version + " from" + vendor + " rendered with " + renderer);
+                Console.WriteLine("Audio powered by OpenAL v" + version + " from" + vendor + ". Audio rendered with " + renderer);
             }
         }
 

@@ -1,26 +1,7 @@
 TODO:	
-	- non-immediate mode support - retained I think it's called ?
-		- 3D viewport support
-			- Think about API to:
-				- Position camera
-				- Alter camera projection
-					- Near and far clipping planes
-				
-				API:
-					SetCameraOrientation(Matrix4 transform)
-						just sets the view matrix to this
-						
-					SetCameraProjection(Matrix4 projection)
-						just sets the projection matrix
-						
-					- Can just use OpenTK.Mathematics to make these matrixes, or
-						we can add some helpers
-
-		
-		-* 3D mesh rendering support
-		
-		
-			-* 3D mesh rendering API
+	-> non-immediate mode support - retained I think it's called ?
+		-> 3D mesh rendering support
+			-* MeshBuilder API. its kinda like StringBuilder (if needed, else backlog this)
 			
 		-* Fix framebuffer. I
 		-* texture buffer resizing [Texture.cs ln 68]
@@ -31,22 +12,26 @@ TODO:
 	-* Try to understand how the depth is working, and why it doesnt work for 
 	numbers greater than 1. Near far clipping planes?
 	
+	-* figure out what we should do with PushMatrix, now that we have other ways of setting the matrix wich will probably be better
+	
 Backlog: 
+	- feature: Modify public properties during test with test harness
 		
-	-* implement Disposable for Audiosource and possibly other classes
+	- fix: implement Disposable for Audiosource and possibly other classes
 		since they are now pooled
 			
-	-* Add unit tests for renderbuffer
+	- test: Add unit tests for renderbuffer
 		-* find rare memory corruption bug that may now be fixed
 		
-	Test framework future improvements:
-		-* Some way to see the element tree
-			-* Will need to be root-node-state based and done in AfterRender. Also figure out some way to move debug overlay to here as well	
+	
 	
 Distant future:
-	-* Add dynamic compilation
+	- feature: Some way to see the element tree in the test harness
+		- Will need to be root-node-state based and done in AfterRender. Also figure out some way to move debug overlay to here as well	
+		
+	- feature: Add dynamic compilation (in general, not just test harness)
 		-* find that ms doc page about c# dynamic compilation
 		
-	-* Why is it taking up so much memory in RAM. reduce this
+	- fix: Why is it taking up so much memory in RAM. reduce this
 	
 	

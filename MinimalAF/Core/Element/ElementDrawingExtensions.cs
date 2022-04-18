@@ -1,14 +1,94 @@
 ﻿using MinimalAF.Rendering;
+using OpenTK.Mathematics;
 using System.Drawing;
+using System;
 
 namespace MinimalAF {
     public partial class Element {
 
+        private void AssertClipping() {
+#if DEBUG
+            if (!Clipping) {
+                throw new Exception("If you intend to draw 3D stuff in this Element, set Clipping=true in the constructor. " +
+                    "This is because we will be clearing the depth buffer, but that will mess with the rendering 'order' of all the other UI." +
+                    "Things that are ment to be behind things will show up in front of them etc."
+                );
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Sets the sharer's model matrix
+        /// </summary>
+        public void SetTransform(Matrix4 transform) {
+            //AssertClipping();
+
+            CTX.SetTransform(transform);
+        }
+
+        public void SetViewOrientation(Vector3 position, Quaternion rotation) {
+            //AssertClipping();
+
+            CTX.ViewOrientation(position, rotation);
+        }
+
+        public void SetViewLookAt(Vector3 position, Vector3 target, Vector3 up) {
+            //AssertClipping();
+
+            CTX.ViewLookAt(position, target, up);
+        }
+
+        public void SetView(Matrix4 matrix) {
+            CTX.SetMatrix(CTX.VIEW_MATRIX, matrix);
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="CTX.Perspective(float, float, float, float)"/>
+        /// <para>
+        /// The aspect-ratio is just computed using this element's rectangle size.
+        /// </para>
+        /// </summary>
+        public void SetProjectionPerspective(float fovy, float depthNear, float depthFar) {
+            //AssertClipping();
+
+            CTX.Perspective(
+                fovy, Width / Height, depthNear, depthFar,
+                2 * ScreenRect.X0 + Width - CTX.ContextWidth,
+                2 * ScreenRect.Y0 + Height - CTX.ContextHeight
+
+                // I am not sure why we need to multuply by 2 here, but it works. going to
+                // keep this intuitive version with more ops here in case it helps me figure it out later
+                //2 * (ScreenRect.X0 + Width / 2 - CTX.ContextWidth / 2),
+                //2 * (ScreenRect.Y0 + Height / 2 - CTX.ContextHeight / 2)
+            );
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="CTX.Perspective(float, float, float, float)"/>
+        /// <para>
+        /// Size is just used to multiply the aspect ratio to calculate width and height.
+        /// </para>
+        /// </summary>
+        public void SetProjectionOrthographic(float size, float depthNear, float depthFar) {
+            //AssertClipping();
+
+            float aspect = Width / Height;
+            CTX.Orthographic(
+                aspect * size, (1f / aspect) * size, depthNear, depthFar,
+                2 * ScreenRect.X0 + Width - CTX.ContextWidth,
+                2 * ScreenRect.Y0 + Height - CTX.ContextHeight
+            );
+        }
+
+
+        public void SetProjection(Matrix4 matrix) {
+            CTX.SetProjection(matrix);
+        }
 
         /// <summary>
         /// <inheritdoc cref="CTX.Cartesian2D(float, float, float, float)"/>
         /// </summary>
-        public void Cartesian2D(float scaleX, float scaleY, float offsetX, float offsetY) {
+        public void SetProjectionViewCartesian(float scaleX, float scaleY, float offsetX, float offsetY) {
             CTX.Cartesian2D(scaleX, scaleY, ScreenRect.X0 + offsetX, ScreenRect.Y0 + offsetY);
         }
 

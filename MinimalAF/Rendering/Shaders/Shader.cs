@@ -106,6 +106,7 @@ namespace MinimalAF.Rendering {
             GL.GetShader(shader, ShaderParameter.CompileStatus, out var code);
             if (code != (int)All.True) {
                 var infoLog = GL.GetShaderInfoLog(shader);
+                // hahaha 'whilst'
                 throw new Exception($"Error occurred whilst compiling Shader({shader}).\n\n{infoLog}");
             }
         }

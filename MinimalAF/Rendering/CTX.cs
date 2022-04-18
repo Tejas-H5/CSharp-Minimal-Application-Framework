@@ -43,12 +43,12 @@ namespace MinimalAF.Rendering {
             }
         }
 
-        internal static int ContextWidth {
+        public static int ContextWidth {
             get => contextWidth;
             set => contextWidth = value;
         }
 
-        internal static int ContextHeight {
+        public static int ContextHeight {
             get => contextHeight;
             set => contextHeight = value;
         }
@@ -151,7 +151,7 @@ namespace MinimalAF.Rendering {
             GL.Enable(EnableCap.StencilTest);
             GL.StencilFunc(StencilFunction.Equal, 0, 0xFF);
 
-            GL.Enable(EnableCap.DepthTest);            
+            GL.Enable(EnableCap.DepthTest);
 
             disposed = false; // To detect redundant calls to Dispose()
 
@@ -237,6 +237,9 @@ namespace MinimalAF.Rendering {
         /// <para>
         /// The horizontal axis is rightwards, and the vertical axis is upwards
         /// </para>
+        /// <para>
+        /// This method sets the projection and vew matrices.
+        /// </para>
         /// </summary>
         internal static void Cartesian2D(float scaleX = 1, float scaleY = 1, float offsetX = 0, float offsetY = 0) {
             Flush();
@@ -245,44 +248,68 @@ namespace MinimalAF.Rendering {
             float height = scaleY * ContextHeight;
 
             Matrix4 viewMatrix = Matrix4.CreateTranslation(offsetX - width / 2, offsetY - height / 2, 0);
-            viewMatrix.Transpose();
-
             Matrix4 projectionMatrix = Matrix4.CreateScale(2.0f / width, 2.0f / height, 1);
 
             SetMatrix(VIEW_MATRIX, viewMatrix);
-            SetMatrix(PROJECTION_MATRIX, projectionMatrix);
+            SetProjection(projectionMatrix);
 
             GL.DepthFunc(DepthFunction.Lequal);
         }
 
-        internal static void SetView(Matrix4 matrix) {
-            SetMatrix(VIEW_MATRIX, matrix);
+
+        internal static void ViewLookAt(Vector3 position, Vector3 target, Vector3 up) {
+            Matrix4 lookAt = Matrix4.LookAt(position, target, up);
+
+            SetMatrix(VIEW_MATRIX, lookAt);
+            GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.CullFace);
+        }
+
+        internal static void ViewOrientation(Vector3 position, Quaternion rotation) {
+            Matrix4 orienation = Matrix4.CreateTranslation(-position);
+            orienation.Transpose();
+            orienation *= Matrix4.CreateFromQuaternion(rotation.Inverted());
+
+            SetMatrix(VIEW_MATRIX, orienation);
+        }
+
+
+        /// <summary>
+        /// <inheritdoc cref="Matrix4.CreatePerspectiveFieldOfView(float, float, float, float)"/>
+        /// <para>
+        /// And then assign it to the shader's projection matrix.
+        /// </para>
+        /// </summary>
+        internal static void Perspective(float fovy, float aspect, float depthNear, float depthFar, float centerX=0, float centerY=0) {
+            Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(fovy, aspect, depthNear, depthFar);
+            perspective = perspective * Matrix4.CreateTranslation(centerX / ContextWidth, centerY / ContextHeight, 0);
+
+            GL.Disable(EnableCap.CullFace);
+
+            SetProjection(perspective);
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="Matrix4.CreateOrthographic(float, float, float, float)"/>
+        /// <para>
+        /// And then assign it to the shader's projection matrix.
+        /// </para>
+        /// </summary>
+        internal static void Orthographic(float width, float height, float depthNear, float depthFar, float centerX=0, float centerY=0) {
+            Matrix4 ortho = Matrix4.CreateOrthographic(width, height, depthNear, depthFar);
+            ortho = ortho * Matrix4.CreateTranslation(centerX / ContextWidth, centerY / ContextHeight, 0);
+
+            SetProjection(ortho);
         }
 
         internal static void SetProjection(Matrix4 matrix) {
             SetMatrix(PROJECTION_MATRIX, matrix);
         }
 
-        internal static void SetModel(Matrix4 matrix) {
+        // this name makes more sense imo
+        internal static void SetTransform(Matrix4 matrix) {
             SetMatrix(MODEL_MATRIX, matrix);
         }
-
-
-
-        public static void Perspective3D() {
-            Flush();
-
-            GL.DepthFunc(DepthFunction.Less);
-
-
-        }
-
-        public static void Orthographic3D() {
-            Flush();
-
-            GL.DepthFunc(DepthFunction.Less);
-        }
-
 
         internal static void SetDrawColor(float r, float g, float b, float a) {
             Color4 col = Color4.RGBA(r, g, b, a);

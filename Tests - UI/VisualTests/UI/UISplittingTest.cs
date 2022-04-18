@@ -20,7 +20,7 @@
             }
 
             public override void OnRender() {
-                this[0].UseCoordinates();
+                this[0].ResetCoordinates();
 
                 SetDrawColor(Color4.VA(0, 1));
                 Text("Split " + dir.ToString() + " " + splitAmount.ToString("0.00"),
@@ -29,7 +29,7 @@
                     VerticalAlignment.Center
                 );
 
-                UseCoordinates();
+                ResetCoordinates();
             }
 
             public override void OnLayout() {

@@ -153,5 +153,9 @@ namespace MinimalAF {
         public Rect Inset(float left, float bottom, float right, float top) {
             return new Rect(X0 + left, Y0 + bottom, X1 - right, Y1 - top);
         }
+
+        public static Rect operator *(Rect rect, float mult) {
+            return new Rect(rect.X0 * mult, rect.Y0 * mult, rect.X1 * mult,  rect.Y1 * mult);
+        }
     }
 }

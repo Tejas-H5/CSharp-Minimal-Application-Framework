@@ -238,7 +238,7 @@ namespace MinimalAF {
             }
 
             RecalcScreenRect(parentScreenRect);
-            UseCoordinates();
+            ResetCoordinates();
 
             OnUpdate();
 
@@ -295,7 +295,7 @@ namespace MinimalAF {
             CTX.Current2DDepth = 1 - acc.Depth / 100000f;
 
             RecalcScreenRect(acc.ParentScreenRect);
-            UseCoordinates();
+            ResetCoordinates();
 
             SetTexture(null);
 
@@ -334,8 +334,9 @@ namespace MinimalAF {
             screenRect.Move(parentScreenRect.X0 + Offset.X, parentScreenRect.Y0 + Offset.Y);
         }
 
-        public void UseCoordinates() {
+        public void ResetCoordinates() {
             CTX.SetScreenRect(screenRect);
+            CTX.SetTransform(Matrix4.Identity);
         }
 
 
@@ -343,6 +344,8 @@ namespace MinimalAF {
         RenderAccumulator DrawDebugStuff(RenderAccumulator acc, Rect newScreenRect) {
             if (!MouseOverSelf)
                 return acc;
+
+            ResetCoordinates();
 
             SetDrawColor(Color4.RGBA(1, 0, 0, 0.5f));
 

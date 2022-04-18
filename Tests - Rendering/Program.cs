@@ -7,7 +7,7 @@ namespace RenderingEngineVisualTests
     {
         static void Main(string[] args)
         {
-            new ApplicationWindow().Run(new VisualTestRunner(typeof(Benchmark)));
+            new ApplicationWindow().Run(new VisualTestRunner(typeof(PerspectiveCameraTest)));
         }
     }
 }

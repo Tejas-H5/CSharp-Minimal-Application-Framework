@@ -1,5 +1,21 @@
 Anything cluttering up MinimalAF plan is just thrown in here
 =======================================================
+		- 3D viewport support
+			- Think about API to:
+				- Position camera
+				- Alter camera projection
+					- Near and far clipping planes
+				
+				API:
+					SetCameraOrientation(Matrix4 transform)
+						just sets the view matrix to this
+						
+					SetCameraProjection(Matrix4 projection)
+						just sets the projection matrix
+						
+					- Can just use OpenTK.Mathematics to make these matrixes, or
+						we can add some helpers
+
 - move to System.Numerics if possbile. Maybe I could contribute this to OpenTK directly? I have heard that they had already planned to do this
 					- Putting the Matrix4s into the shader functions was a bit tricky. Also I don't think I want people to be importing in two seperate math libraries into their projects, as OpenTK.Mathematics will be a dependancy of their projects by default. 
 - profiling 

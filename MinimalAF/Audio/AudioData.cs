@@ -91,7 +91,7 @@ namespace MinimalAF.Audio {
             try {
                 return LoadAudioClip(filepath, importSettings);
             } catch (Exception e) {
-                Console.WriteLine($"Error:\n {e.ToString()}");
+                Console.WriteLine("Error:\n " + e);
                 return null;
             }
         }

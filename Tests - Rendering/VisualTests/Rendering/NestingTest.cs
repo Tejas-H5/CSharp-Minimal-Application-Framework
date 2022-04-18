@@ -4,7 +4,11 @@ using System.Text;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-	[VisualTest]
+	[VisualTest(
+        description: @"Test that multiple elements can be rendered side by side without interfering with one another.
+This was the one of the main reasons why I am making this in the first place, and not just using Processing",
+        tags: "2D, nesting"
+    )]
 	public class NestingTest : Element
 	{
         Element el1;

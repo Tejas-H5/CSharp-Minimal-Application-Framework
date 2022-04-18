@@ -3,7 +3,10 @@ using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-	[VisualTest]
+	[VisualTest(
+        description: @"Test that the outline functionality works.",
+        tags: "2D"
+    )]
 	class GeometryOutlineTest : Element
     {
         public override void OnMount(Window w)

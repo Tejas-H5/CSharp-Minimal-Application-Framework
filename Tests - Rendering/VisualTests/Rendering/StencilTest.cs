@@ -3,7 +3,12 @@ using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-	[VisualTest]
+	[VisualTest(
+        description: @"Test that the stencilling functionality is working.
+The red square must appear above the blue square, and there should be vertical bars that retract and extend, masking
+the visibility of another test.",
+        tags: "2D, stencil"
+    )]
 	public class StencilTest : Element
     {
         public override void OnMount(Window w)

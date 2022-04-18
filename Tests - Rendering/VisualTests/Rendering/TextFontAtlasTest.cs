@@ -2,7 +2,10 @@
 
 namespace MinimalAF.VisualTests.Rendering
 {
-    [VisualTest]
+    [VisualTest(
+        description: @"Tests that font loading is working. It is failing at the moment.",
+        tags: "2D, text"
+    )]
 	class TextFontAtlasText : Element
     {
         public override void OnMount(Window w)

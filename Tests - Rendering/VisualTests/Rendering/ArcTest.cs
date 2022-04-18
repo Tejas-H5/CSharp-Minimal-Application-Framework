@@ -3,8 +3,11 @@ using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-	[VisualTest]
-	class ArcTest : Element
+    [VisualTest(
+        description: @"Two hands that rotate at different speeds. This is a test of the arg dawing algorithm.",
+        tags: "2D"
+    )]
+    class ArcTest : Element
     {
         public override void OnMount(Window w)
         {
@@ -36,11 +39,11 @@ namespace MinimalAF.VisualTests.Rendering
             DrawHand(x0, y0, r, b);
 
             SetDrawColor(0, 0, 0, 1);
-            Text($"Angle a: {a}", 0, Height - 30);
-            Text($"Angle b: {b}", 0, Height - 50);
+            Text("Angle a: " + a, 0, Height - 30);
+            Text("Angle b: " + b, 0, Height - 50);
 
-            a += (float)Time.DeltaTime;
-            b += (float)Time.DeltaTime * 2;
+            a += Time.DeltaTime;
+            b += Time.DeltaTime * 2f;
         }
 
         private void DrawHand(float x0, float y0, float r, float angle)

@@ -6,7 +6,11 @@ using OpenTK.Graphics.OpenGL;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-	[VisualTest]
+	[VisualTest(
+        description: @"Testing an algorithm that the polyline function uses to detect self-intersecting triangles.
+Intersections should be clearly marked with red lines.",
+        tags: "2D, polyline"
+    )]
 	public class PolylineSelfIntersectionAlgorithmTest : Element
     {
         public override void OnMount(Window w)

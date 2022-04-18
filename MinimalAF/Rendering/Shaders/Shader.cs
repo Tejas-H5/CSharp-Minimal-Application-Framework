@@ -107,7 +107,7 @@ namespace MinimalAF.Rendering {
             if (code != (int)All.True) {
                 var infoLog = GL.GetShaderInfoLog(shader);
                 // hahaha 'whilst'
-                throw new Exception($"Error occurred whilst compiling Shader({shader}).\n\n{infoLog}");
+                throw new Exception("Error occurred whilst compiling Shader(" + shader + ").\n\n" + infoLog);
             }
         }
 
@@ -116,7 +116,7 @@ namespace MinimalAF.Rendering {
 
             GL.GetProgram(program, GetProgramParameterName.LinkStatus, out var code);
             if (code != (int)All.True) {
-                throw new Exception($"Error occurred whilst linking Program({program})");
+                throw new Exception("Error occurred whilst linking Program(" + program + ")");
             }
         }
 

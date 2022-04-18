@@ -5,7 +5,11 @@ using System.Text;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-	[VisualTest]
+	[VisualTest(
+        description: @"Tests that text rendering, geometry rendering and normal texture rendering can happen
+all at once.",
+        tags: "2D"
+    )]
 	class GeometryAndTextTest : Element
     {
         List<string> rain = new List<string>();

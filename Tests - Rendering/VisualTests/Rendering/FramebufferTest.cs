@@ -1,7 +1,16 @@
 ﻿using MinimalAF.Rendering;
 
 namespace MinimalAF.VisualTests.Rendering {
-    [VisualTest]
+    [VisualTest(
+    description: @"Tests that framebuffers can be used properly.
+The red square must be fully visible under the circles.
+The part where the circles overlap must not be visible.
+There must be a small orange rectangle in the middle
+It must all be inside the green square
+This text must be 0,0,0 black 
+The circles must actually be circular, and not a distorted oval",
+    tags: "2D, Framebuffer"
+)]
     public class FramebufferTest : Element {
         public override void OnMount(Window w) {
 
@@ -34,22 +43,9 @@ namespace MinimalAF.VisualTests.Rendering {
 
             StopUsingFramebuffer();
 
-            SetDrawColor(Color4.RGBA(0, 0, 0, 1));
-            SetFont("Consolas", 12);
-
-            string assertThat = "The red square must be fully visible under the circles.\n" +
-                "The part where the circles overlap must not be visible.\n" +
-                "There must be a small orange rectangle in the middle\n" +
-                "It must all be inside the green square\n" +
-                "This text must be 0,0,0 black \n" +
-                "The circles must actually be circular, and not distorted ovals \n";
-
-            Text(assertThat, 0, Height - 20);
-
             SetDrawColor(1, 0, 0, 1);
 
             float rectSize = 200;
-
 
             Rect(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
             SetDrawColor(1, 1, 1, 0.5f);

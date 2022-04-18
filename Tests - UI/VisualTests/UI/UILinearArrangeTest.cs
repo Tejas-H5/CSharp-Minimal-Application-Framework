@@ -1,9 +1,9 @@
 ﻿namespace MinimalAF.VisualTests.UI {
-	[VisualTest]
+    [VisualTest(
+        description: @"Test that " + nameof(LayoutSplit) + " works.",
+        tags: "UI, layout"
+    )]
     public class UILinearArrangeTest : Element {
-        Element root;
-        Element textInputElement;
-
         public UILinearArrangeTest() {
             SetChildren(
                 GenerateElement("0 (Press space to toggle layout)   "),

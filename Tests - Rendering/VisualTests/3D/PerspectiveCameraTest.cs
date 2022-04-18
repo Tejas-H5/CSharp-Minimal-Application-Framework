@@ -5,7 +5,12 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace MinimalAF.VisualTests.Rendering {
-    [VisualTest]
+    [VisualTest(
+        description: @"A red transucent rectangle that moves around with the mouse along the XY plane in 3D.
+The camera will always be looking at it.
+There is also a black rectangle with some text for reference, all of this is on the same plane.",
+        tags: "3D, SetPerspective SetProjection"
+    )]
     internal class PerspectiveCameraTest : Element {
         float zPos;
         public PerspectiveCameraTest(float zPos = 10) {

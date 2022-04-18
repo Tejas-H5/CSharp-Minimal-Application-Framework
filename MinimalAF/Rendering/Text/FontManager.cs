@@ -77,7 +77,12 @@ namespace MinimalAF.Rendering.Text {
                     return;
                 }
 
-                Texture texture = new Texture(atlas.Image, new TextureImportSettings { Filtering = FilteringType.NearestNeighbour });
+                Texture texture = new Texture(
+                    atlas.Image, 
+                    new TextureImportSettings { 
+                        Filtering = FilteringType.Bilinear
+                    }
+                );
                 FontAtlasTexture newFontAtlas = new FontAtlasTexture(atlas, texture);
 
                 allLoadedFonts[key] = newFontAtlas;

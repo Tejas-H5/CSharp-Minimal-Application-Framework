@@ -1,4 +1,6 @@
-﻿namespace MinimalAF.VisualTests.UI {
+﻿using MinimalAF;
+
+namespace MinimalAF.VisualTests.UI {
 
     class TextInputsUI : Element {
         public TextInputsUI() {
@@ -10,7 +12,7 @@
                         rows[i * 3 + j] = new OutlineRect(Color4.VA(0, 1), 1).SetChildren(
                             new TextInput<float>(
                                 new TextElement("", Color4.VA(0, 1), "Comic-Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
-                                new Property<float>(0),
+                                0,
                                 (string arg) => {
                                     return float.Parse(arg);
                                 }
@@ -20,7 +22,7 @@
                         rows[i * 3 + j] = new OutlineRect(Color4.VA(0, 1), 1).SetChildren(
                             new TextInput<string>(
                                 new TextElement("", Color4.VA(0, 1), "Comic-Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
-                                new Property<string>(""),
+                                "",
                                 (string arg) => {
                                     return arg;
                                 }
@@ -46,11 +48,13 @@
             LayoutInset(children, 10);
 
             LayoutChildren();
-
         }
     }
 
-	[VisualTest]
+    [VisualTest(
+        description: @"Test that " + nameof(TextInput<object>) + " and of other types work.",
+        tags: "UI, layout"
+    )]
     public class UITextInputTest : Element {
         public override void OnMount(Window w) {
             w.Size = (800, 600);

@@ -1,4 +1,6 @@
 TODO:	
+	-* Analyse allocations, we are getting a lot of GC pauses
+
 	-> non-immediate mode support - retained I think it's called ?
 		-> 3D mesh rendering support
 			-* MeshBuilder API. its kinda like StringBuilder (if needed, else backlog this)
@@ -22,7 +24,8 @@ Backlog:
 			
 	- test: Add unit tests for renderbuffer
 		-* find rare memory corruption bug that may now be fixed
-		
+	
+	- make stencil stack-based somehow
 	
 	
 Distant future:

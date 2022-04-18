@@ -1,9 +1,13 @@
-﻿using MinimalAF.Audio;
+﻿using MinimalAF;
+using MinimalAF.Audio;
 using System;
 using System.Text;
 
-namespace MinimalAF.AudioTests {
-    [VisualTest]
+namespace AudioEngineTests.AudioTests {
+    [VisualTest(
+        description: @"Test audio loading and single sound playback",
+        tags: "audio"
+    )]
     public class BasicWavPlayingTest : Element {
         AudioSourceOneShot clackSound;
 

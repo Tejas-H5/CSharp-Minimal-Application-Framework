@@ -4,7 +4,10 @@ using System;
 using System.Text;
 
 namespace MinimalAF.VisualTests.Rendering {
-    [VisualTest]
+    [VisualTest(
+        description: @"Test that the keyboard input is working.",
+        tags: "2D, keyboard input"
+    )]
     public class KeyboardTest : Element {
         public override void OnMount(Window w) {
 

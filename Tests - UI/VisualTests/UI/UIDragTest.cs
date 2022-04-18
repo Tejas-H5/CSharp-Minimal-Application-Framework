@@ -130,7 +130,10 @@ namespace MinimalAF.VisualTests.UI {
         }
     }
 
-	[VisualTest]
+    [VisualTest(
+        description: @"Test that it is possible to program drag and drop logic into UI",
+        tags: "UI, drag drop"
+    )]
     public class UIDragTest : Element {
         Element container;
 

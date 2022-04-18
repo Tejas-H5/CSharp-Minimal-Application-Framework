@@ -317,7 +317,7 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void SetDrawColor(Color4 col) {
-            if (solidShader.Color.Equals(col))
+            if (solidShader.Color == col)
                 return;
 
             Flush();

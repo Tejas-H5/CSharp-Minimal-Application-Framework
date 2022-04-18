@@ -1,9 +1,9 @@
 ﻿namespace MinimalAF.VisualTests.UI {
-	[VisualTest]
+    [VisualTest(
+        description: @"Test that the UI is actually layouting properly at all.",
+        tags: "UI, layout"
+    )]
     public class UIResizingTest : Element {
-        Element root;
-        Element textInputElement;
-
         Element GenerateElement(string text) {
             return new OutlineRect(Color4.VA(0, 1), 1).SetChildren(
                 new TextElement(text, Color4.VA(0, 1), "Consolas", 24, VerticalAlignment.Center, HorizontalAlignment.Center)

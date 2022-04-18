@@ -1,9 +1,9 @@
 ﻿namespace MinimalAF.VisualTests.UI {
-	[VisualTest]
+    [VisualTest(
+        description: @"Test that " + nameof(LayoutSplit) + " works when nested.",
+        tags: "UI, layout"
+    )]
     public class UILinearArrangeNestedTest : Element {
-        Element root;
-        Element textInputElement;
-
         Element GenerateElement(string text) {
             return new UILinearArrangeTest();
         }

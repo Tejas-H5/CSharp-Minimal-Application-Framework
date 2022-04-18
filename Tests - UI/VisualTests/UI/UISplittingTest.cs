@@ -1,5 +1,8 @@
 ﻿namespace MinimalAF.VisualTests.UI {
-	[VisualTest]
+    [VisualTest(
+        description: @"Test that " + nameof(LayoutTwoSplit) + " works.",
+        tags: "UI, layout"
+    )]
     public class UISplittingTest : Element {
         class SplitContainer : Element {
             Direction dir;

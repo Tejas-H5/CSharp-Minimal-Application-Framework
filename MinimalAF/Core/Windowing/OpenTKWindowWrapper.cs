@@ -132,7 +132,7 @@ namespace MinimalAF {
                 fps = renderFrames / (float)time;
                 updateFps = updateFrames / (float)time;
 
-                Console.WriteLine($"Render FPS: {fps}, Update FPS: {updateFrames / time}");
+                Console.WriteLine("Render FPS: " + fps + ", Update FPS: " + updateFrames / time);
 
                 time = 0;
                 renderFrames = 0;

@@ -1,7 +1,13 @@
-﻿using MinimalAF.Audio;
+﻿using MinimalAF;
+using MinimalAF.Audio;
+using System;
+using System.Text;
 
-namespace MinimalAF.AudioTests {
-	[VisualTest]
+namespace AudioEngineTests.AudioTests {
+    [VisualTest(
+        description: @"Test the audio listner positioning abilities",
+        tags: "audio"
+    )]
     public class PanningAndListenerDefaultsTest : Element {
         AudioSourceOneShot clackSound;
         AudioListener listener;

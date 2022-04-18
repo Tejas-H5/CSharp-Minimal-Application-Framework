@@ -6,7 +6,10 @@ using System.Drawing;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-	[VisualTest]
+	[VisualTest(
+        description: @"Test that the poly-line drawing functionality is working.",
+        tags: "2D, polyline"
+    )]
 	public class PolylineTest : Element
 	{
 		Queue<Vector2> points = new Queue<Vector2>();

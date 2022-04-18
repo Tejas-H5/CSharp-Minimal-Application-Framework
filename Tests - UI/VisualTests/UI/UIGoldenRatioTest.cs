@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 
 namespace MinimalAF.VisualTests.UI {
-	[VisualTest]
+    [VisualTest(
+        description: @"Test the the LayoutSplit method works, and that mouse-clicks can be configured
+to only work on a single UI element at a time.",
+        tags: "UI, layout"
+    )]
     public class UIGoldenRatioTest : Element {
 
         class SplitContainer : Element {

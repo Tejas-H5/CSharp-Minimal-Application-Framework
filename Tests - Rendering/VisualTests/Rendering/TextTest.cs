@@ -5,10 +5,18 @@ using System.Text;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-	[VisualTest]
+	[VisualTest(
+        description: @"Test the text rendering, and other functions that detect the text width and height",
+        tags: "2D, text"
+    )]
 	class TextTest : Element
     {
         List<string> rain;
+
+        string font;
+        public TextTest(string font = "Consolas") {
+            this.font = font;
+        }
 
         public override void OnMount(Window w)
         {
@@ -60,13 +68,14 @@ namespace MinimalAF.VisualTests.Rendering
             //*/
             timer = 0;
 
+            SetFont(font, 16);
+
             PushGibberish();
         }
 
         public override void OnRender()
         {
-
-
+            SetFont(font, 16);
             SetDrawColor(0, 1, 0, 0.8f);
 
             for (int i = 0; i < rain.Count; i++)
@@ -75,7 +84,6 @@ namespace MinimalAF.VisualTests.Rendering
             }
 
             SetDrawColor(1, 0, 0, 1);
-
         }
     }
 }

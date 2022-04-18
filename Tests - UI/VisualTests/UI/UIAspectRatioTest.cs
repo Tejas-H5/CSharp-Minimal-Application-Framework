@@ -53,10 +53,12 @@
         }
     }
 
-	[VisualTest]
+	[VisualTest(
+        description: @"Test the aspect ratio layouting function",
+        tags: "UI, layout"
+    )]
     public class UIAspectRatioTest : Element {
         Element container;
-        Element aspectRatio;
 
         public UIAspectRatioTest() {
             SetChildren(

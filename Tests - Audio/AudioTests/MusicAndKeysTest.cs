@@ -1,10 +1,14 @@
-﻿using MinimalAF.Audio;
-using MinimalAF.Rendering;
+﻿using MinimalAF;
+using MinimalAF.Audio;
 using System;
 using System.Text;
 
-namespace MinimalAF.AudioTests {
-	[VisualTest]
+namespace AudioEngineTests.AudioTests {
+    [VisualTest(
+        description: @"Test that the music and clips can both play at the same time. 
+Right now, this test is failing imo. The one-shot sounds are not audible over the music.",
+        tags: "audio"
+    )]
     public class MusicAndKeysTest : Element {
         AudioSourceOneShot clackSound;
         AudioSourceStreamed streamedSource;
@@ -61,7 +65,7 @@ namespace MinimalAF.AudioTests {
             //music
             SetDrawColor(1, 1, 1, 1);
 
-            string message = "Spacebar to Pause\n";
+            string message = "Spacebar to Pause\nMousewheel to  move";
             if (streamedSource.GetSourceState() != AudioSourceState.Playing) {
                 message = "Spacebar to Play\nMousewheel to  move";
             }

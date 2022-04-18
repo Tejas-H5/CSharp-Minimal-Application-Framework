@@ -4,7 +4,12 @@ using System;
 
 namespace MinimalAF.VisualTests.Rendering
 {
-	[VisualTest]
+	[VisualTest(
+        description: @"Test that texture loading works. Also test that transforms work, cause why not 
+(there are actually reasons why not, but I dont rlly care at the moment).
+The texture on the right is with nearest neighbour, and the texture on the left is with bilinear, so it's a bit blurry on the edges)",
+        tags: "2D, texture"
+    )]
 	class TextureTest : Element
     {
         Texture tex;

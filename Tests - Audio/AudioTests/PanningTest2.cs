@@ -1,8 +1,13 @@
-﻿using MinimalAF.Audio;
-using OpenTK.Mathematics;
+﻿using MinimalAF;
+using MinimalAF.Audio;
+using System;
+using System.Text;
 
-namespace MinimalAF.AudioTests {
-    [VisualTest]
+namespace AudioEngineTests.AudioTests {
+    [VisualTest(
+        description: @"Test the audio source positioning abilities",
+        tags: "audio"
+    )]
     public class PanningTest2 : Element {
         AudioSourceOneShot clackSound;
         AudioListener listener;
@@ -38,8 +43,8 @@ namespace MinimalAF.AudioTests {
             listenerX = 10 * ((MouseX / Width) - 0.5f);
             listenerZ = 10 * ((MouseY / Height) - 0.5f);
 
-            clackSound.Position = new Vector3(listenerX, 0, listenerZ);
-            clackSound.Velocity = new Vector3((listenerX - prevListenerX) / Time.DeltaTime, 0, (listenerZ - prevListenerZ) / Time.DeltaTime);
+            clackSound.Position = Vec3(listenerX, 0, listenerZ);
+            clackSound.Velocity = Vec3((listenerX - prevListenerX) / Time.DeltaTime, 0, (listenerZ - prevListenerZ) / Time.DeltaTime);
         }
 
         public override void OnRender() {

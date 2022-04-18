@@ -1,6 +1,4 @@
-﻿using AudioEngineTests.AudioTests;
-using MinimalAF;
-using MinimalAF.AudioTests;
+﻿using MinimalAF;
 
 namespace AudioEngine {
     class Program {

@@ -68,6 +68,8 @@ namespace MinimalAF.VisualTests.Rendering
 
 
             SetDrawColor(1, 0, 0, 0.1f);
+            CTX.TimesVertexThresholdReached = 0;
+            CTX.TimesIndexThresholdReached = 0;
 
             for (int i = 0; i < amount; i++)
             {
@@ -84,7 +86,10 @@ namespace MinimalAF.VisualTests.Rendering
 
             string text = "FPS: " + FPS.ToString("0.000") +
                 "\nLines drawn: " + amount +
-                "\nCapType: " + capType.ToString();
+                "\nCapType: " + capType.ToString() + 
+                "\nVertex refreshes: " + CTX.TimesVertexThresholdReached + 
+                "\nIndex refreshes: " + CTX.TimesIndexThresholdReached + 
+                "\nVertex:Index Ratio: " + CTX.VertexToIndexRatio;
 
             Text(text, 10, Height - 50);
         }

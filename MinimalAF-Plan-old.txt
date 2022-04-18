@@ -1,6 +1,7 @@
 Anything cluttering up MinimalAF plan is just thrown in here
 =======================================================
-
+- move to System.Numerics if possbile. Maybe I could contribute this to OpenTK directly? I have heard that they had already planned to do this
+					- Putting the Matrix4s into the shader functions was a bit tricky. Also I don't think I want people to be importing in two seperate math libraries into their projects, as OpenTK.Mathematics will be a dependancy of their projects by default. 
 - profiling 
 	- Why is the benchmark so much slower now than it was before?
 		- Why does it say rendered with software? lol

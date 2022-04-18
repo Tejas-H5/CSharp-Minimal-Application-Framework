@@ -151,7 +151,7 @@ namespace MinimalAF {
             CTX.SetViewport(Rect);
             CTX.Clear();
 
-            CTX.Cartesian2D(Width, Height);
+            CTX.Cartesian2D(1, 1);
 
             rootWindow.RenderSelfAndChildren(new Rect(0, 0, Width, Height));
 
@@ -162,8 +162,6 @@ namespace MinimalAF {
         }
 
         void ResizeAction() {
-            CTX.SetViewport(Rect);
-
             rootWindow.RelativeRect = new Rect(0, 0, Width, Height);
             
             rootWindow.Layout();

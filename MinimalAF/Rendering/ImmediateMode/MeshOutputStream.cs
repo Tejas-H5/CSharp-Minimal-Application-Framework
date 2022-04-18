@@ -14,6 +14,16 @@ namespace MinimalAF.Rendering.ImmediateMode {
             }
         }
 
+        /// <summary>
+        /// Only used in DEBUG mode
+        /// </summary>
+        public int TimesVertexThresholdReached = 0;
+        /// <summary>
+        /// Only used in DEBUG mode
+        /// </summary>
+        public int TimesIndexThresholdReached = 0;
+
+
         public Vertex GetVertex(uint i) {
             return backingMesh.Vertices[i];
         }
@@ -50,8 +60,6 @@ namespace MinimalAF.Rendering.ImmediateMode {
             backingMesh.UpdateBuffers(currentVertexIndex, currentIndexIndex);
             backingMesh.Draw();
 
-            utilization = currentIndexIndex / (double)currentVertexIndex;
-
             currentVertexIndex = 0;
             currentIndexIndex = 0;
         }
@@ -59,6 +67,14 @@ namespace MinimalAF.Rendering.ImmediateMode {
         public bool FlushIfRequired(int numIncomingVerts, int numIncomingIndices) {
             if (currentIndexIndex + numIncomingIndices >= backingMesh.Indices.Length ||
                     currentVertexIndex + numIncomingVerts >= backingMesh.Vertices.Length) {
+#if DEBUG
+                if(currentIndexIndex + numIncomingIndices >= backingMesh.Indices.Length) {
+                    TimesIndexThresholdReached++;
+                } else if(currentVertexIndex + numIncomingVerts >= backingMesh.Vertices.Length)  {
+                    TimesVertexThresholdReached++;
+                }
+#endif
+
                 Flush();
                 return true;
             }

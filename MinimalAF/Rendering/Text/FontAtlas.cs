@@ -40,6 +40,14 @@ namespace MinimalAF.Rendering.Text {
             get; internal set;
         }
 
+        FontImportSettings importSettings;
+
+        /// <summary>
+        /// May be different to what was specified.
+        /// </summary>
+        public string FontName => importSettings.FontName;
+        public int FontSize => importSettings.FontSize;
+
         public static FontAtlas CreateFontAtlas(FontImportSettings importSettings, string characters = DefaultCharacters) {
             Font systemFont = TryGenerateSystemFontObject(importSettings);
             if (systemFont == null)
@@ -48,20 +56,23 @@ namespace MinimalAF.Rendering.Text {
             return new FontAtlas(importSettings, systemFont, characters);
         }
 
-        private FontAtlas(FontImportSettings importSettings, Font systemFont, string characters) {
+        private FontAtlas(FontImportSettings importSettings, Font font, string characters) {
+            this.importSettings = importSettings;
+            importSettings.FontName = font.Name;
+
             //Used to handle the error of invalid characters being looked up
             if (!characters.Contains('?'))
                 characters += '?';
 
-            this.systemFont = systemFont;
+            this.systemFont = font;
 
             int padding = importSettings.Padding;
 
-            bitmap = CreateAtlasBaseImage(importSettings, characters, systemFont, padding);
+            bitmap = CreateAtlasBaseImage(importSettings, characters, font, padding);
 
             characterQuadCoords = new Dictionary<char, Rect>();
 
-            RenderAtlas(importSettings, characters, systemFont, characterQuadCoords, padding, bitmap);
+            RenderAtlas(importSettings, characters, font, characterQuadCoords, padding, bitmap);
         }
 
         public Rect GetCharacterUV(char c) {

@@ -356,13 +356,15 @@ namespace MinimalAF {
 
             SetDrawColor(Color4.RGB(0, 0, 0));
             int textSize = 12;
+
+            string fontName = CTX.Text.ActiveFont.FontName;
+            int size = CTX.Text.ActiveFont.FontSize;
             SetFont("Consolas", textSize);
 
             string text = GetType().Name + " " + RelativeRect.ToString() + " Depth: " + acc.Depth;
             Text(text, -newScreenRect.X0 + 10, -newScreenRect.Y0 + 10 + textSize * acc.HoverDepth);
 
-            SetFont("");
-            SetTexture(null);
+            SetFont(fontName, size);
 
             acc.HoverDepth += 1;
             return acc;

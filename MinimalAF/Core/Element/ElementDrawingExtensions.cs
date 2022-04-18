@@ -3,6 +3,16 @@ using System.Drawing;
 
 namespace MinimalAF {
     public partial class Element {
+
+
+        /// <summary>
+        /// <inheritdoc cref="CTX.Cartesian2D(float, float, float, float)"/>
+        /// </summary>
+        public void Cartesian2D(float scaleX, float scaleY, float offsetX, float offsetY) {
+            CTX.Cartesian2D(scaleX, scaleY, ScreenRect.X0 + offsetX, ScreenRect.Y0 + offsetY);
+        }
+
+
         /// <summary>
         /// Shorthand for RectTransform.Height * amount
         /// </summary>

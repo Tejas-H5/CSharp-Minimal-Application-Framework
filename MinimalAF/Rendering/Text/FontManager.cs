@@ -6,6 +6,8 @@ namespace MinimalAF.Rendering.Text {
     public class FontAtlasTexture {
         FontAtlas fontAtlas;
         Texture fontTexture;
+        public string FontName => fontAtlas.FontName;
+        public int FontSize => fontAtlas.FontSize;
 
         public FontAtlasTexture(FontAtlas fontAtlas, Texture fontTexture) {
             this.fontAtlas = fontAtlas;
@@ -69,8 +71,17 @@ namespace MinimalAF.Rendering.Text {
                     return;
                 }
 
+                string actualKey = GenerateKey(atlas.FontName, fontSize);
+                if (allLoadedFonts.ContainsKey(actualKey)) {
+                    activeFont = allLoadedFonts[actualKey];
+                    return;
+                }
+
                 Texture texture = new Texture(atlas.Image, new TextureImportSettings { Filtering = FilteringType.NearestNeighbour });
-                allLoadedFonts[key] = new FontAtlasTexture(atlas, texture);
+                FontAtlasTexture newFontAtlas = new FontAtlasTexture(atlas, texture);
+
+                allLoadedFonts[key] = newFontAtlas;
+                allLoadedFonts[actualKey] = newFontAtlas;
             }
 
             activeFont = allLoadedFonts[key];

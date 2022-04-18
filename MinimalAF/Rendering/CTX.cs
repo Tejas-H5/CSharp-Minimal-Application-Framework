@@ -33,9 +33,9 @@ namespace MinimalAF.Rendering {
                 Flush();
 
                 GL.Scissor(
-                    (int)currentClippingRect.X0, 
-                    (int)currentClippingRect.Y0, 
-                    (int)currentClippingRect.Width, 
+                    (int)currentClippingRect.X0,
+                    (int)currentClippingRect.Y0,
+                    (int)currentClippingRect.Width,
                     (int)currentClippingRect.Height
                 );
 
@@ -82,6 +82,18 @@ namespace MinimalAF.Rendering {
         private static ImmediateModeShader solidShader;
         private static TextureManager textureManager;
         private static FramebufferManager framebufferManager;
+
+        public static int TimesVertexThresholdReached {
+            get => meshOutputStream.TimesVertexThresholdReached;
+            set => meshOutputStream.TimesVertexThresholdReached = value;
+        }
+
+        public static int TimesIndexThresholdReached {
+            get => meshOutputStream.TimesIndexThresholdReached;
+            set => meshOutputStream.TimesIndexThresholdReached = value;
+        }
+
+        public static float VertexToIndexRatio => (float)TimesVertexThresholdReached / (float)TimesIndexThresholdReached;
 
         public static FontAtlasTexture InternalFontAtlas {
             get => textDrawer.ActiveFont;
@@ -152,7 +164,8 @@ namespace MinimalAF.Rendering {
         }
 
         private static void InitDrawers() {
-            meshOutputStream = new MeshOutputStream(4 * 4096, 16 * 4096);
+            // TODO: more experimentation to find out more optimal values for these
+            meshOutputStream = new MeshOutputStream(8 * 4096, 8 * 4096);
 
             triangle = new TriangleDrawer(meshOutputStream);
             nGon = new NGonDrawer(meshOutputStream);
@@ -196,32 +209,16 @@ namespace MinimalAF.Rendering {
             framebufferManager.StopUsing();
             SetMatrix(MODEL_MATRIX, Matrix4.Identity);
             glContext.SwapBuffers();
+
+
+#if DEBUG
+            TimesVertexThresholdReached = 0;
+            TimesIndexThresholdReached = 0;
+#endif
+
         }
 
 
-        /// <summary>
-        /// Initializes a rectangle within the window where UI can draw things. 
-        /// Usefull when you need a particular portion of the screen to render a scene or something.
-        /// Think 3D mesh editing view in Blender, or the game view in Unity game engine.
-        /// 
-        /// Follow this up with a camera initialization method to  initialize a coordinate system to draw in.
-        /// 
-        /// <para>
-        /// Existing coordinate system methods:
-        /// </para>
-        /// 
-        /// <code>
-        ///		<see cref="Cartesian2D"/> <br/>
-        /// </code>
-        /// 
-        /// <para>
-        /// I will eventually be making:
-        /// </para>
-        /// <code>
-        ///		void Orthographic3D(Matrix4 cameraPosition, ...cameraSettings) {}
-        ///		void Perspective3D(Matrix4 cameraPosition, ...cameraSettings) {}
-        /// </code>
-        /// </summary>
         internal static void SetViewport(Rect screenRect) {
             screenRect = screenRect.Rectify();
 
@@ -230,29 +227,46 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void SetScreenRect(Rect screenRect) {
-            Cartesian2D(ContextWidth, ContextHeight, screenRect.X0, screenRect.Y0);
+            Cartesian2D(1, 1, screenRect.X0, screenRect.Y0);
         }
 
-        internal static void Cartesian2D(float width, float height, float offsetX = 0, float offsetY = 0) {
+        /// <summary>
+        /// <para>
+        /// Intitializes a 2D coordinate system with (x, y) in virtual coordinates mapping to (offsetX + scaleX * x, offsetY + scaleY * y) in screen coordinates.
+        /// </para>
+        /// <para>
+        /// The horizontal axis is rightwards, and the vertical axis is upwards
+        /// </para>
+        /// </summary>
+        internal static void Cartesian2D(float scaleX = 1, float scaleY = 1, float offsetX = 0, float offsetY = 0) {
             Flush();
 
-            Matrix4 projectionMatrix = Matrix4.Identity;
+            float width = scaleX * ContextWidth;
+            float height = scaleY * ContextHeight;
 
-            Matrix4 viewMatrix = Matrix4.Identity;
+            Matrix4 viewMatrix = Matrix4.CreateTranslation(offsetX - width / 2, offsetY - height / 2, 0);
+            viewMatrix.Transpose();
 
-            Matrix4 translation = Matrix4.CreateTranslation(offsetX - width / 2, offsetY - height / 2, 0);
-            translation.Transpose();
-
-            Matrix4 scale = Matrix4.CreateScale(2.0f / width, 2.0f / height, 1);
-
-            viewMatrix *= scale;
-            viewMatrix *= translation;
+            Matrix4 projectionMatrix = Matrix4.CreateScale(2.0f / width, 2.0f / height, 1);
 
             SetMatrix(VIEW_MATRIX, viewMatrix);
             SetMatrix(PROJECTION_MATRIX, projectionMatrix);
 
             GL.DepthFunc(DepthFunction.Lequal);
         }
+
+        internal static void SetView(Matrix4 matrix) {
+            SetMatrix(VIEW_MATRIX, matrix);
+        }
+
+        internal static void SetProjection(Matrix4 matrix) {
+            SetMatrix(PROJECTION_MATRIX, matrix);
+        }
+
+        internal static void SetModel(Matrix4 matrix) {
+            SetMatrix(MODEL_MATRIX, matrix);
+        }
+
 
 
         public static void Perspective3D() {

@@ -10,8 +10,8 @@ uniform mat4 projection;
 uniform mat4 view;
 
 void main(){
-   gl_Position =  vec4(position, 1) * model * view * projection;
-   uv0 = uv;
+    gl_Position =  vec4(position, 1) * model * view * projection;
+    uv0 = uv;
 }";
 
         const string fragSource =
@@ -21,8 +21,8 @@ uniform sampler2D sampler;
 in vec2 uv0;
 
 void main(){
-   vec4 texColor = texture2D(sampler, uv0.xy);
-   gl_FragColor = color * texColor;
+    vec4 texColor = texture2D(sampler, uv0.xy);
+    gl_FragColor = color * texColor;
 }";
 
         Color4 color;
@@ -40,7 +40,7 @@ void main(){
         }
 
         protected override void InitShader() {
-            colorLoc = Loc("color");
+            colorLoc = GetUniformLocation("color");
         }
     }
 }

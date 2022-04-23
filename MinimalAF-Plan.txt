@@ -1,14 +1,27 @@
 TODO:	
-	-* Analyse allocations, we are getting a lot of GC pauses
-
 	-> non-immediate mode support - retained I think it's called ?
 		-> 3D mesh rendering support
-			-* MeshBuilder API. its kinda like StringBuilder (if needed, else backlog this)
-			
+			- shader requires certain vertex attributes to work.
+			should people be writing their own OpenGL shaders? wtf?
+			-> YES
+		-> Users will need to tightly couple their shaders with their vertices
+		-> BUt if users are defining their own verts, then will we need to switch back and forth between shaders and stuff?
+		-> How would we be switching back and forth between shaders?
+		-> what about compute shaders? what about all the other things u can do with OpenGL? how much flexibility should we actually give people?
+		-> Whole point of a framework - reduce flexibility.
+		-> OK, so what we should do is:
+			-> A mesh renderer. It takes mesh data + a shader. we will be switching between the MinimalAF internal shader to render our own stuff, and then to the mesh renderer's shader before we render that. Copying unity a bit there
+			-> So they will have to write their own shaders?
+			-> I think I will have to write a bunch of shaders and find the patterns.
+		-> 
+
 		-* Fix framebuffer. I
 		-* texture buffer resizing [Texture.cs ln 68]
 			-* currently created with new() each time
 			
+	
+	-* Analyse allocations, we are getting a lot of GC pauses
+	
 	-* PushDepth, something like pushmatrix but we're settign the 2D depth temporarily. it's like Z-Index in HTML but actually useful
 	
 	-* Try to understand how the depth is working, and why it doesnt work for 

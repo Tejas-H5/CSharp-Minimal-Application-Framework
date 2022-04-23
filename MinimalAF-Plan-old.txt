@@ -1,5 +1,17 @@
 Anything cluttering up MinimalAF plan is just thrown in here
 =======================================================
+	-> non-immediate mode support - retained I think it's called ?
+		-> 3D mesh rendering support
+			- MeshBuilder API. its kinda like StringBuilder (if needed, else backlog this)
+			- I would like my vertices to have more properties in the future. How would I go about doing this? I wonder
+				Things that will change:
+				- actually, the parts that require varied sizes are the initialization phases, and nothing else.
+				- pushing the buffers tot he GPU will be exactly the same no matter what
+				- All the stuff that is called every frame won't change at all, so there is barely any impact on performance.
+			- Rewrite mesh class to support arbitrary vertices.
+				- Use reflection to get the size. Check for the LayoutKind.Sequential and throw an error if we dont have this.
+				var fields = typeof(TestRecord).GetFields()
+					.OrderBy(field => Marshal.OffsetOf(field.DeclaringType, field.Name)); to order the fields
 		- 3D viewport support
 			- Think about API to:
 				- Position camera

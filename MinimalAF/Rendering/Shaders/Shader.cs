@@ -75,9 +75,9 @@ namespace MinimalAF.Rendering {
                 uniformLocations.Add(key, location);
             }
 
-            matrixUniforms[CTX.MODEL_MATRIX] = Loc("model");
-            matrixUniforms[CTX.PROJECTION_MATRIX] = Loc("projection");
-            matrixUniforms[CTX.VIEW_MATRIX] = Loc("view");
+            matrixUniforms[CTX.MODEL_MATRIX] = GetUniformLocation("model");
+            matrixUniforms[CTX.PROJECTION_MATRIX] = GetUniformLocation("projection");
+            matrixUniforms[CTX.VIEW_MATRIX] = GetUniformLocation("view");
 
             for (int i = 0; i < matrices.Length; i++) {
                 matrices[i] = Matrix4.Identity;
@@ -132,7 +132,7 @@ namespace MinimalAF.Rendering {
         /// <summary>
         /// A micro-optimization that can be used to reduce hashmap lookups by getting the location just once
         /// </summary>
-        protected int Loc(string name) {
+        protected int GetUniformLocation(string name) {
             return uniformLocations[name];
         }
 

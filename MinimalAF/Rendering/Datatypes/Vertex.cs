@@ -2,7 +2,6 @@
 using System.Runtime.InteropServices;
 
 namespace MinimalAF.Rendering {
-    // TODO: we may want people to use their own vertex type? Idk if that would be worth it or not just yet
     [StructLayout(LayoutKind.Sequential)]
     public struct Vertex {
         public Vertex(float x, float y, float z)
@@ -14,12 +13,10 @@ namespace MinimalAF.Rendering {
             Uv = uv;
         }
 
-        public static int SizeOf() {
-            return 5 * sizeof(float);
-        }
-
+        [VertexComponent("position")]
         public Vector3 Position;
 
+        [VertexComponent("texcoord")]
         public Vector2 Uv;
     }
 }

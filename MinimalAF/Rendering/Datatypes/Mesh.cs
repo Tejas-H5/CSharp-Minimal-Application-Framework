@@ -1,9 +1,19 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 using System;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace MinimalAF.Rendering {
-    public class Mesh : IDisposable {
-        Vertex[] vertices;
+    /// <summary>
+    /// V must be a vertex class, where all fields are either
+    /// float, OpenTK.Mathematics.Vector2, Vector3 or Vector4.
+    /// All fields must have a [VertexComponent(...)] c# attribute.
+    /// 
+    /// I can extend this more if needed.
+    /// </summary>
+    public class Mesh<V> : IDisposable where V : unmanaged {
+        V[] vertices;
         uint[] indices;
 
         int vbo;
@@ -20,7 +30,7 @@ namespace MinimalAF.Rendering {
             }
         }
 
-        public Vertex[] Vertices {
+        public V[] Vertices {
             get {
                 return vertices;
             }
@@ -33,10 +43,38 @@ namespace MinimalAF.Rendering {
         }
 
 
+        (int, int) GetFieldSize(Type t) {
+            const int f = sizeof(float);
+
+            if (t == typeof(float)) {
+                return (f, 1);
+            } else if (t == typeof(Vector2)) {
+                return (f, 2);
+            } else if (t == typeof(Vector3)) {
+                return (f, 3);
+            } else if (t == typeof(Vector4)) {
+                return (f, 4);
+            }
+
+            return (-1, -1);
+        }
+
+        static readonly Type[] AllowedFieldTypes = new Type[] {
+            typeof(float),
+            typeof(Vector2),
+            typeof(Vector3),
+            typeof(Vector4)
+        };
+
+        VertexComponentAttribute[] vertexComponents;
+        int vertexSize;
+
         /// <summary>
         /// If you are going to update the data every frame with UpdateBuffers, then set stream=true.
         /// </summary>
-        public Mesh(Vertex[] data, uint[] indices, bool stream = false) {
+        public Mesh(V[] data, uint[] indices, bool stream = false) {
+            GetVertexComponentInfoWithReflection(typeof(V));
+
             BufferUsageHint bufferUsage = BufferUsageHint.StaticDraw;
             if (stream)
                 bufferUsage = BufferUsageHint.StreamDraw;
@@ -49,6 +87,45 @@ namespace MinimalAF.Rendering {
 
             InitMeshOpenGL(bufferUsage);
         }
+
+        void GetVertexComponentInfoWithReflection(Type type) {
+            var fields = type.GetFields()
+                .OrderBy(field => (uint)Marshal.OffsetOf(type, field.Name))
+                .ToArray();
+
+            foreach (var field in fields) {
+                (int typeSize, int count) = GetFieldSize(field.FieldType);
+                bool isAllowedType = typeSize != -1;
+                if (!isAllowedType) {
+                    throw new Exception(
+                        "A field of type " + field.FieldType.Name + " is not allowed on a vertex.\n" +
+                        "They need to be one of:\n" +
+                            string.Join(", ", AllowedFieldTypes.Select(t => t.Assembly.FullName + t.Name))
+                    );
+                }
+
+                var attributes = field.GetCustomAttributes(false);
+                if (attributes.Length != 1 || !(attributes[0] is VertexComponentAttribute)) {
+                    throw new Exception(
+                        "All fields in a vertex must have a [VertexComponentAttribute(...)] C# attribute."
+                    );
+                }
+            }
+
+            vertexComponents = new VertexComponentAttribute[fields.Length];
+            vertexSize = 0;
+            for(int i = 0; i < fields.Length; i++) {
+                var attribute = fields[i].GetCustomAttributes(false)[0] as VertexComponentAttribute;
+
+                (int size, int count) = GetFieldSize(fields[i].FieldType);
+                attribute.FieldSize = size;
+                attribute.FieldCount = count;
+
+                vertexComponents[i] = attribute;
+                vertexSize += size * count;
+            }
+        }
+
 
         private void InitMeshOpenGL(BufferUsageHint bufferUsage) {
             InitializeVertices(bufferUsage);
@@ -70,7 +147,7 @@ namespace MinimalAF.Rendering {
         }
 
         private void SendDataToBoundBuffer(BufferUsageHint bufferUsage) {
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Vertex.SizeOf(), vertices, bufferUsage);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * vertexSize, vertices, bufferUsage);
         }
 
         private void GenerateAndBindVertexArray() {
@@ -78,13 +155,16 @@ namespace MinimalAF.Rendering {
             GL.BindVertexArray(vao);
         }
 
-        private static void RegisterVertexAttributes() {
-            CreateVertexAttribPointer(attribute: 0, length: 3, offsetInArray: 0);
-            CreateVertexAttribPointer(attribute: 1, length: 2, offsetInArray: 3);
+        private void RegisterVertexAttributes() {
+            int currentOffset = 0;
+            for(int i = 0; i < vertexComponents.Length; i++) {
+                CreateVertexAttribPointer(i, vertexComponents[i].FieldCount, currentOffset);
+                currentOffset += vertexComponents[i].FieldSize * vertexComponents[i].FieldCount;
+            }
         }
 
-        private static void CreateVertexAttribPointer(int attribute, int length, int offsetInArray) {
-            GL.VertexAttribPointer(attribute, length, VertexAttribPointerType.Float, false, Vertex.SizeOf(), offsetInArray * sizeof(float));
+        private void CreateVertexAttribPointer(int attribute, int length, int offsetInArray) {
+            GL.VertexAttribPointer(attribute, length, VertexAttribPointerType.Float, false, vertexSize, offsetInArray);
             GL.EnableVertexAttribArray(attribute);
         }
 
@@ -122,13 +202,12 @@ namespace MinimalAF.Rendering {
             GL.BindVertexArray(vao);
 
             UpdateVertexBuffer();
-
             UpdateIndexBuffer();
         }
 
         private void UpdateVertexBuffer() {
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (int)vertexCount * Vertex.SizeOf(), vertices);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (int)vertexCount * vertexSize, vertices);
         }
 
         private void UpdateIndexBuffer() {

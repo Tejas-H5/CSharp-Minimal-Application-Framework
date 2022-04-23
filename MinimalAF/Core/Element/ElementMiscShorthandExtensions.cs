@@ -10,6 +10,30 @@ namespace MinimalAF {
             Console.WriteLine(obj);
         }
 
+        protected Matrix4 Translation(float x, float y, float z) {
+            return Matrix4.CreateTranslation(x, y, z);
+        }
+
+        protected Quaternion Rot(float x, float y, float z) {
+            return Quaternion.FromEulerAngles(x, y, z);
+        }
+
+        protected Quaternion Rot(Vector3 axis, float angle) {
+            return Quaternion.FromAxisAngle(axis, angle);
+        }
+
+        protected Matrix4 Rotation(Quaternion quat) {
+            return Matrix4.CreateFromQuaternion(quat);
+        }
+
+        protected Matrix4 Scale(float s) {
+            return Matrix4.CreateScale(s);
+        }
+
+        protected Matrix4 Scale(float x, float y, float z) {
+            return Matrix4.CreateScale(x, y, z);
+        }
+
         protected Matrix4 Mat4(Vector4 row1, Vector4 row2, Vector4 row3, Vector4 row4) {
             return new Matrix4(row1, row2, row3, row4);
         }

@@ -11,7 +11,6 @@ namespace MinimalAF.Rendering.ImmediateMode {
         }
 
 
-
         public void Draw(float xCenter, float yCenter, float radius, float startAngle, float endAngle) {
             int edgeCount = GetEdgeCount(radius, startAngle, endAngle);
 

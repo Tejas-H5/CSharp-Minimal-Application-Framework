@@ -1,5 +1,13 @@
 TODO:	
-	-> non-immediate mode support - retained I think it's called ?
+	- 3D and non-immediate mode support
+		- 2 parts - mesh loading, shader loading
+			- different meshes have different vertex components defined for each vertex. shaders must be different for each different type of mesh. Shaders should therefore be tied to specific vertex types.
+			tasks:
+				- [done] Change meshes to work with a generic vertex type
+				- [done] Allow some way of syncing global uniforms between shaders
+				- change shaders to require a generic vertex type in order to work at all. Use reflection to do the Layout(one) = whatever.
+					(look at the discussion below abt shaders, implement whatever is good)
+		
 		-> 3D mesh rendering support
 			- shader requires certain vertex attributes to work.
 			should people be writing their own OpenGL shaders? wtf?
@@ -13,7 +21,10 @@ TODO:
 			-> A mesh renderer. It takes mesh data + a shader. we will be switching between the MinimalAF internal shader to render our own stuff, and then to the mesh renderer's shader before we render that. Copying unity a bit there
 			-> So they will have to write their own shaders?
 			-> I think I will have to write a bunch of shaders and find the patterns.
+		-> I could make it easier to write shaders by injecting a bunch of code into the shader. People could even choose what code they want. If they write something like {{preamble}} after #version, I could do a substitution with all the boilerplate code.
+		Then I could add something like {{lighting_helpers}} into the shader and substitute in all the lighting related functions.
 		-> 
+		
 
 		-* Fix framebuffer. I
 		-* texture buffer resizing [Texture.cs ln 68]
@@ -21,6 +32,7 @@ TODO:
 			
 	
 	-* Analyse allocations, we are getting a lot of GC pauses
+		- only in debug mode though, and not in release
 	
 	-* PushDepth, something like pushmatrix but we're settign the 2D depth temporarily. it's like Z-Index in HTML but actually useful
 	

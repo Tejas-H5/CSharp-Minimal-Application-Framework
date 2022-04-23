@@ -56,20 +56,16 @@ namespace MinimalAF {
             return CTX.Text.GetHeight();
         }
 
-        public IDisposable PushMatrix(Matrix4 value) {
-            return CTX.PushMatrix(CTX.MODEL_MATRIX, value);
-        }
-
         public Matrix4 GetModelMatrix() {
-            return CTX.GetMatrix(CTX.MODEL_MATRIX);
+            return CTX.Shader.Model;
         }
 
         public Matrix4 GetViewMatrix() {
-            return CTX.GetMatrix(CTX.VIEW_MATRIX);
+            return CTX.Shader.View;
         }
 
         public Matrix4 GeProjectionMatrix() {
-            return CTX.GetMatrix(CTX.PROJECTION_MATRIX);
+            return CTX.Shader.Projection;
         }
     }
 }

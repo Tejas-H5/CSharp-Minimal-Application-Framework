@@ -13,12 +13,12 @@ There is also a black rectangle with some text for reference, all of this is on 
     )]
     internal class MeshRenderingTest : Element {
         float zPos;
-
         Mesh<Vertex> mesh;
 
         public MeshRenderingTest(float zPos = 10) {
             this.zPos = zPos;
 
+            
         }
 
         public override void OnMount(Window w) {
@@ -34,10 +34,8 @@ There is also a black rectangle with some text for reference, all of this is on 
 
         public override void OnRender() {
             SetProjectionPerspective(90 * DegToRad, 0.1f, 1000);
-            SetViewOrientation(Vec3(0, 0, 10), Rot(0, 0, 0));
+            SetViewOrientation(Vec3(0, 0, 10), Quat(0, 0, 0));
             SetTransform(Translation(0, 0, 0));
-
-
         }
     }
 }

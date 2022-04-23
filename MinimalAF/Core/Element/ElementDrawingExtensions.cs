@@ -39,7 +39,7 @@ namespace MinimalAF {
         }
 
         public void SetView(Matrix4 matrix) {
-            CTX.SetMatrix(CTX.VIEW_MATRIX, matrix);
+            CTX.Shader.SetViewMatrix(matrix);
         }
 
         /// <summary>

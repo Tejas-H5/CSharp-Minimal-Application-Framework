@@ -7,7 +7,8 @@ namespace MinimalAF.VisualTests.Rendering
 	[VisualTest(
         description: @"Test that texture loading works. Also test that transforms work, cause why not 
 (there are actually reasons why not, but I dont rlly care at the moment).
-The texture on the right is with nearest neighbour, and the texture on the left is with bilinear, so it's a bit blurry on the edges)",
+The texture on the right is with nearest neighbour, and the texture on the left is with bilinear, so it's a bit blurry on the edges).
+Also, the texture on the left must be still, while only the one on the right is moving",
         tags: "2D, texture"
     )]
 	class TextureTest : Element
@@ -49,17 +50,15 @@ The texture on the right is with nearest neighbour, and the texture on the left 
 
             Rect rect2 = new Rect(Width / 2 + 20, 20, Width - 20, Height - 20);
 
-			using (PushMatrix(
-				Matrix4.Transpose(Matrix4.CreateTranslation(rect2.CenterX, rect2.CenterY, 0)) *
-				Matrix4.CreateRotationZ(t) *
-				Matrix4.CreateScale(MathF.Sin(t))
-			))
 
-			//using (PushMatrix(Matrix4.Identity))
-			{
-				SetTexture(tex2);
-				Rect(new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectify());
-			}
+            SetTransform(
+                Translation(rect2.CenterX, rect2.CenterY, 0) *
+                Rotation(0, 0, t) *
+                Scale(MathF.Sin(t))
+            );
+
+			SetTexture(tex2);
+			Rect(new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectify());
         }
     }
 }

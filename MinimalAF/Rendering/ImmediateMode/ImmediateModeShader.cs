@@ -8,18 +8,15 @@ out vec2 uv0;
 uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 view;
-
 void main(){
     gl_Position =  vec4(position, 1) * model * view * projection;
     uv0 = uv;
 }";
-
         const string fragSource =
 @"#version 330
 uniform vec4 color;
 uniform sampler2D sampler;
 in vec2 uv0;
-
 void main(){
     vec4 texColor = texture2D(sampler, uv0.xy);
     gl_FragColor = color * texColor;
@@ -27,9 +24,9 @@ void main(){
 
         Color4 color;
         int colorLoc;
-
         public ImmediateModeShader()
             : base(vertSource, fragSource) {
+            colorLoc = UniformLocation("color");
         }
 
         public Color4 Color {
@@ -37,10 +34,6 @@ void main(){
                 color = value;
                 SetVector4(colorLoc, color);
             }
-        }
-
-        protected override void InitShader() {
-            colorLoc = GetUniformLocation("color");
         }
     }
 }

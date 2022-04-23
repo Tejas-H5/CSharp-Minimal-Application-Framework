@@ -12,11 +12,6 @@ namespace MinimalAF.Rendering {
     /// singleton
     /// </summary>
     public static class CTX {
-        public const int MODEL_MATRIX = 0;
-        public const int VIEW_MATRIX = 1;
-        public const int PROJECTION_MATRIX = 2;
-        public const int NUM_MATRICES = 3;
-
         //Here solely for the SwapBuffers function
         private static IGLFWGraphicsContext glContext;
 
@@ -53,7 +48,6 @@ namespace MinimalAF.Rendering {
             set => contextHeight = value;
         }
 
-        private static bool disposed; // To detect redundant calls to Dispose()
         internal static Color4 ClearColor;
 
         //Composition
@@ -68,6 +62,7 @@ namespace MinimalAF.Rendering {
         internal static TextDrawer Text => textDrawer;
         internal static TextureManager Texture => textureManager;
         internal static FramebufferManager Framebuffer => framebufferManager;
+        public static ShaderManager Shader => shaderManager;
 
         internal static TriangleDrawer triangle;
         internal static QuadDrawer quad;
@@ -79,9 +74,11 @@ namespace MinimalAF.Rendering {
         internal static LineDrawer line;
         private static TextDrawer textDrawer;
         private static MeshOutputStream meshOutputStream;
-        private static ImmediateModeShader solidShader;
         private static TextureManager textureManager;
         private static FramebufferManager framebufferManager;
+        private static ShaderManager shaderManager;
+
+        private static ImmediateModeShader internalShader;
 
         public static int TimesVertexThresholdReached {
             get => meshOutputStream.TimesVertexThresholdReached;
@@ -99,47 +96,16 @@ namespace MinimalAF.Rendering {
             get => textDrawer.ActiveFont;
         }
 
-        internal static Matrix4 GetMatrix(int matrix) {
-            return solidShader.GetMatrix(matrix);
-        }
-
-        internal static void SetMatrix(int matrix, Matrix4 value) {
-            Flush();
-            solidShader.SetMatrix(matrix, value);
-        }
-
-        internal struct MatrixPush : IDisposable {
-            Matrix4 oldValue;
-            int matrix;
-
-            internal MatrixPush(int matrix, Matrix4 value) {
-                this.oldValue = GetMatrix(matrix);
-                this.matrix = matrix;
-
-                SetMatrix(matrix, value);
-            }
-
-            public void Dispose() {
-                SetMatrix(matrix, oldValue);
-            }
-        }
-
-        /// <summary>
-        /// There is no corresponding PopMatrix method.
-        /// Instead, put this inside a using statement.
-        ///
-        /// </summary>
-        internal static IDisposable PushMatrix(int matrix, Matrix4 value) {
-            return new MatrixPush(matrix, value);
-        }
-
 
         internal static void Init(IGLFWGraphicsContext context) {
             InitDrawers();
 
             glContext = context;
-            solidShader = new ImmediateModeShader();
-            solidShader.Use();
+
+            internalShader = new ImmediateModeShader();
+            shaderManager = new ShaderManager();
+            shaderManager.UseShader(internalShader);
+
             textureManager = new TextureManager();
             framebufferManager = new FramebufferManager();
 
@@ -152,9 +118,6 @@ namespace MinimalAF.Rendering {
             GL.StencilFunc(StencilFunction.Equal, 0, 0xFF);
 
             GL.Enable(EnableCap.DepthTest);
-
-            disposed = false; // To detect redundant calls to Dispose()
-
 
             Console.WriteLine("Context initialized. OpenGL info: ");
 
@@ -207,7 +170,8 @@ namespace MinimalAF.Rendering {
         internal static void SwapBuffers() {
             Flush();
             framebufferManager.StopUsing();
-            SetMatrix(MODEL_MATRIX, Matrix4.Identity);
+            shaderManager.SetModelMatrix(Matrix4.Identity);
+
             glContext.SwapBuffers();
 
 
@@ -250,7 +214,7 @@ namespace MinimalAF.Rendering {
             Matrix4 viewMatrix = Matrix4.CreateTranslation(offsetX - width / 2, offsetY - height / 2, 0);
             Matrix4 projectionMatrix = Matrix4.CreateScale(2.0f / width, 2.0f / height, 1);
 
-            SetMatrix(VIEW_MATRIX, viewMatrix);
+            shaderManager.SetViewMatrix(viewMatrix);
             SetProjection(projectionMatrix);
 
             GL.DepthFunc(DepthFunction.Lequal);
@@ -260,7 +224,8 @@ namespace MinimalAF.Rendering {
         internal static void ViewLookAt(Vector3 position, Vector3 target, Vector3 up) {
             Matrix4 lookAt = Matrix4.LookAt(position, target, up);
 
-            SetMatrix(VIEW_MATRIX, lookAt);
+            shaderManager.SetViewMatrix(lookAt);
+
             GL.Disable(EnableCap.DepthTest);
             GL.Disable(EnableCap.CullFace);
         }
@@ -270,7 +235,7 @@ namespace MinimalAF.Rendering {
             orienation.Transpose();
             orienation *= Matrix4.CreateFromQuaternion(rotation.Inverted());
 
-            SetMatrix(VIEW_MATRIX, orienation);
+            shaderManager.SetViewMatrix(orienation);
         }
 
 
@@ -303,12 +268,12 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void SetProjection(Matrix4 matrix) {
-            SetMatrix(PROJECTION_MATRIX, matrix);
+            shaderManager.SetProjectionMatrix(matrix);
         }
 
         // this name makes more sense imo
         internal static void SetTransform(Matrix4 matrix) {
-            SetMatrix(MODEL_MATRIX, matrix);
+            shaderManager.SetModelMatrix(matrix);
         }
 
         internal static void SetDrawColor(float r, float g, float b, float a) {
@@ -317,12 +282,12 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void SetDrawColor(Color4 col) {
-            if (solidShader.Color == col)
+            if (internalShader.Color == col)
                 return;
 
             Flush();
 
-            solidShader.Color = col;
+            internalShader.Color = col;
         }
 
 
@@ -391,8 +356,11 @@ namespace MinimalAF.Rendering {
         }
 
 
+        /// <summary>
+        /// I hate this part of C# tbh.
+        /// </summary>
         #region IDisposable Support
-
+        private static bool disposed = false; 
         public static void Dispose(bool disposing) {
             if (!disposed) {
                 if (disposing) {
@@ -400,7 +368,7 @@ namespace MinimalAF.Rendering {
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
                 meshOutputStream.Dispose();
-                solidShader.Dispose();
+                internalShader.Dispose();
                 textDrawer.Dispose();
                 textureManager.Dispose();
 

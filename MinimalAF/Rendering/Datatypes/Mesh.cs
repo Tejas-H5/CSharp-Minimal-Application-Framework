@@ -42,38 +42,16 @@ namespace MinimalAF.Rendering {
             }
         }
 
-
-        (int, int) GetFieldSize(Type t) {
-            const int f = sizeof(float);
-
-            if (t == typeof(float)) {
-                return (f, 1);
-            } else if (t == typeof(Vector2)) {
-                return (f, 2);
-            } else if (t == typeof(Vector3)) {
-                return (f, 3);
-            } else if (t == typeof(Vector4)) {
-                return (f, 4);
-            }
-
-            return (-1, -1);
-        }
-
-        static readonly Type[] AllowedFieldTypes = new Type[] {
-            typeof(float),
-            typeof(Vector2),
-            typeof(Vector3),
-            typeof(Vector4)
-        };
-
-        VertexComponentAttribute[] vertexComponents;
-        int vertexSize;
+        readonly VertexComponentAttribute[] vertexComponents;
+        readonly int vertexSize;
 
         /// <summary>
         /// If you are going to update the data every frame with UpdateBuffers, then set stream=true.
         /// </summary>
         public Mesh(V[] data, uint[] indices, bool stream = false) {
-            GetVertexComponentInfoWithReflection(typeof(V));
+            VertexTypeInfo vertexTypeInfo = VertexTypes.GetvertexTypeInfo(typeof(V));
+            vertexComponents = vertexTypeInfo.VertexComponents;
+            vertexSize = vertexTypeInfo.VertexSize;
 
             BufferUsageHint bufferUsage = BufferUsageHint.StaticDraw;
             if (stream)
@@ -88,43 +66,6 @@ namespace MinimalAF.Rendering {
             InitMeshOpenGL(bufferUsage);
         }
 
-        void GetVertexComponentInfoWithReflection(Type type) {
-            var fields = type.GetFields()
-                .OrderBy(field => (uint)Marshal.OffsetOf(type, field.Name))
-                .ToArray();
-
-            foreach (var field in fields) {
-                (int typeSize, int count) = GetFieldSize(field.FieldType);
-                bool isAllowedType = typeSize != -1;
-                if (!isAllowedType) {
-                    throw new Exception(
-                        "A field of type " + field.FieldType.Name + " is not allowed on a vertex.\n" +
-                        "They need to be one of:\n" +
-                            string.Join(", ", AllowedFieldTypes.Select(t => t.Assembly.FullName + t.Name))
-                    );
-                }
-
-                var attributes = field.GetCustomAttributes(false);
-                if (attributes.Length != 1 || !(attributes[0] is VertexComponentAttribute)) {
-                    throw new Exception(
-                        "All fields in a vertex must have a [VertexComponentAttribute(...)] C# attribute."
-                    );
-                }
-            }
-
-            vertexComponents = new VertexComponentAttribute[fields.Length];
-            vertexSize = 0;
-            for(int i = 0; i < fields.Length; i++) {
-                var attribute = fields[i].GetCustomAttributes(false)[0] as VertexComponentAttribute;
-
-                (int size, int count) = GetFieldSize(fields[i].FieldType);
-                attribute.FieldSize = size;
-                attribute.FieldCount = count;
-
-                vertexComponents[i] = attribute;
-                vertexSize += size * count;
-            }
-        }
 
 
         private void InitMeshOpenGL(BufferUsageHint bufferUsage) {

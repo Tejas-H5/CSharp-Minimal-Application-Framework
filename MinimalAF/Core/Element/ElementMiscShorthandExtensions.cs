@@ -14,12 +14,20 @@ namespace MinimalAF {
             return Matrix4.CreateTranslation(x, y, z);
         }
 
-        protected Quaternion Rot(float x, float y, float z) {
+        protected Quaternion Quat(float x, float y, float z) {
             return Quaternion.FromEulerAngles(x, y, z);
         }
 
-        protected Quaternion Rot(Vector3 axis, float angle) {
+        protected Quaternion Quat(Vector3 axis, float angle) {
             return Quaternion.FromAxisAngle(axis, angle);
+        }
+
+        protected Matrix4 Rotation(float x, float y, float z) {
+            return Rotation(Quat(x, y, z));
+        }
+
+        protected Matrix4 Rotation(Vector3 axis, float angle) {
+            return Rotation(Quat(axis, angle));
         }
 
         protected Matrix4 Rotation(Quaternion quat) {

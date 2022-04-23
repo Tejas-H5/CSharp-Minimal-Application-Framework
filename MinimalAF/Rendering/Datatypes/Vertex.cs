@@ -16,7 +16,7 @@ namespace MinimalAF.Rendering {
         [VertexComponent("position")]
         public Vector3 Position;
 
-        [VertexComponent("texcoord")]
+        [VertexComponent("texCoord")]
         public Vector2 Uv;
     }
 }

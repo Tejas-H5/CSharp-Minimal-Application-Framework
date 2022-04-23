@@ -19,20 +19,20 @@ namespace MinimalAF.Rendering {
     public static class VertexTypes {
         static Dictionary<Type, VertexTypeInfo> loadedTypes = new Dictionary<Type, VertexTypeInfo>();
 
-        static (int, int) GetFieldSize(Type t) {
+        static (int, int, string) GetFieldSize(Type t) {
             const int f = sizeof(float);
 
             if (t == typeof(float)) {
-                return (f, 1);
+                return (f, 1, "float");
             } else if (t == typeof(Vector2)) {
-                return (f, 2);
+                return (f, 2, "vec2");
             } else if (t == typeof(Vector3)) {
-                return (f, 3);
+                return (f, 3, "vec3");
             } else if (t == typeof(Vector4)) {
-                return (f, 4);
+                return (f, 4, "vec4");
             }
 
-            return (-1, -1);
+            return (-1, -1, "");
         }
 
         static readonly Type[] AllowedFieldTypes = new Type[] {
@@ -52,7 +52,7 @@ namespace MinimalAF.Rendering {
                 .ToArray();
 
             foreach (var field in fields) {
-                (int typeSize, int count) = GetFieldSize(field.FieldType);
+                (int typeSize, int count, string typeName) = GetFieldSize(field.FieldType);
                 bool isAllowedType = typeSize != -1;
                 if (!isAllowedType) {
                     throw new Exception(
@@ -75,9 +75,10 @@ namespace MinimalAF.Rendering {
             for (int i = 0; i < fields.Length; i++) {
                 var attribute = fields[i].GetCustomAttributes(false)[0] as VertexComponentAttribute;
 
-                (int size, int count) = GetFieldSize(fields[i].FieldType);
+                (int size, int count, string typeName) = GetFieldSize(fields[i].FieldType);
                 attribute.FieldSize = size;
                 attribute.FieldCount = count;
+                attribute.TypeName = typeName;
 
                 vertexComponents[i] = attribute;
                 vertexSize += size * count;

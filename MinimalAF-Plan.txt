@@ -6,6 +6,7 @@ TODO:
 				- [done] Change meshes to work with a generic vertex type
 				- [done] Allow some way of syncing global uniforms between shaders
 				- change shaders to require a generic vertex type in order to work at all. Use reflection to do the Layout(one) = whatever.
+					Dont use generics for this. I will just use a vertex template or something
 					(look at the discussion below abt shaders, implement whatever is good)
 		
 		-> 3D mesh rendering support

@@ -78,7 +78,7 @@ namespace MinimalAF.Rendering {
         private static FramebufferManager framebufferManager;
         private static ShaderManager shaderManager;
 
-        private static ImmediateModeShader internalShader;
+        private static InternalShader internalShader;
 
         public static int TimesVertexThresholdReached {
             get => meshOutputStream.TimesVertexThresholdReached;
@@ -102,7 +102,7 @@ namespace MinimalAF.Rendering {
 
             glContext = context;
 
-            internalShader = new ImmediateModeShader();
+            internalShader = new InternalShader();
             shaderManager = new ShaderManager();
             shaderManager.UseShader(internalShader);
 

@@ -1,16 +1,13 @@
 ﻿namespace MinimalAF.Rendering.ImmediateMode {
-    public class ImmediateModeShader : Shader {
+    public class InternalShader : Shader {
         const string vertSource =
 @"#version 330
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec2 uv;
+{{vertex_attributes}}
+{{globals}}
 out vec2 uv0;
-uniform mat4 model;
-uniform mat4 projection;
-uniform mat4 view;
 void main(){
     gl_Position =  vec4(position, 1) * model * view * projection;
-    uv0 = uv;
+    uv0 = texCoord;
 }";
         const string fragSource =
 @"#version 330
@@ -24,8 +21,8 @@ void main(){
 
         Color4 color;
         int colorLoc;
-        public ImmediateModeShader()
-            : base(vertSource, fragSource) {
+        public InternalShader()
+            : base(vertSource, fragSource, typeof(Vertex)) {
             colorLoc = UniformLocation("color");
         }
 

@@ -2,12 +2,11 @@
     public class InternalShader : Shader {
         const string vertSource =
 @"#version 330
-{{vertex_attributes}}
 {{globals}}
 out vec2 uv0;
 void main(){
     gl_Position =  vec4(position, 1) * model * view * projection;
-    uv0 = texCoord;
+    uv0 = uv;
 }";
         const string fragSource =
 @"#version 330
@@ -22,7 +21,7 @@ void main(){
         Color4 color;
         int colorLoc;
         public InternalShader()
-            : base(vertSource, fragSource, typeof(Vertex)) {
+            : base(vertSource, fragSource) {
             colorLoc = UniformLocation("color");
         }
 

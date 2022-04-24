@@ -17,32 +17,24 @@ namespace MinimalAF.Rendering {
     }
 
     /// <summary>
-    /// Instead of writing this in your shader:
-    /// <code>
-    /// layout(location = 0) in vec3 position;
-    /// layout(location = 1) in vec2 uv;
-    /// </code>
-    /// Write this instead:
-    /// <code>
-    /// {{vertex_attributes}}
-    /// </code>
-    /// <para>
-    /// And the fields that you annotated in your vertex type will be injected there.
     /// 
-    /// You can also write {{globals}} instead of uniform mat4 model;uniform mat4 projection;uniform mat4 view;.
-    /// I will probably add more of these later.
     /// </para>
     /// </summary>
     public abstract class Shader {
-        const string VERTEX_GLOBALS  = @"uniform mat4 model;uniform mat4 projection;uniform mat4 view;";
+        const string VERTEX_GLOBALS  = 
+            "uniform mat4 model;" + 
+            "uniform mat4 projection;" + 
+            "uniform mat4 view;" +
+            "layout(location = 0) in vec3 position;" +
+            "layout(location = 1) in vec2 uv;";
 
         public readonly int Handle;
         internal int ModelLoc, ViewLoc, ProjectionLoc;
         readonly Dictionary<string, int> uniformLocations;
         public readonly string VertexSource, FragSource;
 
-        protected Shader(string vertexSource, string fragSource, Type vertexType) {
-            vertexSource = PerformStringReplacements(vertexSource, vertexType);
+        protected Shader(string vertexSource, string fragSource) {
+            vertexSource = PerformStringReplacements(vertexSource);
 
             int vertexShader = CompileShader(vertexSource, ShaderType.VertexShader);
             int fragmentShader = CompileShader(fragSource, ShaderType.FragmentShader);
@@ -67,26 +59,15 @@ namespace MinimalAF.Rendering {
             ProjectionLoc = UniformLocation("projection");
         }
 
-        private string PerformStringReplacements(string vertexSource, Type vertexType) {
-            vertexSource = vertexSource.Replace("{{globals}}", VERTEX_GLOBALS);
-
-            string vertexAttributes = GetVertexAttributeString(vertexType);
-            vertexSource = vertexSource.Replace("{{vertex_attributes}}", vertexAttributes);
-
-            return vertexSource;
-        }
-
-        private string GetVertexAttributeString(Type vertexType) {
-            var vertexTypeInfo = VertexTypes.GetvertexTypeInfo(vertexType);
-
-            StringBuilder sb = new StringBuilder();
-            var attributes = vertexTypeInfo.VertexComponents;
-            for (int i = 0; i < attributes.Length; i++) {
-                var attr = attributes[i];
-                sb.Append($"layout(location={i}) in {attr.TypeName} {attr.AttributeName};");
+        private string PerformStringReplacements(string vertexSource) {
+            if(!vertexSource.Contains("{{globals}}")) {
+                throw new Exception("You should add '{{globals}}' in your vertex shader after the #version preprocessor directive " +
+                    "to inject a bunch of the framework's internal global variables into your shader.");
             }
 
-            return sb.ToString();
+            vertexSource = vertexSource.Replace("{{globals}}", VERTEX_GLOBALS);
+
+            return vertexSource;
         }
 
         private static int CompileShader(string code, ShaderType type) {

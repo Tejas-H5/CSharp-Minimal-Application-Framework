@@ -5,8 +5,8 @@ using System.Text;
 
 namespace MinimalAF.Rendering {
     internal class OBJParser {
-        public static MeshData<Vertex> FromOBJ(string text) {
-            MeshData<Vertex> mesh = new MeshData<Vertex>();
+        public static MeshData FromOBJ(string text) {
+            MeshData mesh = new MeshData();
             List<Vector2> textureCoords = new List<Vector2>();
 
             (int vertexCount, int triangleCount, int uvCount) 
@@ -16,12 +16,17 @@ namespace MinimalAF.Rendering {
             mesh.Indices.Capacity = triangleCount;
             textureCoords.Capacity = uvCount;
 
-            foreach (var line in text.IterSplit("\n")) {
-                var lineIter = new StringIterator(line, " ");
+            string useMtl = "";
+            string mtl = "";
 
+            var iterator = new StringIterator(text, "\n");
+            foreach (var line in iterator) {
+                var lineIter = new StringIterator(line, " ");
                 var start = lineIter.GetNext();
-                string useMtl = "";
-                string mtl = "";
+
+                if(start.StartsWith("#")) {
+                    continue;
+                }
 
                 if (start == "usemlt") {
                     useMtl = ParseCurrentMaterial(lineIter);
@@ -75,15 +80,17 @@ namespace MinimalAF.Rendering {
             return lineIter.GetNext().ToString();
         }
 
-        private static void ParseVertex(MeshData<Vertex> mesh, StringIterator lineIter) {
-            mesh.AddVertex(new Vertex(
-                float.Parse(lineIter.GetNext().ToString()),
-                float.Parse(lineIter.GetNext().ToString()),
-                float.Parse(lineIter.GetNext().ToString())
-            ));
+        private static void ParseVertex(MeshData mesh, StringIterator lineIter) {
+            mesh.AddVertex(
+                new Vertex(
+                    float.Parse(lineIter.GetNext().ToString()),
+                    float.Parse(lineIter.GetNext().ToString()),
+                    float.Parse(lineIter.GetNext().ToString())
+                )
+            );
         }
 
-        private static void ParseFace(MeshData<Vertex> mesh, List<Vector2> textureCoords, StringIterator lineIter) {
+        private static void ParseFace(MeshData mesh, List<Vector2> textureCoords, StringIterator lineIter) {
             int index1 = -1;
             int index2 = -1;
 

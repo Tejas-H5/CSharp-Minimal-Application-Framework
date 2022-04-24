@@ -5,14 +5,25 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace MinimalAF.Rendering {
-    public class MeshData<V> where V : unmanaged {
-        List<V> vertices = new List<V>();
-        List<uint> indices = new List<uint>();
+    public class MeshData  {
+        List<Vertex> vertices;
+        List<uint> indices;
 
-        public List<V> Vertices => vertices;
+        public MeshData() {
+            vertices = new List<Vertex>();
+            indices = new List<uint>();
+        }
+
+
+        public MeshData(List<Vertex> vertices, List<uint> indices) {
+            this.vertices = vertices;
+            this.indices = indices;
+        }
+
+        public List<Vertex> Vertices => vertices;
         public List<uint> Indices => indices;
 
-        public uint AddVertex(V v) {
+        public uint AddVertex(Vertex v) {
             vertices.Add(v);
 
             return (uint)(vertices.Count - 1);
@@ -24,13 +35,25 @@ namespace MinimalAF.Rendering {
             indices.Add(v3);
         }
 
-        public Mesh<V> ToDrawableMesh() {
-            return new Mesh<V>(vertices.ToArray(), indices.ToArray(), false);
+        public Mesh ToDrawableMesh() {
+            return new Mesh(vertices.ToArray(), indices.ToArray(), false);
         }
 
 
-        public static MeshData<Vertex> FromOBJ(string text) {
+        public static MeshData FromOBJ(string text) {
             return OBJParser.FromOBJ(text);
+        }
+
+        public string ToCodeString() {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("List<Vertex> verts = new List<Vertex>(new Vertex[] {");
+            for(int i = 0; i < vertices.Count; i++) {
+                sb.Append(vertices[i].ToCodeString());
+            }
+            sb.Append("});");
+
+            return sb.ToString();
         }
     }
 }

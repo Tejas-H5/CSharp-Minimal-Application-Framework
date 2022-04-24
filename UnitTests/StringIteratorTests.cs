@@ -32,7 +32,7 @@ namespace UnitTests
             Assert.True(iter.GetNext().ToString() == "c");
             Assert.True(iter.GetNext().ToString() == "d");
 
-            Assert.True(iter.MoveNext());
+            Assert.False(iter.MoveNext());
         }
 
 
@@ -43,10 +43,29 @@ namespace UnitTests
             string[] arr = new string[] { "a", "b", "c", "d" };
             int i = 0;
             foreach (var s in new StringIterator(text, " ")) {
-                Assert.Equal(s.ToString(), arr[i]);
+                Assert.Equal(arr[i], s.ToString());
                 i++;
             }
+            Assert.Equal(arr.Length, i);
         }
+
+
+        [Fact]
+        public void StringIteratorForeachNewlines() {
+            string text = @"a
+b
+c
+d";
+
+            string[] arr = new string[] { "a\r", "b\r", "c\r", "d" };
+            int i = 0;
+            foreach (var s in new StringIterator(text, "\n")) {
+                Assert.Equal(arr[i], s.ToString());
+                i++;
+            }
+            Assert.Equal(arr.Length, i);
+        }
+
 
         [Fact]
         public void StringIteratorForeachDontSkipEmpty() {
@@ -58,6 +77,7 @@ namespace UnitTests
                 Assert.Equal(s.ToString(), arr[i]);
                 i++;
             }
+            Assert.Equal(arr.Length, i);
         }
     }
 }

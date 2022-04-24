@@ -2,7 +2,7 @@
 
 namespace MinimalAF.Rendering.ImmediateMode {
     public class MeshOutputStream : IGeometryOutput, IDisposable {
-        private Mesh<Vertex> backingMesh;
+        private Mesh backingMesh;
         private uint currentVertexIndex = 0;
         private uint currentIndexIndex = 0;
 
@@ -36,7 +36,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
             vertexBufferSize /= 3;
             vertexBufferSize *= 3;
 
-            backingMesh = new Mesh<Vertex>(new Vertex[vertexBufferSize], new uint[indexBufferSize], stream: true);
+            backingMesh = new Mesh(new Vertex[vertexBufferSize], new uint[indexBufferSize], stream: true);
         }
 
         public uint AddVertex(Vertex v) {

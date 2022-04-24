@@ -22,7 +22,7 @@ namespace MinimalAF {
                 int lastNextIndex = nextIndex;
                 int count = 0;
 
-                while(!MoveNext()) {
+                while(MoveNext()) {
                     count++;
                 }
 
@@ -75,7 +75,7 @@ namespace MinimalAF {
 
         bool Step() {
             if (nextIndex >= str.Length) {
-                return true;
+                return false;
             }
 
             index = nextIndex + delimiter.Length;
@@ -89,17 +89,17 @@ namespace MinimalAF {
                 }
             }
 
-            return false;
+            return true;
         }
 
         public bool MoveNext() {
             do {
-                if (Step()) {
-                    return true;
+                if (!Step()) {
+                    return false;
                 }
             } while (skipEmpty && Current == "");
 
-            return false;
+            return true;
         }
 
         public void Reset() {

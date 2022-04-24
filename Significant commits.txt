@@ -1,0 +1,7 @@
+Sometimes I will add a feature then remove it because it was useless. But there is
+some chance that I  may want that feature again?
+
+----
+
+2022/04/24 - Injecting the shader vertex layout(whatever) into the shader with {{vertex_attributes}}
+

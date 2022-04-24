@@ -18,6 +18,7 @@ namespace UnitTests
 
             Assert.Equal(1, new StringIterator("asdsfasdf", " ").Count);
             Assert.Equal(0, new StringIterator("", " ").Count);
+            Assert.Equal(4, new StringIterator("///", "/").Count);
         }
 
 
@@ -42,6 +43,18 @@ namespace UnitTests
             string[] arr = new string[] { "a", "b", "c", "d" };
             int i = 0;
             foreach (var s in new StringIterator(text, " ")) {
+                Assert.Equal(s.ToString(), arr[i]);
+                i++;
+            }
+        }
+
+        [Fact]
+        public void StringIteratorForeachDontSkipEmpty() {
+            string text = "/6//7/";
+
+            string[] arr = new string[] { "", "6", "", "7", "" };
+            int i = 0;
+            foreach (var s in new StringIterator(text, "/", false)) {
                 Assert.Equal(s.ToString(), arr[i]);
                 i++;
             }

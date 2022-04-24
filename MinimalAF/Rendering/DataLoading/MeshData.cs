@@ -34,8 +34,6 @@ namespace MinimalAF.Rendering {
             List<Vector2> textureCoords = new List<Vector2>();
             int vertexCount = 0;
             int triangleCount = 0;
-
-            // so that we can enfore vertexCount == uvCount
             int uvCount = 0;
 
             // lets find out how many of each there are, so we can set a capacity
@@ -60,6 +58,7 @@ namespace MinimalAF.Rendering {
 
             mesh.Vertices.Capacity = vertexCount;
             mesh.Indices.Capacity = triangleCount;
+            textureCoords.Capacity = uvCount;
 
             foreach (var line in text.IterSplit("\n")) {
                 var lineIter = new StringIterator(line, " ");
@@ -80,8 +79,12 @@ namespace MinimalAF.Rendering {
                     ));
                 } else if (start == "f") {
                     // TODO: Load faces here
+                    do {
+                        var face = new StringIterator(lineIter.Current, "/", false) ;
 
-
+                        var vertexIndex = face.GetNext();
+                        var textureIndex = face.GetNext();
+                    } while (lineIter.MoveNext());
                 } else if (start == "vt") {
                     textureCoords.Add(new Vector2(
                         float.Parse(lineIter.GetNext()),

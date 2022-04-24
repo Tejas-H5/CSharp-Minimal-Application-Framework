@@ -20,7 +20,7 @@ namespace MinimalAF {
 
                 int lastIndex = index;
                 int lastNextIndex = nextIndex;
-                int count = 1;
+                int count = 0;
 
                 while(!MoveNext()) {
                     count++;
@@ -39,12 +39,11 @@ namespace MinimalAF {
             }
 
             this.str = str;
-            this.index = 0;
             this.delimiter = delimiter;
             this.skipEmpty = skipEmpty;
 
+            this.index = 0;
             nextIndex = -delimiter.Length;
-            MoveNext();
         }
 
         public StringIterator GetEnumerator() {
@@ -52,21 +51,20 @@ namespace MinimalAF {
         }
 
         public ReadOnlySpan<char> GetNext() {
-            var n = Current;
             MoveNext();
-            return n;
+            return Current;
         }
 
 
         private int FindNext() {
-            int nextIndex = str.Slice(index + delimiter.Length)
+            int nextIndex = str.Slice(index)
                 .IndexOf(delimiter);
 
             if(nextIndex == -1) {
                 return -1;
             }
 
-            return  nextIndex + index + delimiter.Length;
+            return  nextIndex + index;
         }
 
         public ReadOnlySpan<char> Current {
@@ -76,15 +74,19 @@ namespace MinimalAF {
         }
 
         bool Step() {
-            index = nextIndex + delimiter.Length;
-
-            if (index >= str.Length) {
+            if (nextIndex >= str.Length) {
                 return true;
             }
 
-            nextIndex = FindNext();
-            if(nextIndex == -1) {
-                nextIndex = str.Length;
+            index = nextIndex + delimiter.Length;
+
+            if(index == str.Length) {
+                nextIndex = index;
+            } else {
+                nextIndex = FindNext();
+                if(nextIndex == -1) {
+                    nextIndex = str.Length;
+                }
             }
 
             return false;
@@ -101,7 +103,8 @@ namespace MinimalAF {
         }
 
         public void Reset() {
-            index = 0;
+            this.index = 0;
+            nextIndex = -delimiter.Length;
         }
     }
 

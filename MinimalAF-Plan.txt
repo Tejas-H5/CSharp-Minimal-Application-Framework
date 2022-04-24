@@ -8,6 +8,8 @@ TODO:
 				- change shaders to require a generic vertex type in order to work at all. Use reflection to do the Layout(one) = whatever.
 					Dont use generics for this. I will just use a vertex template or something
 					(look at the discussion below abt shaders, implement whatever is good)
+					
+					-> OK try porting it to rust now. The memory allocations in C# is bugging me.
 		
 		-> 3D mesh rendering support
 			- shader requires certain vertex attributes to work.

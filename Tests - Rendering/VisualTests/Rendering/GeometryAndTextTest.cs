@@ -35,12 +35,12 @@ all at once.",
 
         public void Init()
         {
-            TextureMap.LoadTexture("placeholder", "./Res/settings_icon.png", new TextureImportSettings
+            TextureMap.Load("placeholder", "./Res/settings_icon.png", new TextureImportSettings
             {
                 Filtering = FilteringType.NearestNeighbour
             });
 
-            tex = TextureMap.GetTexture("placeholder");
+            tex = TextureMap.Get("placeholder");
         }
 
         public override void OnUpdate()

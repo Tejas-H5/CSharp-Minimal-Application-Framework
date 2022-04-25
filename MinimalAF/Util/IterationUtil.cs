@@ -109,7 +109,6 @@ namespace MinimalAF {
     }
 
     public static class IterationUtil {
-
         public static IndexedEnumerator<T> Enumerate<T>(this IList<T> enumerable) {
             return new IndexedEnumerator<T>(enumerable);
         }
@@ -145,7 +144,7 @@ namespace MinimalAF {
         }
 
 
-        public static StringIterator IterSplit(this string str, string delimiter, bool skipEmpty = true, int startindex = 0) {
+        public static StringIterator Split(this string str, string delimiter, bool skipEmpty = true, int startindex = 0) {
             return new StringIterator(str.AsSpan().Slice(startindex), delimiter, skipEmpty);
         }
 

@@ -1,5 +1,8 @@
 Anything cluttering up MinimalAF-Plan.txt is just cut-pasted here
 =======================================================
+- Remove generics from meshes, and just add things to the vertex class as needed.
+				-> but actually, immediate mode rendering would suffer quite a lot if I added a whole bunch of new parameters to the existing vertex. I think what I should do instead is have two types of vertex - VertexImmediateMode and Vertex. We will use VertexImmediateMode for immediate mode rendering. But then we wont be able to do 3D immediate mode stuff. Never mind.
+
 - 2 parts - mesh loading, shader loading
 			- different meshes have different vertex components defined for each vertex. shaders must be different for each different type of mesh. Shaders should therefore be tied to specific vertex types.
 			tasks:

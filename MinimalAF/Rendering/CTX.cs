@@ -119,6 +119,8 @@ namespace MinimalAF.Rendering {
 
             GL.Enable(EnableCap.DepthTest);
 
+            //GL.Enable(EnableCap.CullFace);
+
             Console.WriteLine("Context initialized. OpenGL info: ");
 
             string version = GL.GetString(StringName.Version);
@@ -225,9 +227,6 @@ namespace MinimalAF.Rendering {
             Matrix4 lookAt = Matrix4.LookAt(position, target, up);
 
             shaderManager.SetViewMatrix(lookAt);
-
-            GL.Disable(EnableCap.DepthTest);
-            GL.Disable(EnableCap.CullFace);
         }
 
         internal static void ViewOrientation(Vector3 position, Quaternion rotation) {
@@ -248,8 +247,6 @@ namespace MinimalAF.Rendering {
         internal static void Perspective(float fovy, float aspect, float depthNear, float depthFar, float centerX=0, float centerY=0) {
             Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(fovy, aspect, depthNear, depthFar);
             perspective = perspective * Matrix4.CreateTranslation(centerX / ContextWidth, centerY / ContextHeight, 0);
-
-            GL.Disable(EnableCap.CullFace);
 
             SetProjection(perspective);
         }
@@ -372,7 +369,7 @@ namespace MinimalAF.Rendering {
                 textDrawer.Dispose();
                 textureManager.Dispose();
 
-                TextureMap.UnloadTextures();
+                TextureMap.UnloadAll();
 
                 framebufferManager.Dispose();
 

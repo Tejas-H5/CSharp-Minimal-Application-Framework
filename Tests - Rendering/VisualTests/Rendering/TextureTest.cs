@@ -26,11 +26,11 @@ Also, the texture on the left must be still, while only the one on the right is 
 
            SetClearColor(Color4.White);
 
-            TextureMap.LoadTexture("placeholder", "./Res/settings_icon.png", new TextureImportSettings());
-            TextureMap.LoadTexture("placeholderNN", "./Res/settings_icon.png", new TextureImportSettings { Filtering = FilteringType.NearestNeighbour });
+            TextureMap.Load("placeholder", "./Res/settings_icon.png", new TextureImportSettings());
+            TextureMap.Load("placeholderNN", "./Res/settings_icon.png", new TextureImportSettings { Filtering = FilteringType.NearestNeighbour });
 
-            tex = TextureMap.GetTexture("placeholder");
-            tex2 = TextureMap.GetTexture("placeholderNN");
+            tex = TextureMap.Get("placeholder");
+            tex2 = TextureMap.Get("placeholderNN");
         }
 
 
@@ -52,9 +52,9 @@ Also, the texture on the left must be still, while only the one on the right is 
 
 
             SetTransform(
-                Translation(rect2.CenterX, rect2.CenterY, 0) *
+                Scale(MathF.Sin(t)) *
                 Rotation(0, 0, t) *
-                Scale(MathF.Sin(t))
+                Translation(rect2.CenterX, rect2.CenterY, 0)
             );
 
 			SetTexture(tex2);

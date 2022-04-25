@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using MinimalAF.ResourceManagement;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -38,7 +39,7 @@ namespace MinimalAF.Rendering {
         }
 
         //TODO: replace boolean with TextureImportSettings class if needed
-        public static Texture LoadFromFile(string path, TextureImportSettings settings) {
+        public static Texture LoadFromFile(string path, TextureImportSettings settings = null) {
             Bitmap image;
 
             try {
@@ -67,7 +68,11 @@ namespace MinimalAF.Rendering {
             TextureManager.SetCurrentTextureChangedFlag();
         }
 
-        public Texture(Bitmap image, TextureImportSettings settings) {
+        public Texture(Bitmap image, TextureImportSettings settings = null) {
+            if(settings == null) {
+                settings = new TextureImportSettings();
+            }
+
             var data = image.LockBits(
                 new Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly,
@@ -147,18 +152,11 @@ namespace MinimalAF.Rendering {
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing) {
-            if (!disposedValue) {
-                if (disposing) {
-                    // Don't forget to dispose of the texture too!
-                    GL.BindTexture(TextureTarget.Texture2D, 0);
-                    GL.DeleteTexture(Handle);
-                }
+            if(disposedValue)
+                return;
 
-
-                Console.WriteLine("Texture destructed");
-
-                disposedValue = true;
-            }
+            GL.DeleteTexture(Handle);
+            disposedValue = true;
         }
 
         ~Texture() {

@@ -17,4 +17,13 @@
     <ProjectReference Include="..\MinimalAF\MinimalAF.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Res\monke texture.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Res\settings_icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

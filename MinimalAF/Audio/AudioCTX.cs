@@ -40,7 +40,7 @@ namespace MinimalAF.Audio {
 
             device = ALDevice.Null;
 
-            AudioMap.UnloadAllCachedAudio();
+            AudioMap.UnloadAll();
 
             ALAudioSourcePool.Cleanup();
             ALAudioListener.Cleanup();

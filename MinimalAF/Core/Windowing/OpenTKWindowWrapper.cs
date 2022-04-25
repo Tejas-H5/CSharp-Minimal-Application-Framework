@@ -1,5 +1,6 @@
 ﻿using MinimalAF.Audio;
 using MinimalAF.Rendering;
+using MinimalAF.ResourceManagement;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using System;
@@ -19,6 +20,7 @@ namespace MinimalAF {
         double time = 0;
         int renderFrames = 0;
         int updateFrames = 0;
+        int deletionInterval = 0;
         float fps;
         float updateFps;
 
@@ -117,6 +119,15 @@ namespace MinimalAF {
             rootWindow.UpdateSelfAndChildren(new Rect(0, 0, Width, Height));
 
             TrackUpdateFPS(args);
+
+
+            deletionInterval++;
+            // 100 is an arbitrary number.
+            if(deletionInterval > 100) {
+                deletionInterval = 0;
+
+                GLDeletionQueue.DeleteResources();
+            }
         }
 
         private void TrackUpdateFPS(FrameEventArgs args) {
@@ -195,6 +206,8 @@ namespace MinimalAF {
 
             CTX.Dispose(true);
             AudioCTX.Cleanup();
+
+            GLDeletionQueue.DeleteResources();
         }
 
         public void SetWindowState(WindowState state) {

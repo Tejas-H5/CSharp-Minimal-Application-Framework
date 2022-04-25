@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using MinimalAF.ResourceManagement;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System;
 using System.Linq;
@@ -158,11 +159,9 @@ namespace MinimalAF.Rendering {
             if (disposed)
                 return;
 
-            GL.BindVertexArray(0);
-            GL.DeleteBuffer(vbo);
-            GL.DeleteBuffer(ebo);
-            GL.DeleteVertexArray(vao);
-
+            GLDeletionQueue.QueueBufferForDeletion(vbo);
+            GLDeletionQueue.QueueBufferForDeletion(ebo);
+            GLDeletionQueue.QueueVertexArrayForDeletion(vao);
             Console.WriteLine("Mesh destructed");
 
             disposed = true;

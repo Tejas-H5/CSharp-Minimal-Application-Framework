@@ -2,8 +2,19 @@ TODO:
 	- 3D and non-immediate mode support
 		Allowing generic vertices for meshes has caused a significant amount of complexity that I can't be bothered maintaining.
 		tasks:
-			- Remove generics from meshes, and just add things to the vertex class as needed.
+			- [done] Remove generics from meshes, and just add things to the vertex class as needed.
+			
 			- test OBJ loading and rendering
+				- Meshes can't be disposed on garbage collector thread?? add some queue that does this or smth
+				- This is a hack. Remove it, replace it with resource maps.
+					- actually, both are good for different things, they can work side by side
+				- fix incorrect UV loading
+					-* fix polygon rotation
+						-* fix texture test	
+					
+		
+				
+			- Test that texturing works.
 			- maybe add some way of generating primitives, or some mesh generation API later
 		
 

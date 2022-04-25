@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using MinimalAF.ResourceManagement;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
@@ -79,8 +80,7 @@ namespace MinimalAF.Rendering {
             GL.GetShader(shader, ShaderParameter.CompileStatus, out var errorCode);
             if (errorCode != (int)All.True) {
                 var infoLog = GL.GetShaderInfoLog(shader);
-                // hahaha 'whilst'
-                throw new Exception("Error occurred whilst compiling Shader(" + shader + ").\n\n" + infoLog);
+                throw new Exception("Error occurred while compiling shader (" + shader + ").\n\n" + infoLog);
             }
 
             return shader;
@@ -158,7 +158,6 @@ namespace MinimalAF.Rendering {
                 return;
 
             GL.DeleteProgram(Handle);
-            Console.WriteLine("Shader destructed");
 
             disposed = true;
         }

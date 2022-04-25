@@ -19,24 +19,24 @@ namespace MinimalAF.Rendering {
             string useMtl = "";
             string mtl = "";
 
-            var iterator = new StringIterator(text, "\n");
-            foreach (var line in iterator) {
-                var lineIter = new StringIterator(line, " ");
+            foreach (var line in IterationUtil.Split(text, "\n")) {
+                var trimmed = line.Trim();
+                var lineIter = new StringIterator(trimmed, " ");
                 var start = lineIter.GetNext();
 
                 if(start.StartsWith("#")) {
                     continue;
                 }
 
-                if (start == "usemlt") {
+                if (start.SequenceEqual("usemlt")) {
                     useMtl = ParseCurrentMaterial(lineIter);
-                } else if (start == "mtllib") {
+                } else if (start.SequenceEqual("mtllib")) {
                     mtl = ParseMaterial(lineIter);
-                } else if (start == "v") {
+                } else if (start.SequenceEqual("v")) {
                     ParseVertex(mesh, lineIter);
-                } else if (start == "f") {
+                } else if (start.SequenceEqual("f")) {
                     ParseFace(mesh, textureCoords, lineIter);
-                } else if (start == "vt") {
+                } else if (start.SequenceEqual("vt")) {
                     ParseTexCoord(textureCoords, lineIter);
                 }
             }
@@ -50,7 +50,7 @@ namespace MinimalAF.Rendering {
             int uvCount = 0;
 
             // lets find out how many of each there are, so we can set a capacity
-            foreach (var line in text.IterSplit("\n")) {
+            foreach (var line in IterationUtil.Split(text, "\n")) {
                 var lineIter = new StringIterator(line, " ");
 
                 var start = lineIter.GetNext();
@@ -94,12 +94,12 @@ namespace MinimalAF.Rendering {
             int index1 = -1;
             int index2 = -1;
 
-            do {
+            while (lineIter.MoveNext()) {
                 var face = new StringIterator(lineIter.Current, "/", false);
 
-                var vertexIndex = int.Parse(face.GetNext());
+                var vertexIndex = int.Parse(face.GetNext()) - 1;
                 var textureIndexText = face.GetNext();
-                var textureIndex = textureIndexText == "" ? -1 : int.Parse(textureIndexText);
+                var textureIndex = textureIndexText == "" ? -1 : int.Parse(textureIndexText) - 1;
 
                 if (index1 == -1) {
                     index1 = vertexIndex;
@@ -119,7 +119,7 @@ namespace MinimalAF.Rendering {
 
                     index2 = vertexIndex;
                 }
-            } while (lineIter.MoveNext());
+            }
         }
 
         private static void ParseTexCoord(List<Vector2> textureCoords, StringIterator lineIter) {

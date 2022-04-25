@@ -2,48 +2,53 @@
 using System.Collections.Generic;
 
 namespace MinimalAF.ResourceManagement {
-    public static class ResourceMap<T> {
+    /// <summary>
+    /// Used to manage the lifetimes of dynamically allocated OpenGL resources that need to be freed.
+    /// 
+    /// This should be used instead of relying on the garbage collector to trigger deletion of OpenGL resources
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    internal static class ResourceMap<T> where T : class, IDisposable {
         private static Dictionary<string, T> resourceCache = new Dictionary<string, T>();
 
-        public static void LoadResource<TLoadSettings>(string name, string path, TLoadSettings loadSettings, Func<string, TLoadSettings, T> loadingFunction) {
+        internal static T Get(string name) {
             if (resourceCache.ContainsKey(name))
-                return;
+                return resourceCache[name];
 
-            var resource = loadingFunction(path, loadSettings);
-            if (resource != null)
-                resourceCache[name] = resource;
+            return null;
         }
 
-        //TODO: return a pink texture or similar
-        public static T GetResource(string name) {
-            if (!resourceCache.ContainsKey(name))
-                return default;
+        internal static void Put(string name, T resource) {
+#if DEBUG
+            if(resourceCache.ContainsKey(name)) {
+                throw new Exception("Cant overwrite existing resources");
+            }
+#endif
 
-            return resourceCache[name];
+            resourceCache[name] = resource;
         }
 
-        public static void UnloadResource(string name) {
-            if (!resourceCache.ContainsKey(name))
-                return;
+        internal static bool Has(string name) {
+            return resourceCache.ContainsKey(name);
+        }
 
-            UnloadResource(resourceCache[name]);
+        internal static void Delete(string name) {
+#if DEBUG
+            if(!resourceCache.ContainsKey(name)) {
+                throw new Exception("Resource " + name + " doesn't exist");
+            }
+#endif
+
+            resourceCache[name].Dispose();
             resourceCache.Remove(name);
         }
 
-        public static void UnloadResources() {
-            foreach (var item in resourceCache) {
-                UnloadResource(item.Value);
+        internal static void UnloadAll() {
+            foreach (T item in resourceCache.Values) {
+                item.Dispose();
             }
 
             resourceCache.Clear();
-        }
-
-        private static void UnloadResource(T resource) {
-            IDisposable unmanagedResource = resource as IDisposable;
-
-            if (unmanagedResource != null) {
-                unmanagedResource.Dispose();
-            }
         }
     }
 }

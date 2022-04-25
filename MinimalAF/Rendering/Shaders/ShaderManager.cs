@@ -19,16 +19,22 @@ namespace MinimalAF.Rendering {
 
 
         internal void SetModelMatrix(Matrix4 matrix) {
+            CTX.Flush();
+
             model = matrix;
             currentProgram.SetMatrix4(currentProgram.ModelLoc, matrix);
         }
 
         internal void SetProjectionMatrix(Matrix4 matrix) {
+            CTX.Flush();
+
             projection = matrix;
             currentProgram.SetMatrix4(currentProgram.ProjectionLoc, matrix);
         }
 
         internal void SetViewMatrix(Matrix4 matrix) {
+            CTX.Flush();
+
             view = matrix;
             currentProgram.SetMatrix4(currentProgram.ViewLoc, matrix);
         }

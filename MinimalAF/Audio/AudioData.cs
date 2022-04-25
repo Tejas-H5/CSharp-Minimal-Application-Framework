@@ -8,7 +8,7 @@ namespace MinimalAF.Audio {
     /// 
     /// Overrides GetHashCode to be a constant ID, so this can be used as a HashMap/Dictionary key
     /// </summary>
-    public class AudioData {
+    public class AudioData : IDisposable {
         private static int nextAudioDataID = 1;
         public int ID;
         public override int GetHashCode() {
@@ -140,6 +140,9 @@ namespace MinimalAF.Audio {
 
                 return new AudioData(rawData16bit, sampleRate, channels);
             }
+        }
+
+        public void Dispose() {
         }
     }
 }

@@ -14,7 +14,6 @@ that can be drawn for some framerate (default 60FPS). Results may vary",
         CapType capType;
         int lineCount;
         float requiredFPS;
-        bool use3D = false;
 
         public Benchmark(int lineCount = 0, CapType capType = CapType.Circle, int thickness = 5, float requiredFPS = 60)
         {

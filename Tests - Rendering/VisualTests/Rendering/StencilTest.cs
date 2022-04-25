@@ -38,7 +38,7 @@ the visibility of another test.",
 			StartStencillingWithoutDrawing(true);
 
             float barSize = MathF.Abs((Height / 2 - 5) * MathF.Sin(time / 4f));
-            Rect(0, Height, Width, Height - barSize);
+            Rect(0, Height - barSize, Width, Height);
             Rect(0, 0, Width, barSize);
 
             StartUsingStencil();

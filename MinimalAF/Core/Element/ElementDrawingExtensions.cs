@@ -176,7 +176,7 @@ namespace MinimalAF {
         }
 
         public void Rect(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 0, float u1 = 1, float v1 = 1) {
-            CTX.Rect.Draw(x0, y0, x1, y1, u0 = 0, v0 = 0, u1 = 1, v1 = 1);
+            CTX.Rect.Draw(x0, y0, x1, y1, u0, v0, u1, v1);
         }
 
         public void Rect(Rect rect, Rect uvs) {
@@ -188,11 +188,11 @@ namespace MinimalAF {
         }
 
         public PointF Text(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f) {
-            return CTX.Text.Draw(text, startX, startY, hAlign, vAlign, scale = 1.0f);
+            return CTX.Text.Draw(text, startX, startY, hAlign, vAlign, scale);
         }
 
         public PointF Text(string text, float startX, float startY, float scale = 1.0f) {
-            return CTX.Text.Draw(text, startX, startY, scale = 1.0f);
+            return CTX.Text.Draw(text, startX, startY, scale);
         }
 
         public PointF Text(string text, int start, int end, float startX, float startY, float scale) {

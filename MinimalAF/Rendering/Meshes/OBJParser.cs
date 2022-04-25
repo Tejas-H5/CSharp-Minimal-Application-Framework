@@ -5,15 +5,19 @@ using System.Text;
 
 namespace MinimalAF.Rendering {
     internal class OBJParser {
+
+
+
         public static MeshData FromOBJ(string text) {
             MeshData mesh = new MeshData();
+            List<Vector3> positions = new List<Vector3>();
             List<Vector2> textureCoords = new List<Vector2>();
 
             (int vertexCount, int triangleCount, int uvCount) 
                 = CalculateDataCounts(text);
 
-            mesh.Vertices.Capacity = vertexCount;
             mesh.Indices.Capacity = triangleCount;
+            positions.Capacity = vertexCount;
             textureCoords.Capacity = uvCount;
 
             string useMtl = "";
@@ -33,9 +37,9 @@ namespace MinimalAF.Rendering {
                 } else if (start.SequenceEqual("mtllib")) {
                     mtl = ParseMaterial(lineIter);
                 } else if (start.SequenceEqual("v")) {
-                    ParseVertex(mesh, lineIter);
+                    ParseVertex(positions, lineIter);
                 } else if (start.SequenceEqual("f")) {
-                    ParseFace(mesh, textureCoords, lineIter);
+                    ParseFace(mesh, positions, textureCoords, lineIter);
                 } else if (start.SequenceEqual("vt")) {
                     ParseTexCoord(textureCoords, lineIter);
                 }
@@ -80,9 +84,9 @@ namespace MinimalAF.Rendering {
             return lineIter.GetNext().ToString();
         }
 
-        private static void ParseVertex(MeshData mesh, StringIterator lineIter) {
-            mesh.AddVertex(
-                new Vertex(
+        private static void ParseVertex(List<Vector3> positions, StringIterator lineIter) {
+            positions.Add(
+                new Vector3(
                     float.Parse(lineIter.GetNext().ToString()),
                     float.Parse(lineIter.GetNext().ToString()),
                     float.Parse(lineIter.GetNext().ToString())
@@ -90,34 +94,36 @@ namespace MinimalAF.Rendering {
             );
         }
 
-        private static void ParseFace(MeshData mesh, List<Vector2> textureCoords, StringIterator lineIter) {
-            int index1 = -1;
-            int index2 = -1;
+        private static void ParseFace(MeshData mesh, List<Vector3> positions, List<Vector2> textureCoords, StringIterator lineIter) {
+            uint index1 = uint.MaxValue;
+            uint index2 = uint.MaxValue;
 
             while (lineIter.MoveNext()) {
                 var face = new StringIterator(lineIter.Current, "/", false);
 
+                // an obj file will reuse the same vertex for different faces/UV islands, so we need to create new vertices for each point
+                // on a face
+
                 var vertexIndex = int.Parse(face.GetNext()) - 1;
                 var textureIndexText = face.GetNext();
                 var textureIndex = textureIndexText == "" ? -1 : int.Parse(textureIndexText) - 1;
+                Vector2 uv = new Vector2(0, 0);
+                if(textureIndex != -1) {
+                    uv = textureCoords[textureIndex];
+                }
+                // because UVs are upside down otherwise
+                uv.Y = 1 - uv.Y;
 
-                if (index1 == -1) {
-                    index1 = vertexIndex;
-                    if (textureIndex != -1) {
-                        mesh.Vertices[vertexIndex].SetUV(textureCoords[textureIndex]);
-                    }
-                } else if (index2 == -1) {
-                    index2 = vertexIndex;
-                    if (textureIndex != -1) {
-                        mesh.Vertices[vertexIndex].SetUV(textureCoords[textureIndex]);
-                    }
+                Vertex v = new Vertex(positions[vertexIndex], uv);
+
+                if (index1 == uint.MaxValue) {
+                    index1 = mesh.AddVertex(v);
+                } else if (index2 == uint.MaxValue) {
+                    index2 = mesh.AddVertex(v);
                 } else {
-                    mesh.MakeFace((uint)index1, (uint)index2, (uint)vertexIndex);
-                    if (textureIndex != -1) {
-                        mesh.Vertices[vertexIndex].SetUV(textureCoords[textureIndex]);
-                    }
-
-                    index2 = vertexIndex;
+                    uint index3 = mesh.AddVertex(v);
+                    mesh.MakeTriangle(index1, index2, index3);
+                    index2 = index3;
                 }
             }
         }

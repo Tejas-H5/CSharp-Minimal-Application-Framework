@@ -58,7 +58,7 @@ Also, the texture on the left must be still, while only the one on the right is 
             );
 
 			SetTexture(tex2);
-			Rect(new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectify());
+			Rect(new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectified());
         }
     }
 }

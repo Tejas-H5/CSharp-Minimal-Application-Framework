@@ -16,7 +16,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
             float perpY = thickness * dirX / mag;
 
 
-            CTX.Quad.Draw(
+            CTX.Quad.Draw2D(
                 x0 + perpX, y0 + perpY,
                 x0 - perpX, y0 - perpY,
                 x1 - perpX, y1 - perpY,

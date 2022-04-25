@@ -137,9 +137,9 @@ namespace MinimalAF.Rendering.Text {
                     float v1 = (currentY + size.Height) / bitmap.Height;
 
                     Rect uv = new Rect(u0, v0, u1, v1);
-                    Rect correctedUV = new Rect(uv.Left, uv.Top, uv.Right, uv.Bottom);
+                    uv.Rectify();
 
-                    coordMap[c] = correctedUV;
+                    coordMap[c] = uv;
 
                     currentY += size.Height + padding;
                 }

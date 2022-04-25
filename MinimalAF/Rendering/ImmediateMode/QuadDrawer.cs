@@ -23,8 +23,11 @@ namespace MinimalAF.Rendering.ImmediateMode {
             outputStream.MakeTriangle(i3, i4, i1);
         }
 
-        public void Draw(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
-      float u0 = 0.0f, float v0 = 0.0f, float u1 = 0.0f, float v1 = 1f, float u2 = 1, float v2 = 1, float u3 = 1, float v3 = 0) {
+
+
+        public void Draw2D(
+            float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
+      float u0 = 0f, float v0 = 0f, float u1 = 1f, float v1 = 0f, float u2 = 1f, float v2 = 1f, float u3 = 0f, float v3 = 1f) {
             Draw(
                new Vertex(new Vector3(x0, y0, CTX.Current2DDepth), new Vector2(u0, v0)),
                new Vertex(new Vector3(x1, y1, CTX.Current2DDepth), new Vector2(u1, v1)),

@@ -19,8 +19,8 @@ namespace MinimalAF.VisualTests.Rendering {
         public MeshRenderingTest(float zPos = 10) {
             this.zPos = zPos;
 
-            //data = MeshData.FromOBJ(TestData.MONKY_OBJ);
-            data = MeshData.FromOBJ(TestData.CUBE_OBJ);
+            data = MeshData.FromOBJ(TestData.MONKY_OBJ);
+            //data = MeshData.FromOBJ(TestData.CUBE_OBJ);
             mesh = data.ToDrawableMesh();
             monkeyTexture = TextureMap.Load("monke", "./Res/monke texture.png");
         }

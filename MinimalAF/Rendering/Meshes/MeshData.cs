@@ -29,7 +29,7 @@ namespace MinimalAF.Rendering {
             return (uint)(vertices.Count - 1);
         }
 
-        public void MakeFace(uint v1, uint v2, uint v3) {
+        public void MakeTriangle(uint v1, uint v2, uint v3) {
             indices.Add(v1);
             indices.Add(v2);
             indices.Add(v3);

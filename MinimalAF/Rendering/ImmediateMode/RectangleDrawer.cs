@@ -4,16 +4,16 @@
         }
 
         public void Draw(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 0, float u1 = 1, float v1 = 1) {
-            CTX.Quad.Draw(
+            CTX.Quad.Draw2D(
                 x0, y0,
-                x0, y1,
-                x1, y1,
                 x1, y0,
-                u0, v0,
+                x1, y1,
+                x0, y1,
                 u0, v1,
                 u1, v1,
-                u1, v0
-                );
+                u1, v0,
+                u0, v0
+            );
         }
 
         public void Draw(Rect rect, Rect uvs) {
@@ -21,7 +21,7 @@
         }
 
         public void Draw(Rect rect) {
-            Draw(rect.X0, rect.Y0, rect.X1, rect.Y1, 0, 0, 1, 1);
+            Draw(rect.X0, rect.Y0, rect.X1, rect.Y1);
         }
 
         public void DrawOutline(float thickness, Rect rect) {

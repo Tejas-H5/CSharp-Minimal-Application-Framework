@@ -53,7 +53,7 @@ namespace MinimalAF {
             }
         }
 
-        public Rect Rectify() {
+        public void Rectify() {
             if (X0 > X1) {
                 float temp = X1;
                 X1 = X0;
@@ -65,9 +65,15 @@ namespace MinimalAF {
                 Y1 = Y0;
                 Y0 = temp;
             }
-
-            return this;
         }
+
+
+        public Rect Rectified() {
+            var nr = new Rect(X0, Y0, X1, Y1);
+            nr.Rectify();
+            return nr;
+        }
+
 
         public float CenterY {
             get {

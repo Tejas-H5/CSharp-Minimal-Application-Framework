@@ -36,7 +36,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
 
             CTX.NGon.Begin(xCenter, yCenter, edgeCount + 2);
 
-            for (float angle = startAngle; angle < endAngle + deltaAngle - 0.001f; angle += deltaAngle) {
+            for (float angle = endAngle; angle > startAngle - deltaAngle + 0.001f; angle -= deltaAngle) {
                 float X = xCenter + radius * MathF.Sin(angle);
                 float Y = yCenter + radius * MathF.Cos(angle);
 

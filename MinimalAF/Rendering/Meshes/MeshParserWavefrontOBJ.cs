@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace MinimalAF.Rendering {
-    internal class OBJParser {
-
-
-
-        public static MeshData FromOBJ(string text) {
-            MeshData mesh = new MeshData();
+    public class MeshParserWavefrontOBJ<V> where V : struct, IVertexPosition, IVertexUV, IVertexNormal {
+        /// <summary>
+        /// Not yet complete. It just loads verts and UVS for now.
+        /// </summary>
+        public static MeshData<V> FromOBJ(string text)  {
+            MeshData<V> mesh = new MeshData<V>();
             List<Vector3> positions = new List<Vector3>();
             List<Vector2> textureCoords = new List<Vector2>();
 
@@ -94,7 +94,7 @@ namespace MinimalAF.Rendering {
             );
         }
 
-        private static void ParseFace(MeshData mesh, List<Vector3> positions, List<Vector2> textureCoords, StringIterator lineIter) {
+        private static void ParseFace(MeshData<V> mesh, List<Vector3> positions, List<Vector2> textureCoords, StringIterator lineIter) {
             uint index1 = uint.MaxValue;
             uint index2 = uint.MaxValue;
 
@@ -114,7 +114,9 @@ namespace MinimalAF.Rendering {
                 // because UVs are upside down otherwise
                 uv.Y = 1 - uv.Y;
 
-                Vertex v = new Vertex(positions[vertexIndex], uv);
+                V v = new V();
+                v.Position = positions[vertexIndex];
+                v.UV = uv;
 
                 if (index1 == uint.MaxValue) {
                     index1 = mesh.AddVertex(v);

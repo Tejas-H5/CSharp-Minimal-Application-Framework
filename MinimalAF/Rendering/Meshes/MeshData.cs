@@ -5,25 +5,25 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace MinimalAF.Rendering {
-    public class MeshData  {
-        List<Vertex> vertices;
+    public class MeshData<V> where V : struct {
+        List<V> vertices;
         List<uint> indices;
 
         public MeshData() {
-            vertices = new List<Vertex>();
+            vertices = new List<V>();
             indices = new List<uint>();
         }
 
 
-        public MeshData(List<Vertex> vertices, List<uint> indices) {
+        public MeshData(List<V> vertices, List<uint> indices) {
             this.vertices = vertices;
             this.indices = indices;
         }
 
-        public List<Vertex> Vertices => vertices;
+        public List<V> Vertices => vertices;
         public List<uint> Indices => indices;
 
-        public uint AddVertex(Vertex v) {
+        public uint AddVertex(V v) {
             vertices.Add(v);
 
             return (uint)(vertices.Count - 1);
@@ -35,25 +35,28 @@ namespace MinimalAF.Rendering {
             indices.Add(v3);
         }
 
-        public Mesh ToDrawableMesh() {
-            return new Mesh(vertices.ToArray(), indices.ToArray(), false);
+        public Mesh<V> ToDrawableMesh() {
+            return new Mesh<V>(vertices.ToArray(), indices.ToArray(), false);
         }
 
 
-        public static MeshData FromOBJ(string text) {
-            return OBJParser.FromOBJ(text);
+        public static MeshData<V1> FromOBJ<V1>(string text) where V1 : struct, IVertexPosition, IVertexUV, IVertexNormal {
+            return MeshParserWavefrontOBJ<V1>.FromOBJ(text);
         }
+    }
 
-        public string ToCodeString() {
+    public static class MeshFormatter {
+        public static string ToCodeString<V1>(this MeshData<V1> mesh) where V1 : struct, ICodeSerializeable {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("List<Vertex> verts = new List<Vertex>(new Vertex[] {");
-            for(int i = 0; i < vertices.Count; i++) {
-                sb.Append(vertices[i].ToCodeString());
+            sb.Append("List<V> verts = new List<V>(new V[] {");
+            for (int i = 0; i < mesh.Vertices.Count; i++) {
+                sb.Append(mesh.Vertices[i].ToCodeString());
             }
             sb.Append("});");
 
             return sb.ToString();
         }
     }
+
 }

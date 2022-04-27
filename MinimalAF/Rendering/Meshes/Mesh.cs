@@ -6,8 +6,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace MinimalAF.Rendering {
-    public class Mesh : IDisposable {
-        Vertex[] vertices;
+    public interface IMesh : IDisposable {
+    }
+
+
+    public class Mesh<V> : IMesh where V : struct {
+        V[] vertices;
         uint[] indices;
 
         int vbo;
@@ -24,7 +28,7 @@ namespace MinimalAF.Rendering {
             }
         }
 
-        public Vertex[] Vertices {
+        public V[] Vertices {
             get {
                 return vertices;
             }
@@ -36,10 +40,19 @@ namespace MinimalAF.Rendering {
             }
         }
 
+        VertexAttributeInfo[] vertexAttributeInfo;
+        int sizeOfVertex;
+
         /// <summary>
         /// If you are going to update the data every frame with UpdateBuffers, then set stream=true.
         /// </summary>
-        public Mesh(Vertex[] data, uint[] indices, bool stream = false) {
+        public Mesh(V[] data, uint[] indices, bool stream = false) {
+            vertexAttributeInfo = VertexTypes.GetVertexDescription<V>();
+            sizeOfVertex = 0;
+            foreach (var info in vertexAttributeInfo) {
+                sizeOfVertex += info.ComponentCount * info.SizeOf;
+            }
+
             BufferUsageHint bufferUsage = BufferUsageHint.StaticDraw;
             if (stream)
                 bufferUsage = BufferUsageHint.StreamDraw;
@@ -75,7 +88,7 @@ namespace MinimalAF.Rendering {
         }
 
         private void SendDataToBoundBuffer(BufferUsageHint bufferUsage) {
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * Vertex.VERTEX_SIZE, vertices, bufferUsage);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeOfVertex, vertices, bufferUsage);
         }
 
         private void GenerateAndBindVertexArray() {
@@ -83,21 +96,21 @@ namespace MinimalAF.Rendering {
             GL.BindVertexArray(vao);
         }
 
-        
+
 
         private void RegisterVertexAttributes() {
             int currentOffset = 0;
 
-            for(int i = 0; i < Vertex.VERTEX_COMPONENTS.Length; i++) {
-                int fieldCount = Vertex.VERTEX_COMPONENTS[i];
-                CreateVertexAttribPointer(i, fieldCount, currentOffset);
+            for (int i = 0; i < vertexAttributeInfo.Length; i++) {
+                int fieldCount = vertexAttributeInfo[i].ComponentCount; ;
+                CreateVertexAttribPointer(i, fieldCount, currentOffset, vertexAttributeInfo[i].GLType);
 
-                currentOffset += fieldCount * sizeof(float);
+                currentOffset += fieldCount * vertexAttributeInfo[i].SizeOf;
             }
         }
 
-        private void CreateVertexAttribPointer(int attribute, int length, int offsetInArray) {
-            GL.VertexAttribPointer(attribute, length, VertexAttribPointerType.Float, false, Vertex.VERTEX_SIZE, offsetInArray);
+        private void CreateVertexAttribPointer(int attribute, int length, int offsetInArray, VertexAttribPointerType type) {
+            GL.VertexAttribPointer(attribute, length, type, false, sizeOfVertex, offsetInArray);
             GL.EnableVertexAttribArray(attribute);
         }
 
@@ -140,7 +153,7 @@ namespace MinimalAF.Rendering {
 
         private void UpdateVertexBuffer() {
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (int)vertexCount * Vertex.VERTEX_SIZE, vertices);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (int)vertexCount * sizeOfVertex, vertices);
         }
 
         private void UpdateIndexBuffer() {

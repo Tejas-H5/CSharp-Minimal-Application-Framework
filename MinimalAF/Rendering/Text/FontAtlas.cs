@@ -120,6 +120,7 @@ namespace MinimalAF.Rendering.Text {
         private void RenderAtlas(FontImportSettings fontSettings, string characters, Font font, Dictionary<char, Rect> coordMap, int padding, Bitmap bitmap) {
             using (var g = Graphics.FromImage(bitmap)) {
                 ConfigureGraphicsWithFontSettings(fontSettings, g);
+                g.Clear(Color.FromArgb(0, 0, 0, 0));
 
                 float currentY = padding;
 

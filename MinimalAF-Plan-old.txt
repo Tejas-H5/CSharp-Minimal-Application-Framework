@@ -1,5 +1,17 @@
 Anything cluttering up MinimalAF-Plan.txt is just cut-pasted here
 =======================================================
+				
+			- test OBJ loading and rendering
+				- Meshes can't be disposed on garbage collector thread?? add some queue that does this or smth
+				- This is a hack. Remove it, replace it with resource maps.
+					- actually, both are good for different things, they can work side by side
+				- fix incorrect UV loading
+					- fix polygon rotation
+					- fix texture test	
+					-* check if openGL does UVs inverted?
+						-* just flip the image and see what happens
+						- could do 1-y for uvs
+	
 	- So it looks like openFrameworks is already a thing. My project might be dead in the water. I could even port this over to openFrameworks and then continue using all ther APIs and stuff. I should at least try it out and see if I can configure it to my liking before continuing with this
 		- I prefer my own API a lot more tbh. I think what I am making is still viable despite being very similar
 - Remove generics from meshes, and just add things to the vertex class as needed.

@@ -3,33 +3,57 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace MinimalAF.Rendering {
+    public interface IVertexNormal {
+        Vector3 Normal {
+            get; set;
+        }
+    }
+
+    public interface IVertexUV {
+        Vector2 UV {
+            get; set;
+        }
+    }
+
+    public interface IVertexPosition {
+        Vector3 Position {
+            get; set;
+        }
+    }
+
+    public interface ICodeSerializeable {
+        string ToCodeString();
+    }
+
     [StructLayout(LayoutKind.Sequential)]
-    public struct Vertex {
-        public const int VERTEX_SIZE = sizeof(float) * 
-            (3 + 2);
-
-        public static readonly int[] VERTEX_COMPONENTS = {
-            3, 2
-        };
-
-        public Vector3 Position;
-        public Vector2 UV;
+    public struct Vertex : IVertexPosition, IVertexUV, IVertexNormal, ICodeSerializeable {
+        public Vector3 position;
+        public Vector2 uv;
 
         public Vertex(float x, float y, float z)
-            : this(new Vector3(x, y, z), new Vector2(x, y)) {
+          : this(new Vector3(x, y, z), new Vector2(x, y)) {
         }
 
         public Vertex(Vector3 position, Vector2 uv) {
-            Position = position;
-            UV = uv;
+            this.position = position;
+            this.uv = uv;
         }
 
-        public void SetPos(Vector3 pos) {
-            Position = pos;
+        public Vector2 UV {
+            get => uv;
+            set => uv = value;
         }
 
-        public void SetUV(Vector2 uv) {
-            UV = uv; ;
+        public Vector3 Position {
+            get => position;
+            set => position = value;
+        }
+
+        public Vector3 Normal {
+            get => Vector3.Zero;
+            set {
+                // no-op
+            }
         }
 
         public string ToCodeString() {

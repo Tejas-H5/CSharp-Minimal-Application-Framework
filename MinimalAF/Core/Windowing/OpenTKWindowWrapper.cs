@@ -154,8 +154,6 @@ namespace MinimalAF {
 
         protected override void OnRenderFrame(FrameEventArgs args) {
             Time.deltaTime = (float)args.Time;
-            CTX.ContextWidth = Width;
-            CTX.ContextHeight = Height;
 
             base.OnRenderFrame(args);
 
@@ -174,7 +172,8 @@ namespace MinimalAF {
 
         void ResizeAction() {
             rootWindow.RelativeRect = new Rect(0, 0, Width, Height);
-            
+            CTX.SetScreenWidth(Width, Height);
+
             rootWindow.Layout();
         }
 

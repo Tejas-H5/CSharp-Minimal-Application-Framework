@@ -1,23 +1,19 @@
-These are the final features. Once I have added these, I will stop adding new features, untill I need them for the things I develop with this
-TODO:
+[Final features] TODO:
 	- 3D and non-immediate mode support
 		Allowing generic vertices for meshes has caused a significant amount of complexity that I can't be bothered maintaining.
 		tasks:
-			- [done] Remove generics from meshes, and just add things to the
-			vertex class as needed.
-				- Going to make vertices generic again, as there are a lot of use cases that may or may not be worth it. A few simplifications:
-					-* I will not be template-replacing the field names.
-					-* The end user will need to be extra smart about their struct field placements. If we want to use position, UV, color, etc, and also want to reuse the same shaders for all vertex types, you need to have one fixed order in which each thing will apear, and 5 different vertex structs. Ideally, you will just have 1 lightweight vertex for immediate mode stuff with just a vertex and possibly uv, one for general purpose stuff with normals and possibly tangents, and then others for more experimental stuff that will have colors, what have you.
-					all shaders and structs must then be unified. yeah you get the picture
-				
-				- thinking again, and I think they are fine.
+			- [done] Re-add generic vertices for meshes
 			- [done] test OBJ loading and rendering
+
+	- [done] Fix framebuffer implementation and API
+	
+	-> make RedirectRenderCalls something that is stack-based
 			
 	- 3D lighting shaders
 		
-	-* Allow immediate mode to render to a MeshData object, do some refactoring
+	-* Allow immediate mode methods to put vertices into a MeshData object, do some refactoring
 		
-	-* Fix framebuffer implementation
+
 			
 	-* feature: Modify public properties during test with test harness, autogenerate UI for this. Make this element something that will wrap a component rather than something as part of the test harness, so that people can make more complicated test harnesses. Hopefully it can be a floating window that can connect to an arbitrary element that can hide/show, resize, and move.
 	

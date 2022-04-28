@@ -12,6 +12,7 @@ namespace MinimalAF.Rendering {
         int handle;
         private int height;
         private int width;
+        public string path;
         TextureImportSettings importSettings;
 
         public int Handle {
@@ -50,7 +51,9 @@ namespace MinimalAF.Rendering {
                 //return null;
             }
 
-            return new Texture(image, settings);
+            var tex = new Texture(image, settings);
+            tex.path = path;
+            return tex;
         }
 
 
@@ -149,13 +152,13 @@ namespace MinimalAF.Rendering {
         }
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue = false; // To prevent double-frees
 
         protected virtual void Dispose(bool disposing) {
             if(disposedValue)
                 return;
 
-            GL.DeleteTexture(Handle);
+            GLDeletionQueue.QueueTextureForDeletion(Handle);
             disposedValue = true;
         }
 

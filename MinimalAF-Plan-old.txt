@@ -1,6 +1,35 @@
 Anything cluttering up MinimalAF-Plan.txt is just cut-pasted here
 =======================================================
+
+	-* Fix framebuffer implementation
+		The API could probably be better. Functionality we need:
+			drawing to a framebuffer of some specific size
+			using the resulting texture as a normal texture
+			drawing that framebuffer texture to some part of the screen, possibly for render passes.
+		
+		so we will have to make these new functions:
+		
+		Framebuffer fb = new Framebuffer(width, height);
+		// This could return an IDisposable struct
+		RedirectDrawCalls(FrameBuffer | null);
+		SetTexture(Framebuffer fb)
+		
+		Framebuffer {
+			Resize(width, height)
+		}
+		
+		
+		- 3D and non-immediate mode support
+		Allowing generic vertices for meshes has caused a significant amount of complexity that I can't be bothered maintaining.
+		tasks:
+			- [done] Remove generics from meshes, and just add things to the
+			vertex class as needed.
+				- Going to make vertices generic again, as there are a lot of use cases that may or may not be worth it. A few simplifications:
+					- I will not be template-replacing the field names.
+					- The end user will need to be extra smart about their struct field placements. If we want to use position, UV, color, etc, and also want to reuse the same shaders for all vertex types, you need to have one fixed order in which each thing will apear, and 5 different vertex structs. Ideally, you will just have 1 lightweight vertex for immediate mode stuff with just a vertex and possibly uv, one for general purpose stuff with normals and possibly tangents, and then others for more experimental stuff that will have colors, what have you.
+					all shaders and structs must then be unified. yeah you get the picture
 				
+				- thinking again, and I think they are fine.
 			- test OBJ loading and rendering
 				- Meshes can't be disposed on garbage collector thread?? add some queue that does this or smth
 				- This is a hack. Remove it, replace it with resource maps.

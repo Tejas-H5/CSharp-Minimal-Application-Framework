@@ -16,6 +16,7 @@ namespace MinimalAF.Rendering {
         private static IGLFWGraphicsContext glContext;
 
         private static int contextWidth, contextHeight;
+        internal static int ScreenWidth, ScreenHeight;
 
         public static float Current2DDepth = 0;
 
@@ -96,6 +97,10 @@ namespace MinimalAF.Rendering {
             get => textDrawer.ActiveFont;
         }
 
+        internal static void SetScreenWidth(int width, int height) {
+            contextWidth = ScreenWidth = width;
+            contextHeight = ScreenHeight = height;
+        }
 
         internal static void Init(IGLFWGraphicsContext context) {
             InitDrawers();
@@ -158,8 +163,12 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void Clear(Color4 col) {
+            Color4 prev = ClearColor;
             ClearColor = col;
+
             Clear();
+
+            ClearColor = prev;
         }
 
 

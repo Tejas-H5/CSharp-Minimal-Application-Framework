@@ -20,7 +20,7 @@ This was the one of the main reasons why I am making this in the first place, an
 		{
             el1 = new TextTest();
             el2 = new PolylineTest();
-            el3 = new KeyboardTest();
+            el3 = new PerspectiveCameraTest();
             el4 = new StencilTest();
 
             SetChildren(el1, el2, el3, el4);

@@ -56,10 +56,10 @@ namespace MinimalAF {
                 2 * ScreenRect.X0 + Width - CTX.ContextWidth,
                 2 * ScreenRect.Y0 + Height - CTX.ContextHeight
 
-                // I am not sure why we need to multuply by 2 here, but it works. going to
-                // keep this intuitive version with more ops here in case it helps me figure it out later
-                //2 * (ScreenRect.X0 + Width / 2 - CTX.ContextWidth / 2),
-                //2 * (ScreenRect.Y0 + Height / 2 - CTX.ContextHeight / 2)
+            // I am not sure why we need to multuply by 2 here, but it works. going to
+            // keep this intuitive version with more ops here in case it helps me figure it out later
+            //2 * (ScreenRect.X0 + Width / 2 - CTX.ContextWidth / 2),
+            //2 * (ScreenRect.Y0 + Height / 2 - CTX.ContextHeight / 2)
             );
         }
 
@@ -88,7 +88,7 @@ namespace MinimalAF {
         /// <summary>
         /// <inheritdoc cref="CTX.Cartesian2D(float, float, float, float)"/>
         /// </summary>
-        public void SetProjectionViewCartesian(float scaleX, float scaleY, float offsetX, float offsetY) {
+        public void SetViewProjectionCartesian2D(float scaleX, float scaleY, float offsetX, float offsetY) {
             CTX.Cartesian2D(scaleX, scaleY, ScreenRect.X0 + offsetX, ScreenRect.Y0 + offsetY);
         }
 
@@ -107,32 +107,12 @@ namespace MinimalAF {
             return RelativeRect.Width * amount;
         }
 
-        public void UseFramebuffer(int index) {
-            CTX.Framebuffer.Use(index);
-        }
-
-        public void UseTransparentFramebuffer(int index) {
-            CTX.Framebuffer.UseTransparent(index);
-        }
-
-        public void StopUsingFramebuffer() {
-            CTX.Framebuffer.StopUsing();
-        }
-
-        public Texture GetFramebufferTexture(int framebufferIndex) {
-            return CTX.Framebuffer.GetTexture(framebufferIndex);
-        }
-
-        public void UseFramebufferTexture(int framebufferIndex) {
-            CTX.Framebuffer.UseTexture(framebufferIndex);
-        }
-
-        public void DrawFramebuffer(int index) {
-            CTX.Framebuffer.DrawFramebufferToScreen2D(index);
-        }
-
-        public void DrawFramebuffer(int index, Rect screenRect) {
-            CTX.Framebuffer.DrawFramebufferToScreen2D(index, screenRect);
+        public void RedirectDrawCalls(Framebuffer framebuffer) {
+            if (framebuffer == null) {
+                CTX.Framebuffer.StopUsing();
+            } else {
+                CTX.Framebuffer.Use(framebuffer);
+            }
         }
 
         public void StartStencillingWhileDrawing(bool inverseStencil = false) {
@@ -245,6 +225,14 @@ namespace MinimalAF {
 
         public void EndPolyLine(float x, float y) {
             CTX.NLine.End(x, y);
+        }
+
+        public void Clear() {
+            CTX.Clear();
+        }
+
+        public void Clear(Color4 color) {
+            CTX.Clear(color);
         }
     }
 }

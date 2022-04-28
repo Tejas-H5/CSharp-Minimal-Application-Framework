@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MinimalAF.Rendering;
+using System;
 
 namespace MinimalAF {
     public struct Rect {
@@ -65,6 +66,22 @@ namespace MinimalAF {
                 Y1 = Y0;
                 Y0 = temp;
             }
+        }
+
+
+        // TODO: override the divide operator for this
+        public void Normalize(float width, float height) {
+            X0 /= width;
+            X1 /= width;
+
+            Y0 /= height;
+            Y1 /= height;
+        }
+
+        public Rect Normalized(float width, float height) {
+            var nr = new Rect(X0, Y0, X1, Y1);
+            nr.Normalize(width, height);
+            return nr;
         }
 
 

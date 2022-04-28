@@ -45,7 +45,7 @@ the visibility of another test.",
         }
 
         public override void AfterRender() {
-            // TODO low priority: make this stack based. Any of the children elements could have called this and made wierd stuff happen
+            // TODO low priority: make stencilling stack based. Any of the children elements could have called this and made wierd stuff happen
             LiftStencil();
 
             StartStencillingWhileDrawing();

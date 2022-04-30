@@ -26,7 +26,7 @@
                 this[0].ResetCoordinates();
 
                 SetDrawColor(Color4.VA(0, 1));
-                Text("Split " + dir.ToString() + " " + splitAmount.ToString("0.00"),
+                DrawText("Split " + dir.ToString() + " " + splitAmount.ToString("0.00"),
                     this[0].VW(0.5f), this[0].VH(0.5f),
                     HorizontalAlignment.Center,
                     VerticalAlignment.Center

@@ -49,7 +49,7 @@ namespace MinimalAF {
             }
 
             int i = 0;
-            foreach (var el in elements) {
+            foreach (var (index, el) in elements) {
                 float currentAnchor;
                 if (offsets == null) {
                     if (vertical) {
@@ -220,7 +220,7 @@ namespace MinimalAF {
             }
 
 
-            foreach (Element e in elements) {
+            foreach (var (index, e) in elements) {
                 float end = previousEnd + elementSizing * dir;
 
                 Rect wanted = e.RelativeRect;

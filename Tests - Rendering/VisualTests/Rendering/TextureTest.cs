@@ -46,7 +46,7 @@ Also, the texture on the left must be still, while only the one on the right is 
             SetDrawColor(1, 1, 1, 1);
 
             SetTexture(tex);
-            Rect(20, 20, Width / 2 - 20, Height - 20);
+            DrawRect(20, 20, Width / 2 - 20, Height - 20);
 
             Rect rect2 = new Rect(Width / 2 + 20, 20, Width - 20, Height - 20);
 
@@ -58,7 +58,7 @@ Also, the texture on the left must be still, while only the one on the right is 
             );
 
 			SetTexture(tex2);
-			Rect(new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectified());
+			DrawRect(new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectified());
         }
     }
 }

@@ -52,7 +52,7 @@ Right now, this test is failing imo. The one-shot sounds are not audible over th
         public override void OnRender() {
             SetDrawColor(1, 1, 1, 1);
 
-            Text("Press some keys:", Width / 2, Height / 2 + 200, HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText("Press some keys:", Width / 2, Height / 2 + 200, HorizontalAlignment.Center, VerticalAlignment.Center);
 
             string newString = KeysToString(KeyboardCharactersHeld);
             if (newString != oldString) {
@@ -60,7 +60,7 @@ Right now, this test is failing imo. The one-shot sounds are not audible over th
                 clackSound.Play();
             }
 
-            Text(newString, Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText(newString, Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
 
             //music
             SetDrawColor(1, 1, 1, 1);
@@ -72,15 +72,15 @@ Right now, this test is failing imo. The one-shot sounds are not audible over th
 
             message += "Time: " + streamedSource.GetPlaybackPosition();
 
-            Text(message, Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText(message, Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
 
             SetDrawColor(1, 0, 0, 1);
             float amount = (float)(streamedSource.GetPlaybackPosition() / streamProvider.Duration);
             float x = amount * Width;
-            Line(x, 0, x, Height, 2, CapType.None);
+            DrawLine(x, 0, x, Height, 2, CapType.None);
 
             if (amount > 1) {
-                Text("Duration: " + streamProvider.Duration, 0, 0);
+                DrawText("Duration: " + streamProvider.Duration, 0, 0);
             }
         }
 

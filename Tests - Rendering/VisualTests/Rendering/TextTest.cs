@@ -80,7 +80,7 @@ namespace MinimalAF.VisualTests.Rendering
 
             for (int i = 0; i < rain.Count; i++)
             {
-                Text(rain[i], 0, Height - GetCharHeight() * i);
+                DrawText(rain[i], 0, Height - GetCharHeight() * i);
             }
 
             SetDrawColor(1, 0, 0, 1);

@@ -42,7 +42,7 @@ namespace AudioEngineTests.AudioTests {
         public override void OnRender() {
             SetDrawColor(1, 1, 1, 1);
 
-            Text("Press some keys:", Width / 2, Height / 2 + 200);
+            DrawText("Press some keys:", Width / 2, Height / 2 + 200);
 
             string newString = KeysToString(KeyboardCharactersHeld);
             if (newString != oldString) {
@@ -50,7 +50,7 @@ namespace AudioEngineTests.AudioTests {
                 clackSound.Play();
             }
 
-            Text(newString, Width / 2, Height / 2);
+            DrawText(newString, Width / 2, Height / 2);
         }
 
         public override void OnUpdate() {

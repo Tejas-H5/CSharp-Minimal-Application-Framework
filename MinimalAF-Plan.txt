@@ -7,16 +7,13 @@
 
 	- [done] Fix framebuffer implementation and API
 	
-	-> make RedirectRenderCalls something that is stack-based
-			
-	- 3D lighting shaders
-		
-	-* Allow immediate mode methods to put vertices into a MeshData object, do some refactoring
-		
-
+	- [done] make RedirectRenderCalls something that is stack-based like using(RedirectRenderCalls(x)) {} rather than Redirect(x), Redurect(null)
+	
+	-> Allow immediate mode methods to put vertices into a MeshData object, do some refactoring
 			
 	-* feature: Modify public properties during test with test harness, autogenerate UI for this. Make this element something that will wrap a component rather than something as part of the test harness, so that people can make more complicated test harnesses. Hopefully it can be a floating window that can connect to an arbitrary element that can hide/show, resize, and move.
 	
+	- 3D lighting shaders
 	
 	
 Backlog: 

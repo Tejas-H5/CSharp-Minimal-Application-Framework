@@ -104,7 +104,7 @@ namespace MinimalAF {
             col.A *= col.A;
 
             SetDrawColor(col);
-            Rect(caratPos.X, caratPos.Y, caratPos.X + 2, caratPos.Y + height);
+            DrawRect(caratPos.X, caratPos.Y, caratPos.X + 2, caratPos.Y + height);
         }
 
         public override void OnUpdate() {

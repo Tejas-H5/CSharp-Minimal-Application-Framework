@@ -32,7 +32,8 @@ namespace MinimalAF {
         public Vector2 Pivot;
         public Vector2 Offset;
         private Rect relativeRect;
-        protected Rect screenRect; // this is auto-calculated
+        internal Rect screenRect; // this is auto-calculated
+        internal Rect defaultScreenRect; // this is auto-calculated
 
         /// <summary>
         /// This will be updated whenever everything is rendered
@@ -45,11 +46,6 @@ namespace MinimalAF {
             get; set;
         }
 
-        public void SetRelativeRect(Rect value) {
-            if (RelativeRect != value) {
-                RelativeRect = value;
-            }
-        }
 
         // TODO: make this somewhat local, or come up with a good way to do that
         protected void SetClearColor(Color4 value) {
@@ -284,7 +280,7 @@ namespace MinimalAF {
             ));
         }
 
-        internal void RenderSelfAndChildren(RenderAccumulator acc) {
+        private void RenderSelfAndChildren(RenderAccumulator acc) {
             if (!IsVisible) {
                 return;
             }
@@ -332,6 +328,8 @@ namespace MinimalAF {
         private void RecalcScreenRect(Rect parentScreenRect) {
             screenRect = RelativeRect;
             screenRect.Move(parentScreenRect.X0 + Offset.X, parentScreenRect.Y0 + Offset.Y);
+
+            defaultScreenRect = screenRect;
         }
 
         public void ResetCoordinates() {
@@ -349,13 +347,13 @@ namespace MinimalAF {
 
             SetDrawColor(Color4.RGBA(1, 0, 0, 0.5f));
 
-            RectOutline(2, 1, 1, VW(1) - 1, VH(1) - 1);
+            DrawRectOutline(2, 1, 1, VW(1) - 1, VH(1) - 1);
 
             SetDrawColor(Color4.RGBA(1, 0, 0, 0.35f));
-            Rect(0, 0, 10, 10);
-            Rect(VW(1) - 10, 0, VW(1), 10);
-            Rect(0, VH(1) - 10, 10, VH(1));
-            Rect(VW(1) - 10, VH(1) - 10, VW(1), VH(1));
+            DrawRect(0, 0, 10, 10);
+            DrawRect(VW(1) - 10, 0, VW(1), 10);
+            DrawRect(0, VH(1) - 10, 10, VH(1));
+            DrawRect(VW(1) - 10, VH(1) - 10, VW(1), VH(1));
 
             SetDrawColor(Color4.RGB(0, 0, 0));
             int textSize = 12;
@@ -365,7 +363,7 @@ namespace MinimalAF {
             SetFont("Consolas", textSize);
 
             string text = GetType().Name + " " + RelativeRect.ToString() + " Depth: " + acc.Depth;
-            Text(text, -newScreenRect.X0 + 10, -newScreenRect.Y0 + 10 + textSize * acc.HoverDepth);
+            DrawText(text, -newScreenRect.X0 + 10, -newScreenRect.Y0 + 10 + textSize * acc.HoverDepth);
 
             SetFont(fontName, size);
 
@@ -374,7 +372,7 @@ namespace MinimalAF {
         }
 #endif
 
-        public void Mount() {
+        private void Mount() {
             ApplicationWindow w = GetAncestor<ApplicationWindow>();
 
             if (w == null) {
@@ -398,7 +396,7 @@ namespace MinimalAF {
         }
 
 
-        public void Dismount() {
+        internal void Dismount() {
             for (int i = 0; i < children.Count; i++) {
                 children[i].Dismount();
             }
@@ -408,7 +406,7 @@ namespace MinimalAF {
         }
 
 
-        public void Layout() {
+        internal void Layout() {
             if (!mounted) {
                 return;
             }
@@ -474,7 +472,7 @@ namespace MinimalAF {
 
 
         bool onChildResizeLock = false;
-        void OnChildResize() {
+        private void OnChildResize() {
             shouldTriggerParentResize = false;
 
             if (onChildResizeLock) {
@@ -518,6 +516,9 @@ namespace MinimalAF {
 
         }
 
+        /// <summary>
+        /// Runs after this and all child elements have updated
+        /// </summary>
         public virtual void AfterUpdate() {
 
         }

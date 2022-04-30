@@ -59,7 +59,7 @@ namespace MinimalAF {
 
         public override void OnRender() {
             SetDrawColor(Color4.VA(1, 0.5f));
-            Rect(0, 0, VW(1), VH(1));
+            DrawRect(0, 0, VW(1), VH(1));
 
             SetFont("Consolas", 12);
             textHeight = GetCharHeight();
@@ -73,7 +73,7 @@ namespace MinimalAF {
                     }
                 }
 
-                Text(test.Name, 10, y);
+                DrawText(test.Name, 10, y);
             }
         }
 

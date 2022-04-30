@@ -82,7 +82,7 @@ that can be drawn for some framerate (default 60FPS). Results may vary",
                 float x2 = VW((float)rand.NextDouble());
                 float y2 = VH((float)rand.NextDouble());
 
-                Line(x1, y1, x2, y2, lineThiccness, capType);
+                DrawLine(x1, y1, x2, y2, lineThiccness, capType);
             }
 
             SetDrawColor(0, 0, 0, 1f);
@@ -94,7 +94,7 @@ that can be drawn for some framerate (default 60FPS). Results may vary",
                 "\nIndex refreshes: " + CTX.TimesIndexThresholdReached + 
                 "\nVertex:Index Ratio: " + CTX.VertexToIndexRatio;
 
-            Text(text, 10, Height - 50);
+            DrawText(text, 10, Height - 50);
         }
     }
 }

@@ -36,10 +36,10 @@ namespace MinimalAF {
 
         public override void OnRender() {
             SetDrawColor(Color4.Black);
-            RectOutline(1, mounting.RelativeRect);
+            DrawRectOutline(1, mounting.RelativeRect);
 
             SetFont("Consolas", 12);
-            Text(info, 0, 0, HorizontalAlignment.Left, VerticalAlignment.Bottom);
+            DrawText(info, 0, 0, HorizontalAlignment.Left, VerticalAlignment.Bottom);
         }
 
         public override void OnLayout() {

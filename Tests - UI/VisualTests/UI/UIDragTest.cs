@@ -110,18 +110,6 @@ namespace MinimalAF.VisualTests.UI {
             area1.AddChild(thinggo);
         }
 
-        public override void OnUpdate() {
-            if (KeyPressed(KeyCode.Space)) {
-                int index = thinggo.Parent.Index();
-
-                if (index == 0) {
-                    thinggo.Parent = this[1];
-                } else {
-                    thinggo.Parent = this[0];
-                }
-            }
-        }
-
         public override void OnLayout() {
             LayoutSplit(children, Direction.Left);
             LayoutInset(children, 50);

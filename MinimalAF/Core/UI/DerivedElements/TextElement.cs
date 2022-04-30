@@ -76,7 +76,7 @@ namespace MinimalAF {
                     break;
             }
 
-            caratPos = Text(String, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
+            caratPos = DrawText(String, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
         }
 
         public float TextWidth() {

@@ -27,8 +27,8 @@ Intersections should be clearly marked with red lines.",
             SetDrawColor(0, 0, 0, 1f);
             for (int i = 0; i < points.Length; i++)
             {
-                Circle(points[i].X, points[i].Y, 10);
-                Text(i.ToString(), points[i].X + 20, points[i].Y + 20);
+                DrawCircle(points[i].X, points[i].Y, 10);
+                DrawText(i.ToString(), points[i].X + 20, points[i].Y + 20);
             }
 
 			int fbbinding = GL.GetInteger(GetPName.DrawFramebufferBinding);
@@ -64,8 +64,8 @@ Intersections should be clearly marked with red lines.",
 
             SetDrawColor(0, 1, 0, 1);
 
-            Line(p1.X, p1.Y, p1.X + perp.X, p1.Y + perp.Y, 2, CapType.None);
-            Line(p1.X, p1.Y, p1.X - perp.X, p1.Y - perp.Y, 2, CapType.None);
+            DrawLine(p1.X, p1.Y, p1.X + perp.X, p1.Y + perp.Y, 2, CapType.None);
+            DrawLine(p1.X, p1.Y, p1.X - perp.X, p1.Y - perp.Y, 2, CapType.None);
 
             return perp;
         }
@@ -104,12 +104,12 @@ Intersections should be clearly marked with red lines.",
             else
                 SetDrawColor(1, 0, 0, 1);
 
-            Line(p2.X, p2.Y, p2.X + perp.X, p2.Y + perp.Y, 2, CapType.None);
-            Line(p2.X, p2.Y, p2.X - perp.X, p2.Y - perp.Y, 2, CapType.None);
+            DrawLine(p2.X, p2.Y, p2.X + perp.X, p2.Y + perp.Y, 2, CapType.None);
+            DrawLine(p2.X, p2.Y, p2.X - perp.X, p2.Y - perp.Y, 2, CapType.None);
 
             SetDrawColor(Color4.VA(0, 0.5f));
-            Line(p1.X, p1.Y, p1.X + vec1.X, p1.Y + vec1.Y, 2, CapType.None);
-            Line(p1.X, p1.Y, p1.X + vec2.X, p1.Y + vec2.Y, 2, CapType.None);
+            DrawLine(p1.X, p1.Y, p1.X + vec1.X, p1.Y + vec1.Y, 2, CapType.None);
+            DrawLine(p1.X, p1.Y, p1.X + vec2.X, p1.Y + vec2.Y, 2, CapType.None);
 
             return perp;
         }

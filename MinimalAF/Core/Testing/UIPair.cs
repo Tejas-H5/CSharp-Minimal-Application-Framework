@@ -8,8 +8,8 @@ namespace MinimalAF {
         public override void OnRender() {
             SetDrawColor(Color4.Black);
 
-            RectOutline(1, this[0].RelativeRect);
-            RectOutline(1, this[1].RelativeRect);
+            DrawRectOutline(1, this[0].RelativeRect);
+            DrawRectOutline(1, this[1].RelativeRect);
         }
 
         public override void OnLayout() {

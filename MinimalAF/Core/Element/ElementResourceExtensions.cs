@@ -14,15 +14,6 @@ namespace MinimalAF {
 			resources.Add(res);
 		}
 
-		public bool AddResourceIfNotPresent(object res) {
-			if (GetResourceAtElement(res.GetType()) != null) {
-				return false;
-			}
-
-			resources.Add(res);
-			return true;
-		}
-
 		private object GetResourceAtElement(Type tType) {
 
 			foreach (var r in resources) {

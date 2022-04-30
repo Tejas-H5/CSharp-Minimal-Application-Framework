@@ -33,13 +33,13 @@ the visibility of another test.",
         public override void OnRender()
         {
 			SetDrawColor(1, 1, 1, 1);
-			Text("Stencil test", 0, Height, HorizontalAlignment.Left, VerticalAlignment.Top);
+			DrawText("Stencil test", 0, Height, HorizontalAlignment.Left, VerticalAlignment.Top);
 
 			StartStencillingWithoutDrawing(true);
 
             float barSize = MathF.Abs((Height / 2 - 5) * MathF.Sin(time / 4f));
-            Rect(0, Height - barSize, Width, Height);
-            Rect(0, 0, Width, barSize);
+            DrawRect(0, Height - barSize, Width, Height);
+            DrawRect(0, 0, Width, barSize);
 
             StartUsingStencil();
         }
@@ -65,7 +65,7 @@ the visibility of another test.",
         {
             SetTexture(null);
             SetDrawColor(0, 0, 1, 1);
-            Rect(Width / 2 - size + xPos, Height / 2 - size,
+            DrawRect(Width / 2 - size + xPos, Height / 2 - size,
                 Width / 2 + size + xPos, Height / 2 + size);
         }
 
@@ -73,7 +73,7 @@ the visibility of another test.",
         {
             SetTexture(null);
             SetDrawColor(1, 0, 0, 1);
-            Rect(Width / 2 - size + xPos, Height / 2 - size,
+            DrawRect(Width / 2 - size + xPos, Height / 2 - size,
                 Width / 2 + size + xPos, Height / 2 + size);
         }
 

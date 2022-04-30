@@ -32,15 +32,15 @@ namespace MinimalAF.VisualTests.Rendering
             float y0 = VH(0.5f);
             float r = MathF.Min(Height, Width) * 0.45f;
 
-            Arc(x0, y0, r, a, b);
+            DrawArc(x0, y0, r, a, b);
 
             SetDrawColor(0, 0, 0, 0.5f);
             DrawHand(x0, y0, r, a);
             DrawHand(x0, y0, r, b);
 
             SetDrawColor(0, 0, 0, 1);
-            Text("Angle a: " + a, 0, Height - 30);
-            Text("Angle b: " + b, 0, Height - 50);
+            DrawText("Angle a: " + a, 0, Height - 30);
+            DrawText("Angle b: " + b, 0, Height - 50);
 
             a += Time.DeltaTime;
             b += Time.DeltaTime * 2f;
@@ -48,7 +48,7 @@ namespace MinimalAF.VisualTests.Rendering
 
         private void DrawHand(float x0, float y0, float r, float angle)
         {
-            Line(x0, y0, x0 + r * MathF.Sin(angle), y0 + r * MathF.Cos(angle), 15f, CapType.Circle);
+            DrawLine(x0, y0, x0 + r * MathF.Sin(angle), y0 + r * MathF.Cos(angle), 15f, CapType.Circle);
         }
     }
 }

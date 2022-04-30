@@ -37,10 +37,10 @@ namespace MinimalAF.VisualTests.UI {
 
         public override void OnRender() {
             SetDrawColor(Color4.VA(0, 1));
-            RectOutline(2, 0, 0, VW(1), VH(1));
+            DrawRectOutline(2, 0, 0, VW(1), VH(1));
 
             SetDrawColor(drawColor);
-            Rect(0, 0, VW(1), VH(1));
+            DrawRect(0, 0, VW(1), VH(1));
 
             base.OnRender();
         }

@@ -107,12 +107,59 @@ namespace MinimalAF {
             return RelativeRect.Width * amount;
         }
 
-        public void RedirectDrawCalls(Framebuffer framebuffer) {
-            if (framebuffer == null) {
-                CTX.Framebuffer.StopUsing();
-            } else {
-                CTX.Framebuffer.Use(framebuffer);
+
+        public struct DrawCallRedirector : IDisposable {
+            Framebuffer previous;
+            Element el;
+            public DrawCallRedirector(Framebuffer fb, Element el) {
+                previous = CTX.Framebuffer.Current;
+                this.el = el;
+
+                RedirectDrawCalls(fb);
             }
+
+            private void RedirectDrawCalls(Framebuffer framebuffer) {
+                if (framebuffer == null) {
+                    el.screenRect = el.defaultScreenRect;
+                } else {
+                    el.screenRect = new Rect(0, 0, framebuffer.Width, framebuffer.Height);
+                }
+
+                CTX.Framebuffer.Use(framebuffer);
+
+                if (framebuffer == null) {
+                    el.ResetCoordinates();
+                } else {
+                }
+            }
+
+
+            public void Dispose() {
+                RedirectDrawCalls(previous);
+            }
+        }
+
+        /// <summary>
+        /// Starts drawing to a framebuffer. You should ideally use it like this:
+        /// <code>
+        /// using(RedirectDrawCalls(fb)) {
+        ///     ... draw to fb here
+        /// }
+        /// 
+        /// ... draw stuff to the screen here
+        /// </code>
+        /// Otherwise you should use it like this:
+        /// <code>
+        /// RedirectDrawCalls(fb1)
+        /// ... code that renders to fb1
+        /// RedirectDrawCalls(fb2)
+        /// ... code that renders to fb2, etc.
+        /// 
+        /// RedirectDrawCalls(null)
+        /// </code>
+        /// </summary>
+        public DrawCallRedirector RedirectDrawCalls(Framebuffer framebuffer) {
+            return new DrawCallRedirector(framebuffer, this);
         }
 
         public void StartStencillingWhileDrawing(bool inverseStencil = false) {
@@ -131,87 +178,87 @@ namespace MinimalAF {
             CTX.LiftStencil();
         }
 
-        public void Arc(float xCenter, float yCenter, float radius, float startAngle, float endAngle) {
+        public void DrawArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle) {
             CTX.Arc.Draw(xCenter, yCenter, radius, startAngle, endAngle);
         }
 
-        public void Arc(float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount) {
+        public void DrawArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount) {
             CTX.Arc.Draw(xCenter, yCenter, radius, startAngle, endAngle, edgeCount);
         }
 
-        public void RegularPolygon(float x0, float y0, float r, int edges) {
+        public void DrawRegularPolygon(float x0, float y0, float r, int edges) {
             CTX.Circle.Draw(x0, y0, r, edges);
         }
 
-        public void Circle(float x0, float y0, float r) {
+        public void DrawCircle(float x0, float y0, float r) {
             CTX.Circle.Draw(x0, y0, r);
         }
 
-        public void Line(float x0, float y0, float x1, float y1, float thickness, CapType cap) {
+        public void DrawLine(float x0, float y0, float x1, float y1, float thickness, CapType cap) {
             CTX.Line.Draw(x0, y0, x1, y1, thickness, cap);
         }
 
-        public void Quad(Vertex v1, Vertex v2, Vertex v3, Vertex v4) {
+        public void DrawQuad(Vertex v1, Vertex v2, Vertex v3, Vertex v4) {
             CTX.Quad.Draw(v1, v2, v3, v4);
         }
 
-        public void Rect(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 0, float u1 = 1, float v1 = 1) {
+        public void DrawRect(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 0, float u1 = 1, float v1 = 1) {
             CTX.Rect.Draw(x0, y0, x1, y1, u0, v0, u1, v1);
         }
 
-        public void Rect(Rect rect, Rect uvs) {
+        public void DrawRect(Rect rect, Rect uvs) {
             CTX.Rect.Draw(rect, uvs);
         }
 
-        public void Rect(Rect rect) {
+        public void DrawRect(Rect rect) {
             CTX.Rect.Draw(rect);
         }
 
-        public PointF Text(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f) {
+        public PointF DrawText(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f) {
             return CTX.Text.Draw(text, startX, startY, hAlign, vAlign, scale);
         }
 
-        public PointF Text(string text, float startX, float startY, float scale = 1.0f) {
+        public PointF DrawText(string text, float startX, float startY, float scale = 1.0f) {
             return CTX.Text.Draw(text, startX, startY, scale);
         }
 
-        public PointF Text(string text, int start, int end, float startX, float startY, float scale) {
+        public PointF DrawText(string text, int start, int end, float startX, float startY, float scale) {
             return CTX.Text.Draw(text, start, end, startX, startY, scale);
         }
 
-        public void Triangle(Vertex v1, Vertex v2, Vertex v3) {
+        public void DrawTriangle(Vertex v1, Vertex v2, Vertex v3) {
             CTX.Triangle.Draw(v1, v2, v3);
         }
 
-        public void ArcOutline(float thickness, float x0, float y0, float r, float startAngle, float endAngle) {
+        public void DrawArcOutline(float thickness, float x0, float y0, float r, float startAngle, float endAngle) {
             CTX.Arc.DrawOutline(thickness, x0, y0, r, startAngle, endAngle);
         }
 
-        public void ArcOutline(float thickness, float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount) {
+        public void DrawArcOutline(float thickness, float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount) {
             CTX.Arc.DrawOutline(thickness, xCenter, yCenter, radius, startAngle, endAngle, edgeCount);
         }
 
-        public void CircleOutline(float thickness, float x0, float y0, float r, int edges) {
+        public void DrawCircleOutline(float thickness, float x0, float y0, float r, int edges) {
             CTX.Circle.DrawOutline(thickness, x0, y0, r, edges);
         }
 
-        public void CircleOutline(float thickness, float x0, float y0, float r) {
+        public void DrawCircleOutline(float thickness, float x0, float y0, float r) {
             CTX.Circle.DrawOutline(thickness, x0, y0, r);
         }
 
-        public void LineOutline(float outlineThickness, float x0, float y0, float x1, float y1, float thickness, CapType cap) {
+        public void DrawLineOutline(float outlineThickness, float x0, float y0, float x1, float y1, float thickness, CapType cap) {
             CTX.Line.DrawOutline(outlineThickness, x0, y0, x1, y1, thickness, cap);
         }
 
-        public void RectOutline(float thickness, Rect rect) {
+        public void DrawRectOutline(float thickness, Rect rect) {
             CTX.Rect.DrawOutline(thickness, rect);
         }
 
-        public void RectOutline(float thickness, float x0, float y0, float x1, float y1) {
+        public void DrawRectOutline(float thickness, float x0, float y0, float x1, float y1) {
             CTX.Rect.DrawOutline(thickness, x0, y0, x1, y1);
         }
 
-        public void TriangleOutline(float thickness, float x0, float y0, float x1, float y1, float x2, float y2) {
+        public void DrawTriangleOutline(float thickness, float x0, float y0, float x1, float y1, float x2, float y2) {
             CTX.Triangle.DrawOutline(thickness, x0, y0, x1, y1, x2, y2);
         }
 

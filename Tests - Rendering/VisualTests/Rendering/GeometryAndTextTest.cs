@@ -55,12 +55,12 @@ all at once.",
         {
             SetTexture(null);
             SetDrawColor(Color4.RGBA(0,1,0,0.5f));
-            Arc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f), a, MathF.PI * 2 + a, 6);
+            DrawArc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f), a, MathF.PI * 2 + a, 6);
 
 			SetTexture(tex);
             //RenderingContext.DrawFilledArc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f)/2f, a/2f, MathF.PI * 2 + a/2f, 6);
 
-            Rect(VW(0.5f) - 50, VH(0.5f) - 50, VW(0.5f) + 50, VH(0.5f) + 50);
+            DrawRect(VW(0.5f) - 50, VH(0.5f) - 50, VW(0.5f) + 50, VH(0.5f) + 50);
 
             //RenderingContext.DrawRect(100,100,Width-100, Height-100);
         }

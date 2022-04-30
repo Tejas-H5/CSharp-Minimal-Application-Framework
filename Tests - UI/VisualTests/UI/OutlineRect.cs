@@ -9,7 +9,7 @@
 
         public override void OnRender() {
             SetDrawColor(col);
-            RectOutline(thickness, 0, 0, VW(1), VH(1));
+            DrawRectOutline(thickness, 0, 0, VW(1), VH(1));
         }
     }
 }

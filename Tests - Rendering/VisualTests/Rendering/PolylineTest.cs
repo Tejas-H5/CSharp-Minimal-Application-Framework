@@ -82,9 +82,9 @@ namespace MinimalAF.VisualTests.Rendering
 				return;
 
 			SetDrawColor(0,0,0,1);
-			Text("Mouse test (And polyline test) - Drag that point with your mouse", 0, Height, HorizontalAlignment.Left, VerticalAlignment.Top);
+			DrawText("Mouse test (And polyline test) - Drag that point with your mouse", 0, Height, HorizontalAlignment.Left, VerticalAlignment.Top);
 
-			RectOutline(5, new Rect(VW(0.25f), VH(0.25f), VW(0.75f), VH(0.75f)));
+			DrawRectOutline(5, new Rect(VW(0.25f), VH(0.25f), VW(0.75f), VH(0.75f)));
 
 			SetDrawColor(0, 0, 1, 0.5f);
 

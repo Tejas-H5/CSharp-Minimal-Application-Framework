@@ -6,10 +6,6 @@ using System.Text;
 namespace MinimalAF {
     // am too lazy to type
     public partial class Element {
-        protected void Println(object obj) {
-            Console.WriteLine(obj);
-        }
-
         protected Matrix4 Translation(float x, float y, float z) {
             return Matrix4.CreateTranslation(x, y, z);
         }

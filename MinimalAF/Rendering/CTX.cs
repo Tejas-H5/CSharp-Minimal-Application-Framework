@@ -178,7 +178,7 @@ namespace MinimalAF.Rendering {
 
         internal static void SwapBuffers() {
             Flush();
-            framebufferManager.StopUsing();
+            framebufferManager.Use(null);
             shaderManager.SetModelMatrix(Matrix4.Identity);
 
             glContext.SwapBuffers();

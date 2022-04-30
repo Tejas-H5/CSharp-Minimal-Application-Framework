@@ -8,7 +8,7 @@ namespace RenderingEngineVisualTests
     {
         static void Main(string[] args)
         {
-            new ApplicationWindow().Run(new VisualTestRunner(typeof(MeshRenderingTest)));
+            new ApplicationWindow().Run(new VisualTestRunner(typeof(FramebufferTest)));
         }
     }
 }

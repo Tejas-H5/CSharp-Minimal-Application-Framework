@@ -40,49 +40,40 @@ The circles must actually be circular, and not a distorted oval",
         }
 
         public override void OnRender() {
-            var prevTransform = CTX.Shader.Model;
-            Rect prevScreenRect = screenRect;
-
-            screenRect = new Rect(0, 0, 800, 600);
-
-            RedirectDrawCalls(fb);
-            Clear(RGB(0, 0, 0, 0));
-
-            SetViewProjectionCartesian2D(1, 1, 0, 0);
-            SetTransform(Translation(0, 0, 0));
-            
             float wCX = 400;
             float wCY = 300;
-            SetDrawColor(0, 0, 1, 1);
-            DrawDualCirclesCenter(wCX, wCY);
-            //Rect(0, 0, 800, 600);
 
-            SetDrawColor(1, 1, 0, 1);
-            Rect(wCX, wCY, wCX + 50, wCY + 25);
+            using(RedirectDrawCalls(fb)) {
+                Clear(RGB(0, 0, 0, 0));
 
+                SetViewProjectionCartesian2D(1, 1, 0, 0);
+                SetTransform(Translation(0, 0, 0));
 
-            RedirectDrawCalls(null);
-            screenRect = prevScreenRect;
-            ResetCoordinates();
+                SetDrawColor(0, 0, 1, 1);
+                DrawDualCirclesCenter(wCX, wCY);
+
+                SetDrawColor(1, 1, 0, 1);
+                DrawRect(wCX, wCY, wCX + 50, wCY + 25);
+            }
+
 
             SetDrawColor(1, 0, 0, 1);
             float rectSize = 200;
-            Rect(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
+            DrawRect(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
 
             SetTexture(fb.Texture);
             SetDrawColor(1, 1, 1, 0.5f);
-            Rect(0, 0, 800, 600);
-
+            DrawRect(0, 0, 800, 600);
 
             SetTexture(null);
 
             SetDrawColor(0, 1, 0, 0.5f);
-            RectOutline(10, wCX - wCY, wCY - wCY, wCX + wCY, wCY + wCY);
+            DrawRectOutline(10, wCX - wCY, wCY - wCY, wCX + wCY, wCY + wCY);
         }
 
         private void DrawDualCirclesCenter(float x, float y) {
-            Circle(x - 100, y - 100, 200);
-            Circle(x + 100, y + 100, 200);
+            DrawCircle(x - 100, y - 100, 200);
+            DrawCircle(x + 100, y + 100, 200);
         }
     }
 }

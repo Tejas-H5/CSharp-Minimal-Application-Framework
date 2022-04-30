@@ -47,16 +47,16 @@ There is also a black rectangle with some text for reference, all of this is on 
 
             SetTransform(Matrix4.CreateTranslation(Vec3(0, 0, -20)));
             SetDrawColor(RGB(0, 0, 0));
-            RectOutline(1, -50, -50, 50, 50);
+            DrawRectOutline(1, -50, -50, 50, 50);
 
             SetFont("Consolas", 12);
-            Text("This is a wall.", 0, 0, HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText("This is a wall.", 0, 0, HorizontalAlignment.Center, VerticalAlignment.Center);
 
             SetTransform(Matrix4.CreateTranslation(rectPoint));
 
 
             SetDrawColor(1, 0, 0, 0.5f);
-            Rect(new Rect(-1, -1, 1, 1) * 10);
+            DrawRect(new Rect(-1, -1, 1, 1) * 10);
         }
     }
 }

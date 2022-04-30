@@ -53,10 +53,10 @@ namespace MinimalAF {
 
             foreach ((float y, string name, Rect rect) in IterateNames()) {
                 SetDrawColor(Color4.White);
-                Rect(rect);
+                DrawRect(rect);
 
                 SetDrawColor(0, 0, 0, 1);
-                RectOutline(1, rect);
+                DrawRectOutline(1, rect);
 
                 if (MouseOver(rect)) {
                     SetDrawColor(0, 0, 0, 0.5f);
@@ -66,7 +66,7 @@ namespace MinimalAF {
                     }
                 }
 
-                Text(name, VW(0.5f), y, HorizontalAlignment.Center, VerticalAlignment.Top);
+                DrawText(name, VW(0.5f), y, HorizontalAlignment.Center, VerticalAlignment.Top);
             }
 
             CTX.Current2DDepth = prevDepth;

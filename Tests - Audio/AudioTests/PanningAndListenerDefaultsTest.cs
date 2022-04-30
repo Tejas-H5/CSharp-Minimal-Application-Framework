@@ -44,12 +44,12 @@ namespace AudioEngineTests.AudioTests {
 
         public override void OnRender() {
             SetDrawColor(0, 0, 0, 1);
-            Circle(Width / 2, Height / 2, 20);
+            DrawCircle(Width / 2, Height / 2, 20);
 
 
             SetDrawColor(1, 0, 0, 1);
-            Circle(MouseX, MouseY, 20);
-            Text("You are here (" + listenerX + "," + listenerZ + ")", MouseX, MouseY, HorizontalAlignment.Center, VerticalAlignment.Bottom);
+            DrawCircle(MouseX, MouseY, 20);
+            DrawText("You are here (" + listenerX + "," + listenerZ + ")", MouseX, MouseY, HorizontalAlignment.Center, VerticalAlignment.Bottom);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace MinimalAF {
                 RenderFrequency.ToString("0.0");
 
             SetFont("Consolas", 12);
-            Text(infoText, 0, 0, HorizontalAlignment.Left, VerticalAlignment.Top);
+            DrawText(infoText, 0, 0, HorizontalAlignment.Left, VerticalAlignment.Top);
         }
 
 
@@ -64,7 +64,7 @@ namespace MinimalAF {
 
             if (MouseOver(hitbox)) {
                 SetDrawColor(Color4.RGBA(0, 0, 1, 0.5f));
-                Rect(hitbox);
+                DrawRect(hitbox);
             }
         }
 
@@ -118,7 +118,7 @@ namespace MinimalAF {
             get => ((int)RelativeRect.Width, (int)RelativeRect.Height);
             set {
                 WantedSize = value;
-                Layout();
+                TriggerLayoutRecalculation();
             }
         }
 

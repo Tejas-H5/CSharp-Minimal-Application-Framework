@@ -12,7 +12,7 @@ namespace MinimalAF {
     
     // Just for syntactic sugar. If Conversions could happen between interfaces and actual instances, this
     // would probably be a real thing
-    public struct ArraySlice<T> : IEnumerable<T>{
+    public struct ArraySlice<T> {
         public IList<T> Container;
         public int Start;
         public int End;
@@ -44,14 +44,29 @@ namespace MinimalAF {
             }
         }
 
-        public IEnumerator<T> GetEnumerator() {
-            for (int i = 0; i < Length; i++) {
-                yield return this[i];
-            }
+        public ArraySliceIterator<T> GetEnumerator() {
+            return new ArraySliceIterator<T>(this);
+        }
+    }
+
+    public struct ArraySliceIterator<T> {
+        private ArraySlice<T> slice;
+        private int index;
+
+        public ArraySliceIterator(ArraySlice<T> slice) {
+            this.slice = slice;
+            index = -1;
         }
 
-        IEnumerator IEnumerable.GetEnumerator() {
-            return GetEnumerator();
+        public (int, T) Current => (index, slice[index]);
+
+        public bool MoveNext() {
+            index++;
+            return index < slice.Length;
+        }
+
+        public void Reset() {
+            index = -1;
         }
     }
 }

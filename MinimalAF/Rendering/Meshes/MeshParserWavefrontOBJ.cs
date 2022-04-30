@@ -23,7 +23,7 @@ namespace MinimalAF.Rendering {
             string useMtl = "";
             string mtl = "";
 
-            foreach (var line in IterationUtil.Split(text, "\n")) {
+            foreach (var line in new StringIterator(text, "\n")) {
                 var trimmed = line.Trim();
                 var lineIter = new StringIterator(trimmed, " ");
                 var start = lineIter.GetNext();
@@ -54,7 +54,7 @@ namespace MinimalAF.Rendering {
             int uvCount = 0;
 
             // lets find out how many of each there are, so we can set a capacity
-            foreach (var line in IterationUtil.Split(text, "\n")) {
+            foreach (var line in new StringIterator(text, "\n")) {
                 var lineIter = new StringIterator(line, " ");
 
                 var start = lineIter.GetNext();
@@ -101,8 +101,8 @@ namespace MinimalAF.Rendering {
             while (lineIter.MoveNext()) {
                 var face = new StringIterator(lineIter.Current, "/", false);
 
-                // an obj file will reuse the same vertex for different faces/UV islands, so we need to create new vertices for each point
-                // on a face
+                // an obj file will reuse the same vertex for different faces/UV islands,
+                // so we need to create new vertices for each point on a face
 
                 var vertexIndex = int.Parse(face.GetNext()) - 1;
                 var textureIndexText = face.GetNext();
@@ -111,6 +111,7 @@ namespace MinimalAF.Rendering {
                 if(textureIndex != -1) {
                     uv = textureCoords[textureIndex];
                 }
+
                 // because UVs are upside down otherwise
                 uv.Y = 1 - uv.Y;
 

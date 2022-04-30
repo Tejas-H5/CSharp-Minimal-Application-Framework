@@ -147,13 +147,13 @@ namespace MinimalAF {
         public override void OnRender() {
             SetDrawColor(Color4.VA(0, 1));
 
-            RectOutline(1, testList.RelativeRect);
-            RectOutline(1, searchbox.RelativeRect);
-            RectOutline(1, reflectionPanel.RelativeRect);
-            RectOutline(1, mountingContainer.RelativeRect);
+            DrawRectOutline(1, testList.RelativeRect);
+            DrawRectOutline(1, searchbox.RelativeRect);
+            DrawRectOutline(1, reflectionPanel.RelativeRect);
+            DrawRectOutline(1, mountingContainer.RelativeRect);
 
             SetDrawColor(Color4.VA(1, .5f));
-            Rect(searchbox.RelativeRect);
+            DrawRect(searchbox.RelativeRect);
         }
 
         int currentTest = 0;

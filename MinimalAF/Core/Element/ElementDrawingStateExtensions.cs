@@ -64,7 +64,7 @@ namespace MinimalAF {
             return CTX.Shader.View;
         }
 
-        public Matrix4 GeProjectionMatrix() {
+        public Matrix4 GetProjectionMatrix() {
             return CTX.Shader.Projection;
         }
     }

@@ -18,10 +18,10 @@ namespace MinimalAF {
                 }
             }
 
-            Rect(0, 0, Width, Height);
+            DrawRect(0, 0, Width, Height);
 
             SetDrawColor(Color4.Black);
-            RectOutline(1, 0, 0, Width, Height);
+            DrawRectOutline(1, 0, 0, Width, Height);
         }
 
         public override void OnUpdate() {

@@ -1,4 +1,4 @@
-﻿namespace MinimalAF.Rendering.ImmediateMode {
+﻿namespace MinimalAF.Rendering {
     public class InternalShader : Shader {
         const string vertSource =
 @"#version 330

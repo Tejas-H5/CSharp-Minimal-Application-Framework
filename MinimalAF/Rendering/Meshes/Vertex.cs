@@ -3,9 +3,13 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace MinimalAF.Rendering {
-    public interface IVertexNormal {
-        Vector3 Normal {
-            get; set;
+    public interface ICodeSerializeable {
+        string ToCodeString();
+    }
+
+    public interface IVertexPosition {
+        Vector3 Position {
+            get;set;
         }
     }
 
@@ -15,20 +19,33 @@ namespace MinimalAF.Rendering {
         }
     }
 
-    public interface IVertexPosition {
-        Vector3 Position {
+    public interface IVertexNormal {
+        Vector3 Normal {
+            get;set;
+        }
+    }
+
+    public interface IVertexTangent {
+        Vector3 Tangent {
             get; set;
         }
     }
 
-    public interface ICodeSerializeable {
-        string ToCodeString();
-    }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct Vertex : IVertexPosition, IVertexUV, IVertexNormal, ICodeSerializeable {
+    public struct Vertex : IVertexPosition, IVertexUV, ICodeSerializeable {
         public Vector3 position;
         public Vector2 uv;
+
+        public Vector3 Position {
+            get => position;
+            set => position = value;
+        }
+
+        public Vector2 UV {
+            get => uv;
+            set => uv = value;
+        }
 
         public Vertex(float x, float y, float z)
           : this(new Vector3(x, y, z), new Vector2(x, y)) {
@@ -38,27 +55,9 @@ namespace MinimalAF.Rendering {
             this.position = position;
             this.uv = uv;
         }
-
-        public Vector2 UV {
-            get => uv;
-            set => uv = value;
-        }
-
-        public Vector3 Position {
-            get => position;
-            set => position = value;
-        }
-
-        public Vector3 Normal {
-            get => Vector3.Zero;
-            set {
-                // no-op
-            }
-        }
-
         public string ToCodeString() {
-            return "new Vertex(" + Position.X + ", " + Position.Y + ", " + Position.Z + ", "
-                + UV.X + ", " + UV.Y + ")";
+            return "new Vertex(" + position.X + ", " + position.Y + ", " + position.Z + ", "
+                + uv.X + ", " + uv.Y + ")";
         }
     }
 }

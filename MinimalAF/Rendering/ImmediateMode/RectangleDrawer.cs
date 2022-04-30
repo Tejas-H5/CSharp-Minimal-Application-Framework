@@ -1,10 +1,12 @@
-﻿namespace MinimalAF.Rendering.ImmediateMode {
-    public class RectangleDrawer {
-        public RectangleDrawer() {
+﻿namespace MinimalAF.Rendering {
+    public class RectangleDrawer<V> where V : struct, IVertexUV, IVertexPosition {
+        ImmediateMode2DDrawer<V> immediateModeDrawer;
+        public RectangleDrawer(ImmediateMode2DDrawer<V> immediateModeDrawer) {
+            this.immediateModeDrawer = immediateModeDrawer;
         }
 
         public void Draw(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 0, float u1 = 1, float v1 = 1) {
-            CTX.Quad.Draw2D(
+            immediateModeDrawer.Quad.Draw2D(
                 x0, y0,
                 x1, y0,
                 x1, y1,

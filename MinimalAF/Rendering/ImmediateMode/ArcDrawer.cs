@@ -1,13 +1,15 @@
 ﻿using System;
 
-namespace MinimalAF.Rendering.ImmediateMode {
-    public class ArcDrawer {
+namespace MinimalAF.Rendering {
+    public class ArcDrawer<V> where V : struct, IVertexUV, IVertexPosition {
         int circleEdgeLength;
         int maxCircleEdgeCount;
+        ImmediateMode2DDrawer<V> immediateModeDrawer;
 
-        public ArcDrawer(int circleEdgeLength, int maxCircleEdgeCount) {
+        public ArcDrawer(int circleEdgeLength, int maxCircleEdgeCount, ImmediateMode2DDrawer<V> immediateModeDrawer) {
             this.circleEdgeLength = circleEdgeLength;
             this.maxCircleEdgeCount = maxCircleEdgeCount;
+            this.immediateModeDrawer = immediateModeDrawer;
         }
 
 
@@ -34,16 +36,16 @@ namespace MinimalAF.Rendering.ImmediateMode {
 
             float deltaAngle = (endAngle - startAngle) / edgeCount;
 
-            CTX.NGon.Begin(xCenter, yCenter, edgeCount + 2);
+            immediateModeDrawer.NGon.Begin(xCenter, yCenter, edgeCount + 2);
 
             for (float angle = endAngle; angle > startAngle - deltaAngle + 0.001f; angle -= deltaAngle) {
                 float X = xCenter + radius * MathF.Sin(angle);
                 float Y = yCenter + radius * MathF.Cos(angle);
 
-                CTX.NGon.Continue(X, Y);
+                immediateModeDrawer.NGon.Continue(X, Y);
             }
 
-            CTX.NGon.End();
+            immediateModeDrawer.NGon.End();
         }
 
 
@@ -66,12 +68,12 @@ namespace MinimalAF.Rendering.ImmediateMode {
                 float Y = yCenter + radius * MathF.Cos(angle);
 
                 if (first) {
-                    CTX.NLine.Begin(X, Y, thickness, CapType.None);
+                    immediateModeDrawer.NLine.Begin(X, Y, thickness, CapType.None);
                     first = false;
                 } else if (angle + deltaAngle < endAngle + 0.00001f) {
-                    CTX.NLine.Continue(X, Y);
+                    immediateModeDrawer.NLine.Continue(X, Y);
                 } else {
-                    CTX.NLine.End(X, Y);
+                    immediateModeDrawer.NLine.End(X, Y);
                 }
             }
         }

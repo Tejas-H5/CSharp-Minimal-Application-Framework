@@ -1,5 +1,4 @@
-﻿using MinimalAF.Rendering.ImmediateMode;
-using MinimalAF.Rendering.Text;
+﻿using MinimalAF.Rendering.Text;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
@@ -19,6 +18,17 @@ namespace MinimalAF.Rendering {
         internal static int ScreenWidth, ScreenHeight;
 
         public static float Current2DDepth = 0;
+
+        class VertexCreator {
+            public VertexCreator() {}
+
+            public Vertex New(float x, float y, float u, float v) {
+                return new Vertex(
+                    new Vector3(x, y, CTX.Current2DDepth), new Vector2(u, v)
+                );
+            }
+        }
+
 
         private static Rect currentClippingRect;
         internal static Rect CurrentClippingRect {
@@ -52,33 +62,27 @@ namespace MinimalAF.Rendering {
         internal static Color4 ClearColor;
 
         //Composition
-        internal static TriangleDrawer Triangle => triangle;
-        internal static QuadDrawer Quad => quad;
-        internal static RectangleDrawer Rect => rect;
-        internal static NGonDrawer NGon => nGon;
-        internal static PolyLineDrawer NLine => nLine;
-        internal static ArcDrawer Arc => arc;
-        internal static CircleDrawer Circle => circle;
-        internal static LineDrawer Line => line;
-        internal static TextDrawer Text => textDrawer;
+        internal static TriangleDrawer<Vertex> Triangle => imDrawer.Triangle;
+        internal static QuadDrawer<Vertex> Quad => imDrawer.Quad;
+        internal static RectangleDrawer<Vertex> Rect => imDrawer.Rect;
+        internal static NGonDrawer<Vertex> NGon => imDrawer.NGon;
+        internal static PolyLineDrawer<Vertex> NLine => imDrawer.NLine;
+        internal static ArcDrawer<Vertex> Arc => imDrawer.Arc;
+        internal static CircleDrawer<Vertex> Circle => imDrawer.Circle;
+        internal static LineDrawer<Vertex> Line => imDrawer.Line;
+        internal static TextDrawer<Vertex> Text => textDrawer;
         internal static TextureManager Texture => textureManager;
         internal static FramebufferManager Framebuffer => framebufferManager;
         public static ShaderManager Shader => shaderManager;
 
-        internal static TriangleDrawer triangle;
-        internal static QuadDrawer quad;
-        internal static RectangleDrawer rect;
-        internal static NGonDrawer nGon;
-        internal static PolyLineDrawer nLine;
-        internal static ArcDrawer arc;
-        internal static CircleDrawer circle;
-        internal static LineDrawer line;
-        private static TextDrawer textDrawer;
-        private static MeshOutputStream meshOutputStream;
+        public static TextDrawer<Vertex> textDrawer;
+        private static MeshOutputStream<Vertex> meshOutputStream;
+        private static ImmediateMode2DDrawer<Vertex> imDrawer;
+        private static readonly VertexCreator vertexCreator = new VertexCreator();
+
         private static TextureManager textureManager;
         private static FramebufferManager framebufferManager;
         private static ShaderManager shaderManager;
-
         private static InternalShader internalShader;
 
         public static int TimesVertexThresholdReached {
@@ -103,7 +107,9 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void Init(IGLFWGraphicsContext context) {
-            InitDrawers();
+            meshOutputStream = new MeshOutputStream<Vertex>(8 * 4096, 8 * 4096);
+            imDrawer = new ImmediateMode2DDrawer<Vertex>(meshOutputStream);
+            textDrawer = new TextDrawer<Vertex>();
 
             glContext = context;
 
@@ -129,22 +135,6 @@ namespace MinimalAF.Rendering {
             string version = GL.GetString(StringName.Version);
             string vendor = GL.GetString(StringName.Vendor);
             Console.WriteLine("Vendor: " + vendor + ", Version: " + version);
-        }
-
-        private static void InitDrawers() {
-            // TODO: more experimentation to find out more optimal values for these
-            meshOutputStream = new MeshOutputStream(8 * 4096, 8 * 4096);
-
-            triangle = new TriangleDrawer(meshOutputStream);
-            nGon = new NGonDrawer(meshOutputStream);
-            quad = new QuadDrawer(meshOutputStream);
-            nLine = new PolyLineDrawer(meshOutputStream);
-
-            line = new LineDrawer();
-            arc = new ArcDrawer(circleEdgeLength: 5, maxCircleEdgeCount: 32);
-            rect = new RectangleDrawer();
-            circle = new CircleDrawer();
-            textDrawer = new TextDrawer();
         }
 
         internal static Color4 GetClearColor() {

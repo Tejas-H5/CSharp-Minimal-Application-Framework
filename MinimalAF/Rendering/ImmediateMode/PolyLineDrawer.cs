@@ -1,13 +1,15 @@
 ﻿using MinimalAF.Util;
 using System;
 
-namespace MinimalAF.Rendering.ImmediateMode {
+namespace MinimalAF.Rendering {
     //TODO: add support for 3D lines if needed
-    public class PolyLineDrawer {
-        IGeometryOutput geometryOutput;
+    public class PolyLineDrawer<V> where V : struct, IVertexUV, IVertexPosition {
+        IGeometryOutput<V> geometryOutput;
+        ImmediateMode2DDrawer<V> immediateModeDrawer;
 
-        public PolyLineDrawer(IGeometryOutput geometryOutput) {
+        public PolyLineDrawer(IGeometryOutput<V> geometryOutput, ImmediateMode2DDrawer<V> immediateModeDrawer) {
             this.geometryOutput = geometryOutput;
+            this.immediateModeDrawer = immediateModeDrawer;
         }
 
 
@@ -25,8 +27,8 @@ namespace MinimalAF.Rendering.ImmediateMode {
 
         uint lastV1;
         uint lastV2;
-        Vertex lastV1Vert;
-        Vertex lastV2Vert;
+        V lastV1Vert;
+        V lastV2Vert;
         uint lastV3;
         uint lastV4;
         uint count = 0;
@@ -90,8 +92,8 @@ namespace MinimalAF.Rendering.ImmediateMode {
             CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
 
 
-            Vertex v1 = new Vertex(lastX + perpX, lastY + perpY, 0);
-            Vertex v2 = new Vertex(lastX - perpX, lastY - perpY, 0);
+            V v1 = ImmediateMode2DDrawer<V>.CreateVertex(lastX + perpX, lastY + perpY, 0, 0);
+            V v2 = ImmediateMode2DDrawer<V>.CreateVertex(lastX - perpX, lastY - perpY, 0, 0);
 
             geometryOutput.FlushIfRequired(2, 0);
             lastV1 = geometryOutput.AddVertex(v1);
@@ -104,7 +106,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
 
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
-            CTX.Line.DrawCap(lastX, lastY, thickness, capType, startAngle);
+            immediateModeDrawer.Line.DrawCap(lastX, lastY, thickness, capType, startAngle);
         }
 
         private void MoveLineSegmentInDirectionOf(float x, float y, bool averageAngle = true) {
@@ -127,8 +129,8 @@ namespace MinimalAF.Rendering.ImmediateMode {
             }
 
 
-            Vertex v3 = new Vertex(lastX + perpUsedX, lastY + perpUsedY, 0);
-            Vertex v4 = new Vertex(lastX - perpUsedX, lastY - perpUsedY, 0);
+            V v3 = ImmediateMode2DDrawer<V>.CreateVertex(lastX + perpUsedX, lastY + perpUsedY, 0, 0);
+            V v4 = ImmediateMode2DDrawer<V>.CreateVertex(lastX - perpUsedX, lastY - perpUsedY, 0, 0);
 
             if (geometryOutput.FlushIfRequired(4, 6)) {
                 lastV1 = geometryOutput.AddVertex(lastV1Vert);
@@ -200,10 +202,10 @@ namespace MinimalAF.Rendering.ImmediateMode {
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
 
             if (count == 1) {
-                CTX.Line.DrawCap(lastX, lastY, thickness, capType, startAngle);
+                immediateModeDrawer.Line.DrawCap(lastX, lastY, thickness, capType, startAngle);
             }
 
-            CTX.Line.DrawCap(lastX, lastY, thickness, capType, startAngle + MathF.PI);
+            immediateModeDrawer.Line.DrawCap(lastX, lastY, thickness, capType, startAngle + MathF.PI);
 
             canStart = true;
         }

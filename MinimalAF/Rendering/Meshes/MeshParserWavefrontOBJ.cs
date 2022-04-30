@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace MinimalAF.Rendering {
-    public class MeshParserWavefrontOBJ<V> where V : struct, IVertexPosition, IVertexUV, IVertexNormal {
+    public class MeshParserWavefrontOBJ<V> where V : struct, IVertexPosition, IVertexUV {
         /// <summary>
         /// Not yet complete. It just loads verts and UVS for now.
         /// </summary>
@@ -114,10 +114,10 @@ namespace MinimalAF.Rendering {
 
                 // because UVs are upside down otherwise
                 uv.Y = 1 - uv.Y;
-
-                V v = new V();
-                v.Position = positions[vertexIndex];
-                v.UV = uv;
+                V v = CreateVertex(
+                    positions[vertexIndex].X, positions[vertexIndex].Y, positions[vertexIndex].Z,
+                    uv.X, uv.Y
+                );
 
                 if (index1 == uint.MaxValue) {
                     index1 = mesh.AddVertex(v);
@@ -136,6 +136,13 @@ namespace MinimalAF.Rendering {
                 float.Parse(lineIter.GetNext()),
                 float.Parse(lineIter.GetNext())
             ));
+        }
+
+        private static V CreateVertex(float x, float y, float z, float u, float v) {
+            V vert = new V();
+            vert.Position = new Vector3(x, y, z);
+            vert.UV = new Vector2(u, v);
+            return vert;
         }
     }
 }

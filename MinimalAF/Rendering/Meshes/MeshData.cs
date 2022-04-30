@@ -1,11 +1,10 @@
-﻿using MinimalAF.Rendering.ImmediateMode;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MinimalAF.Rendering {
-    public class MeshData<V> where V : struct {
+    public class MeshData<V> : IGeometryOutput<V> where V : struct {
         List<V> vertices;
         List<uint> indices;
 
@@ -13,7 +12,6 @@ namespace MinimalAF.Rendering {
             vertices = new List<V>();
             indices = new List<uint>();
         }
-
 
         public MeshData(List<V> vertices, List<uint> indices) {
             this.vertices = vertices;
@@ -40,8 +38,24 @@ namespace MinimalAF.Rendering {
         }
 
 
-        public static MeshData<V1> FromOBJ<V1>(string text) where V1 : struct, IVertexPosition, IVertexUV, IVertexNormal {
+        public static MeshData<V1> FromOBJ<V1>(string text) where V1 : struct, IVertexPosition, IVertexUV {
             return MeshParserWavefrontOBJ<V1>.FromOBJ(text);
+        }
+
+        public void Flush() {
+
+        }
+
+        public bool FlushIfRequired(int numIncomingVerts, int numIncomingIndices) {
+            return false;
+        }
+
+        public uint CurrentV() {
+            return (uint)(vertices.Count - 1);
+        }
+
+        public uint CurrentI() {
+            return (uint)(indices.Count - 1);
         }
     }
 

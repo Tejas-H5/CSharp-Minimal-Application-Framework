@@ -1,22 +1,23 @@
-﻿namespace MinimalAF.Rendering.ImmediateMode {
-    public class NGonDrawer {
-        IGeometryOutput outputStream;
+﻿namespace MinimalAF.Rendering {
+    public class NGonDrawer<V> where V : struct, IVertexUV, IVertexPosition {
+        IGeometryOutput<V> outputStream;
+
         bool polygonBegun = false;
         uint polygonFirst;
         uint polygonSecond = 0;
         uint polygonCount = 0;
-        Vertex firstVertex;
-        Vertex secondVertex;
+        V firstVertex;
+        V secondVertex;
 
-        public NGonDrawer(IGeometryOutput outputStream) {
+        public NGonDrawer(IGeometryOutput<V> outputStream) {
             this.outputStream = outputStream;
         }
 
         public void Begin(float centerX, float centerY, int n) {
-            Begin(new Vertex(centerX, centerY, CTX.Current2DDepth), n);
+            Begin(ImmediateMode2DDrawer<V>.CreateVertex(centerX, centerY, 0, 0), n);
         }
 
-        public void Begin(Vertex v1, int n) {
+        public void Begin(V v1, int n) {
             if (n < 3)
                 n = 3;
 
@@ -31,11 +32,11 @@
         }
 
         public void Continue(float centerX, float centerY) {
-            Continue(new Vertex(centerX, centerY, CTX.Current2DDepth));
+            Continue(ImmediateMode2DDrawer<V>.CreateVertex(centerX, centerY, 0, 0));
         }
 
 
-        public void Continue(Vertex v) {
+        public void Continue(V v) {
             if (polygonBegun == false) {
                 return;
             }
@@ -61,7 +62,7 @@
             secondVertex = v;
         }
 
-        private void AppendSecondVertexToNGon(Vertex v) {
+        private void AppendSecondVertexToNGon(V v) {
             polygonSecond = outputStream.AddVertex(v);
             secondVertex = v;
 

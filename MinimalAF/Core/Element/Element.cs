@@ -334,7 +334,7 @@ namespace MinimalAF {
 
         public void ResetCoordinates() {
             CTX.SetScreenRect(screenRect);
-            CTX.SetTransform(Matrix4.Identity);
+            CTX.SetTransform(Translation(0, 0, CTX.Current2DDepth));
         }
 
 
@@ -531,13 +531,6 @@ namespace MinimalAF {
 
         }
 
-        /// <summary>
-        /// A second render pass called after OnRender.
-        /// Frequency is controlled by the window configuration's RenderFrequency.
-        /// </summary>
-        public virtual void OnPostRender() {
-
-        }
 
         public virtual void AfterRender() {
 

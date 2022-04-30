@@ -2,10 +2,9 @@
 using System;
 using System.Drawing;
 
-namespace MinimalAF.Rendering.ImmediateMode {
-    public class TextDrawer : IDisposable {
+namespace MinimalAF.Rendering {
+    public class TextDrawer<V> : IDisposable where V : struct, IVertexUV, IVertexPosition {
         FontManager fontManager;
-
         public FontAtlasTexture ActiveFont {
             get {
                 return fontManager.ActiveFont;

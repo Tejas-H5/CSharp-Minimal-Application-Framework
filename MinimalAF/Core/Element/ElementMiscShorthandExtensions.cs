@@ -10,6 +10,10 @@ namespace MinimalAF {
             return Matrix4.CreateTranslation(x, y, z);
         }
 
+        protected Matrix4 Translation(Vector3 pos) {
+            return Matrix4.CreateTranslation(pos);
+        }
+
         protected Quaternion Quat(float x, float y, float z) {
             return Quaternion.FromEulerAngles(x, y, z);
         }

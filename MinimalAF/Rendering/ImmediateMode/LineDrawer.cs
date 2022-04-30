@@ -1,8 +1,10 @@
 ﻿using System;
 
-namespace MinimalAF.Rendering.ImmediateMode {
-    public class LineDrawer {
-        public LineDrawer() {
+namespace MinimalAF.Rendering {
+    public class LineDrawer<V> where V : struct, IVertexUV, IVertexPosition {
+        ImmediateMode2DDrawer<V> immediateModeDrawer;
+        public LineDrawer(ImmediateMode2DDrawer<V> immediateModeDrawer) {
+            this.immediateModeDrawer = immediateModeDrawer;
         }
 
         public void Draw(float x0, float y0, float x1, float y1, float thickness, CapType cap) {
@@ -16,7 +18,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
             float perpY = thickness * dirX / mag;
 
 
-            CTX.Quad.Draw2D(
+            immediateModeDrawer.Quad.Draw2D(
                 x0 + perpX, y0 + perpY,
                 x0 - perpX, y0 - perpY,
                 x1 - perpX, y1 - perpY,
@@ -41,20 +43,20 @@ namespace MinimalAF.Rendering.ImmediateMode {
 
 
             //Draw the outline using a NASCAR path
-            CTX.NLine.Begin(x1 - perpX, y1 - perpY, outlineThickness, CapType.None);
+            immediateModeDrawer.NLine.Begin(x1 - perpX, y1 - perpY, outlineThickness, CapType.None);
 
-            CTX.NLine.DisableEnding();
+            immediateModeDrawer.NLine.DisableEnding();
 
-            //CTX.NLine.AppendToPolyLine(x0 - perpX, y0 - perpY);
+            //immediateModeDrawer.NLine.AppendToPolyLine(x0 - perpX, y0 - perpY);
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
             DrawCapOutline(outlineThickness, x0, y0, thickness, cap, startAngle);
 
-            //CTX.NLine.AppendToPolyLine(0, 0);
+            //immediateModeDrawer.NLine.AppendToPolyLine(0, 0);
 
-            //CTX.NLine.AppendToPolyLine(x1 + perpX, y1 + perpY);
+            //immediateModeDrawer.NLine.AppendToPolyLine(x1 + perpX, y1 + perpY);
 
-            CTX.NLine.EnableEnding();
+            immediateModeDrawer.NLine.EnableEnding();
             DrawCapOutline(outlineThickness, x1, y1, thickness, cap, startAngle + MathF.PI);
         }
 
@@ -72,7 +74,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
 
 
         public void DrawCircleCap(float x0, float y0, float thickness, float angle) {
-            CTX.Arc.Draw(x0, y0, thickness, angle, angle + MathF.PI);
+            immediateModeDrawer.Arc.Draw(x0, y0, thickness, angle, angle + MathF.PI);
         }
 
 
@@ -88,11 +90,11 @@ namespace MinimalAF.Rendering.ImmediateMode {
         }
 
         public void DrawDefaultCapOutline(float thickness, float x0, float y0, float radius, float angle) {
-            CTX.Arc.DrawOutline(thickness, x0, y0, radius, angle, angle + MathF.PI, 1);
+            immediateModeDrawer.Arc.DrawOutline(thickness, x0, y0, radius, angle, angle + MathF.PI, 1);
         }
 
         public void DrawCircleCapOutline(float thickness, float x0, float y0, float radius, float angle) {
-            CTX.Arc.DrawOutline(thickness, x0, y0, radius, angle, angle + MathF.PI);
+            immediateModeDrawer.Arc.DrawOutline(thickness, x0, y0, radius, angle, angle + MathF.PI);
         }
     }
 }

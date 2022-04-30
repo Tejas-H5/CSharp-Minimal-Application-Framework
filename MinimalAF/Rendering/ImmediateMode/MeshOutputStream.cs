@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MinimalAF.Rendering.ImmediateMode {
-    public class MeshOutputStream : IGeometryOutput, IDisposable {
-        private Mesh<Vertex> backingMesh;
+namespace MinimalAF.Rendering {
+    public class MeshOutputStream<V> : IDisposable, IGeometryOutput<V> where V : struct {
+        private Mesh<V> backingMesh;
         private uint currentVertexIndex = 0;
         private uint currentIndexIndex = 0;
 
@@ -24,7 +24,7 @@ namespace MinimalAF.Rendering.ImmediateMode {
         public int TimesIndexThresholdReached = 0;
 
 
-        public Vertex GetVertex(uint i) {
+        public V GetVertex(uint i) {
             return backingMesh.Vertices[i];
         }
 
@@ -36,10 +36,10 @@ namespace MinimalAF.Rendering.ImmediateMode {
             vertexBufferSize /= 3;
             vertexBufferSize *= 3;
 
-            backingMesh = new Mesh<Vertex>(new Vertex[vertexBufferSize], new uint[indexBufferSize], stream: true);
+            backingMesh = new Mesh<V>(new V[vertexBufferSize], new uint[indexBufferSize], stream: true);
         }
 
-        public uint AddVertex(Vertex v) {
+        public uint AddVertex(V v) {
             backingMesh.Vertices[currentVertexIndex] = v;
             return currentVertexIndex++;
         }

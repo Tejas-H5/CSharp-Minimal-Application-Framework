@@ -4,8 +4,11 @@ using System;
 namespace MinimalAF.VisualTests.Rendering
 {
     [VisualTest(
-        description: @"Performs a binary search to see the max number of random lines 
-that can be drawn for some framerate (default 60FPS). Results may vary",
+        description: @"Performs gradient ascent to find the number of lines that can be drawn with the given parameters in order
+to achieve some target FPS (only if count==0, otherwise the line count is fixed). Results may vary, but higher number of
+lines drawn is always better. This test may not work well for when the target FPS is the same as the graphics card's max refresh rate,
+in which case you will need to set it a bit lower. E.G if my graphics card will always refresh at 60FPS, I will
+set the target FPS to 55 to make the test actually work.",
         tags: "2D"
     )]
     class Benchmark : Element
@@ -47,26 +50,21 @@ that can be drawn for some framerate (default 60FPS). Results may vary",
 
             double FPS = frames / time;
 
-            if (time > 0.5f) {
+            if (time > 1f) {
+                time = 0;
+                frames = 0;
+
                 if (lineCount > 0) {
                     amount = lineCount;
                 } else {
-                    if (FPS < requiredFPS) {
-                        amount -= jump;
-                    } else if (FPS > requiredFPS) {
-                        amount += jump;
-                    }
+                    double actualToWantedRatio = FPS / requiredFPS;
 
-                    jump /= 2;
-                    if (jump == 0) {
+                    amount = (int)(actualToWantedRatio * amount);
+
+                    if (Math.Abs(actualToWantedRatio - 1.0) < 0.01) {
                         Console.WriteLine("Converged at amount = " + amount + " lines required for " + requiredFPS);
-
-                        jump = 1000;
                     }
                 }
-
-                time = 0;
-                frames = 0;
             }
 
 

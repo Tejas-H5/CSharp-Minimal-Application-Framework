@@ -9,7 +9,7 @@ namespace MinimalAF {
         protected List<Element> children = new List<Element>();
 
         internal static List<Element> RenderQueue = new List<Element>();
-
+        protected int stackingOffset = 0;
 
         public virtual bool SingleChild => false;
 
@@ -248,6 +248,7 @@ namespace MinimalAF {
 
         internal struct RenderAccumulator {
             public int Depth;
+            public int StackingDepth;
             public Rect ParentScreenRect;
 
 #if DEBUG
@@ -256,11 +257,13 @@ namespace MinimalAF {
 
             public RenderAccumulator(
                 int depth,
+                int stackingDepth,
                 Rect screenRect
 #if DEBUG
                 , int hoverDepth
 #endif
             ) {
+                StackingDepth = stackingDepth;
                 Depth = depth;
                 ParentScreenRect = screenRect;
 
@@ -272,6 +275,7 @@ namespace MinimalAF {
 
         internal void RenderSelfAndChildren(Rect parentScreenRect) {
             RenderSelfAndChildren(new RenderAccumulator(
+                0,
                 0,
                 parentScreenRect
 #if DEBUG
@@ -285,10 +289,11 @@ namespace MinimalAF {
                 return;
             }
 
+            int stackingDepth = acc.StackingDepth + stackingOffset;
             // A hack that allows children to render above parents if needed.
             // I am still not quite sure why it works.
             // Side-effect: UIs can only be 100,000 elements deep
-            CTX.Current2DDepth = 1 - acc.Depth / 100000f;
+            CTX.Current2DDepth = 1f -stackingDepth / 100000f;
 
             RecalcScreenRect(acc.ParentScreenRect);
             ResetCoordinates();
@@ -309,7 +314,7 @@ namespace MinimalAF {
 #endif
 
             for (int i = 0; i < children.Count; i++) {
-                children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, screenRect
+                children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, stackingDepth, screenRect
 #if DEBUG
                     , acc.HoverDepth
 #endif           

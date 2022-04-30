@@ -26,7 +26,7 @@ Would be pretty cool if this worked.",
             SetDrawColor(1, 0, 0, 0.4f);
 
             for (int i = 0; i < 10; i++) {
-                float xNorm = i / 9f, yNorm;
+                float xNorm = i / 9f;
 
                 float x = VW(xNorm);
                 float y = VH(xNorm);

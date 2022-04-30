@@ -24,7 +24,7 @@ namespace MinimalAF.Rendering {
 
             public Vertex New(float x, float y, float u, float v) {
                 return new Vertex(
-                    new Vector3(x, y, CTX.Current2DDepth), new Vector2(u, v)
+                    new Vector3(x, y, CTX.Current2DDepth - 1.0f), new Vector2(u, v)
                 );
             }
         }

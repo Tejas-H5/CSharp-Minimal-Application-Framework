@@ -17,6 +17,7 @@ namespace MinimalAF {
             allNames = names;
 
             Filter("");
+            stackingOffset = 1;
         }
 
         IEnumerable<(float, string, Rect)> IterateNames() {
@@ -41,9 +42,6 @@ namespace MinimalAF {
         }
 
         public override void OnRender() {
-            float prevDepth = CTX.Current2DDepth;
-            CTX.Current2DDepth = 0;
-
             SetFont("Consolas", 12);
 
             if (GetCharHeight() != textHeight) {
@@ -68,8 +66,6 @@ namespace MinimalAF {
 
                 DrawText(name, VW(0.5f), y, HorizontalAlignment.Center, VerticalAlignment.Top);
             }
-
-            CTX.Current2DDepth = prevDepth;
         }
 
         public void Filter(string str) {

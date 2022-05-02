@@ -7,6 +7,47 @@ namespace MinimalAF {
     }
 
     public partial class Element {
+
+        private float LayoutOffsetsGetOffset(int index, ArraySlice<Element> elements, float[] offsets, Direction layoutDirection, bool normalized) {
+            if(offsets == null) {
+                float amount;
+
+                if (layoutDirection == Direction.Right || layoutDirection == Direction.Up) {
+                    amount = (float)index / (elements.Length);
+                } else {
+                    amount = 1f - (float)index / (elements.Length);
+                }
+
+                if (layoutDirection == Direction.Left || layoutDirection == Direction.Right) {
+                    amount = VW(amount);
+                } else {
+                    amount = VH(amount);
+                }
+
+                return amount;
+            }
+
+            float offset = offsets[index];
+
+            if(normalized) {
+                if(layoutDirection == Direction.Left || layoutDirection == Direction.Right) {
+                    offset = VW(offset);
+                } else {
+                    offset = VH(offset);
+                }
+            }
+
+            if(layoutDirection == Direction.Down) {
+                offset = Height - offset;
+            } else if (layoutDirection == Direction.Left) {
+                offset = Width - offset;
+            }
+
+            return offset;
+        }
+
+
+
         /// <summary>
         /// Arranges rect transforms in a direction defined by LayoutDirection. 
         /// offsets can either be null, or an array of floats with absolute values, defining where all the split points are.
@@ -16,104 +57,42 @@ namespace MinimalAF {
         /// <param name="elements"></param>
         /// <param name="layoutDirection"></param>
         /// <param name="offsets"></param>
-        public void LayoutSplit(ArraySlice<Element> elements, Direction layoutDirection = Direction.Right, float[] offsets = null, bool normalizedOffsets = false) {
-            bool vertical = layoutDirection == Direction.Up || layoutDirection == Direction.Down;
-            bool reverse = layoutDirection == Direction.Down || layoutDirection == Direction.Left;
+        protected void LayoutOffsets(ArraySlice<Element> elements, Direction layoutDirection = Direction.Right, float[] offsets = null, bool normalizedOffsets = false) {
+            float previousAnchor = LayoutOffsetsGetOffset(0, elements, offsets, layoutDirection, normalizedOffsets);
 
-            if (offsets == null) {
-                normalizedOffsets = false;
-            }
-
-            float previousAnchor;
-
-            if (offsets != null) {
-                previousAnchor = offsets[0];
-            } else {
-                previousAnchor = 0;
-            }
-
-            if (reverse) {
-                if (vertical) {
-                    if (normalizedOffsets) {
-                        previousAnchor = VH(previousAnchor);
-                    }
-
-                    previousAnchor = VH(1.0f) - previousAnchor;
-                } else {
-                    if (normalizedOffsets) {
-                        previousAnchor = VW(previousAnchor);
-                    }
-
-                    previousAnchor = VW(1.0f) - previousAnchor;
-                }
-            }
-
-            int i = 0;
-            foreach (var (index, el) in elements) {
-                float currentAnchor;
-                if (offsets == null) {
-                    if (vertical) {
-                        currentAnchor = VH((i + 1.0f) / elements.Length);
-
-                        if (reverse) {
-                            currentAnchor = VH(1) - currentAnchor;
-                        }
-                    } else {
-                        currentAnchor = VW((i + 1.0f) / elements.Length);
-
-                        if (reverse) {
-                            currentAnchor = VW(1) - currentAnchor;
-                        }
-                    }
-                } else {
-                    currentAnchor = offsets[i + 1];
-
-                    if (normalizedOffsets) {
-                        if (vertical) {
-                            currentAnchor = VH(currentAnchor);
-                        } else {
-                            currentAnchor = VW(currentAnchor);
-                        }
-                    }
-
-                    if (reverse) {
-                        if (vertical) {
-                            currentAnchor = VH(1) - currentAnchor;
-                        } else {
-                            currentAnchor = VW(1) - currentAnchor;
-                        }
-                    }
-                }
+            foreach (var (i, el) in elements) {
+                float currentAnchor = LayoutOffsetsGetOffset(i + 1, elements, offsets, layoutDirection, normalizedOffsets);
 
                 Rect wanted = el.RelativeRect;
 
-                if (vertical) {
-                    if (reverse) {
-                        wanted.Y0 = currentAnchor;
-                        wanted.Y1 = previousAnchor;
-                    } else {
+                switch (layoutDirection) {
+                    case Direction.Up:
                         wanted.Y0 = previousAnchor;
                         wanted.Y1 = currentAnchor;
-                    }
-                } else {
-                    if (reverse) {
+                        break;
+                    case Direction.Down:
+                        wanted.Y0 = currentAnchor;
+                        wanted.Y1 = previousAnchor;
+                        break;
+                    case Direction.Left:
                         wanted.X0 = currentAnchor;
                         wanted.X1 = previousAnchor;
-                    } else {
+                        break;
+                    case Direction.Right:
                         wanted.X0 = previousAnchor;
                         wanted.X1 = currentAnchor;
-                    }
+                        break;
+                    default:
+                        break;
                 }
 
                 el.RelativeRect = wanted;
 
                 previousAnchor = currentAnchor;
-
-                i++;
             }
         }
 
-        public void LayoutTwoSplit(Element el0, Element el1, Direction layoutDirection, float splitAmount) {
+        protected void LayoutTwoSplit(Element el0, Element el1, Direction layoutDirection, float splitAmount) {
             Rect wanted0 = el0.RelativeRect;
             Rect wanted1 = el1.RelativeRect;
             if (layoutDirection == Direction.Down) {
@@ -134,21 +113,21 @@ namespace MinimalAF {
             el1.RelativeRect = wanted1;
         }
 
-        public void LayoutInset(ArraySlice<Element> elements, float margin) {
+        protected void LayoutInset(ArraySlice<Element> elements, float margin) {
             LayoutInset(elements, margin, margin, margin, margin);
         }
 
-        public void LayoutInset(Element element, float margin) {
+        protected void LayoutInset(Element element, float margin) {
             LayoutInset(element, margin, margin, margin, margin);
         }
 
-        public void LayoutInset(ArraySlice<Element> elements, float marginLeft, float marginBottom, float marginRight, float marginTop) {
+        protected void LayoutInset(ArraySlice<Element> elements, float marginLeft, float marginBottom, float marginRight, float marginTop) {
             for (int i = 0; i < elements.Length; i++) {
                 LayoutInset(elements[i], marginLeft, marginBottom, marginRight, marginTop);
             }
         }
 
-        public void LayoutInset(Element element, float marginLeft, float marginBottom, float marginRight, float marginTop) {
+        protected void LayoutInset(Element element, float marginLeft, float marginBottom, float marginRight, float marginTop) {
             Rect wanted = element.RelativeRect;
 
             wanted.X0 += marginLeft;
@@ -159,17 +138,50 @@ namespace MinimalAF {
             element.RelativeRect = wanted;
         }
 
-        public enum AspectRatioMethod {
+        protected void LayoutX0(ArraySlice<Element> elements, float val) {
+            foreach(var(i, el) in elements) {
+                var wanted = el.RelativeRect;
+                wanted.X0 = val;
+                el.RelativeRect = wanted;
+            }
+        }
+
+        protected void LayoutX1(ArraySlice<Element> elements, float val) {
+            foreach (var (i, el) in elements) {
+                var wanted = el.RelativeRect;
+                wanted.X1 = val;
+                el.RelativeRect = wanted;
+            }
+        }
+
+        protected void LayoutY0(ArraySlice<Element> elements, float val) {
+            foreach (var (i, el) in elements) {
+                var wanted = el.RelativeRect;
+                wanted.Y0 = val;
+                el.RelativeRect = wanted;
+            }
+        }
+
+        protected void LayoutY1(ArraySlice<Element> elements, float val) {
+            foreach (var (i, el) in elements) {
+                var wanted = el.RelativeRect;
+                wanted.Y1 = val;
+                el.RelativeRect = wanted;
+            }
+        }
+
+
+        protected enum AspectRatioMethod {
             DriveWidth, DriveHeight, FitInside, FitOutside
         }
 
-        public void LayoutAspectRatio(ArraySlice<Element> elements, float widthOverHeight, AspectRatioMethod method) {
+        protected void LayoutAspectRatio(ArraySlice<Element> elements, float widthOverHeight, AspectRatioMethod method) {
             for (int i = 0; i < elements.Length; i++) {
                 LayoutAspectRatio(elements[i], widthOverHeight, method);
             }
         }
 
-        public void LayoutAspectRatio(Element element, float widthOverHeight, AspectRatioMethod method) {
+        protected void LayoutAspectRatio(Element element, float widthOverHeight, AspectRatioMethod method) {
             bool shouldDriveHeight = false;
             Rect wanted = element.RelativeRect;
 
@@ -196,18 +208,23 @@ namespace MinimalAF {
         }
 
 
+
         /// <summary>
-        /// Use <see cref="LayoutSplit"/> if you need control on each individual size.
-        /// 
+        /// Use <see cref="LayoutOffsets"/> if you need control on each individual size.
         /// 
         /// </summary>
-        public void LayoutLinear(ArraySlice<Element> elements, Direction layoutDirection, float elementSizing, float scrollOffset = 0, float gap = 0) {
+        /// <param name="elements"></param>
+        /// <param name="layoutDirection"></param>
+        /// <param name="elementSizing"></param>
+        /// <param name="scrollOffset"></param>
+        /// <param name="gap"></param>
+        protected void LayoutLinear(ArraySlice<Element> elements, Direction layoutDirection, float elementSizing, float scrollOffset = 0, float gap = 0) {
             bool vertical = layoutDirection == Direction.Up || layoutDirection == Direction.Down;
             bool reverse = layoutDirection == Direction.Down || layoutDirection == Direction.Left;
 
             float dir;
             float previousEnd = scrollOffset;
-            if(reverse) {
+            if (reverse) {
                 dir = -1;
 
                 if (vertical) {
@@ -224,7 +241,7 @@ namespace MinimalAF {
                 float end = previousEnd + elementSizing * dir;
 
                 Rect wanted = e.RelativeRect;
-                if(layoutDirection == Direction.Left) {
+                if (layoutDirection == Direction.Left) {
                     wanted.X1 = previousEnd;
                     wanted.X0 = end;
                 } else if (layoutDirection == Direction.Right) {

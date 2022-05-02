@@ -23,48 +23,51 @@ namespace MinimalAF {
         protected void SetFont(string name, int size=12) {
             CTX.Text.SetFont(name, size);
         }
+        protected void SetClearColor(Color4 value) {
+            CTX.SetClearColor(value);
+        }
 
-        public float GetStringHeight(string s) {
+        protected float GetStringHeight(string s) {
             return CTX.Text.GetStringHeight(s);
         }
 
-        public float GetStringHeight(string s, int start, int end) {
+        protected float GetStringHeight(string s, int start, int end) {
             return CTX.Text.GetStringHeight(s, start, end);
         }
 
-        public float GetStringWidth(string s) {
+        protected float GetStringWidth(string s) {
             return CTX.Text.GetStringWidth(s);
         }
 
-        public float GetStringWidth(string s, int start, int end) {
+        protected float GetStringWidth(string s, int start, int end) {
             return CTX.Text.GetStringWidth(s, start, end);
         }
 
-        public float GetCharWidth(char c) {
+        protected float GetCharWidth(char c) {
             return CTX.Text.GetWidth(c);
         }
 
-        public float GetCharHeight(char c) {
+        protected float GetCharHeight(char c) {
             return CTX.Text.GetHeight(c);
         }
 
-        public float GetCharWidth() {
+        protected float GetCharWidth() {
             return CTX.Text.GetWidth();
         }
 
-        public float GetCharHeight() {
+        protected float GetCharHeight() {
             return CTX.Text.GetHeight();
         }
 
-        public Matrix4 GetModelMatrix() {
+        protected Matrix4 GetModelMatrix() {
             return CTX.Shader.Model;
         }
 
-        public Matrix4 GetViewMatrix() {
+        protected Matrix4 GetViewMatrix() {
             return CTX.Shader.View;
         }
 
-        public Matrix4 GetProjectionMatrix() {
+        protected Matrix4 GetProjectionMatrix() {
             return CTX.Shader.Projection;
         }
     }

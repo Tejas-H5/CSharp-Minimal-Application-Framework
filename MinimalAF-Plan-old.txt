@@ -1,6 +1,28 @@
 Anything cluttering up MinimalAF-Plan.txt is just cut-pasted here
 =======================================================
-
+	Make this element something that will wrap a component rather than something as part of the test harness, so that people can make more complicated test harnesses. Hopefully it can be a floating window that can connect to an arbitrary element that can hide/show, resize, and move. This feature would actually make this 'framework' useful imo
+		- Remove restart button, make it into a floating window that can be dragged and hidden/shown. The window is only 80% the height of the window, and you need to scroll to get to all the inputs and stuff.
+			- NO, that menu item can still exist. We will be adding another one.
+			We can remove duplicate code later imo
+		
+		- Create a window overlay that can be toggled hidden/visible with escape, and is mainly transparent unless the mouse is over top. Opacity might be something we want to be stack-based. consider this in future. The window with the variables and stuff should be overlaying the actual tests, and should be toggleable with escape
+			-* we can make it opaque, moveable, and toggleable later		
+		-* Create attributes that we can put onto a field in a test to see what UI we can use to controll it in the test
+			- Users can just create their own UI element.
+			- Actually this is too hard, I will just paramaterize all public properties. Some times we might want to impose restrictions or change the UI that we want on a thing, so we can make different attributes for those.
+				- Actually, doing sliders for things is a bit hard. I will just enfore one kind of UI for now. I should think about these things in a more iterative approach. Rather than building a building from the outside in, I should do it normally, i.e make the foundation, then the structurals, then etc. yeah you get it
+		
+		- Create panel
+			- draw text name
+			- draw all public fields with type
+			- create input pairs based on the type like we are already doing, and render that.
+			- then, start adding a callback that sets those values
+			- then add to the interface some method to get the value. we need to assign those callbacks as well.
+			
+	[ urgent ]
+	- Layout methods are unreadable, they are doing too much imo. should be split into several smaller methods. tf does 'LayoutSplit even mean tho?'
+		LayoutSplit -> AlignLeftRight(a, b, space), AlignBottomTop(a, b, space)
+		- I just simplified the method
 	- 3D and non-immediate mode support
 		Allowing generic vertices for meshes has caused a significant amount of complexity that I can't be bothered maintaining.
 		tasks:

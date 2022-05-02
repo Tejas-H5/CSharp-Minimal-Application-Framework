@@ -32,7 +32,7 @@ namespace MinimalAF {
         OpenTKWindowWrapper window;
         Element rootElement;
 
-        public override bool SingleChild => true;
+        protected override bool SingleChild => true;
 
         public ApplicationWindow() {
         }

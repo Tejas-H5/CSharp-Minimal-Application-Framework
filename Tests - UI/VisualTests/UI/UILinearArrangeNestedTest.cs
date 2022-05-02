@@ -1,6 +1,6 @@
 ﻿namespace MinimalAF.VisualTests.UI {
     [VisualTest(
-        description: @"Test that " + nameof(LayoutSplit) + " works when nested.",
+        description: @"Test that " + nameof(LayoutOffsets) + " works when nested.",
         tags: "UI, layout"
     )]
     public class UILinearArrangeNestedTest : Element {
@@ -33,12 +33,12 @@
         public override void OnUpdate() {
             if (KeyPressed(KeyCode.Space)) {
                 layouting = (layouting + 1) % ((int)(Direction.Right + 1));
-                Layout();
+                TriggerLayoutRecalculation();
             }
         }
 
         public override void OnLayout() {
-            LayoutSplit(children, (Direction)layouting);
+            LayoutOffsets(children, (Direction)layouting);
             LayoutChildren();
         }
     }

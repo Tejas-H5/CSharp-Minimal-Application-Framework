@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 
 namespace MinimalAF {
+    /// <summary>
+    /// TODO: Delete this
+    /// </summary>
     public class ZContainer : Element {
         private List<Element> stack = new List<Element>();
-        public override bool SingleChild => true;
+        protected override bool SingleChild => true;
 
         public ZContainer(Element child) {
             this.SetChildren(child);

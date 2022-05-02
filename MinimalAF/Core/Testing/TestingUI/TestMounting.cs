@@ -1,10 +1,19 @@
 ﻿using System;
 
-// Warning: Tight coupling. Not for the faint of heart
 namespace MinimalAF {
+
+    // a draggable area wrapping the testing element
     class TestMounting : Window {
         ApplicationWindow window;
         public (float, float) WantedSize;
+
+
+        public TestMounting() {            
+        }
+
+        public void SetTestcase(Element element) {
+            SetChildren(element);
+        }
 
         public override void OnRender() {
             RenderDragHandle(Direction.Left);
@@ -120,6 +129,12 @@ namespace MinimalAF {
                 WantedSize = value;
                 TriggerLayoutRecalculation();
             }
+        }
+
+        public override Rect DefaultRect(Rect parentDefaultRect) {
+            parentDefaultRect.SetWidth(WantedSize.Item1, 0.5f);
+            parentDefaultRect.SetHeight(WantedSize.Item2, 0.5f);
+            return parentDefaultRect;
         }
 
         public override void OnMount(Window w) {

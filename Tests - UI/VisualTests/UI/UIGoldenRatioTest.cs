@@ -29,7 +29,7 @@ to only work on a single UI element at a time.",
 
 
             public override void OnLayout() {
-                LayoutSplit(children, dir, goldenRatioSplit, true);
+                LayoutOffsets(children, dir, goldenRatioSplit, true);
                 LayoutInset(children, 10);
 
                 LayoutChildren();

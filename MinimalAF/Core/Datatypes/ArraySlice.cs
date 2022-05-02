@@ -10,12 +10,11 @@ namespace MinimalAF {
         }
     }
     
-    // Just for syntactic sugar. If Conversions could happen between interfaces and actual instances, this
-    // would probably be a real thing
-    public struct ArraySlice<T> {
-        public IList<T> Container;
-        public int Start;
-        public int End;
+    // Yo why isnt this just in the c# standard spec tho
+    public readonly struct ArraySlice<T> {
+        public readonly IList<T> Container;
+        public readonly int Start;
+        public readonly int End;
 
         public ArraySlice(IList<T> container, int a, int b) {
             Container = container;
@@ -35,6 +34,20 @@ namespace MinimalAF {
         public T this[int index] {
             get {
                 return Container[Start + index];
+            }
+        }
+
+        public ArraySlice<T> this[int start, int end] {
+            get {
+                if(end < 0) {
+                    end = Length + 1 + end;
+                }
+
+                if(start < 0) {
+                    start = Length + 1 + start;
+                }
+
+                return new ArraySlice<T>(Container, start, end);
             }
         }
 

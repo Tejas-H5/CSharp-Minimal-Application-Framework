@@ -19,7 +19,14 @@ namespace MinimalAF {
         T currentValue;
         string currentName;
 
-        public T Value => currentValue;
+        public T Value {
+            get => currentValue;
+            set {
+                // THIS IS LLATANTLY WRONG HAAHAHAHA
+                currentValue = value;
+                textInput.String = value.ToString();
+            }
+        }
 
         TextInput<string> textInput;
         NameList nameList;

@@ -1,6 +1,7 @@
 ﻿using OpenTK.Mathematics;
 
 namespace MinimalAF.Audio {
+
     public abstract class AudioSource {
         private static int nextAudioSourceID = 1;
 

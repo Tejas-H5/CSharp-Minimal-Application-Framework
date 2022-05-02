@@ -20,6 +20,10 @@ namespace MinimalAF {
             stackingOffset = 1;
         }
 
+        public bool IsValid(string value) {
+            return Array.IndexOf(allNames, value) != -1;
+        }
+
         IEnumerable<(float, string, Rect)> IterateNames() {
             float y = 0;
             float gap = 5;

@@ -7,6 +7,10 @@ namespace MinimalAF {
     public interface IInput<T> {
         public event Action<T> OnChanged;
         public event Action<T> OnFinalized;
+
+        public T Value {
+            get; set;
+        }
     }
 
     public class TextInput<T> : Element, IInput<T> {
@@ -30,6 +34,11 @@ namespace MinimalAF {
 
         Property<T> property;
         public Property<T> Property;
+
+        public T Value {
+            get => property.Value;
+            set => property.Value = value;
+        }
 
         Func<string, T> parser;
 

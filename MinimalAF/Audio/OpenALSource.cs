@@ -6,22 +6,17 @@ namespace MinimalAF.Audio {
     /// <summary>
     /// A wrapper for OpenAL's audio source.
     /// Only a finite number of these classes may be created as determined by the OpenAL
-    /// that is operating on a particular machine, so the factory pattern has been used
+    /// that is operating on a particular machine
     /// </summary>
     internal class OpenALSource : IDisposable {
         private int alSourceId;
-        internal int ALSourceID {
-            get {
-                return alSourceId;
-            }
-        }
+        internal int ALSourceID => alSourceId;
 
         public static OpenALSource CreateOpenALSource() {
             int alSource = 0;
             AudioCTX.ALCall(out alSource, () => {
                 return AL.GenSource();
-            }
-            );
+            });
 
             if (alSource == 0) {
                 return null;
@@ -39,7 +34,6 @@ namespace MinimalAF.Audio {
                 return;
 
             AudioCTX.ALCall(() => { AL.SourcePlay(alSourceId); });
-            AudioSourceState state = GetSourceState();
         }
 
         public void Pause() {
@@ -58,19 +52,24 @@ namespace MinimalAF.Audio {
 
         public void QueueBuffer(int alBufferID) {
             int bufferCount = GetBuffersQueued();
-            AudioCTX.ALCall(() => { AL.SourceQueueBuffer(alSourceId, alBufferID); });
+            AudioCTX.ALCall(() => { 
+                AL.SourceQueueBuffer(alSourceId, alBufferID); 
+            });
         }
 
         public int UnqueueBuffer() {
             int value;
-            AudioCTX.ALCall(out value, () => { return AL.SourceUnqueueBuffer(alSourceId); });
+            AudioCTX.ALCall(out value, () => { 
+                return AL.SourceUnqueueBuffer(alSourceId); 
+            });
+
             return value;
         }
 
         /// <summary>
-        /// This method clears the buffer queue on this source
+        /// This method clears the buffer queue on this source.
         /// If you actually need to use the values of the unqueued buffers, then
-        /// use UnqueueBuffer in conjunction with GetBuffersProcessed.
+        /// use UnqueueBuffer with GetBuffersProcessed.
         /// </summary>
         public void StopAndUnqueueAllBuffers() {
             Stop();

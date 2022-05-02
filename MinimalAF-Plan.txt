@@ -1,21 +1,22 @@
 [Final features] TODO:
 
-FINAL FEATURE :0
+FINAL Items :0
+
+	- feature: Modify public properties during test with test harness, autogenerate UI for this. 
+		-> Polish this feature:
+			-* window should be draggable and hideable.
+			-* numerical inputs should have left-right buttons and be draggable, like in Blender
+			-* All values must initialize themselves to whatever the class has set them to, now they are setting themselves to 0 or something
 		
-	- feature: Modify public properties during test with test harness, autogenerate UI for this. Make this element something that will wrap a component rather than something as part of the test harness, so that people can make more complicated test harnesses. Hopefully it can be a floating window that can connect to an arbitrary element that can hide/show, resize, and move. This feature would actually make this 'framework' useful imo
-		-* Remove restart button, make it into a floating window that can be dragged and hidden/shown. The window is only 80% the height of the window, and you need to scroll to get to all the inputs and stuff.
-		-* Create attributes that we can put onto a field in a test to see what UI we can use to controll it in the test
-		-* The window with the variables and stuff should be overlaying the actual tests, and should be toggleable with escape
-		-* foreach(f in typeof(test).fields): createCorrespondingUI(f)
-		-* We should restrict what types the UI can support. 
-			- string - text input
-			- number - slideable text input, slider
-			- enum 
-		-* 
+	- fix audio capabilities
+		- design
+		- handling multiple sources playing at the same time
 	
+	- profile startup, it takes too long
 	
+	- switch over to this notation, or back to _ notation, it was kidna useufull to be able to see at a glance which variables are fields
 	
-	
+	-* tag version 0.1.0
 Backlog: 
 	- 3D lighting shaders
 
@@ -27,15 +28,17 @@ Backlog:
 		since they are now pooled
 			
 	- test: Add unit tests for renderbuffer
-		-* find rare memory corruption bug that may now be fixed
+		- find rare memory corruption bug that may now be fixed
+			- this may just be from the texture being disposed and us trying to do OpenGL stuff on the GC thread, which we have basically fixed
 	
 	- make stencil stack-based somehow
-	
+		- am not sure how possible this is.
 		
 	-* Analyse allocations, we are getting a lot of GC pauses
 		- only in debug mode though, and not in release
 	
 	-* PushDepth, something like pushmatrix but we're settign the 2D depth temporarily. it's like Z-Index in HTML but actually useful
+		- probably no longer needed because we now have 'stacking offset'
 	
 	-* Try to understand how the depth is working, and why it doesnt work for 
 	numbers greater than 1. Near far clipping planes?

@@ -37,13 +37,13 @@ namespace MinimalAF.VisualTests.UI {
 
         public override void OnLayout() {
             LayoutInset(children.Slice(0, 3), 0, VH(2f / 3f), 0, 0);
-            LayoutSplit(children.Slice(0, 3), Direction.Right);
+            LayoutOffsets(children.Slice(0, 3), Direction.Right);
 
             LayoutInset(children.Slice(3, 6), 0, VH(1f / 3f), 0, VH(1f / 3f));
-            LayoutSplit(children.Slice(3, 6), Direction.Right);
+            LayoutOffsets(children.Slice(3, 6), Direction.Right);
 
             LayoutInset(children.Slice(6, 9), 0, VH(0), 0, VH(2f / 3f));
-            LayoutSplit(children.Slice(6, 9), Direction.Right);
+            LayoutOffsets(children.Slice(6, 9), Direction.Right);
 
             LayoutInset(children, 10);
 

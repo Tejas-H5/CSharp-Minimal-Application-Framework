@@ -28,7 +28,7 @@
                     Pivot.Y -= 0.5f;
                 }
 
-                Layout();
+                TriggerLayoutRecalculation();
             }
         }
 

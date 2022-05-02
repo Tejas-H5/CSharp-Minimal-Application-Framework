@@ -83,6 +83,12 @@ namespace MinimalAF.VisualTests.UI {
             dragState = GetAncestor<UIDragTestProgram>();
         }
 
+        public override void OnRender() {
+            if(MouseOverSelf && !MouseFinishedDragging && dragState.CurrentlyDraggedContent != null) {
+                SetDrawColor(0, 0, 0, 0.5f);
+                DrawRect(0, 0, Width, Height);
+            }
+        }
 
         public override void OnUpdate() {
             if (MouseOverSelf && MouseFinishedDragging) {
@@ -101,18 +107,20 @@ namespace MinimalAF.VisualTests.UI {
 
         public UIDragTestProgram() {
             thinggo = new DraggedContent();
-            Element area1;
-            SetChildren(
-                area1 = new DragReciever("Area 1"),
-                new DragReciever("Area 2")
-            );
+            Element[] areas = new Element[10];
 
-            area1.AddChild(thinggo);
+            for(int i = 0; i < areas.Length; i++) {
+                areas[i] = new DragReciever("Area " + i);
+            }
+
+            SetChildren(areas);
+
+            Children[0].AddChild(thinggo);
         }
 
         public override void OnLayout() {
-            LayoutSplit(children, Direction.Left);
-            LayoutInset(children, 50);
+            LayoutOffsets(Children, Direction.Down);
+            LayoutInset(Children, 5);
 
             LayoutChildren();
         }

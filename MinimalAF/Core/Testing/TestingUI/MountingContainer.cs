@@ -3,17 +3,24 @@ using System.Reflection;
 
 namespace MinimalAF {
     class MountingContainer : Element {
-        TestMounting mounting;
         VisualTestRunner testRunner;
         string info;
 
-        public TestMounting TestMounting => mounting;
+        TestMounting mounting;
+        TestParameterPanel testParameterPanel;
 
         public MountingContainer() {
             mounting = new TestMounting();
+            testParameterPanel = new TestParameterPanel();
             Clipping = true;
 
-            SetChildren(mounting);
+            SetChildren(mounting, testParameterPanel);
+        }
+
+        public void SetTestcase(Element element) {
+            mounting.SetTestcase(element);
+
+            testParameterPanel.SetTestcase(element);
         }
 
         public override void OnMount(Window w) {
@@ -40,15 +47,6 @@ namespace MinimalAF {
 
             SetFont("Consolas", 12);
             DrawText(info, 0, 0, HorizontalAlignment.Left, VerticalAlignment.Bottom);
-        }
-
-        public override void OnLayout() {
-            Rect wanted = mounting.RelativeRect;
-            wanted.SetWidth(mounting.WantedSize.Item1, 0.5f);
-            wanted.SetHeight(mounting.WantedSize.Item2, 0.5f);
-            mounting.RelativeRect = wanted;
-
-            LayoutChildren();
         }
     }
 }

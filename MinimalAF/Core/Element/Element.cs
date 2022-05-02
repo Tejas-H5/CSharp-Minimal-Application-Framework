@@ -11,14 +11,14 @@ namespace MinimalAF {
         internal static List<Element> RenderQueue = new List<Element>();
         protected int stackingOffset = 0;
 
-        public virtual bool SingleChild => false;
+        protected virtual bool SingleChild => false;
 
-        public bool IsVisibleNextFrame = true;
+        protected bool IsVisibleNextFrame = true;
         protected bool isVisible = true;
         private bool shouldTriggerParentResize = false;
 
         // IDK a better name for this
-        public void TriggerLayoutRecalculation() {
+        protected void TriggerLayoutRecalculation() {
             shouldTriggerParentResize = true;
         }
 
@@ -29,8 +29,8 @@ namespace MinimalAF {
             }
         }
 
-        public Vector2 Pivot;
-        public Vector2 Offset;
+        protected Vector2 Pivot;
+        protected Vector2 Offset;
         private Rect relativeRect;
         internal Rect screenRect; // this is auto-calculated
         internal Rect defaultScreenRect; // this is auto-calculated
@@ -38,18 +38,12 @@ namespace MinimalAF {
         /// <summary>
         /// This will be updated whenever everything is rendered
         /// </summary>
-        public Rect ScreenRect => screenRect;
+        protected Rect ScreenRect => screenRect;
 
         bool rectModified = false;
 
-        public bool Clipping {
+        protected bool Clipping {
             get; set;
-        }
-
-
-        // TODO: make this somewhat local, or come up with a good way to do that
-        protected void SetClearColor(Color4 value) {
-            CTX.SetClearColor(value);
         }
 
         public ArraySlice<Element> Children {
@@ -65,6 +59,7 @@ namespace MinimalAF {
             }
         }
 
+
         public Element SetChildren(params Element[] newChildren) {
 #if DEBUG
             if (SingleChild && children != null && children.Count > 1)
@@ -76,10 +71,14 @@ namespace MinimalAF {
                 Remove(i);
             }
 
-            if (newChildren != null) {
-                for (int i = 0; i < newChildren.Length; i++) {
-                    AddChild(newChildren[i]);
-                }
+            if (newChildren == null)
+                return this;
+                
+            for (int i = 0; i < newChildren.Length; i++) {
+                if (newChildren[i] == null)
+                    continue;
+
+                AddChild(newChildren[i]);
             }
 
             return this;
@@ -101,14 +100,6 @@ namespace MinimalAF {
             child.parent = null;
 
             shouldTriggerParentResize = true;
-        }
-
-        public int Index() {
-            if (Parent == null) {
-                return 0;
-            }
-
-            return Parent.children.IndexOf(this);
         }
 
         private void Add(Element element) {
@@ -187,7 +178,7 @@ namespace MinimalAF {
         }
 
 
-        public Element() {
+        protected Element() {
         }
 
         /// <summary>
@@ -422,7 +413,7 @@ namespace MinimalAF {
                 if (children[i].rectModified)
                     continue;
 
-                children[i].RelativeRect = DefaultRect();
+                children[i].RelativeRect = children[i].DefaultRect(new Rect(0, 0, VW(1), VH(1)));
             }
 
             OnLayout();
@@ -437,17 +428,11 @@ namespace MinimalAF {
         /// <summary>
         /// <para>
         /// This is how the parent will size this rect by default. The parent will call this method on it's elements
-        /// before calling OnLayout
-        /// </para>
-        /// 
-        /// <para>
-        /// Note that I have never ever had to use this (and when I tried, I later realised my design was wrong), 
-        /// and if you are using it, it may be a problem with your design.
-        /// I am keeping it in for now, just in case
+        /// before calling OnLayout. Most times you don't need this, but there are a few valid uses
         /// </para>
         /// </summary>
-        public virtual Rect DefaultRect() {
-            return new Rect(0, 0, VW(1), VH(1));
+        public virtual Rect DefaultRect(Rect parentRelativeRect) {
+            return parentRelativeRect;
         }
 
 

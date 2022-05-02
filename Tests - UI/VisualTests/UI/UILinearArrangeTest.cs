@@ -1,6 +1,6 @@
 ﻿namespace MinimalAF.VisualTests.UI {
     [VisualTest(
-        description: @"Test that " + nameof(LayoutSplit) + " works.",
+        description: @"Test that " + nameof(LayoutOffsets) + " works.",
         tags: "UI, layout"
     )]
     public class UILinearArrangeTest : Element {
@@ -35,13 +35,13 @@
         public override void OnUpdate() {
             if (KeyPressed(KeyCode.Space)) {
                 layouting = (layouting + 1) % ((int)(Direction.Right + 1));
-                Layout();
+                TriggerLayoutRecalculation();
             }
         }
 
 
         public override void OnLayout() {
-            LayoutSplit(children, (Direction)layouting);
+            LayoutOffsets(children, (Direction)layouting);
             LayoutChildren();
         }
     }

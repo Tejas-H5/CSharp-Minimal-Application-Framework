@@ -6,10 +6,9 @@ using System.Reflection;
 namespace MinimalAF {
     public class VisualTestRunner : Element {
         List<(Type, VisualTestAttribute)> visualTestElements = new List<(Type, VisualTestAttribute)>();
-
         TestList testList;
         TextInput<string> searchbox;
-        Reflector reflectionPanel;
+        ConstructorParameterPanel reflectionPanel;
         MountingContainer mountingContainer;
 
         public event Action<Element, object[]> OnTestcaseChanged;
@@ -42,9 +41,9 @@ namespace MinimalAF {
             searchbox.OnChanged += Searchbox_OnTextChanged;
 
             mountingContainer = new MountingContainer();
+            reflectionPanel = new ConstructorParameterPanel();
+            
 
-
-            reflectionPanel = new Reflector();
 
             SetChildren(testList, searchbox, mountingContainer, reflectionPanel);
 
@@ -62,8 +61,6 @@ namespace MinimalAF {
             }
         }
 
-
-
         private void Searchbox_OnTextChanged(string value) {
             testList.SetFilter(value);
         }
@@ -78,7 +75,7 @@ namespace MinimalAF {
 
         void StartTest(int index, object[] args = null) {
             try {
-                mountingContainer.TestMounting.SetChildren(null);
+                mountingContainer.SetTestcase(null);
                 int count = visualTestElements.Count;
 
                 currentTest = index;
@@ -104,20 +101,19 @@ namespace MinimalAF {
                     }
 
                     Type paramType = expectedArgs[i].ParameterType;
-                    if (!Reflector.SupportsType(paramType)) {
-                        throw new Exception("The type " + paramType.Name + " on parameter " + expectedArgs[i].Name + " is not yet supported");
-                    }
+                    
 
-                    args[i] = TestRunerCommon.InstantiateDefaultParameterValue(expectedArgs[i]);
+                    args[i] = TestRunnerCommon.InstantiateDefaultParameterValue(expectedArgs[i]);
                 }
 
                 Element test = (Element)Activator.CreateInstance(t, args);
 
-                mountingContainer.TestMounting.SetChildren(test);
+                mountingContainer.SetTestcase(test);
                 OnTestcaseChanged?.Invoke(test, args);
             } catch (Exception e) {
-                mountingContainer.TestMounting.SetChildren(new TestError(e));
-                OnTestcaseChanged?.Invoke(mountingContainer.TestMounting[0], new object[0]);
+                var nullTest = new TestError(e);
+                mountingContainer.SetTestcase(nullTest);
+                OnTestcaseChanged?.Invoke(nullTest, new object[0]);
             }
         }
 

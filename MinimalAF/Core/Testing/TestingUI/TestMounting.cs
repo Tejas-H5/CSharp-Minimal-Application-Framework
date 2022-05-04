@@ -96,7 +96,7 @@ namespace MinimalAF {
                 startHeight = WantedSize.Item2;
             }
 
-            if (MouseFinishedDragging) {
+            if (MouseFinishedDraggingAnywhere) {
                 isDragging = false;
                 dragX = 0;
                 dragY = 0;

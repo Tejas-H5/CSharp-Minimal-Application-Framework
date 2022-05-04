@@ -7,8 +7,9 @@ namespace MinimalAF {
 
     class TestParameterUI : Element {
         Element testcase;
-        (PropertyInfo, IInput<object>)[] propertyInputs;
+        List<(PropertyInfo, IInput<object>)> propertyInputs;
         float charHeight;
+        bool skipUpdate = false;
 
         public override void OnMount(Window w) {
             SetFont("Consolas", 12);
@@ -16,9 +17,18 @@ namespace MinimalAF {
         }
 
         public override void OnUpdate() {
+            if(skipUpdate) {
+                skipUpdate = false;
+                return;
+            }
+
+
             if (propertyInputs != null) {
-                for(int i = 0; i < propertyInputs.Length; i++) {
+                for (int i = 0; i < propertyInputs.Count; i++) {
                     var (property, input) = propertyInputs[i];
+
+                    if (input.HasFocus)
+                        continue;
 
                     input.Value = property.GetValue(testcase);
                 }
@@ -38,37 +48,32 @@ namespace MinimalAF {
 
             Type currentTestClass = element.GetType();
 
-
             var properties = currentTestClass.GetProperties();
-            int len = 0;
-            for (int i = 0; i < properties.Length; i++) {
-                if (!TestRunnerCommon.SupportsType(properties[i].PropertyType))
-                    continue;
-
-                len++;
-            }
-
-            propertyInputs = new (PropertyInfo, IInput<object>)[len];
-            int pos = 0;
-
+            propertyInputs = new List<(PropertyInfo, IInput<object>)>();
             for (int i = 0; i < properties.Length; i++) {
                 var property = properties[i];
 
                 if (!TestRunnerCommon.SupportsType(property.PropertyType))
                     continue;
 
+                if(!property.CanWrite) {
+                    continue;
+                }
+
                 var input = TestRunnerCommon.CreateInput(property.PropertyType, Activator.CreateInstance(property.PropertyType));
                 var label = TestRunnerCommon.CreateText(property.Name);
                 var pair = new UIPair(label, (Element)input);
 
                 input.OnChanged += (object obj) => {
-                    property.SetValue(testcase, obj);
+                    if(property.CanWrite) {
+                        property.SetValue(testcase, obj);
+                    }
+                    skipUpdate = true;
                 };
 
                 AddChild(pair);
 
-                propertyInputs[pos] = (property, input);
-                pos++;
+                propertyInputs.Add((property, input));
             }
         }
 

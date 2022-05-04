@@ -4,9 +4,12 @@ FINAL Items :0
 
 	- feature: Modify public properties during test with test harness, autogenerate UI for this. 
 		-> Polish this feature:
+			- [Done] All values must initialize themselves to whatever the class has set them to, now they are setting themselves to 0 or something
+			- [done] numerical inputs should have left-right buttons and be draggable, like in Blender
+			
+			-* window should not have excess size.
 			-* window should be draggable and hideable.
-			-* numerical inputs should have left-right buttons and be draggable, like in Blender
-			-* All values must initialize themselves to whatever the class has set them to, now they are setting themselves to 0 or something
+			
 		
 	- fix audio capabilities
 		- design

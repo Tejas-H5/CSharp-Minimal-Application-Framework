@@ -35,6 +35,9 @@ namespace MinimalAF {
         public event Action<T> OnFinalized;
         bool stayOpen = false;
 
+
+        public bool HasFocus => textInput.HasFocus;
+
         public ChoiceInput(string[] names, T[] values, T selected)
             : this(names, values, Array.IndexOf(values, selected)) { }
 

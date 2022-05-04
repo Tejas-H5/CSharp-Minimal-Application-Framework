@@ -9,7 +9,7 @@ A higher number of lines drawn is always better. This test won't work when vsync
         tags: "2D"
     )]
     class Benchmark : Element {
-        public int LineThickness {
+        public float LineThickness {
             get; set;
         }
         public CapType CapType {
@@ -60,7 +60,10 @@ A higher number of lines drawn is always better. This test won't work when vsync
                 } else {
                     double actualToWantedRatio = FPS / RequiredFPS;
 
-                    amount = (int)(actualToWantedRatio * amount);
+                    amount = (int)Math.Ceiling(actualToWantedRatio * amount);
+                    if(amount < 1) {
+                        amount = 1;
+                    }
 
                     if (Math.Abs(actualToWantedRatio - 1.0) < 0.01) {
                         Console.WriteLine("Converged at amount = " + amount + " lines required for " + RequiredFPS);

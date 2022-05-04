@@ -37,7 +37,7 @@ namespace MinimalAF.VisualTests.UI {
                 startY0 = RelativeRect.Y0;
                 dragState.CurrentlyDraggedContent = this;
                 isDragging = true;
-            } else if (MouseFinishedDragging) {
+            } else if (MouseFinishedDraggingAnywhere) {
                 isDragging = false;
                 Offset = (0, 0);
             } else if (isDragging) {
@@ -51,7 +51,7 @@ namespace MinimalAF.VisualTests.UI {
         }
 
         public override void AfterUpdate() {
-            if (MouseFinishedDragging) {
+            if (MouseFinishedDraggingAnywhere) {
                 setNullNextFrame = true;
             } else if(setNullNextFrame) {
                 dragState.CurrentlyDraggedContent = null;
@@ -84,14 +84,14 @@ namespace MinimalAF.VisualTests.UI {
         }
 
         public override void OnRender() {
-            if(MouseOverSelf && !MouseFinishedDragging && dragState.CurrentlyDraggedContent != null) {
+            if(MouseOverSelf && !MouseFinishedDraggingAnywhere && dragState.CurrentlyDraggedContent != null) {
                 SetDrawColor(0, 0, 0, 0.5f);
                 DrawRect(0, 0, Width, Height);
             }
         }
 
         public override void OnUpdate() {
-            if (MouseOverSelf && MouseFinishedDragging) {
+            if (MouseOverSelf && MouseFinishedDraggingAnywhere) {
                 if (dragState.CurrentlyDraggedContent != null) {
                     dragState.CurrentlyDraggedContent.Parent = this;
                     dragState.CurrentlyDraggedContent = null;

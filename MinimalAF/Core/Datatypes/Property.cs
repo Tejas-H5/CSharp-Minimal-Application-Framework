@@ -16,10 +16,6 @@ namespace MinimalAF {
             this.validator = validator;
         }
 
-        public void Set(T value) {
-            Value = value;
-            OnChanged?.Invoke(Value);
-        }
 
         /// <summary>
         /// To invoke OnChanged, use Set(value) instead of assigning here
@@ -33,11 +29,13 @@ namespace MinimalAF {
 
                 try {
                     if (validator != null) {
-                        value = validator(value);
+                        Value = validator(value);
                     }
                 } catch (Exception e) {
                     Console.WriteLine("Setting property failed: " + e);
                 }
+
+                OnChanged?.Invoke(Value);
             }
         }
     }

@@ -11,6 +11,10 @@ namespace MinimalAF {
         public T Value {
             get; set;
         }
+
+        public bool HasFocus {
+            get;
+        }
     }
 
     public class TextInput<T> : Element, IInput<T> {
@@ -18,8 +22,17 @@ namespace MinimalAF {
 
         bool endsTypingOnNewline = true;
         float blinkPhase = 0, blinkSpeed = 3;
+
+        public event Action<T> OnFinalized {
+            add {
+                property.OnChanged += value;
+            }
+            remove {
+                property.OnChanged -= value;
+            }
+        }
+
         public event Action<T> OnChanged;
-        public event Action<T> OnFinalized;
         public event Action OnDefocused;
 
         public string Placeholder {
@@ -33,7 +46,6 @@ namespace MinimalAF {
         }
 
         Property<T> property;
-        public Property<T> Property;
 
         public T Value {
             get => property.Value;
@@ -91,8 +103,13 @@ namespace MinimalAF {
             Clipping = true;
 
             String = defaultValue.ToString();
+
+            OnFinalized += TextInput_OnFinalized;
         }
 
+        private void TextInput_OnFinalized(T obj) {
+            String = obj.ToString();
+        }
 
         public override void OnMount(Window w) {
             uiState = GetResource<UIState>();
@@ -186,19 +203,12 @@ namespace MinimalAF {
                 return;
 
             Focus(false);
-            bool changed = false;
 
             try {
                 property.Value = parser(String);
-                changed = true;
             } catch (Exception) {
                 // validation error. 
-            }
-
-            String = property.Value.ToString();
-
-            if (changed) {
-                OnFinalized?.Invoke(property.Value);
+                // TODO: do something with this?
             }
         }
     }

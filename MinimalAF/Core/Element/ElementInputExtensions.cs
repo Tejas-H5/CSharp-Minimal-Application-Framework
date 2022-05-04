@@ -20,9 +20,15 @@ namespace MinimalAF {
         protected float MouseDragStartY => Input.Mouse.DragStartY;
         protected float MouseDragDeltaX => Input.Mouse.DragDeltaX;
         protected float MouseDragDeltaY => Input.Mouse.DragDeltaY;
+
         protected bool MouseIsDragging => MouseOverSelf && Input.Mouse.IsDragging;
         protected bool MouseStartedDragging => MouseOverSelf && Input.Mouse.StartedDragging;
-        protected bool MouseFinishedDragging => Input.Mouse.FinishedDragging;
+        protected bool MouseFinishedDragging => MouseOverSelf && Input.Mouse.FinishedDragging;
+
+        protected bool MouseStartedDraggingAnywhere => Input.Mouse.StartedDragging;
+        protected bool MouseIsDraggingAnywhere => Input.Mouse.IsDragging;
+        protected bool MouseFinishedDraggingAnywhere => Input.Mouse.FinishedDragging;
+        
 
         protected bool MouseButtonPressed(MouseButton b) {
             return MouseOverSelf && Input.Mouse.ButtonPressed(b);

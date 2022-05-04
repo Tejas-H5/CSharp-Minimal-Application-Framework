@@ -36,13 +36,29 @@ namespace MinimalAF {
 
             // TODO: add a dropdown that lets you select from an enum for enums
             if (type == typeof(int)) {
-                input = new TextInput<object>(CreateText(""), defaultValue, (string s) => int.Parse(s));
+                input = new NumericSlideInput<object>(
+                    new TextInput<object>(CreateText(""), defaultValue, (string s) => int.Parse(s)),
+                    (float x) => (int)x,
+                    (object x) => (float)((int)x)
+                );
             } else if (type == typeof(float)) {
-                input = new TextInput<object>(CreateText(""), defaultValue, (string s) => float.Parse(s));
+                input = new NumericSlideInput<object>(
+                    new TextInput<object>(CreateText(""), defaultValue, (string s) => float.Parse(s)),
+                    (float x) => (float)x,
+                    (object x) => (float)((float)x)
+                );
             } else if (type == typeof(double)) {
-                input = new TextInput<object>(CreateText(""), defaultValue, (string s) => double.Parse(s));
+                input = new NumericSlideInput<object>(
+                    new TextInput<object>(CreateText(""), defaultValue, (string s) => double.Parse(s)),
+                    (float x) => (double)x,
+                    (object x) => (float)((double)x)
+                );
             } else if (type == typeof(long)) {
-                input = new TextInput<object>(CreateText(""), defaultValue, (string s) => long.Parse(s));
+                input = new NumericSlideInput<object>(
+                    new TextInput<object>(CreateText(""), defaultValue, (string s) => long.Parse(s)),
+                    (float x) => (long)x,
+                    (object x) => (float)((long)x)
+                );
             } else if (type == typeof(string)) {
                 input = new TextInput<object>(CreateText(""), defaultValue, (string s) => s);
             } else if (type == typeof(bool)) {

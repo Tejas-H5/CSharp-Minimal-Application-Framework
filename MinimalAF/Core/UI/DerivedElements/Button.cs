@@ -1,13 +1,18 @@
 ﻿using System;
 
-// Warning: Tight coupling. Not for the faint of heart
 namespace MinimalAF {
     class Button : Element {
         public event Action OnClick;
+        TextElement _text;
 
         public Button(string text) {
-            SetChildren(new TextElement(text, Color4.VA(0, 1), "Consolas", 12, VerticalAlignment.Center, HorizontalAlignment.Center));
+            _text = new TextElement(text, Color4.VA(0, 1), "Consolas", 12, VerticalAlignment.Center, HorizontalAlignment.Center);
+            SetChildren(_text);
         }
+        public override Rect DefaultRect(float parentWidth, float parentHeight) {
+            return _text.DefaultRect(parentWidth, parentHeight);
+        }
+
 
         public override void OnRender() {
             SetDrawColor(Color4.VA(1, 0.5f));

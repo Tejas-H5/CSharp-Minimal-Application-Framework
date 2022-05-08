@@ -9,8 +9,11 @@ namespace MinimalAF {
             return new ArraySlice<T>(container, start, end);
         }
     }
-    
-    // Yo why isnt this just in the c# standard spec tho
+
+
+    /// <summary>
+    /// Basically ArraySegment but a lot of syntactical sugar with minimal overhead.
+    /// </summary>
     public readonly struct ArraySlice<T> {
         public readonly IList<T> Container;
         public readonly int Start;
@@ -35,6 +38,9 @@ namespace MinimalAF {
             get {
                 return Container[Start + index];
             }
+            set {
+                Container[Start + index] = value;
+            }
         }
 
         public ArraySlice<T> this[int start, int end] {
@@ -57,11 +63,17 @@ namespace MinimalAF {
             }
         }
 
+        /// <summary>
+        /// A struct enumerator that shouldn't allocate anything.
+        /// </summary>
         public ArraySliceIterator<T> GetEnumerator() {
             return new ArraySliceIterator<T>(this);
         }
     }
 
+    /// <summary>
+    /// This iterator gives the index as well as the value
+    /// </summary>
     public struct ArraySliceIterator<T> {
         private ArraySlice<T> slice;
         private int index;

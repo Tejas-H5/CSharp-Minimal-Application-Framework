@@ -46,15 +46,15 @@ namespace MinimalAF {
             return new Matrix4(row1, row2, row3, row4);
         }
 
-        protected Vector4 Vec4(float x, float y, float z, float w) {
+        protected Vector4 Vec4(float x = 0, float y = 0, float z = 0, float w = 1) {
             return new Vector4(x, y, z, w);
         }
 
-        protected Vector3 Vec3(float x, float y, float z) {
+        protected Vector3 Vec3(float x = 0, float y = 0, float z = 0) {
             return new Vector3(x, y, z);
         }
 
-        protected Vector2 Vec2(float x, float y) {
+        protected Vector2 Vec2(float x = 0, float y = 0) {
             return new Vector2(x, y);
         }
 

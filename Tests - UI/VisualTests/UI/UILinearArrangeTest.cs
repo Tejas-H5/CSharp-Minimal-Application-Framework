@@ -1,12 +1,12 @@
 ﻿namespace MinimalAF.VisualTests.UI {
     [VisualTest(
-        description: @"Test that " + nameof(LayoutOffsets) + " works.",
+        description: @"Test that " + nameof(LayoutLinear) + " works.",
         tags: "UI, layout"
     )]
     public class UILinearArrangeTest : Element {
         public UILinearArrangeTest() {
             SetChildren(
-                GenerateElement("0 (Press space to toggle layout)   "),
+                GenerateElement("0"),
                 GenerateElement("1"),
                 GenerateElement("2"),
                 GenerateElement("3")
@@ -30,18 +30,25 @@
             SetClearColor(Color4.RGBA(1, 1, 1, 1));
         }
 
-        int layouting = (int)Direction.Right;
+        Direction _layouting = Direction.Right;
 
         public override void OnUpdate() {
             if (KeyPressed(KeyCode.Space)) {
-                layouting = (layouting + 1) % ((int)(Direction.Right + 1));
+                _layouting = _layouting + 1;
+                if(_layouting > Direction.Right) {
+                    _layouting = 0;
+                }
+
+                ((TextElement)Children[0][0]).String = "Layout: " + _layouting.ToString();
+
                 TriggerLayoutRecalculation();
             }
         }
 
 
         public override void OnLayout() {
-            LayoutOffsets(children, (Direction)layouting);
+            LayoutLinear(Children, _layouting, VDir(_layouting, 1f / Children.Length));
+
             LayoutChildren();
         }
     }

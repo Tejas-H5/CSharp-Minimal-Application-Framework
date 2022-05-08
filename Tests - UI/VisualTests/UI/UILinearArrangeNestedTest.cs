@@ -1,6 +1,6 @@
 ﻿namespace MinimalAF.VisualTests.UI {
     [VisualTest(
-        description: @"Test that " + nameof(LayoutOffsets) + " works when nested.",
+        description: @"Test that " + nameof(LayoutLinear) + " works when nested.",
         tags: "UI, layout"
     )]
     public class UILinearArrangeNestedTest : Element {
@@ -28,17 +28,21 @@
             SetClearColor(Color4.RGBA(1, 1, 1, 1));
         }
 
-        int layouting = (int)Direction.Down;
+        Direction layouting = Direction.Down;
 
         public override void OnUpdate() {
             if (KeyPressed(KeyCode.Space)) {
-                layouting = (layouting + 1) % ((int)(Direction.Right + 1));
+                layouting = (layouting + 1);
+                if(layouting > Direction.Right) {
+                    layouting = 0;
+                }
+
                 TriggerLayoutRecalculation();
             }
         }
 
         public override void OnLayout() {
-            LayoutOffsets(children, (Direction)layouting);
+            LayoutLinear(Children, layouting, VDir(layouting, 1f / Children.Length));
             LayoutChildren();
         }
     }

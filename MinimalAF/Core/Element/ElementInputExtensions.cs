@@ -1,21 +1,23 @@
 ﻿using MinimalAF.Rendering;
 
 namespace MinimalAF {
+    // TODO: update naming conventions on internal classes. Always prefer the conventions in Element extensions, as they
+    // will be more up to date since they are user-facing
     public partial class Element {
         protected float MouseX {
             get {
-                return Input.Mouse.X - screenRect.X0;
+                return Input.Mouse.X - _screenRect.X0;
             }
         }
 
         protected float MouseY {
             get {
-                return Input.Mouse.Y - screenRect.Y0;
+                return Input.Mouse.Y - _screenRect.Y0;
             }
         }
 
-        protected float MouseXDelta => Input.Mouse.XDelta;
-        protected float MouseYDelta => Input.Mouse.YDelta;
+        protected float MouseDeltaX => Input.Mouse.XDelta;
+        protected float MouseDeltaY => Input.Mouse.YDelta;
         protected float MouseDragStartX => Input.Mouse.DragStartX;
         protected float MouseDragStartY => Input.Mouse.DragStartY;
         protected float MouseDragDeltaX => Input.Mouse.DragDeltaX;
@@ -23,11 +25,11 @@ namespace MinimalAF {
 
         protected bool MouseIsDragging => MouseOverSelf && Input.Mouse.IsDragging;
         protected bool MouseStartedDragging => MouseOverSelf && Input.Mouse.StartedDragging;
-        protected bool MouseFinishedDragging => MouseOverSelf && Input.Mouse.FinishedDragging;
+        protected bool MouseStoppedDragging => MouseOverSelf && Input.Mouse.FinishedDragging;
 
         protected bool MouseStartedDraggingAnywhere => Input.Mouse.StartedDragging;
         protected bool MouseIsDraggingAnywhere => Input.Mouse.IsDragging;
-        protected bool MouseFinishedDraggingAnywhere => Input.Mouse.FinishedDragging;
+        protected bool MouseStoppedDraggingAnywhere => Input.Mouse.FinishedDragging;
         
 
         protected bool MouseButtonPressed(MouseButton b) {
@@ -42,7 +44,7 @@ namespace MinimalAF {
             return MouseOverSelf && Input.Mouse.ButtonHeld(b);
         }
 
-        protected bool MouseOverSelf => Input.Mouse.IsOver(screenRect);
+        protected bool MouseOverSelf => Input.Mouse.IsOver(_screenRect);
 
         protected bool MouseOver(Rect r) {
             return MouseOver(r.X0, r.Y0, r.X1, r.Y1);

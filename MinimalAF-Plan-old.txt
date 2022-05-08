@@ -1,5 +1,22 @@
 Anything cluttering up MinimalAF-Plan.txt is just cut-pasted here
 =======================================================
+
+	- feature: Modify public properties during test with test harness, autogenerate UI for this. 
+		-> Polish this feature:
+			- [Done] All values must initialize themselves to whatever the class has set them to, now they are setting themselves to 0 or something
+			- [done] numerical inputs should have left-right buttons and be draggable, like in Blender
+			
+			- [done] window should not have excess size.
+				- [done] We need some kind of pivot mechanism. 
+				
+			- [done] window should be draggable.
+			
+			- [done] window needs to resize downwards
+			
+			- [done] Pairs need to be top - bottom , not left : right
+			
+			- [done] window needs to layout UI based on their own size - e.g color pickers
+
 	Make this element something that will wrap a component rather than something as part of the test harness, so that people can make more complicated test harnesses. Hopefully it can be a floating window that can connect to an arbitrary element that can hide/show, resize, and move. This feature would actually make this 'framework' useful imo
 		- Remove restart button, make it into a floating window that can be dragged and hidden/shown. The window is only 80% the height of the window, and you need to scroll to get to all the inputs and stuff.
 			- NO, that menu item can still exist. We will be adding another one.

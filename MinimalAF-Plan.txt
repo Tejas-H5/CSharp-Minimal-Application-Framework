@@ -1,26 +1,20 @@
 [Final features] TODO:
 
-FINAL Items :0
-
-	- feature: Modify public properties during test with test harness, autogenerate UI for this. 
-		-> Polish this feature:
-			- [Done] All values must initialize themselves to whatever the class has set them to, now they are setting themselves to 0 or something
-			- [done] numerical inputs should have left-right buttons and be draggable, like in Blender
-			
-			-* window should not have excess size.
-			-* window should be draggable and hideable.
-			
-		
-	- fix audio capabilities
+FINAL Items :0	
+	-> fix audio capabilities
 		- design
 		- handling multiple sources playing at the same time
 	
-	- profile startup, it takes too long
+	-* profile startup, it takes too long
 	
-	- switch over to this notation, or back to _ notation, it was kidna useufull to be able to see at a glance which variables are fields
+	-* profile memory usage, 150mb is way too high.
+	
+	-* switch back to _ notation, it was useuful to be able to see at a glance which variables are fields.
 	
 	-* tag version 0.1.0
 Backlog: 
+	-* colour picker for the UI
+
 	- 3D lighting shaders
 
 	-* Run arbitrary C# code	

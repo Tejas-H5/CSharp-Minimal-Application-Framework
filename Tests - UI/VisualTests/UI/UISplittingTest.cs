@@ -36,8 +36,8 @@
             }
 
             public override void OnLayout() {
-                LayoutTwoSplit(children[0], children[1], dir, splitAmount);
-                LayoutInset(children, 10);
+                LayoutTwoSplit(Children[0], Children[1], dir, splitAmount);
+                LayoutInset(Children, 10);
 
                 LayoutChildren();
             }

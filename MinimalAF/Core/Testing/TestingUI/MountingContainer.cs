@@ -42,10 +42,8 @@ namespace MinimalAF {
         }
 
         public override void OnRender() {
-            SetDrawColor(Color4.Black);
-            DrawRectOutline(1, mounting.RelativeRect);
-
             SetFont("Consolas", 12);
+            SetDrawColor(0, 0, 0, 1);
             DrawText(info, 0, 0, HorizontalAlignment.Left, VerticalAlignment.Bottom);
         }
     }

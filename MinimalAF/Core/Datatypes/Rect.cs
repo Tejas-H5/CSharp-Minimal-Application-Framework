@@ -1,4 +1,5 @@
 ﻿using MinimalAF.Rendering;
+using OpenTK.Mathematics;
 using System;
 
 namespace MinimalAF {
@@ -15,16 +16,38 @@ namespace MinimalAF {
             Y1 = y1;
         }
 
-        public void SetWidth(float newWidth, float center = 0) {
-            float delta = Width - newWidth;
-            X0 += delta * center;
-            X1 -= delta * (1.0f - center);
+        public static Rect TwoPoint(float x0, float y0, float x1, float y1) {
+            return new Rect(x0, y0, x1, y1);
         }
 
-        public void SetHeight(float newHeight, float center = 0) {
+        public static Rect PivotSize(float width, float height, float xPivot, float yPivot) {
+            return new Rect(
+                -xPivot * width,
+                -yPivot * height,
+                (1.0f - xPivot) * width,
+                (1.0f - yPivot) * height
+            );
+        }
+
+
+        public Rect ResizedWidth(float newWidth, float center = 0) {
+            Rect newRect = this;
+
+            float delta = Width - newWidth;
+            newRect.X0 += delta * center;
+            newRect.X1 -= delta * (1.0f - center);
+
+            return newRect;
+        }
+
+        public Rect ResizedHeight(float newHeight, float center = 0) {
+            Rect newRect = this;
+
             float delta = Height - newHeight;
-            Y0 += delta * center;
-            Y1 -= delta * (1.0f - center);
+            newRect.Y0 += delta * center;
+            newRect.Y1 -= delta * (1.0f - center);
+
+            return newRect;
         }
 
         public float Left {
@@ -54,41 +77,36 @@ namespace MinimalAF {
             }
         }
 
-        public void Rectify() {
-            if (X0 > X1) {
-                float temp = X1;
-                X1 = X0;
-                X0 = temp;
-            }
-
-            if (Y0 > Y1) {
-                float temp = Y1;
-                Y1 = Y0;
-                Y0 = temp;
-            }
-        }
-
 
         // TODO: override the divide operator for this
-        public void Normalize(float width, float height) {
-            X0 /= width;
-            X1 /= width;
-
-            Y0 /= height;
-            Y1 /= height;
-        }
-
         public Rect Normalized(float width, float height) {
-            var nr = new Rect(X0, Y0, X1, Y1);
-            nr.Normalize(width, height);
-            return nr;
+            Rect newRect = this;
+
+            newRect.X0 /= width;
+            newRect.X1 /= width;
+            newRect.Y0 /= height;
+            newRect.Y1 /= height;
+
+            return newRect;
         }
 
 
         public Rect Rectified() {
-            var nr = new Rect(X0, Y0, X1, Y1);
-            nr.Rectify();
-            return nr;
+            var newRect = new Rect(X0, Y0, X1, Y1);
+
+            if (X0 > X1) {
+                float temp = X1;
+                newRect.X1 = X0;
+                newRect.X0 = temp;
+            }
+
+            if (Y0 > Y1) {
+                float temp = Y1;
+                newRect.Y1 = Y0;
+                newRect.Y0 = temp;
+            }
+
+            return newRect;
         }
 
 
@@ -150,17 +168,21 @@ namespace MinimalAF {
             return "{" + X0 + ", " + Y0 + ", " + X1 + ", " + Y1 + "}";
         }
 
-        public void Move(float x, float y) {
-            X0 += x;
-            X1 += x;
-            Y0 += y;
-            Y1 += y;
+        public Rect Moved(float x, float y) {
+            Rect newRect = this;
+            newRect.X0 += x;
+            newRect.X1 += x;
+            newRect.Y0 += y;
+            newRect.Y1 += y;
+            return newRect;
         }
 
         /// <summary>
-        /// Returns the union intersect of two rectangles
+        /// Returns the union intersect of two rectangles. 
+        /// 
+        /// (a smaller rectangle corresponding to the area where two rectangles are overlapping)
         /// </summary>
-        public Rect Intersect(Rect other) {
+        public Rect Intersected(Rect other) {
             return new Rect(
                 MathF.Max(Left, other.Left),
                 MathF.Max(Bottom, other.Bottom),
@@ -178,7 +200,14 @@ namespace MinimalAF {
         }
 
         public static Rect operator *(Rect rect, float mult) {
-            return new Rect(rect.X0 * mult, rect.Y0 * mult, rect.X1 * mult,  rect.Y1 * mult);
+            return new Rect(rect.X0 * mult, rect.Y0 * mult, rect.X1 * mult, rect.Y1 * mult);
+        }
+
+        public Vector2 Constrain(Vector2 point) {
+            point.X = MathHelper.Clamp(point.X, X0, X1);
+            point.Y = MathHelper.Clamp(point.Y, Y0, Y1);
+
+            return point;
         }
     }
 }

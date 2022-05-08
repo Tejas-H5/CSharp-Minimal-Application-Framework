@@ -8,7 +8,8 @@ namespace MinimalAF {
         public (float, float) WantedSize;
 
 
-        public TestMounting() {            
+        public TestMounting() {
+            Pivot = Vec2(0.5f, 0.5f);
         }
 
         public void SetTestcase(Element element) {
@@ -22,6 +23,7 @@ namespace MinimalAF {
             RenderDragHandle(Direction.Down);
 
             SetDrawColor(Color4.Black);
+            DrawRectOutline(1, 0, 0, Width, Height);
 
             string infoText = 
                 "Title: " + Title + 
@@ -96,7 +98,7 @@ namespace MinimalAF {
                 startHeight = WantedSize.Item2;
             }
 
-            if (MouseFinishedDraggingAnywhere) {
+            if (MouseStoppedDraggingAnywhere) {
                 isDragging = false;
                 dragX = 0;
                 dragY = 0;
@@ -131,10 +133,8 @@ namespace MinimalAF {
             }
         }
 
-        public override Rect DefaultRect(Rect parentDefaultRect) {
-            parentDefaultRect.SetWidth(WantedSize.Item1, 0.5f);
-            parentDefaultRect.SetHeight(WantedSize.Item2, 0.5f);
-            return parentDefaultRect;
+        public override Rect DefaultRect(float parentWidth, float parentHeight) {
+            return Rect.PivotSize(WantedSize.Item1, WantedSize.Item2, 0.5f, 0.5f);
         }
 
         public override void OnMount(Window w) {

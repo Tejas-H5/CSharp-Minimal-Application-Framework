@@ -1,5 +1,4 @@
-﻿// Warning: Tight coupling. Not for the faint of heart
-namespace MinimalAF {
+﻿namespace MinimalAF {
     class UIPair : Element {
         public UIPair(Element el1, Element el2) {
             SetChildren(el1, el2);
@@ -7,14 +6,18 @@ namespace MinimalAF {
 
         public override void OnRender() {
             SetDrawColor(Color4.Black);
+            DrawRectOutline(1, 0, 0, Width, Height);
 
-            DrawRectOutline(1, this[0].RelativeRect);
-            DrawRectOutline(1, this[1].RelativeRect);
+            var e = this[1];
+            e.ResetCoordinates();
+            DrawRectOutline(1, 0, 0, e.Width, e.Height);
         }
 
         public override void OnLayout() {
-            LayoutTwoSplit(this[0], this[1], Direction.Right, VW(0.5f));
-            LayoutChildren();
+            LayoutX0X1(Children, 0, VW(1));
+            float height = LayoutLinear(Children, Direction.Down);
+            RelativeRect = RelativeRect
+                .ResizedHeight(height, 1);
         }
     }
 }

@@ -189,10 +189,6 @@ namespace MinimalAF.Rendering {
             CurrentClippingRect = screenRect;
         }
 
-        internal static void SetScreenRect(Rect screenRect) {
-            Cartesian2D(1, 1, screenRect.X0, screenRect.Y0);
-        }
-
         /// <summary>
         /// <para>
         /// Intitializes a 2D coordinate system with (x, y) in virtual coordinates mapping to (offsetX + scaleX * x, offsetY + scaleY * y) in screen coordinates.

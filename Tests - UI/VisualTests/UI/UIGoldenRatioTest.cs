@@ -25,12 +25,9 @@ to only work on a single UI element at a time.",
                 );
             }
 
-            float[] goldenRatioSplit = new float[] { 0, 0.38196601125f, 1 };
-
-
             public override void OnLayout() {
-                LayoutOffsets(children, dir, goldenRatioSplit, true);
-                LayoutInset(children, 10);
+                LayoutTwoSplit(Children[0], Children[1], dir, VDir(dir, 0.38196601125f));
+                LayoutInset(Children, 10);
 
                 LayoutChildren();
             }

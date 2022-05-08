@@ -41,9 +41,13 @@ namespace MinimalAF {
         public event Action<T> OnFinalized;
 
 
+        public override Rect DefaultRect(float parentWidth, float parentHeight) {
+            return textInput.DefaultRect(parentWidth, parentHeight);
+        }
+
         public override void OnUpdate() {
             if (isDragging) {
-                float amount = MouseXDelta * MathF.Max(0, MathF.Min(100, (MathF.Abs(start) + 1) * 0.1f));
+                float amount = MouseDeltaX * MathF.Max(0, MathF.Min(100, (MathF.Abs(start) + 1) * 0.1f));
                 if (KeyHeld(KeyCode.Shift)) {
                     amount *= 0.01f;
                 }
@@ -59,7 +63,7 @@ namespace MinimalAF {
                 delta = 0;
             } 
             
-            if(MouseFinishedDraggingAnywhere) {
+            if(MouseStoppedDraggingAnywhere) {
                 isDragging = false;
                 OnFinalized?.Invoke(textInput.Value);
             }

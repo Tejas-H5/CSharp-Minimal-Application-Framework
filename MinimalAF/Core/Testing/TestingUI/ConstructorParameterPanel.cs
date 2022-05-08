@@ -60,8 +60,8 @@ namespace MinimalAF {
 
 
         public override void OnLayout() {
-            LayoutLinear(Children, Direction.Down, 40, scrollOffset, 5);
-            LayoutInset(Children, 5);
+            LayoutX0X1(Children, 10, VW(1) - 10);
+            LayoutLinear(Children, Direction.Down, -1, scrollOffset, 5);
 
             LayoutChildren();
         }

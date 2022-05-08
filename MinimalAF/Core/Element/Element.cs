@@ -5,75 +5,140 @@ using System.Collections.Generic;
 
 namespace MinimalAF {
     public abstract partial class Element {
-        protected Element parent = null;
-        protected List<Element> children = new List<Element>();
+        private readonly List<Element> _children = new List<Element>();
 
-        internal static List<Element> RenderQueue = new List<Element>();
-        protected int stackingOffset = 0;
+        private Element _parent = null;
+        private int _stackingOffset = 0;
+        private bool _mounted = false,
+            _isVisibleNextFrame = true,
+            _isVisible = true,
+            _rectModified,
+            _shouldTriggerParentResize = false,
+            _clipping = false;
 
-        protected virtual bool SingleChild => false;
+        private Vector2 _pivot, _offset;
+        private Rect _relativeRect, _screenRect, _defaultScreenRect;
 
-        protected bool IsVisibleNextFrame = true;
-        protected bool isVisible = true;
-        private bool shouldTriggerParentResize = false;
+#if DEBUG
+        private bool _debug = false;
+#endif
 
-        // IDK a better name for this
-        protected void TriggerLayoutRecalculation() {
-            shouldTriggerParentResize = true;
+        protected Element() {
         }
 
-        private bool mounted = false;
-        internal bool Mounted {
+        /// <summary>
+        /// Vector between 0 and 1 defining how this rectangle pivots. A pivot of 0,0 means that RelativeRect is sized and positioned
+        /// relative to 
+        /// </summary>
+        public ref Vector2 Pivot => ref _pivot;
+
+        /// <summary>
+        /// An offset that moves this rectangle without triggering a layout update.
+        /// Usefull for animating dragging, and 
+        /// </summary>
+        public ref Vector2 Offset => ref _offset;
+
+        protected void ConstrainOffsetToParent() {
+            var constrainRect = Rect.PivotSize(Parent.Width, Parent.Height, Pivot.X, Pivot.Y);
+
+            constrainRect.X1 -= Width * (1f - Pivot.X);
+            constrainRect.Y1 -= Height * (1f - Pivot.Y);
+            constrainRect.X0 += Width * (Pivot.X);
+            constrainRect.Y0 += Height * (Pivot.Y);
+
+            Offset = constrainRect.Constrain(Offset);
+        }
+
+        /// <summary>
+        /// Will OnRender() be allowed to draw outside of this rectangle?
+        /// </summary>
+        protected ref bool Clipping => ref _clipping;
+        public bool Debug {
+            get {
+#if DEBUG
+                return _debug;
+#else
+                return false;
+#endif
+            }
             set {
-                mounted = value;
+#if DEBUG
+                _debug = value;
+#endif
             }
         }
 
-        protected Vector2 Pivot;
-        protected Vector2 Offset;
-        private Rect relativeRect;
-        internal Rect screenRect; // this is auto-calculated
-        internal Rect defaultScreenRect; // this is auto-calculated
+
+        public bool IsVisible {
+            get {
+                return _isVisible;
+            }
+            set {
+                if (_isVisible == value)
+                    return;
+
+                _isVisible = value;
+                _isVisibleNextFrame = value;
+            }
+        }
+
+        internal ref bool Mounted => ref _mounted;
 
         /// <summary>
-        /// This will be updated whenever everything is rendered
+        /// This will be updated whenever everything is rendered, and is calculated from 
+        /// RelativeRect and Pivot
         /// </summary>
-        protected Rect ScreenRect => screenRect;
+        protected Rect ScreenRect => _screenRect;
 
-        bool rectModified = false;
-
-        protected bool Clipping {
-            get; set;
+        protected int StackingOffset {
+            get => _stackingOffset;
+            set => _stackingOffset = value;
         }
 
         public ArraySlice<Element> Children {
-            get {
-                return children;
+            get => _children;
+        }
+
+
+        public Rect RelativeRect {
+            get => _relativeRect;
+            set {
+                _relativeRect = value;
+
+                if (Parent != null) {
+                    Parent.OnChildResize();
+                }
+
+                _rectModified = true;
             }
         }
 
+        public float Width => RelativeRect.Width;
+        public float Height => RelativeRect.Height;
 
         public Element this[int index] {
             get {
-                return children[index];
+                return _children[index];
             }
         }
+
+        protected virtual bool SingleChild => false;
 
 
         public Element SetChildren(params Element[] newChildren) {
 #if DEBUG
-            if (SingleChild && children != null && children.Count > 1)
+            if (SingleChild && _children != null && _children.Count > 1)
                 throw new Exception("This element must only be given 1 child, possibly in the constructor.");
 #endif
 
-            // children will be removed anyway, but this should give O(n) instead of O(n^2)
-            for (int i = children.Count - 1; i >= 0; i--) {
+            // child removal is automatically handled, but doing it explicitly here will be O(n) instead of O(n^2)
+            for (int i = _children.Count - 1; i >= 0; i--) {
                 Remove(i);
             }
 
             if (newChildren == null)
                 return this;
-                
+
             for (int i = 0; i < newChildren.Length; i++) {
                 if (newChildren[i] == null)
                     continue;
@@ -84,8 +149,10 @@ namespace MinimalAF {
             return this;
         }
 
+
+
         public void RemoveChild(Element child) {
-            int index = children.IndexOf(child);
+            int index = _children.IndexOf(child);
             if (index == -1) {
                 return;
             }
@@ -94,106 +161,59 @@ namespace MinimalAF {
         }
 
         private void Remove(int index) {
-            Element child = children[index];
-            children.RemoveAt(index);
+            Element child = _children[index];
+            _children.RemoveAt(index);
             child.Dismount();
-            child.parent = null;
+            child._parent = null;
 
-            shouldTriggerParentResize = true;
+            _shouldTriggerParentResize = true;
         }
 
         private void Add(Element element) {
-            children.Add(element);
+            _children.Add(element);
 
             element.Mount();
 
-            shouldTriggerParentResize = true;
+            _shouldTriggerParentResize = true;
         }
 
         public void AddChild(Element element) {
             element.Parent = this;
         }
 
+        protected void TriggerLayoutRecalculation() {
+            _shouldTriggerParentResize = true;
+        }
+
         public Element Parent {
             get {
-                return parent;
+                return _parent;
             }
             set {
                 if (value == this) {
-                    throw new Exception("DevIsStupid exception: An element can't be it's own parent, as this causes infinite recursion");
+                    throw new Exception("An element can't be it's own parent, as this causes infinite recursion. Possibly a mistake?");
                 }
 
-                if (value == parent)
+                if (value == _parent)
                     return;
 
-                if (parent != null) {
-                    parent.RemoveChild(this);
+                if (_parent != null) {
+                    _parent.RemoveChild(this);
                 }
 
-                parent = value;
+                _parent = value;
 
-                if (parent != null) {
-                    parent.Add(this);
+                if (_parent != null) {
+                    _parent.Add(this);
                 }
             }
         }
 
-        public bool IsVisible {
-            get {
-                return isVisible;
-            }
-            set {
-                if (isVisible == value)
-                    return;
 
-                isVisible = value;
-                IsVisibleNextFrame = value;
-            }
-        }
-
-        public Rect RelativeRect {
-            get {
-                return relativeRect;
-            }
-            set {
-                relativeRect = value;
-
-                if (Parent != null) {
-                    Parent.OnChildResize();
-                }
-
-                rectModified = true;
-            }
-        }
-
-        public float Width {
-            get {
-                return RelativeRect.Width;
-            }
-        }
-        public float Height {
-            get {
-                return RelativeRect.Height;
-            }
-        }
-
-
-        protected Element() {
-        }
 
         /// <summary>
-        /// <para>
-        /// Gets any Element of type T (or inherited from T) that is the 
-        /// closest ancestor of this Element in the UI tree,
-        /// including this one.
-        /// </para>
-        /// <para>
-        /// Else it returns null
-        /// </para>
-        /// <para>
-        /// It is simply a linear search that goes up the UI tree and returns an element
-        /// if it is of type T or T.GetType().isAssignableFrom returns true
-        /// </para>
+        /// Does a linear search up the Element tree and returns an element
+        /// if it's type is assignable to T. The search will include the current element.
         /// </summary>
         public T GetAncestor<T>() where T : Element {
             Type tType = typeof(T);
@@ -210,27 +230,27 @@ namespace MinimalAF {
 
         internal void UpdateSelfAndChildren(Rect parentScreenRect) {
             bool shouldBeVisible = IsVisible;
-            IsVisible = IsVisibleNextFrame;
+            IsVisible = _isVisibleNextFrame;
 
             if (!shouldBeVisible) {
                 return;
             }
 
-            if (shouldTriggerParentResize) {
-                shouldTriggerParentResize = false;
+            if (_shouldTriggerParentResize) {
+                _shouldTriggerParentResize = false;
 
                 if (Parent != null) {
                     Parent.OnChildResize();
                 }
             }
 
-            RecalcScreenRect(parentScreenRect);
+            RecalculateScreenRect(parentScreenRect);
             ResetCoordinates();
 
             OnUpdate();
 
-            for (int i = 0; i < children.Count; i++) {
-                children[i].UpdateSelfAndChildren(screenRect);
+            for (int i = 0; i < _children.Count; i++) {
+                _children[i].UpdateSelfAndChildren(_screenRect);
             }
 
             AfterUpdate();
@@ -242,25 +262,14 @@ namespace MinimalAF {
             public int StackingDepth;
             public Rect ParentScreenRect;
 
-#if DEBUG
-            public int HoverDepth;
-#endif
-
             public RenderAccumulator(
                 int depth,
                 int stackingDepth,
                 Rect screenRect
-#if DEBUG
-                , int hoverDepth
-#endif
             ) {
                 StackingDepth = stackingDepth;
                 Depth = depth;
                 ParentScreenRect = screenRect;
-
-#if DEBUG
-                HoverDepth = hoverDepth;
-#endif
             }
         }
 
@@ -269,9 +278,6 @@ namespace MinimalAF {
                 0,
                 0,
                 parentScreenRect
-#if DEBUG
-                , 0
-#endif
             ));
         }
 
@@ -280,37 +286,31 @@ namespace MinimalAF {
                 return;
             }
 
-            int stackingDepth = acc.StackingDepth + stackingOffset;
-            // A hack that allows children to render above parents if needed.
-            // I am still not quite sure why it works.
-            // Side-effect: UIs can only be 100,000 elements deep
-            CTX.Current2DDepth = 1f -stackingDepth / 100000f;
+            int stackingDepth = acc.StackingDepth + _stackingOffset;
+            CTX.Current2DDepth = 1f - stackingDepth / 100000f;
 
-            RecalcScreenRect(acc.ParentScreenRect);
+            RecalculateScreenRect(acc.ParentScreenRect);
             ResetCoordinates();
 
             SetTexture(null);
 
             Rect previousClippingRect = CTX.CurrentClippingRect;
             if (Clipping) {
-                CTX.CurrentClippingRect = CTX.CurrentClippingRect.Intersect(screenRect);
+                CTX.CurrentClippingRect = CTX.CurrentClippingRect.Intersected(_screenRect);
             }
 
             OnRender();
 
+            for (int i = 0; i < _children.Count; i++) {
+                _children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, stackingDepth, _screenRect));
+            }
+
+
 #if DEBUG
-            if (MinimalAFEnvironment.Debug) {
-                acc = DrawDebugStuff(acc, screenRect);
+            if (Debug) {
+                DrawDebugStuff(_screenRect);
             }
 #endif
-
-            for (int i = 0; i < children.Count; i++) {
-                children[i].RenderSelfAndChildren(new RenderAccumulator(acc.Depth + 1, stackingDepth, screenRect
-#if DEBUG
-                    , acc.HoverDepth
-#endif           
-                ));
-            }
 
             AfterRender();
 
@@ -321,50 +321,59 @@ namespace MinimalAF {
             }
         }
 
-        private void RecalcScreenRect(Rect parentScreenRect) {
-            screenRect = RelativeRect;
-            screenRect.Move(parentScreenRect.X0 + Offset.X, parentScreenRect.Y0 + Offset.Y);
+        private void RecalculateScreenRect(Rect parentScreenRect) {
+            _screenRect = _relativeRect.Moved(
+                (parentScreenRect.X0 + parentScreenRect.Width * _pivot.X) + (_offset.X),
+                (parentScreenRect.Y0 + parentScreenRect.Height * _pivot.Y) + (_offset.Y)
+            );
 
-            defaultScreenRect = screenRect;
+            _defaultScreenRect = _screenRect;
         }
 
         public void ResetCoordinates() {
-            CTX.SetScreenRect(screenRect);
+            CTX.Cartesian2D(1, 1, _screenRect.X0, _screenRect.Y0);
             CTX.SetTransform(Translation(0, 0, CTX.Current2DDepth));
         }
 
 
 #if DEBUG
-        RenderAccumulator DrawDebugStuff(RenderAccumulator acc, Rect newScreenRect) {
-            if (!MouseOverSelf)
-                return acc;
-
+        void DrawDebugStuff(Rect newScreenRect) {
             ResetCoordinates();
 
-            SetDrawColor(Color4.RGBA(1, 0, 0, 0.5f));
+            Rect prev = CTX.CurrentClippingRect;
 
-            DrawRectOutline(2, 1, 1, VW(1) - 1, VH(1) - 1);
+            SetDrawColor(1, 1, 1, 0.5f);
+            DrawRect(0, 0, Width, Height);
 
-            SetDrawColor(Color4.RGBA(1, 0, 0, 0.35f));
+            CTX.CurrentClippingRect = new Rect(0, 0, CTX.ContextWidth, CTX.ContextHeight);
+
+            Color4 col;
+            if (ScreenRect != ScreenRect.Rectified()) {
+                col = Color4.Red;
+            } else {
+                col = Color4.Blue;
+            }
+            col.A = 0.7f;
+            SetDrawColor(col);
+
+            DrawRectOutline(1, 0, 0, Width, Height);
             DrawRect(0, 0, 10, 10);
             DrawRect(VW(1) - 10, 0, VW(1), 10);
             DrawRect(0, VH(1) - 10, 10, VH(1));
             DrawRect(VW(1) - 10, VH(1) - 10, VW(1), VH(1));
 
-            SetDrawColor(Color4.RGB(0, 0, 0));
-            int textSize = 12;
+            SetFont("Consolas", 12);
+            DrawText(GetType().Name + ":" + Width + ", " + Height, VW(0.5f), VH(0.5f), HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText("(" + RelativeRect.X0 + ", " + RelativeRect.Y0 + ")", 0, 0);
+            DrawText("(" + RelativeRect.X1 + ", " + RelativeRect.Y1 + ")", Width, Height, HorizontalAlignment.Right, VerticalAlignment.Top);
 
-            string fontName = CTX.Text.ActiveFont.FontName;
-            int size = CTX.Text.ActiveFont.FontSize;
-            SetFont("Consolas", textSize);
+            Parent.ResetCoordinates();
+            float x0 = Pivot.X * Parent.Width;
+            float y0 = Pivot.Y * Parent.Height;
+            DrawCircle(x0, y0, 5);
+            DrawText(GetType().Name + " pivot:" + Pivot.X + ", " + Pivot.Y, x0, y0);
 
-            string text = GetType().Name + " " + RelativeRect.ToString() + " Depth: " + acc.Depth;
-            DrawText(text, -newScreenRect.X0 + 10, -newScreenRect.Y0 + 10 + textSize * acc.HoverDepth);
-
-            SetFont(fontName, size);
-
-            acc.HoverDepth += 1;
-            return acc;
+            CTX.CurrentClippingRect = prev;
         }
 #endif
 
@@ -382,44 +391,44 @@ namespace MinimalAF {
         private void Mount(Window w) {
             OnMount(w);
 
-            for (int i = 0; i < children.Count; i++) {
-                children[i].Mount(w);
+            for (int i = 0; i < _children.Count; i++) {
+                _children[i].Mount(w);
             }
 
             AfterMount(w);
 
-            mounted = true;
+            _mounted = true;
         }
 
 
         internal void Dismount() {
-            for (int i = 0; i < children.Count; i++) {
-                children[i].Dismount();
+            for (int i = 0; i < _children.Count; i++) {
+                _children[i].Dismount();
             }
 
             OnDismount();
-            mounted = false;
+            _mounted = false;
         }
 
 
-        internal void Layout() {
-            if (!mounted) {
+        public void Layout() {
+            if (!_mounted) {
                 return;
             }
 
             onChildResizeLock = true;
 
-            for (int i = 0; i < children.Count; i++) {
-                if (children[i].rectModified)
+            for (int i = 0; i < _children.Count; i++) {
+                if (_children[i]._rectModified)
                     continue;
 
-                children[i].RelativeRect = children[i].DefaultRect(new Rect(0, 0, VW(1), VH(1)));
+                _children[i].RelativeRect = _children[i].DefaultRect(Width, Height);
             }
 
             OnLayout();
 
-            for (int i = 0; i < children.Count; i++) {
-                children[i].rectModified = false;
+            for (int i = 0; i < _children.Count; i++) {
+                _children[i]._rectModified = false;
             }
 
             onChildResizeLock = false;
@@ -431,8 +440,8 @@ namespace MinimalAF {
         /// before calling OnLayout. Most times you don't need this, but there are a few valid uses
         /// </para>
         /// </summary>
-        public virtual Rect DefaultRect(Rect parentRelativeRect) {
-            return parentRelativeRect;
+        public virtual Rect DefaultRect(float parentWidth, float parentHeight) {
+            return Rect.PivotSize(parentWidth, parentHeight, Pivot.X, Pivot.Y);
         }
 
 
@@ -455,15 +464,15 @@ namespace MinimalAF {
         }
 
         protected void LayoutChildren() {
-            for (int i = 0; i < children.Count; i++) {
-                children[i].Layout();
+            for (int i = 0; i < _children.Count; i++) {
+                _children[i].Layout();
             }
         }
 
 
         bool onChildResizeLock = false;
         private void OnChildResize() {
-            shouldTriggerParentResize = false;
+            _shouldTriggerParentResize = false;
 
             if (onChildResizeLock) {
                 return;
@@ -522,6 +531,11 @@ namespace MinimalAF {
         }
 
 
+        /// <summary>
+        /// Runs right after all children have been rendered. Mainly used for overlay stuff. Remember to call
+        /// ResetCoordinates() here, as the framework doesn't automatically do this due to 
+        /// how infrequenty the AfterRender method is needed in practice
+        /// </summary>
         public virtual void AfterRender() {
 
         }

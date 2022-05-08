@@ -88,7 +88,7 @@ namespace MinimalAF {
         }
         public float YDelta {
             get {
-                return window.MouseState.Delta.Y;
+                return -window.MouseState.Delta.Y;
             }
         }
 

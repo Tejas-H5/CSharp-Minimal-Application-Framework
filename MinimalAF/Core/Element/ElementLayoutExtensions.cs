@@ -9,87 +9,28 @@ namespace MinimalAF {
     public partial class Element {
 
         private float LayoutOffsetsGetOffset(int index, ArraySlice<Element> elements, float[] offsets, Direction layoutDirection, bool normalized) {
-            if(offsets == null) {
-                float amount;
+            float offset;
 
-                if (layoutDirection == Direction.Right || layoutDirection == Direction.Up) {
-                    amount = (float)index / (elements.Length);
-                } else {
-                    amount = 1f - (float)index / (elements.Length);
-                }
-
-                if (layoutDirection == Direction.Left || layoutDirection == Direction.Right) {
-                    amount = VW(amount);
-                } else {
-                    amount = VH(amount);
-                }
-
-                return amount;
+            if (offsets != null) {
+                offset = offsets[index];
+            } else {
+                offset = index / ((float)elements.Length);
+                normalized = true;
             }
 
-            float offset = offsets[index];
+            if (layoutDirection == Direction.Left || layoutDirection == Direction.Down) {
+                offset = -offset;
+            }
 
-            if(normalized) {
-                if(layoutDirection == Direction.Left || layoutDirection == Direction.Right) {
+            if (normalized) {
+                if (layoutDirection == Direction.Left || layoutDirection == Direction.Right) {
                     offset = VW(offset);
                 } else {
                     offset = VH(offset);
                 }
             }
 
-            if(layoutDirection == Direction.Down) {
-                offset = Height - offset;
-            } else if (layoutDirection == Direction.Left) {
-                offset = Width - offset;
-            }
-
             return offset;
-        }
-
-
-
-        /// <summary>
-        /// Arranges rect transforms in a direction defined by LayoutDirection. 
-        /// offsets can either be null, or an array of floats with absolute values, defining where all the split points are.
-        /// For an array of n elements, there must be n+1 split points.
-        /// 
-        /// </summary>
-        /// <param name="elements"></param>
-        /// <param name="layoutDirection"></param>
-        /// <param name="offsets"></param>
-        protected void LayoutOffsets(ArraySlice<Element> elements, Direction layoutDirection = Direction.Right, float[] offsets = null, bool normalizedOffsets = false) {
-            float previousAnchor = LayoutOffsetsGetOffset(0, elements, offsets, layoutDirection, normalizedOffsets);
-
-            foreach (var (i, el) in elements) {
-                float currentAnchor = LayoutOffsetsGetOffset(i + 1, elements, offsets, layoutDirection, normalizedOffsets);
-
-                Rect wanted = el.RelativeRect;
-
-                switch (layoutDirection) {
-                    case Direction.Up:
-                        wanted.Y0 = previousAnchor;
-                        wanted.Y1 = currentAnchor;
-                        break;
-                    case Direction.Down:
-                        wanted.Y0 = currentAnchor;
-                        wanted.Y1 = previousAnchor;
-                        break;
-                    case Direction.Left:
-                        wanted.X0 = currentAnchor;
-                        wanted.X1 = previousAnchor;
-                        break;
-                    case Direction.Right:
-                        wanted.X0 = previousAnchor;
-                        wanted.X1 = currentAnchor;
-                        break;
-                    default:
-                        break;
-                }
-
-                el.RelativeRect = wanted;
-
-                previousAnchor = currentAnchor;
-            }
         }
 
         protected void LayoutTwoSplit(Element el0, Element el1, Direction layoutDirection, float splitAmount) {
@@ -139,9 +80,27 @@ namespace MinimalAF {
         }
 
         protected void LayoutX0(ArraySlice<Element> elements, float val) {
-            foreach(var(i, el) in elements) {
+            foreach (var (i, el) in elements) {
                 var wanted = el.RelativeRect;
                 wanted.X0 = val;
+                el.RelativeRect = wanted;
+            }
+        }
+
+        protected void LayoutX0X1(ArraySlice<Element> elements, float x0, float x1) {
+            foreach (var (i, el) in elements) {
+                var wanted = el.RelativeRect;
+                wanted.X0 = x0;
+                wanted.X1 = x1;
+                el.RelativeRect = wanted;
+            }
+        }
+
+        protected void LayoutY0Y1(ArraySlice<Element> elements, float y0, float y1) {
+            foreach (var (i, el) in elements) {
+                var wanted = el.RelativeRect;
+                wanted.Y0 = y0;
+                wanted.Y1 = y1;
                 el.RelativeRect = wanted;
             }
         }
@@ -199,9 +158,9 @@ namespace MinimalAF {
             }
 
             if (shouldDriveHeight) {
-                wanted.SetHeight(wanted.Width / widthOverHeight, Pivot.Y);
+                wanted = wanted.ResizedHeight(wanted.Width / widthOverHeight, _pivot.Y);
             } else {
-                wanted.SetWidth(wanted.Height * widthOverHeight, Pivot.X);
+                wanted = wanted.ResizedWidth(wanted.Height * widthOverHeight, _pivot.X);
             }
 
             element.RelativeRect = wanted;
@@ -210,35 +169,36 @@ namespace MinimalAF {
 
 
         /// <summary>
+        /// Lays out the elements in a particular direction, and then returns
+        /// width/height of the operation, which can be used
+        /// to fit to the content for example.
+        /// 
         /// Use <see cref="LayoutOffsets"/> if you need control on each individual size.
         /// 
         /// </summary>
-        /// <param name="elements"></param>
-        /// <param name="layoutDirection"></param>
-        /// <param name="elementSizing"></param>
-        /// <param name="scrollOffset"></param>
-        /// <param name="gap"></param>
-        protected void LayoutLinear(ArraySlice<Element> elements, Direction layoutDirection, float elementSizing, float scrollOffset = 0, float gap = 0) {
+        protected float LayoutLinear(ArraySlice<Element> elements, Direction layoutDirection, float elementSizing = -1, float scrollOffset = 0, float gap = 0) {
             bool vertical = layoutDirection == Direction.Up || layoutDirection == Direction.Down;
             bool reverse = layoutDirection == Direction.Down || layoutDirection == Direction.Left;
 
-            float dir;
-            float previousEnd = scrollOffset;
-            if (reverse) {
-                dir = -1;
-
-                if (vertical) {
-                    previousEnd = VH(1) - scrollOffset;
-                } else {
-                    previousEnd = VW(1) - scrollOffset;
-                }
-            } else {
-                dir = 1;
-            }
-
+            float dir = reverse ? -1 : 1;
+            float previousEnd = scrollOffset + gap * dir;
 
             foreach (var (index, e) in elements) {
-                float end = previousEnd + elementSizing * dir;
+                float end;
+                if(elementSizing < 0) {
+                    e.Layout();
+
+                    end = previousEnd + e.RelativeRect.Height * dir;
+                } else {
+                    end = previousEnd + elementSizing * dir;
+                }
+
+                switch (layoutDirection) {
+                    case Direction.Up: e.Pivot.Y = 0f; break;
+                    case Direction.Down: e.Pivot.Y = 1f; break;
+                    case Direction.Right: e.Pivot.X = 0f; break;
+                    case Direction.Left: e.Pivot.X = 1f; break;
+                };
 
                 Rect wanted = e.RelativeRect;
                 if (layoutDirection == Direction.Left) {
@@ -257,11 +217,11 @@ namespace MinimalAF {
 
                 e.RelativeRect = wanted;
 
-
                 // TODO: Set elementSizing=-1 to call Layout on the child to figure out it's size and place accordingly
-
                 previousEnd = end + gap * dir;
             }
+
+            return MathF.Abs(scrollOffset - previousEnd);
         }
     }
 }

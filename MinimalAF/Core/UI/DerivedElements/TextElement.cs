@@ -11,6 +11,8 @@ namespace MinimalAF {
         public string Font { get; set; } = "";
         public int FontSize { get; set; } = -1;
 
+        float _charHeight;
+
         public VerticalAlignment VerticalAlignment {
             get; set;
         }
@@ -77,6 +79,13 @@ namespace MinimalAF {
             }
 
             caratPos = DrawText(String, startX, startY, HorizontalAlignment, VerticalAlignment, 1);
+        }
+
+        public override Rect DefaultRect(float parentWidth, float parentHeight) {
+            SetFont(Font, FontSize);
+            _charHeight = GetCharHeight();
+
+            return new Rect(0, 0, parentWidth, _charHeight + 5);
         }
 
         public float TextWidth() {

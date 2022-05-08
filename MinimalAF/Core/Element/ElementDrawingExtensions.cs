@@ -96,16 +96,32 @@ namespace MinimalAF {
         /// <summary>
         /// Shorthand for RectTransform.Height * amount
         /// </summary>
-        protected float VH(float amount) {
+        public float VH(float amount) {
             return RelativeRect.Height * amount;
         }
 
         /// <summary>
         /// Shorthand for RectTransform.Width * amount
         /// </summary>
-        protected float VW(float amount) {
+        public float VW(float amount) {
             return RelativeRect.Width * amount;
         }
+
+        /// <summary>
+        /// This name only makes sense alonside VW which means View Width and VH wich means View Height.
+        /// Not sure what VDir means, but it will behave like VW if dir is horizontal, else VH
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        public float VDir(Direction dir, float amount) {
+            if(dir == Direction.Left || dir == Direction.Right) {
+                return VW(amount);
+            } else {
+                return VH(amount);
+            }
+        }
+
 
 
         protected struct DrawCallRedirector : IDisposable {
@@ -120,9 +136,9 @@ namespace MinimalAF {
 
             private void RedirectDrawCalls(Framebuffer framebuffer) {
                 if (framebuffer == null) {
-                    el.screenRect = el.defaultScreenRect;
+                    el._screenRect = el._defaultScreenRect;
                 } else {
-                    el.screenRect = new Rect(0, 0, framebuffer.Width, framebuffer.Height);
+                    el._screenRect = new Rect(0, 0, framebuffer.Width, framebuffer.Height);
                 }
 
                 CTX.Framebuffer.Use(framebuffer);

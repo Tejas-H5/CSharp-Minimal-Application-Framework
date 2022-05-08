@@ -22,7 +22,7 @@ namespace MinimalAF.VisualTests.UI {
                         rows[i * 3 + j] = new OutlineRect(Color4.VA(0, 1), 1).SetChildren(
                             new TextInput<string>(
                                 new TextElement("", Color4.VA(0, 1), "Comic-Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
-                                "",
+                                "Bruh",
                                 (string arg) => {
                                     return arg;
                                 }
@@ -36,16 +36,16 @@ namespace MinimalAF.VisualTests.UI {
         }
 
         public override void OnLayout() {
-            LayoutInset(children.Slice(0, 3), 0, VH(2f / 3f), 0, 0);
-            LayoutOffsets(children.Slice(0, 3), Direction.Right);
+            LayoutInset(Children[0, 3], 0, VH(2f / 3f), 0, 0);
+            LayoutLinear(Children[0, 3], Direction.Right, VW(1 / 3f));
 
-            LayoutInset(children.Slice(3, 6), 0, VH(1f / 3f), 0, VH(1f / 3f));
-            LayoutOffsets(children.Slice(3, 6), Direction.Right);
+            LayoutInset(Children[3, 6], 0, VH(1f / 3f), 0, VH(1f / 3f));
+            LayoutLinear(Children[3, 6], Direction.Right, VW(1 / 3f));
 
-            LayoutInset(children.Slice(6, 9), 0, VH(0), 0, VH(2f / 3f));
-            LayoutOffsets(children.Slice(6, 9), Direction.Right);
+            LayoutInset(Children[6, 9], 0, VH(0), 0, VH(2f / 3f));
+            LayoutLinear(Children[6, 9], Direction.Right, VW(1 / 3f));
 
-            LayoutInset(children, 10);
+            LayoutInset(Children, 10);
 
             LayoutChildren();
         }

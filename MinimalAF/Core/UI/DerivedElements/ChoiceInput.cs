@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// Warning: Tight coupling. Not for the faint of heart
 namespace MinimalAF {
     // TODO: think about making this a standard UI component along with TextInput
     class ChoiceInput<T> : Element, IInput<T> {
@@ -39,7 +38,8 @@ namespace MinimalAF {
         public bool HasFocus => textInput.HasFocus;
 
         public ChoiceInput(string[] names, T[] values, T selected)
-            : this(names, values, Array.IndexOf(values, selected)) { }
+            : this(names, values, Array.IndexOf(values, selected)) {
+        }
 
         public ChoiceInput(string[] names, T[] values, int selected) {
             allNames = names;
@@ -68,6 +68,10 @@ namespace MinimalAF {
 
         private void TextInput_OnDefocused() {
             textInput.String = currentName;
+        }
+
+        public override Rect DefaultRect(float parentWidth, float parentHeight) {
+            return textInput.DefaultRect(parentWidth, parentHeight);
         }
 
         public static ChoiceInput<object> FromEnum(Type enumType, object defaultValue) {
@@ -113,7 +117,7 @@ namespace MinimalAF {
 
 
         public override void OnLayout() {
-            nameList.RelativeRect = new Rect(0, -nameList.WantedHeight, VW(1), 0);
+            nameList.RelativeRect = new Rect(0, 0, VW(1), 0);
 
             LayoutChildren();
         }

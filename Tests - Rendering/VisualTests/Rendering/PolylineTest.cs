@@ -62,7 +62,7 @@ namespace MinimalAF.VisualTests.Rendering
 				dragStarted = true;
 			}
 
-			if(MouseFinishedDraggingAnywhere)
+			if(MouseStoppedDraggingAnywhere)
 			{
 				dragStarted = false;
 			}

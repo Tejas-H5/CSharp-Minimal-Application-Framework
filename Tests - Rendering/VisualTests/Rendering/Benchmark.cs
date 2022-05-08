@@ -37,13 +37,13 @@ A higher number of lines drawn is always better. This test won't work when vsync
             SetFont("Consolas", 24);
         }
 
-        Random rand = new Random(1);
+        readonly Random rand = new Random(1);
 
         int frames = 0;
         double time = 0;
 
         int amount = 10000;
-        int jump = 6000;
+        readonly int jump = 6000;
 
         public override void OnRender() {
             time += Time.DeltaTime;

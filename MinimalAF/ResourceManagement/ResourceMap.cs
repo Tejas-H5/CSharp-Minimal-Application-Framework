@@ -20,7 +20,7 @@ namespace MinimalAF.ResourceManagement {
 
         internal static void Put(string name, T resource) {
 #if DEBUG
-            if(resourceCache.ContainsKey(name)) {
+            if (resourceCache.ContainsKey(name)) {
                 throw new Exception("Cant overwrite existing resources");
             }
 #endif
@@ -34,7 +34,7 @@ namespace MinimalAF.ResourceManagement {
 
         internal static void Delete(string name) {
 #if DEBUG
-            if(!resourceCache.ContainsKey(name)) {
+            if (!resourceCache.ContainsKey(name)) {
                 throw new Exception("Resource " + name + " doesn't exist");
             }
 #endif

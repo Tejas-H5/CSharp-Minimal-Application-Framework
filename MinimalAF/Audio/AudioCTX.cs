@@ -12,8 +12,8 @@ namespace MinimalAF.Audio {
     /// and disposed of when the program is done with Cleanup().
     /// </summary>
     public static class AudioCTX {
-        private static ALDevice device;
-        private static ALContext context;
+        private static ALDevice s_device;
+        private static ALContext s_context;
 
 
         public static unsafe void Init() {
@@ -28,17 +28,17 @@ namespace MinimalAF.Audio {
         }
 
         public static void Cleanup() {
-            if (context != ALContext.Null) {
+            if (s_context != ALContext.Null) {
                 ALC.MakeContextCurrent(ALContext.Null);
-                ALC.DestroyContext(context);
+                ALC.DestroyContext(s_context);
             }
-            context = ALContext.Null;
+            s_context = ALContext.Null;
 
-            if (device != ALDevice.Null) {
-                ALC.CloseDevice(device);
+            if (s_device != ALDevice.Null) {
+                ALC.CloseDevice(s_device);
             }
 
-            device = ALDevice.Null;
+            s_device = ALDevice.Null;
 
             AudioMap.UnloadAll();
 
@@ -47,20 +47,20 @@ namespace MinimalAF.Audio {
         }
 
         private static unsafe void InitializeOpenAL() {
-            device = ALC.OpenDevice(null);
+            s_device = ALC.OpenDevice(null);
 
-            if (!ALCall(out context, () => { return ALC.CreateContext(device, (int*)null); })) {
+            if (!ALCall(out s_context, () => { return ALC.CreateContext(s_device, (int*)null); })) {
                 Console.WriteLine("Error: Could not create audio context");
                 return;
             }
 
             bool contextMadeCurrent = false;
-            if (!ALCall(out contextMadeCurrent, () => { return ALC.MakeContextCurrent(context); }) || !contextMadeCurrent) {
+            if (!ALCall(out contextMadeCurrent, () => { return ALC.MakeContextCurrent(s_context); }) || !contextMadeCurrent) {
                 Console.WriteLine("Error: Could not make audio context current");
                 return;
             }
 
-            ALC.MakeContextCurrent(context);
+            ALC.MakeContextCurrent(s_context);
 
             var version = AL.Get(ALGetString.Version);
             var vendor = AL.Get(ALGetString.Vendor);

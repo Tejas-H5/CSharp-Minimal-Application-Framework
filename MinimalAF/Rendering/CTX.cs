@@ -20,7 +20,8 @@ namespace MinimalAF.Rendering {
         public static float Current2DDepth = 0;
 
         class VertexCreator {
-            public VertexCreator() {}
+            public VertexCreator() {
+            }
 
             public Vertex New(float x, float y, float u, float v) {
                 return new Vertex(
@@ -241,7 +242,7 @@ namespace MinimalAF.Rendering {
         /// And then assign it to the shader's projection matrix.
         /// </para>
         /// </summary>
-        internal static void Perspective(float fovy, float aspect, float depthNear, float depthFar, float centerX=0, float centerY=0) {
+        internal static void Perspective(float fovy, float aspect, float depthNear, float depthFar, float centerX = 0, float centerY = 0) {
             GL.Enable(EnableCap.CullFace);
 
             Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(fovy, aspect, depthNear, depthFar);
@@ -256,7 +257,7 @@ namespace MinimalAF.Rendering {
         /// And then assign it to the shader's projection matrix.
         /// </para>
         /// </summary>
-        internal static void Orthographic(float width, float height, float depthNear, float depthFar, float centerX=0, float centerY=0) {
+        internal static void Orthographic(float width, float height, float depthNear, float depthFar, float centerX = 0, float centerY = 0) {
             GL.Enable(EnableCap.CullFace);
 
             Matrix4 ortho = Matrix4.CreateOrthographic(width, height, depthNear, depthFar);
@@ -360,7 +361,7 @@ namespace MinimalAF.Rendering {
         /// I hate this part of C# tbh.
         /// </summary>
         #region IDisposable Support
-        private static bool disposed = false; 
+        private static bool disposed = false;
         public static void Dispose(bool disposing) {
             if (!disposed) {
                 if (disposing) {

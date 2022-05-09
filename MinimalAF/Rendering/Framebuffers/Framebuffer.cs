@@ -35,7 +35,7 @@ namespace MinimalAF.Rendering {
 
 
         public Framebuffer(int width, int height, TextureImportSettings textureSettings = null) {
-            if(textureSettings == null) {
+            if (textureSettings == null) {
                 textureSettings = new TextureImportSettings();
             }
 
@@ -116,8 +116,7 @@ namespace MinimalAF.Rendering {
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing) {
-            if (!disposedValue)
-            {
+            if (!disposedValue) {
                 if (disposing) {
                     // TODO: dispose managed state (managed objects).
                 }

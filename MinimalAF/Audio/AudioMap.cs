@@ -4,7 +4,7 @@ namespace MinimalAF.Audio {
     public static class AudioMap {
         public static AudioData Load(string name, string path, AudioDataImportSettings settings) {
             AudioData data = ResourceMap<AudioData>.Get(name);
-            if(name == null) {
+            if (name == null) {
                 data = AudioData.FromFile(path, settings);
                 ResourceMap<AudioData>.Put(name, data);
             }

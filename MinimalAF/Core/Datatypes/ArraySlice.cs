@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace MinimalAF {
     public static class ContainerSliceExtensions {
@@ -45,11 +42,11 @@ namespace MinimalAF {
 
         public ArraySlice<T> this[int start, int end] {
             get {
-                if(end < 0) {
+                if (end < 0) {
                     end = Length + 1 + end;
                 }
 
-                if(start < 0) {
+                if (start < 0) {
                     start = Length + 1 + start;
                 }
 

@@ -1,5 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using System;
 using System.Runtime.InteropServices;
 
 namespace MinimalAF.Rendering {
@@ -9,7 +8,7 @@ namespace MinimalAF.Rendering {
 
     public interface IVertexPosition {
         Vector3 Position {
-            get;set;
+            get; set;
         }
     }
 
@@ -21,7 +20,7 @@ namespace MinimalAF.Rendering {
 
     public interface IVertexNormal {
         Vector3 Normal {
-            get;set;
+            get; set;
         }
     }
 

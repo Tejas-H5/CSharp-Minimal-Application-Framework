@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace MinimalAF {
     public enum Direction {
@@ -185,7 +184,7 @@ namespace MinimalAF {
 
             foreach (var (index, e) in elements) {
                 float end;
-                if(elementSizing < 0) {
+                if (elementSizing < 0) {
                     e.Layout();
 
                     end = previousEnd + e.RelativeRect.Height * dir;

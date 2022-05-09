@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MinimalAF.Rendering {
+﻿namespace MinimalAF.Rendering {
     public class ImmediateMode2DDrawer<V> where V : struct, IVertexUV, IVertexPosition {
         public readonly TriangleDrawer<V> Triangle;
         public readonly QuadDrawer<V> Quad;

@@ -25,11 +25,11 @@ namespace MinimalAF {
             SetDrawColor(Color4.Black);
             DrawRectOutline(1, 0, 0, Width, Height);
 
-            string infoText = 
-                "Title: " + Title + 
-                "\nSize: " + WantedSize.Item1.ToString("0.00") + ", " + WantedSize.Item2.ToString("0.00") + 
-                "\n(WindowState." + WindowState.ToString() + 
-                ") \nUpdateFPS:" + UpdateFrequency.ToString("0.0") + "\nRenderFPS:" + 
+            string infoText =
+                "Title: " + Title +
+                "\nSize: " + WantedSize.Item1.ToString("0.00") + ", " + WantedSize.Item2.ToString("0.00") +
+                "\n(WindowState." + WindowState.ToString() +
+                ") \nUpdateFPS:" + UpdateFrequency.ToString("0.0") + "\nRenderFPS:" +
                 RenderFrequency.ToString("0.0");
 
             SetFont("Consolas", 12);

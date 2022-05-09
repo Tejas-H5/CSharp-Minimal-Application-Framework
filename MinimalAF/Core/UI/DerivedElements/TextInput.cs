@@ -1,6 +1,4 @@
-﻿using MinimalAF;
-using MinimalAF.Rendering;
-using System;
+﻿using System;
 using System.Drawing;
 
 namespace MinimalAF {
@@ -169,7 +167,7 @@ namespace MinimalAF {
             string typed = Input.Keyboard.CharactersTyped;
             if (typed.Length == 0)
                 return false;
-                    
+
             for (int i = 0; i < typed.Length; i++) {
                 if (typed[i] == '\b') {
                     if (String.Length > 0) {

@@ -1,8 +1,6 @@
-﻿using System;
+﻿using OpenTK.Graphics.OpenGL;
+using System;
 using System.Collections.Concurrent;
-using OpenTK.Graphics.OpenGL;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF.ResourceManagement {
     internal class GLDeletionQueue {
@@ -34,11 +32,11 @@ namespace MinimalAF.ResourceManagement {
             if (glBuffersToDelete.Count == 0)
                 return;
 
-            while(glBuffersToDelete.TryDequeue(out (int, DeleteThing) data)) {
+            while (glBuffersToDelete.TryDequeue(out (int, DeleteThing) data)) {
                 (int resource, DeleteThing resType) = data;
 
                 switch (resType) {
-                    case DeleteThing.Buffer:  break;
+                    case DeleteThing.Buffer: break;
                     case DeleteThing.VertexArray: GL.DeleteVertexArray(resource); break;
                     case DeleteThing.ShaderProgram: GL.DeleteProgram(resource); break;
                     case DeleteThing.Texture: GL.DeleteTexture(resource); break;

@@ -68,9 +68,9 @@ namespace MinimalAF.Rendering {
             if (currentIndexIndex + numIncomingIndices >= backingMesh.Indices.Length ||
                     currentVertexIndex + numIncomingVerts >= backingMesh.Vertices.Length) {
 #if DEBUG
-                if(currentIndexIndex + numIncomingIndices >= backingMesh.Indices.Length) {
+                if (currentIndexIndex + numIncomingIndices >= backingMesh.Indices.Length) {
                     TimesIndexThresholdReached++;
-                } else if(currentVertexIndex + numIncomingVerts >= backingMesh.Vertices.Length)  {
+                } else if (currentVertexIndex + numIncomingVerts >= backingMesh.Vertices.Length) {
                     TimesVertexThresholdReached++;
                 }
 #endif

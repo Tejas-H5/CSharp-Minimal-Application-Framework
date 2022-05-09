@@ -84,7 +84,7 @@ namespace MinimalAF {
             foreach (var pair in visualTestElementsUnfiltered) {
                 (Type t, VisualTestAttribute testInfo) = pair;
                 if (
-                    filter != "" && 
+                    filter != "" &&
                     !(t.Name.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
                     testInfo.Tags.Contains(filter, StringComparison.OrdinalIgnoreCase))
                 ) {

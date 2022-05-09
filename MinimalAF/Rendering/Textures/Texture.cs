@@ -72,7 +72,7 @@ namespace MinimalAF.Rendering {
         }
 
         public Texture(Bitmap image, TextureImportSettings settings = null) {
-            if(settings == null) {
+            if (settings == null) {
                 settings = new TextureImportSettings();
             }
 
@@ -155,7 +155,7 @@ namespace MinimalAF.Rendering {
         private bool disposedValue = false; // To prevent double-frees
 
         protected virtual void Dispose(bool disposing) {
-            if(disposedValue)
+            if (disposedValue)
                 return;
 
             GLDeletionQueue.QueueTextureForDeletion(Handle);

@@ -1,8 +1,4 @@
 ﻿using MinimalAF.ResourceManagement;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace MinimalAF.Rendering {
     public static class MeshMap {

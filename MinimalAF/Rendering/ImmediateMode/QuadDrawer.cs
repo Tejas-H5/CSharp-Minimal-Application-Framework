@@ -1,6 +1,4 @@
-﻿using OpenTK.Mathematics;
-
-namespace MinimalAF.Rendering {
+﻿namespace MinimalAF.Rendering {
     public class QuadDrawer<V> where V : struct, IVertexUV, IVertexPosition {
         IGeometryOutput<V> outputStream;
 

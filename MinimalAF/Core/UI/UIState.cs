@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MinimalAF {
+﻿namespace MinimalAF {
     public class UIState {
-		public Element CurrentlyFocused;
-		public bool EventWasHandled = false;
-	}
+        public Element CurrentlyFocused;
+        public bool EventWasHandled = false;
+    }
 }

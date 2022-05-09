@@ -1,5 +1,4 @@
-﻿using MinimalAF.Rendering;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace MinimalAF {
     public class TextElement : Element {

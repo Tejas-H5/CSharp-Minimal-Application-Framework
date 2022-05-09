@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
 
@@ -46,7 +43,7 @@ namespace MinimalAF.Rendering {
             currentProgram = s;
             GL.UseProgram(currentProgram.Handle);
 
-            if(updateUniforms) {
+            if (updateUniforms) {
                 SetModelMatrix(model);
                 SetViewMatrix(view);
                 SetModelMatrix(projection);

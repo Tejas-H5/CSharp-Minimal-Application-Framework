@@ -1,6 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System;
-using System.Collections.Generic;
 
 namespace MinimalAF.Rendering {
     public class FramebufferManager : IDisposable {
@@ -10,7 +9,7 @@ namespace MinimalAF.Rendering {
         public void Use(Framebuffer framebuffer) {
             CTX.Flush();
 
-            if(framebuffer == null) {
+            if (framebuffer == null) {
                 StopUsing();
                 return;
             }

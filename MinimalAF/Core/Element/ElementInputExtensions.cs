@@ -1,6 +1,4 @@
-﻿using MinimalAF.Rendering;
-
-namespace MinimalAF {
+﻿namespace MinimalAF {
     // TODO: update naming conventions on internal classes. Always prefer the conventions in Element extensions, as they
     // will be more up to date since they are user-facing
     public partial class Element {
@@ -30,7 +28,7 @@ namespace MinimalAF {
         protected bool MouseStartedDraggingAnywhere => Input.Mouse.StartedDragging;
         protected bool MouseIsDraggingAnywhere => Input.Mouse.IsDragging;
         protected bool MouseStoppedDraggingAnywhere => Input.Mouse.FinishedDragging;
-        
+
 
         protected bool MouseButtonPressed(MouseButton b) {
             return MouseOverSelf && Input.Mouse.ButtonPressed(b);

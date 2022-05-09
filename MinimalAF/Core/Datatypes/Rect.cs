@@ -1,5 +1,4 @@
-﻿using MinimalAF.Rendering;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 using System;
 
 namespace MinimalAF {

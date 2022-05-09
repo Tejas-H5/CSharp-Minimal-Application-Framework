@@ -1,9 +1,6 @@
 ﻿using MinimalAF.ResourceManagement;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
 using System;
-using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace MinimalAF.Rendering {
     public interface IMesh : IDisposable {

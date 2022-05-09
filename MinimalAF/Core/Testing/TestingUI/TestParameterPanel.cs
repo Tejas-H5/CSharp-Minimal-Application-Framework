@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace MinimalAF {
 
@@ -117,11 +116,11 @@ namespace MinimalAF {
         }
 
         public override void OnUpdate() {
-            if(MouseOver(0, VH(1) - _titleHeight, VW(1), VH(1)) && MouseStartedDragging) {
+            if (MouseOver(0, VH(1) - _titleHeight, VW(1), VH(1)) && MouseStartedDragging) {
                 _isDragging = true;
                 _startX = Offset.X;
                 _startY = Offset.Y;
-            } else if(MouseStoppedDraggingAnywhere) {
+            } else if (MouseStoppedDraggingAnywhere) {
                 _isDragging = false;
             }
 

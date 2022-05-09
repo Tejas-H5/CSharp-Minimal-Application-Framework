@@ -24,7 +24,7 @@ namespace MinimalAF {
         }
 
         public override void OnMount(Window w) {
-            if(testRunner != null) {
+            if (testRunner != null) {
                 testRunner.OnTestcaseChanged -= TestRunner_OnTestcaseChanged;
             }
 

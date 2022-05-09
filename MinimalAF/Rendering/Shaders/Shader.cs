@@ -1,10 +1,7 @@
-﻿using MinimalAF.ResourceManagement;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace MinimalAF.Rendering {
     public readonly struct ShaderSources {
@@ -22,9 +19,9 @@ namespace MinimalAF.Rendering {
     /// </para>
     /// </summary>
     public abstract class Shader {
-        const string VERTEX_GLOBALS  = 
-            "uniform mat4 model;" + 
-            "uniform mat4 projection;" + 
+        const string VERTEX_GLOBALS =
+            "uniform mat4 model;" +
+            "uniform mat4 projection;" +
             "uniform mat4 view;" +
             "layout(location = 0) in vec3 position;" +
             "layout(location = 1) in vec2 uv;";
@@ -61,7 +58,7 @@ namespace MinimalAF.Rendering {
         }
 
         private string PerformStringReplacements(string vertexSource) {
-            if(!vertexSource.Contains("{{globals}}")) {
+            if (!vertexSource.Contains("{{globals}}")) {
                 throw new Exception("You should add '{{globals}}' in your vertex shader after the #version preprocessor directive " +
                     "to inject a bunch of the framework's internal global variables into your shader.");
             }
@@ -141,7 +138,7 @@ namespace MinimalAF.Rendering {
             GL.Uniform3(uniformLocation, data);
         }
 
-        public  void SetVector4(int uniformLocation, Vector4 data) {
+        public void SetVector4(int uniformLocation, Vector4 data) {
             CTX.Shader.UseShader(this);
             GL.Uniform4(uniformLocation, data);
         }

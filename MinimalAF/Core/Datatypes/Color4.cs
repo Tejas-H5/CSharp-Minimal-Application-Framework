@@ -58,41 +58,41 @@ namespace MinimalAF {
         /// <param name="a"></param>
         /// <returns></returns>
         public static Color4 HSVA(float h, float s, float v, float a) {
-			float c = v * s;
-			float x = c * (1 - MathF.Abs(h / 60) % 2 - 1);
-			float m = v - c;
-			float r = 0, g = 0, b = 0;
-			if (h < 60) {
-				r = c;
-				g = x;
-			} else if (h < 120) {
-				r = x;
-				g = c;
-			} else if (h < 180) {
-				g = c;
-				b = x;
-			} else if (h < 240) {
-				g = x;
-				b = c;
-			} else if (h < 300) {
-				r = x;
-				b = c;
-			} else {
-				r = c;
-				b = x;
-			}
+            float c = v * s;
+            float x = c * (1 - MathF.Abs(h / 60) % 2 - 1);
+            float m = v - c;
+            float r = 0, g = 0, b = 0;
+            if (h < 60) {
+                r = c;
+                g = x;
+            } else if (h < 120) {
+                r = x;
+                g = c;
+            } else if (h < 180) {
+                g = c;
+                b = x;
+            } else if (h < 240) {
+                g = x;
+                b = c;
+            } else if (h < 300) {
+                r = x;
+                b = c;
+            } else {
+                r = c;
+                b = x;
+            }
 
-			return new Color4(r + m, g + m, b + m, a);
-		}
+            return new Color4(r + m, g + m, b + m, a);
+        }
 
         public static Color4 HSV(float h, float s, float v) {
             return HSVA(h, s, v, 1f);
         }
 
-		/// <summary>
-		/// floats, 0.0f to 1.0f
-		/// </summary>
-		public static Color4 RGBA(float r, float g, float b, float a) {
+        /// <summary>
+        /// floats, 0.0f to 1.0f
+        /// </summary>
+        public static Color4 RGBA(float r, float g, float b, float a) {
             return new Color4(r, g, b, a);
         }
 
@@ -104,7 +104,7 @@ namespace MinimalAF {
             return new Color4(v, v, v, a);
         }
 
-        public static bool operator == (Color4 a, Color4 b) {
+        public static bool operator ==(Color4 a, Color4 b) {
             float eps = 0.0001f;
             return MathF.Abs(a.R - b.R) +
                 MathF.Abs(a.G - b.G) +

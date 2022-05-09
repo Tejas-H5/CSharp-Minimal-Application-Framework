@@ -1,8 +1,7 @@
-﻿using OpenTK.Mathematics;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -73,7 +72,7 @@ namespace MinimalAF.Rendering {
 
 
         public static VertexAttributeInfo[] GetVertexDescription<T>() where T : struct {
-            if(vertexInfoCache.ContainsKey(typeof(T))) {
+            if (vertexInfoCache.ContainsKey(typeof(T))) {
                 return vertexInfoCache[typeof(T)];
             }
 
@@ -83,11 +82,11 @@ namespace MinimalAF.Rendering {
 
             VertexAttributeInfo[] info = new VertexAttributeInfo[fields.Length];
 
-            for(int i = 0; i < fields.Length; i++) {
+            for (int i = 0; i < fields.Length; i++) {
                 Type t = fields[i].FieldType;
                 int componentCount = GetComponentCount(t);
 
-                if(componentCount == -1) {
+                if (componentCount == -1) {
                     throw new Exception("Vertex struct can't have a field of type " + t.Name);
                 }
 

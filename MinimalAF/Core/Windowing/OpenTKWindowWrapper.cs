@@ -123,7 +123,7 @@ namespace MinimalAF {
 
             deletionInterval++;
             // 100 is an arbitrary number.
-            if(deletionInterval > 100) {
+            if (deletionInterval > 100) {
                 deletionInterval = 0;
 
                 GLDeletionQueue.DeleteResources();

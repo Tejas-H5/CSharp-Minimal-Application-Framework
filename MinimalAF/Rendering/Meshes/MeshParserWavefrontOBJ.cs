@@ -1,19 +1,18 @@
 ﻿using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF.Rendering {
     public class MeshParserWavefrontOBJ<V> where V : struct, IVertexPosition, IVertexUV {
         /// <summary>
         /// Not yet complete. It just loads verts and UVS for now.
         /// </summary>
-        public static MeshData<V> FromOBJ(string text)  {
+        public static MeshData<V> FromOBJ(string text) {
             MeshData<V> mesh = new MeshData<V>();
             List<Vector3> positions = new List<Vector3>();
             List<Vector2> textureCoords = new List<Vector2>();
 
-            (int vertexCount, int triangleCount, int uvCount) 
+            (int vertexCount, int triangleCount, int uvCount)
                 = CalculateDataCounts(text);
 
             mesh.Indices.Capacity = triangleCount;
@@ -28,7 +27,7 @@ namespace MinimalAF.Rendering {
                 var lineIter = new StringIterator(trimmed, " ");
                 var start = lineIter.GetNext();
 
-                if(start.StartsWith("#")) {
+                if (start.StartsWith("#")) {
                     continue;
                 }
 
@@ -108,7 +107,7 @@ namespace MinimalAF.Rendering {
                 var textureIndexText = face.GetNext();
                 var textureIndex = textureIndexText == "" ? -1 : int.Parse(textureIndexText) - 1;
                 Vector2 uv = new Vector2(0, 0);
-                if(textureIndex != -1) {
+                if (textureIndex != -1) {
                     uv = textureCoords[textureIndex];
                 }
 

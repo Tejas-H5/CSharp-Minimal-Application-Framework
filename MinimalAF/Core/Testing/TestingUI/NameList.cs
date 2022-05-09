@@ -1,5 +1,4 @@
-﻿using MinimalAF.Rendering;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 // Warning: Tight coupling. Not for the faint of heart

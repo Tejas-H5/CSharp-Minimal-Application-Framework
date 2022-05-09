@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MinimalAF {
+﻿namespace MinimalAF {
     public class UIRootElement : Element {
         UIState state;
 

@@ -78,8 +78,8 @@ namespace MinimalAF.Rendering.Text {
                 }
 
                 Texture texture = new Texture(
-                    atlas.Image, 
-                    new TextureImportSettings { 
+                    atlas.Image,
+                    new TextureImportSettings {
                         Filtering = FilteringType.Bilinear
                     }
                 );

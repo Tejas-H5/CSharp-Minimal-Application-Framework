@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF {
     class NumericSlideInput<T> : Element, IInput<T> {
@@ -61,9 +59,9 @@ namespace MinimalAF {
                 start = toFloat(textInput.Value);
                 isDragging = true;
                 delta = 0;
-            } 
-            
-            if(MouseStoppedDraggingAnywhere) {
+            }
+
+            if (MouseStoppedDraggingAnywhere) {
                 isDragging = false;
                 OnFinalized?.Invoke(textInput.Value);
             }

@@ -52,15 +52,15 @@ namespace MinimalAF.Audio {
 
         public void QueueBuffer(int alBufferID) {
             int bufferCount = GetBuffersQueued();
-            AudioCTX.ALCall(() => { 
-                AL.SourceQueueBuffer(alSourceId, alBufferID); 
+            AudioCTX.ALCall(() => {
+                AL.SourceQueueBuffer(alSourceId, alBufferID);
             });
         }
 
         public int UnqueueBuffer() {
             int value;
-            AudioCTX.ALCall(out value, () => { 
-                return AL.SourceUnqueueBuffer(alSourceId); 
+            AudioCTX.ALCall(out value, () => {
+                return AL.SourceUnqueueBuffer(alSourceId);
             });
 
             return value;

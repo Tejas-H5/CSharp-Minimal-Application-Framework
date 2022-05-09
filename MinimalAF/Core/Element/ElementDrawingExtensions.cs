@@ -1,7 +1,7 @@
 ﻿using MinimalAF.Rendering;
 using OpenTK.Mathematics;
-using System.Drawing;
 using System;
+using System.Drawing;
 
 namespace MinimalAF {
     public partial class Element {
@@ -115,7 +115,7 @@ namespace MinimalAF {
         /// <param name="amount"></param>
         /// <returns></returns>
         public float VDir(Direction dir, float amount) {
-            if(dir == Direction.Left || dir == Direction.Right) {
+            if (dir == Direction.Left || dir == Direction.Right) {
                 return VW(amount);
             } else {
                 return VH(amount);

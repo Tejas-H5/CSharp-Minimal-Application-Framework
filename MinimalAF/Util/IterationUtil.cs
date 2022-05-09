@@ -1,49 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MinimalAF {
 
     public ref struct StringIterator {
-        readonly ReadOnlySpan<char> str;
-        readonly string delimiter;
-        private readonly bool skipEmpty;
+        readonly ReadOnlySpan<char> _str;
+        readonly string _delimiter;
+        private readonly bool _skipEmpty;
 
-        private int index;
-        private int nextIndex;
+        private int _index;
+        private int _nextIndex;
 
         public int Count {
             get {
-                if(index >= str.Length) {
+                if (_index >= _str.Length) {
                     return 0;
                 }
 
-                int lastIndex = index;
-                int lastNextIndex = nextIndex;
+                int lastIndex = _index;
+                int lastNextIndex = _nextIndex;
                 int count = 0;
 
-                while(MoveNext()) {
+                while (MoveNext()) {
                     count++;
                 }
 
-                index = lastIndex;
-                nextIndex = lastNextIndex;
+                _index = lastIndex;
+                _nextIndex = lastNextIndex;
 
                 return count;
             }
         }
 
         public StringIterator(ReadOnlySpan<char> str, string delimiter, bool skipEmpty = true) {
-            if(delimiter == "") {
+            if (delimiter == "") {
                 throw new ArgumentException("cant have an empty delimiter.");
             }
 
-            this.str = str;
-            this.delimiter = delimiter;
-            this.skipEmpty = skipEmpty;
+            this._str = str;
+            this._delimiter = delimiter;
+            this._skipEmpty = skipEmpty;
 
-            this.index = 0;
-            nextIndex = -delimiter.Length;
+            this._index = 0;
+            _nextIndex = -delimiter.Length;
         }
 
         public StringIterator GetEnumerator() {
@@ -57,35 +55,35 @@ namespace MinimalAF {
 
 
         private int FindNext() {
-            int nextIndex = str.Slice(index)
-                .IndexOf(delimiter);
+            int nextIndex = _str.Slice(_index)
+                .IndexOf(_delimiter);
 
-            if(nextIndex == -1) {
+            if (nextIndex == -1) {
                 return -1;
             }
 
-            return  nextIndex + index;
+            return nextIndex + _index;
         }
 
         public ReadOnlySpan<char> Current {
             get {
-                return str.Slice(index, nextIndex - index);
+                return _str.Slice(_index, _nextIndex - _index);
             }
         }
 
         bool Step() {
-            if (nextIndex >= str.Length) {
+            if (_nextIndex >= _str.Length) {
                 return false;
             }
 
-            index = nextIndex + delimiter.Length;
+            _index = _nextIndex + _delimiter.Length;
 
-            if(index == str.Length) {
-                nextIndex = index;
+            if (_index == _str.Length) {
+                _nextIndex = _index;
             } else {
-                nextIndex = FindNext();
-                if(nextIndex == -1) {
-                    nextIndex = str.Length;
+                _nextIndex = FindNext();
+                if (_nextIndex == -1) {
+                    _nextIndex = _str.Length;
                 }
             }
 
@@ -97,14 +95,14 @@ namespace MinimalAF {
                 if (!Step()) {
                     return false;
                 }
-            } while (skipEmpty && Current == "");
+            } while (_skipEmpty && Current == "");
 
             return true;
         }
 
         public void Reset() {
-            this.index = 0;
-            nextIndex = -delimiter.Length;
+            this._index = 0;
+            _nextIndex = -_delimiter.Length;
         }
     }
 }

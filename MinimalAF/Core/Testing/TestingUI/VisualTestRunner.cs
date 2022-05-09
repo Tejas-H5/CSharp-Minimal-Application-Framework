@@ -16,8 +16,8 @@ namespace MinimalAF {
         int initialTest = 0;
 
         int IndexOf(Type test) {
-            for(int i = 0; i < visualTestElements.Count; i++) {
-                if(visualTestElements[i].Item1 == test) {
+            for (int i = 0; i < visualTestElements.Count; i++) {
+                if (visualTestElements[i].Item1 == test) {
                     return i;
                 }
             }
@@ -42,12 +42,12 @@ namespace MinimalAF {
 
             mountingContainer = new MountingContainer();
             reflectionPanel = new ConstructorParameterPanel();
-            
+
 
 
             SetChildren(testList, searchbox, mountingContainer, reflectionPanel);
 
-            
+
 
             FindAllVisualTests();
 
@@ -56,7 +56,7 @@ namespace MinimalAF {
                 Console.WriteLine("\t" + t.Name);
             }
 
-            if(initialTestType != null) {
+            if (initialTestType != null) {
                 initialTest = IndexOf(initialTestType);
             }
         }
@@ -101,7 +101,7 @@ namespace MinimalAF {
                     }
 
                     Type paramType = expectedArgs[i].ParameterType;
-                    
+
 
                     args[i] = TestRunnerCommon.InstantiateDefaultParameterValue(expectedArgs[i]);
                 }

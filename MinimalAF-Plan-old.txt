@@ -1,6 +1,8 @@
 Anything cluttering up MinimalAF-Plan.txt is just cut-pasted here
 =======================================================
-
+	- fix audio capabilities
+		- Can't be bothered. I'll do it later.
+		
 	- feature: Modify public properties during test with test harness, autogenerate UI for this. 
 		-> Polish this feature:
 			- [Done] All values must initialize themselves to whatever the class has set them to, now they are setting themselves to 0 or something

@@ -1,9 +1,6 @@
 [Final features] TODO:
 
 FINAL Items :0	
-	-> fix audio capabilities
-		- design
-		- handling multiple sources playing at the same time
 	
 	-* profile startup, it takes too long
 	

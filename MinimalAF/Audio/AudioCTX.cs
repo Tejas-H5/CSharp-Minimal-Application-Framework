@@ -10,12 +10,6 @@ namespace MinimalAF.Audio {
     /// Needs to be Initialized with Init(),
     /// Updated every frame with Update(),
     /// and disposed of when the program is done with Cleanup().
-    /// 
-    ///     // TODO: FIX THIS BAD DESIGN
-    // AudioSource needs to contain an ALSource that can be nulled and chagned and whatever
-    // we need to stop using ActiveSourceMap
-    // this needs to have a boolean IsActive
-    // the audiosources need to be created lazily. no point in just having 256 of them lying around, just slowing down the startup
     /// </summary>
     public static class AudioCTX {
         private static ALDevice device;

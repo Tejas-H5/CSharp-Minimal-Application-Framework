@@ -9,18 +9,19 @@ namespace MinimalAF.Audio {
         private static List<AudioSource> unactiveList = new List<AudioSource>();
 
         internal static void Init() {
-            // used to contain stuff, for now it is a no-op
+            CreateAllOpenALSources();
         }
-
 
         internal static void Update() {
-            UpdateActiveSources();
+            SendAudioSourceDataToALSources();
 
-            ReclaimInactiveSources();
+            ReclaimUnactiveSources();
         }
 
-        private static void UpdateActiveSources() {
-            foreach ((AudioSource virtualSource, OpenALSource alSource) in activeSources) {
+        private static void SendAudioSourceDataToALSources() {
+            foreach (var items in activeSources) {
+                AudioSource virtualSource = items.Key;
+                OpenALSource alSource = items.Value;
                 alSource.PullDataFrom(virtualSource);
             }
         }
@@ -30,8 +31,8 @@ namespace MinimalAF.Audio {
         }
 
         private static void DisposeAllOpenALSources() {
-            ReclaimAll();
-            DisposeAll();
+            ReclaimAllSources();
+            DisposeAllPooledSources();
         }
 
         internal static OpenALSource AcquireSource(AudioSource audioSource) {
@@ -39,17 +40,17 @@ namespace MinimalAF.Audio {
             if (active != null)
                 return active;
 
-
-            if (allAvailableOpenALSources.Count > 0) {
+            if (PooledSourcesAreAvailable()) {
                 OpenALSource newALSource = allAvailableOpenALSources.Pop();
                 return AssignALSourceToAudioSource(newALSource, audioSource);
             }
 
 
             AudioSource lowerPrioritiySource = null;
-            foreach ((AudioSource audioSourceLoop, OpenALSource alSource) in activeSources) {
-                if (audioSourceLoop.Priority < audioSource.Priority) {
-                    lowerPrioritiySource = audioSource;
+            foreach (var pairs in activeSources) {
+                bool isLowerPriority = pairs.Key.Priority < audioSource.Priority;
+                if (isLowerPriority) {
+                    lowerPrioritiySource = pairs.Key;
                     break;
                 }
             }
@@ -65,14 +66,19 @@ namespace MinimalAF.Audio {
         }
 
         internal static OpenALSource GetActiveSource(AudioSource audioSource) {
-            if (activeSources.ContainsKey(audioSource))
+            if (SourceAlreadyActive(audioSource))
                 return activeSources[audioSource];
 
             return null;
         }
 
 
-        private static void ReclaimInactiveSources() {
+        private static bool SourceAlreadyActive(AudioSource source) {
+            return activeSources.ContainsKey(source);
+        }
+
+
+        private static void ReclaimUnactiveSources() {
             FindUnactiveSources();
             ReturnUnactiveSourcesToPool();
         }
@@ -127,23 +133,30 @@ namespace MinimalAF.Audio {
 
         private static void CreateAllOpenALSources() {
             OpenALSource source = null;
-            while (allAvailableOpenALSources.Count < MAX_AUDIO_SOURCES && 
-                (source = OpenALSource.CreateOpenALSource()) != null) {
+            while (SourceLimitNotReached() && (source = OpenALSource.CreateOpenALSource()) != null) {
                 allAvailableOpenALSources.Push(source);
             }
         }
 
-        private static void DisposeAll() {
+        private static void DisposeAllPooledSources() {
             foreach (OpenALSource alSource in allAvailableOpenALSources) {
                 alSource.Dispose();
             }
             allAvailableOpenALSources.Clear();
         }
 
-        private static void ReclaimAll() {
+        private static void ReclaimAllSources() {
             foreach (var items in activeSources) {
                 ReturnToPool(items.Key);
             }
+        }
+
+        private static bool SourceLimitNotReached() {
+            return allAvailableOpenALSources.Count < MAX_AUDIO_SOURCES;
+        }
+
+        internal static bool PooledSourcesAreAvailable() {
+            return allAvailableOpenALSources.Count > 0;
         }
     }
 }

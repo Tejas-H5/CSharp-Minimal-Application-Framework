@@ -1,5 +1,21 @@
 Anything cluttering up MinimalAF-Plan.txt is just cut-pasted here
 =======================================================
+	-* PushDepth, something like pushmatrix but we're settign the 2D depth temporarily. it's like Z-Index in HTML but actually useful
+		- probably no longer needed because we now have 'stacking offset'
+		
+	- Analyse allocations, we are getting a lot of GC pauses
+		- only in debug mode though, and not in release
+		and this doesnt happen anymore
+	
+	- profile memory usage, 150mb is way too high.
+		Task manager says it only uses 72 MB, so that is probably fine.
+		the release build uses about the same. But it starts up way faster when you don't attach it to VS. 
+		
+	- test: Add unit tests for renderbuffer
+		- find rare memory corruption bug that may now be fixed
+			- this may just be from the texture being disposed and us trying to do OpenGL stuff on the GC thread, which we have basically fixed
+		- shh
+	
 	- fix audio capabilities
 		- Can't be bothered. I'll do it later.
 		

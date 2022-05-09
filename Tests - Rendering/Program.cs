@@ -8,7 +8,9 @@ namespace RenderingEngineVisualTests
     {
         static void Main(string[] args)
         {
-            new ApplicationWindow().Run(new VisualTestRunner(typeof(FramebufferTest)));
+            var testRunner = new VisualTestRunner(typeof(FramebufferTest));
+
+            new ApplicationWindow().Run(testRunner);
         }
     }
 }

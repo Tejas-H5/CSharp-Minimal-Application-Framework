@@ -1,43 +1,30 @@
 [Final features] TODO:
 
 FINAL Items :0	
+	-> Documentation
 	
-	-* profile startup, it takes too long
 	
-	-* profile memory usage, 150mb is way too high.
+Passive:
+	-> switch back to _ notation, it was useuful to be able to see at a glance which variables are fields.
 	
-	-* switch back to _ notation, it was useuful to be able to see at a glance which variables are fields.
-	
-	-* tag version 0.1.0
 Backlog: 
 	-* colour picker for the UI
 
-	- 3D lighting shaders
+	-* 3D lighting shaders
+	
+	-* stack-based opacity	
 
 	-* Run arbitrary C# code	
 	
 	-* Python interop
 		
-	- fix: implement Disposable for Audiosource and possibly other classes
-		since they are now pooled
-			
-	- test: Add unit tests for renderbuffer
-		- find rare memory corruption bug that may now be fixed
-			- this may just be from the texture being disposed and us trying to do OpenGL stuff on the GC thread, which we have basically fixed
+	-* fix: implement Disposable for Audiosource since they are now pooled
 	
-	- make stencil stack-based somehow
+	-* make stencil stack-based somehow
 		- am not sure how possible this is.
-		
-	-* Analyse allocations, we are getting a lot of GC pauses
-		- only in debug mode though, and not in release
-	
-	-* PushDepth, something like pushmatrix but we're settign the 2D depth temporarily. it's like Z-Index in HTML but actually useful
-		- probably no longer needed because we now have 'stacking offset'
 	
 	-* Try to understand how the depth is working, and why it doesnt work for 
 	numbers greater than 1. Near far clipping planes?
-	
-	-* figure out what we should do with PushMatrix, now that we have other ways of setting the matrix wich will probably be better
 	
 Distant future:
 	- feature: Some way to see the element tree in the test harness
@@ -45,7 +32,3 @@ Distant future:
 		
 	- feature: Add dynamic compilation (in general, not just test harness)
 		-* find that ms doc page about c# dynamic compilation
-		
-	- fix: Why is it taking up so much memory in RAM. reduce this
-	
-	

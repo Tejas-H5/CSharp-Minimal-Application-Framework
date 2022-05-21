@@ -1,10 +1,17 @@
 [Final features] TODO:
 
 FINAL Items :0	
-	-> Documentation
+	-> Migrate to  .net6.0
+		-* stop using bitmap, font, use this instead:
+		https://docs.microsoft.com/en-us/dotnet/api/skiasharp.skfont?view=skiasharp-2.80.2
+		https://github.com/mono/SkiaSharp	
+			- This API seems to be the closest to what we already have
+	
+
+	- Documentation
 	
 	
-Passive:
+Passive/as I go:
 	-> switch back to _ notation, it was useuful to be able to see at a glance which variables are fields.
 	
 Backlog: 

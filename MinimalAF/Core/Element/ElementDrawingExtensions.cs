@@ -1,7 +1,6 @@
 ﻿using MinimalAF.Rendering;
 using OpenTK.Mathematics;
 using System;
-using System.Drawing;
 
 namespace MinimalAF {
     public partial class Element {
@@ -230,15 +229,15 @@ namespace MinimalAF {
             CTX.Rect.Draw(rect);
         }
 
-        protected PointF DrawText(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f) {
+        protected Vector2 DrawText(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f) {
             return CTX.Text.Draw(text, startX, startY, hAlign, vAlign, scale);
         }
 
-        protected PointF DrawText(string text, float startX, float startY, float scale = 1.0f) {
+        protected Vector2 DrawText(string text, float startX, float startY, float scale = 1.0f) {
             return CTX.Text.Draw(text, startX, startY, scale);
         }
 
-        protected PointF DrawText(string text, int start, int end, float startX, float startY, float scale) {
+        protected Vector2 DrawText(string text, int start, int end, float startX, float startY, float scale) {
             return CTX.Text.Draw(text, start, end, startX, startY, scale);
         }
 

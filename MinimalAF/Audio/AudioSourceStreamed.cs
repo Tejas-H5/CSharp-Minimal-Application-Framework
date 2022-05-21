@@ -184,7 +184,7 @@ namespace MinimalAF.Audio {
                 sampleRate = streamProvider.SampleRate;
             }
 
-            AL.BufferData(alBuffer, format, new Span<short>(tempBuffer, 0, count), sampleRate);
+            AL.BufferData<short>(alBuffer, format, new Span<short>(tempBuffer, 0, count), sampleRate);
         }
 
         private void ClearTempData() {

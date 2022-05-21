@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using OpenTK.Mathematics;
 
 namespace MinimalAF {
     public class TextElement : Element {
@@ -20,7 +20,7 @@ namespace MinimalAF {
         }
 
 
-        private PointF caratPos = new PointF();
+        private Vector2 caratPos = new Vector2();
 
         public TextElement(string text, Color4 textColor)
             : this(text, textColor, "", -1, VerticalAlignment.Bottom, HorizontalAlignment.Left) {
@@ -91,7 +91,7 @@ namespace MinimalAF {
             return GetStringWidth(String);
         }
 
-        public PointF GetCaratPos() {
+        public Vector2 GetCaratPos() {
             return caratPos;
         }
 

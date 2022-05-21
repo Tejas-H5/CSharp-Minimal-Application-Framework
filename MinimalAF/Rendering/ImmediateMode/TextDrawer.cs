@@ -1,6 +1,6 @@
 ﻿using MinimalAF.Rendering.Text;
+using OpenTK.Mathematics;
 using System;
-using System.Drawing;
 
 namespace MinimalAF.Rendering {
     public class TextDrawer<V> : IDisposable where V : struct, IVertexUV, IVertexPosition {
@@ -68,8 +68,9 @@ namespace MinimalAF.Rendering {
             return ActiveFont.FontAtlas.GetCharacterSize(c).Height;
         }
 
-        public SizeF GetSize(char c) {
-            return ActiveFont.FontAtlas.GetCharacterSize(c);
+        public (float, float) GetSize(char c) {
+            var size = ActiveFont.FontAtlas.GetCharacterSize(c);
+            return (size.Width, size.Height);
         }
 
 
@@ -92,8 +93,8 @@ namespace MinimalAF.Rendering {
 
         //TODO: IMPLEMENT tabs and newlines
         //And vertical/horizontal aiignment features
-        public PointF Draw(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f) {
-            PointF caratPos = new PointF(startX, startY);
+        public Vector2 Draw(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f) {
+            Vector2 caratPos = (startX, startY);
 
             if (text == null)
                 return caratPos;
@@ -136,11 +137,11 @@ namespace MinimalAF.Rendering {
             return caratPos;
         }
 
-        public PointF Draw(string text, float startX, float startY, float scale = 1.0f) {
+        public Vector2 Draw(string text, float startX, float startY, float scale = 1.0f) {
             return Draw(text, 0, text.Length, startX, startY, scale);
         }
 
-        public PointF Draw(string text, int start, int end, float startX, float startY, float scale) {
+        public Vector2 Draw(string text, int start, int end, float startX, float startY, float scale) {
             Texture previousTexture = CTX.Texture.Get();
 
             CTX.Texture.Set(ActiveFont.FontTexture);
@@ -165,14 +166,14 @@ namespace MinimalAF.Rendering {
 
             CTX.Texture.Set(previousTexture);
 
-            return new PointF(x, y);
+            return new Vector2(x, y);
         }
 
         private void DrawCharacter(float scale, float x, float y, char c) {
-            SizeF size = GetSize(c);
+            Vector2 size = GetSize(c);
             Rect uv = ActiveFont.FontAtlas.GetCharacterUV(c);
 
-            CTX.Rect.Draw(new Rect(x, y, x + size.Width * scale, y + size.Height * scale), uv);
+            CTX.Rect.Draw(new Rect(x, y, x + size.X * scale, y + size.Y * scale), uv);
         }
 
         public void Dispose() {

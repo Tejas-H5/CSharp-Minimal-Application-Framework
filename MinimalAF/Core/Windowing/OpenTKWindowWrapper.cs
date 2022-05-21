@@ -52,9 +52,7 @@ namespace MinimalAF {
         }
 
         public OpenTKWindowWrapper(ApplicationWindow rootWindow)
-            : base(new GameWindowSettings {
-                IsMultiThreaded = false
-            },
+            : base(new GameWindowSettings {},
             new NativeWindowSettings {
                 StartVisible = false
             }) {

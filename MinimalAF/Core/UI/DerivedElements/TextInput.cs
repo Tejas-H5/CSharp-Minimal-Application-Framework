@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK.Mathematics;
+using System;
 using System.Drawing;
 
 namespace MinimalAF {
@@ -120,7 +121,7 @@ namespace MinimalAF {
         }
 
         private void RenderCarat() {
-            PointF caratPos = textObject.GetCaratPos();
+            Vector2 caratPos = textObject.GetCaratPos();
             float height = textObject.GetCharacterHeight();
 
             Color4 col = textObject.TextColor;

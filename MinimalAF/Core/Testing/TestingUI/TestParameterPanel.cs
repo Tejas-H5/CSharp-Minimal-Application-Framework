@@ -11,7 +11,7 @@ namespace MinimalAF {
         bool skipUpdate = false;
 
         public override void OnMount(Window w) {
-            SetFont("Consolas", 12);
+            SetFont("Consolas", 16);
             charHeight = GetCharHeight();
         }
 

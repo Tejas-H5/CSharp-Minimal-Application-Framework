@@ -32,7 +32,7 @@ namespace MinimalAF {
                 ") \nUpdateFPS:" + UpdateFrequency.ToString("0.0") + "\nRenderFPS:" +
                 RenderFrequency.ToString("0.0");
 
-            SetFont("Consolas", 12);
+            SetFont("Consolas", 16);
             DrawText(infoText, 0, 0, HorizontalAlignment.Left, VerticalAlignment.Top);
         }
 

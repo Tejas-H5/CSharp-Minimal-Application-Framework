@@ -1,5 +1,12 @@
 Anything cluttering up MinimalAF-Plan.txt is just cut-pasted here
 =======================================================
+	-> Migrate to  .net6.0
+		-* stop using bitmap, font, use this instead:
+		https://docs.microsoft.com/en-us/dotnet/api/skiasharp.skfont?view=skiasharp-2.80.2
+		https://github.com/mono/SkiaSharp	
+			- This API seems to be the closest to what we are already using
+
+
 	-* PushDepth, something like pushmatrix but we're settign the 2D depth temporarily. it's like Z-Index in HTML but actually useful
 		- probably no longer needed because we now have 'stacking offset'
 		

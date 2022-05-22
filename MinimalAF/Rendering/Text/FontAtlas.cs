@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SkiaSharp;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -18,61 +19,77 @@ namespace MinimalAF.Rendering.Text {
 
         //Atlas settings
         public int Padding = 2;
+        public bool IsAntiAliased = true;
     }
 
     //concept taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
     public class FontAtlas {
         public const string DefaultCharacters = "!#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'";
-        private Font systemFont;
-        private Bitmap bitmap;
-        private Dictionary<char, Rect> characterQuadCoords;
+        private SKTypeface _skTypeface;
+        private SKPaint _skStyle;
+        private float _fontBottom;
+        private SKBitmap _bitmap;
+        private Dictionary<char, Rect> _characterQuadCoords;
+        private FontImportSettings _importSettings;
 
-        public Font SystemFont {
-            get => systemFont;
-        }
-        public Bitmap Image {
-            get => bitmap;
-        }
-        public float CharWidth {
-            get; internal set;
-        }
-        public float CharHeight {
-            get; internal set;
-        }
+        const float QUALITY_SCALE_FACTOR = 1f;
 
-        FontImportSettings importSettings;
+        public SKTypeface SystemFont {
+            get => _skTypeface;
+        }
+        public SKBitmap Image {
+            get => _bitmap;
+        }
+        public float CharWidth => GetCharacterSize('?').Width;
+        public float CharHeight => GetCharacterSize('?').Height;
+
 
         /// <summary>
         /// May be different to what was specified.
         /// </summary>
-        public string FontName => importSettings.FontName;
-        public int FontSize => importSettings.FontSize;
+        public string FontName => _importSettings.FontName;
+        public int FontSize => _importSettings.FontSize;
 
         public static FontAtlas CreateFontAtlas(FontImportSettings importSettings, string characters = DefaultCharacters) {
-            Font systemFont = TryGenerateSystemFontObject(importSettings);
+            SKTypeface systemFont = TryLoadFont(importSettings);
             if (systemFont == null)
                 return null;
 
             return new FontAtlas(importSettings, systemFont, characters);
         }
 
-        private FontAtlas(FontImportSettings importSettings, Font font, string characters) {
-            this.importSettings = importSettings;
-            importSettings.FontName = font.Name;
+        private FontAtlas(FontImportSettings importSettings, SKTypeface font, string characters) {
+            this._importSettings = importSettings;
+            importSettings.FontName = font.FamilyName;
+            _skTypeface = font;
+            _skStyle = new SKPaint {
+                Typeface = _skTypeface,
+                TextSize = importSettings.FontSize * QUALITY_SCALE_FACTOR,
+                Color = new SKColor(0xFF, 0xFF, 0xFF, 0xFF),
+                TextAlign = SKTextAlign.Left,
+                IsAntialias = importSettings.IsAntiAliased
+            };
 
-            //Used to handle the error of invalid characters being looked up
-            if (!characters.Contains('?'))
+            // edge-case rendering code relies on the question mark always being a valid character
+            if (!characters.Contains('?', StringComparison.Ordinal))
                 characters += '?';
-
-            this.systemFont = font;
 
             int padding = importSettings.Padding;
 
-            bitmap = CreateAtlasBaseImage(importSettings, characters, font, padding);
+            _characterQuadCoords = new Dictionary<char, Rect>();
+            _bitmap = RenderAtlas(characters, _characterQuadCoords, padding);
 
-            characterQuadCoords = new Dictionary<char, Rect>();
+#if DEBUG
+            // TODO: REMOVE THIS LATER, ITS JUST FOR DEBUG
+            // Create the file.
+            using (MemoryStream memStream = new MemoryStream())
+            using (SKManagedWStream wstream = new SKManagedWStream(memStream)) {
+                var res = _bitmap.Encode(wstream, SKEncodedImageFormat.Png, 100);
+                byte[] data = memStream.ToArray();
 
-            RenderAtlas(importSettings, characters, font, characterQuadCoords, padding, bitmap);
+                File.WriteAllBytes($"./debug-{_skStyle.TextSize}-{_skTypeface.FamilyName}.png", data);
+            }
+#endif
         }
 
         public Rect GetCharacterUV(char c) {
@@ -80,126 +97,92 @@ namespace MinimalAF.Rendering.Text {
                 c = '?';
             }
 
-            return characterQuadCoords[c];
+            return _characterQuadCoords[c];
         }
 
         public SizeF GetCharacterSize(char c) {
             Rect normalized = GetCharacterUV(c);
-            float width = bitmap.Width;
-            float height = bitmap.Height;
+            float width = _bitmap.Width;
+            float height = _bitmap.Height;
 
             return new SizeF(
-                normalized.Width * width,
-                normalized.Height * height
-                );
+                normalized.Width * width / QUALITY_SCALE_FACTOR,
+                normalized.Height * height / QUALITY_SCALE_FACTOR
+            );
         }
 
         public bool IsValidCharacter(char c) {
-            return characterQuadCoords.ContainsKey(c);
+            return _characterQuadCoords.ContainsKey(c);
         }
 
-        private static Font TryGenerateSystemFontObject(FontImportSettings fontSettings) {
-            Font font;
+        private static SKTypeface TryLoadFont(FontImportSettings fontSettings) {
+            try {
+                SKTypeface skTypeFace;
 
-            if (!string.IsNullOrWhiteSpace(fontSettings.FromFile)) {
-                var collection = new PrivateFontCollection();
-                collection.AddFontFile(fontSettings.FromFile);
-                var fontFamily = new FontFamily(Path.GetFileNameWithoutExtension(fontSettings.FromFile), collection);
-                font = new Font(fontFamily, fontSettings.FontSize);
-            } else {
-                try {
-                    font = new Font(new FontFamily(fontSettings.FontName), fontSettings.FontSize);
-                } catch {
-                    return null;
+                if (!string.IsNullOrWhiteSpace(fontSettings.FromFile)) {
+                    skTypeFace = SKTypeface.FromFile(fontSettings.FromFile);
+                } else {
+                    skTypeFace = SKTypeface.FromFamilyName(fontSettings.FontName);
                 }
-            }
 
-            return font;
+                return skTypeFace;
+            } catch {
+                return null;
+            }
         }
 
-        private void RenderAtlas(FontImportSettings fontSettings, string characters, Font font, Dictionary<char, Rect> coordMap, int padding, Bitmap bitmap) {
-            using (var g = Graphics.FromImage(bitmap)) {
-                ConfigureGraphicsWithFontSettings(fontSettings, g);
-                g.Clear(Color.FromArgb(0, 0, 0, 0));
+        private SKBitmap RenderAtlas(string characters, Dictionary<char, Rect> coordMap, int padding) {
+            var positions = _skStyle.GetGlyphPositions(characters);
+            var widths = _skStyle.GetGlyphWidths(characters);
 
-                float currentY = padding;
+            var (bitmapWidth, bitmapHeight) = CalculateImageDimensions(positions, widths, padding);
+            var bitmap = new SKBitmap(bitmapWidth, bitmapHeight);
 
+            using (var canvas = new SKCanvas(bitmap)) {
+                float bitmapWidthF = bitmapWidth;
+                float bitmapHeightF = bitmapHeight;
+
+                canvas.Clear(new SKColor(0,0,0,0));
+
+                // render a line of text to the image
+                float vOffset = bitmapHeightF - _fontBottom;
+
+                for(int i = 0; i < characters.Length; i++) {
+                    float currentX = positions[i].X + padding * i;
+                    canvas.DrawText(characters[i].ToString(), new SKPoint(currentX, vOffset), _skStyle);
+                }
+
+                // assign each character a UV rectangle mapping it to a spot on the canvas
                 for (int i = 0; i < characters.Length; i++) {
+                    float currentX = positions[i].X + padding * i;
+                    float width = widths[i];
                     char c = characters[i];
-                    SizeF size = GetCharcterSize(fontSettings, font, g, c);
 
-                    float currentX = padding;
+                    float u0 = currentX / bitmapWidthF;
+                    float v0 = 0;
 
-                    g.DrawString(c.ToString(), font, Brushes.White, currentX, currentY, StringFormat.GenericTypographic);
-
-                    float u0 = currentX / bitmap.Width;
-                    float v0 = currentY / bitmap.Height;
-                    float u1 = (currentX + size.Width) / bitmap.Width;
-                    float v1 = (currentY + size.Height) / bitmap.Height;
+                    float u1 = (currentX + width) / bitmapWidthF;
+                    float v1 = 1;
 
                     Rect uv = new Rect(u0, v0, u1, v1).Rectified();
-
                     coordMap[c] = uv;
-
-                    currentY += size.Height + padding;
                 }
             }
-        }
 
-        private Bitmap CreateAtlasBaseImage(FontImportSettings fontSettings, string characters, Font font, int padding) {
-            int bitmapWidth = 0;
-            int bitmapHeight = 0;
-            CalculateImageDimensions(fontSettings, characters, font, padding, out bitmapWidth, out bitmapHeight);
-
-            Bitmap bitmap = new Bitmap(bitmapWidth, bitmapHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             return bitmap;
         }
 
-        //Assumes that the letters will be vertically packed
-        private void CalculateImageDimensions(FontImportSettings fontSettings, string characters, Font font, int padding, out int bitmapWidth, out int bitmapHeight) {
-            float height = padding;
-            float width = 0;
+        private (int, int) CalculateImageDimensions(SKPoint[] positions, float[] widths, int padding) {
+            var lastCharWidth = widths[widths.Length - 1];
+            float width = positions[positions.Length - 1].X + lastCharWidth 
+                + padding + widths.Length * padding;
 
-            float maxWidth = 0;
-            float maxHeight = 0;
+            _skStyle.GetFontMetrics(out SKFontMetrics metrics);
 
-            using (var g = Graphics.FromImage(new Bitmap(1, 1))) {
-                ConfigureGraphicsWithFontSettings(fontSettings, g);
+            float extents = metrics.Bottom - metrics.Top;
+            _fontBottom = metrics.Bottom;
 
-                for (int i = 0; i < characters.Length; i++) {
-                    char c = characters[i];
-                    SizeF size = GetCharcterSize(fontSettings, font, g, c);
-
-                    width = MathF.Max(width, size.Width);
-                    height += size.Height + padding;
-
-                    maxWidth = MathF.Max(maxWidth, size.Width);
-                    maxHeight = MathF.Max(maxHeight, size.Height);
-                }
-            }
-
-            bitmapWidth = (int)width + 2 * padding;
-            bitmapHeight = (int)height;
-
-            CharWidth = maxWidth;
-            CharHeight = maxHeight;
-        }
-
-        private SizeF GetCharcterSize(FontImportSettings fontSettings, Font font, Graphics g, char c) {
-            return g.MeasureString(c.ToString(), font, fontSettings.FontSize, StringFormat.GenericTypographic);
-        }
-
-        private void ConfigureGraphicsWithFontSettings(FontImportSettings fontSettings, Graphics g) {
-            g.PageUnit = GraphicsUnit.Pixel;
-            g.PageScale = 1.0f;
-
-            if (fontSettings.BitmapFont) {
-                g.SmoothingMode = SmoothingMode.None;
-                g.TextRenderingHint = TextRenderingHint.SingleBitPerPixel;
-            } else {
-                g.SmoothingMode = SmoothingMode.HighQuality;
-                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-            }
+            return ((int)MathF.Ceiling(width), (int)MathF.Ceiling(extents));
         }
     }
 }

@@ -48,7 +48,7 @@ namespace MinimalAF {
             string defaultValue = GetValue(names[selected]).ToString();
 
             textInput = new TextInput<string>(
-                new TextElement("", Color4.VA(0, 1), "Consolas", 12, VerticalAlignment.Center, HorizontalAlignment.Center),
+                new TextElement("", Color4.VA(0, 1), "Consolas", 16, VerticalAlignment.Center, HorizontalAlignment.Center),
                 defaultValue,
                 (string s) => s
             );

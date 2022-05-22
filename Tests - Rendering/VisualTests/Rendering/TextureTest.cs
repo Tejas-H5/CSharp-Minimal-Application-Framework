@@ -59,6 +59,11 @@ Also, the texture on the left must be still, while only the one on the right is 
 
 			SetTexture(tex2);
 			DrawRect(new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectified());
+
+            ResetCoordinates();
+
+            Rect centerRect = new Rect(VW(0.5f) - tex.Width / 2, VH(0.5f) - tex.Height / 2, VW(0.5f) + tex.Width / 2, VH(0.5f) + tex.Height / 2);
+            DrawRect(centerRect);
         }
     }
 }

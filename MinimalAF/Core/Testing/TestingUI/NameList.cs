@@ -47,7 +47,7 @@ namespace MinimalAF {
         }
 
         public override void OnRender() {
-            SetFont("Consolas", 12);
+            SetFont("Consolas", 16);
 
             if (GetCharHeight() != textHeight) {
                 textHeight = GetCharHeight();

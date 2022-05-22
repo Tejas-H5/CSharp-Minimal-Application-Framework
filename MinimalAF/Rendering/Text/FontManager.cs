@@ -49,11 +49,11 @@ namespace MinimalAF.Rendering.Text {
 
         public void SetCurrentFont(string fontName, int fontSize) {
             if (string.IsNullOrEmpty(fontName)) {
-                fontName = SystemFonts.DefaultFont.Name;
+                fontName = "";
             }
 
             if (fontSize <= 0) {
-                fontSize = 12;
+                fontSize = 16;
             }
 
             string key = GenerateKey(fontName, fontSize);

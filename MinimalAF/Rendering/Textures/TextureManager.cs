@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Drawing;
+using SkiaSharp;
 
 namespace MinimalAF.Rendering {
     //TODO: implement multiple texture units if needed
@@ -28,8 +28,8 @@ namespace MinimalAF.Rendering {
         }
 
         private void InitNullTexture() {
-            Bitmap white1x1 = new Bitmap(1, 1);
-            white1x1.SetPixel(0, 0, Color.FromArgb(255, 255, 255, 255));
+            SKBitmap white1x1 = new SKBitmap(1, 1);
+            white1x1.SetPixel(0, 0, new SKColor(0xFF, 0xFF, 0xFF, 0xFF));
 
             nullTexture = new Texture(white1x1, new TextureImportSettings { });
 

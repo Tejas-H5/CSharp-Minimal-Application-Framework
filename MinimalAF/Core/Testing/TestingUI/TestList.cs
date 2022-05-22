@@ -61,7 +61,7 @@ namespace MinimalAF {
             SetDrawColor(Color4.VA(1, 0.5f));
             DrawRect(0, 0, VW(1), VH(1));
 
-            SetFont("Consolas", 12);
+            SetFont("Consolas", 16);
             textHeight = GetCharHeight();
 
             foreach ((float y, (Type test, VisualTestAttribute testInfo), bool isOver) in IterateTypes()) {

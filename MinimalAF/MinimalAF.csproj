@@ -32,7 +32,7 @@
   <ItemGroup>
     <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="OpenTK" Version="4.7.2" />
-    <PackageReference Include="System.Drawing.Common" Version="7.0.0-preview.4.22229.4" />
+    <PackageReference Include="SkiaSharp" Version="2.80.4" />
   </ItemGroup>
 
   <ItemGroup>

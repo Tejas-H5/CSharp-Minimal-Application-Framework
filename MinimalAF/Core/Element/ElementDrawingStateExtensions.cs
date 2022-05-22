@@ -19,7 +19,7 @@ namespace MinimalAF {
             CTX.Texture.Set(texture);
         }
 
-        protected void SetFont(string name, int size = 12) {
+        protected void SetFont(string name, int size = 16) {
             CTX.Text.SetFont(name, size);
         }
         protected void SetClearColor(Color4 value) {

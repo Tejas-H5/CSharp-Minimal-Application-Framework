@@ -1,8 +1,8 @@
 ﻿using MinimalAF.ResourceManagement;
 using OpenTK.Graphics.OpenGL;
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
+using SkiaSharp;
+using System.IO;
 
 namespace MinimalAF.Rendering {
     // Initially Taken from https://github.com/opentk/LearnOpenTK/blob/master/Common/Texture.cs
@@ -39,16 +39,20 @@ namespace MinimalAF.Rendering {
             }
         }
 
-        //TODO: replace boolean with TextureImportSettings class if needed
         public static Texture LoadFromFile(string path, TextureImportSettings settings = null) {
-            Bitmap image;
+            SKBitmap image;
 
             try {
-                image = new Bitmap(path);
+                var bytes = File.ReadAllBytes(path);
+
+                var skImportSettings = new SKImageInfo {
+                    AlphaType = SKAlphaType.Unpremul
+                };
+
+                image = SKBitmap.Decode(bytes);
             } catch (Exception e) {
                 Console.Write(e.Message);
-                throw (e);
-                //return null;
+                throw;
             }
 
             var tex = new Texture(image, settings);
@@ -71,20 +75,14 @@ namespace MinimalAF.Rendering {
             TextureManager.SetCurrentTextureChangedFlag();
         }
 
-        public Texture(Bitmap image, TextureImportSettings settings = null) {
+        public Texture(SKBitmap image, TextureImportSettings settings = null) {
             if (settings == null) {
                 settings = new TextureImportSettings();
             }
 
-            var data = image.LockBits(
-                new Rectangle(0, 0, image.Width, image.Height),
-                ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb
-            );
+            var addr= image.GetPixels();
 
-            Init(image.Width, image.Height, data.Scan0, settings);
-
-            image.UnlockBits(data);
+            Init(image.Width, image.Height, addr, settings);
         }
 
         private void Init(int width, int height, IntPtr data, TextureImportSettings settings) {

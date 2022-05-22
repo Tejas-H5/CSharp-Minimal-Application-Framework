@@ -19,22 +19,9 @@ namespace MinimalAF.Rendering {
 
         public void SetFont(string name, int size) {
             if (size < 0)
-                size = 12;
+                size = 16;
 
             fontManager.SetCurrentFont(name, size);
-        }
-
-
-        public float CharWidth {
-            get {
-                return ActiveFont.FontAtlas.CharWidth;
-            }
-        }
-
-        public float CharHeight {
-            get {
-                return ActiveFont.FontAtlas.CharHeight;
-            }
         }
 
         public float GetWidth() {
@@ -44,7 +31,6 @@ namespace MinimalAF.Rendering {
         public float GetHeight() {
             return GetHeight('|');
         }
-
 
         public float GetWidth(char c) {
             if (ActiveFont.FontAtlas.IsValidCharacter(c)) {

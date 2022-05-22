@@ -1,14 +1,18 @@
 [Final features] TODO:
 
-FINAL Items :0	
-	-> Migrate to  .net6.0
-		-* stop using bitmap, font, use this instead:
-		https://docs.microsoft.com/en-us/dotnet/api/skiasharp.skfont?view=skiasharp-2.80.2
-		https://github.com/mono/SkiaSharp	
-			- This API seems to be the closest to what we already have
+FINAL Items :0		
+	-* Rename 'Element' to 'Sketch', because this is a subtle nod to processing, and it makes the documentation less verbose and more self-explanatory
 	
 
-	- Documentation
+	-* Add way more unit tests 
+		-* Things we haven't yet tested:
+			- Font loading
+			- Framebuffer postprocessing
+			- ...
+	
+	-* figure out a way to run visual tests as unit tests, and display passes and fails. 
+
+	-* Finish Documentation
 	
 	
 Passive/as I go:

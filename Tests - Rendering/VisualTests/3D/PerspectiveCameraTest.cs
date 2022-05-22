@@ -49,7 +49,7 @@ There is also a black rectangle with some text for reference, all of this is on 
             SetDrawColor(RGB(0, 0, 0));
             DrawRectOutline(1, -50, -50, 50, 50);
 
-            SetFont("Consolas", 12);
+            SetFont("Consolas", 16);
             DrawText("This is a wall.", 0, 0, HorizontalAlignment.Center, VerticalAlignment.Center);
 
             SetTransform(Matrix4.CreateTranslation(rectPoint));

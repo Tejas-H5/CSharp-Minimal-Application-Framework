@@ -15,7 +15,7 @@
 
         Element GenerateElement(string text) {
             return new OutlineRect(Color4.VA(0, 1), 1).SetChildren(
-                new TextElement(text, Color4.VA(0, 1), "Consolas", 24, VerticalAlignment.Center, HorizontalAlignment.Center)
+                new TextElement(text, Color4.VA(0, 1), "Consolas", 24, VAlign.Center, HAlign.Center)
             );
         }
 

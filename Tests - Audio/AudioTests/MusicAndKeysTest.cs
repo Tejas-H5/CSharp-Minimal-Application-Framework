@@ -52,7 +52,7 @@ Right now, this test is failing imo. The one-shot sounds are not audible over th
         public override void OnRender() {
             SetDrawColor(1, 1, 1, 1);
 
-            DrawText("Press some keys:", Width / 2, Height / 2 + 200, HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText("Press some keys:", Width / 2, Height / 2 + 200, HAlign.Center, VAlign.Center);
 
             string newString = KeysToString(KeyboardCharactersHeld);
             if (newString != oldString) {
@@ -60,7 +60,7 @@ Right now, this test is failing imo. The one-shot sounds are not audible over th
                 clackSound.Play();
             }
 
-            DrawText(newString, Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText(newString, Width / 2, Height / 2, HAlign.Center, VAlign.Center);
 
             //music
             SetDrawColor(1, 1, 1, 1);
@@ -72,7 +72,7 @@ Right now, this test is failing imo. The one-shot sounds are not audible over th
 
             message += "Time: " + streamedSource.GetPlaybackPosition();
 
-            DrawText(message, Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText(message, Width / 2, Height / 2, HAlign.Center, VAlign.Center);
 
             SetDrawColor(1, 0, 0, 1);
             float amount = (float)(streamedSource.GetPlaybackPosition() / streamProvider.Duration);

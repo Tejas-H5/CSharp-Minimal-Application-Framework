@@ -24,7 +24,7 @@ namespace MinimalAF.VisualTests.UI {
 
             SetFont("Arial", 15);
             SetDrawColor(0, 0, 0, 1);
-            DrawText(_message, VW(0.5f), VH(0.5f), HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText(_message, VW(0.5f), VH(0.5f), HAlign.Center, VAlign.Center);
         }
 
 

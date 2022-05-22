@@ -12,10 +12,10 @@ namespace MinimalAF {
 
         float _charHeight;
 
-        public VerticalAlignment VerticalAlignment {
+        public VAlign VerticalAlignment {
             get; set;
         }
-        public HorizontalAlignment HorizontalAlignment {
+        public HAlign HorizontalAlignment {
             get; set;
         }
 
@@ -23,15 +23,15 @@ namespace MinimalAF {
         private Vector2 caratPos = new Vector2();
 
         public TextElement(string text, Color4 textColor)
-            : this(text, textColor, "", -1, VerticalAlignment.Bottom, HorizontalAlignment.Left) {
+            : this(text, textColor, "", -1, VAlign.Bottom, HAlign.Left) {
 
         }
 
-        public TextElement(string text, Color4 textColor, VerticalAlignment vAlign = VerticalAlignment.Bottom, HorizontalAlignment hAlign = HorizontalAlignment.Left)
+        public TextElement(string text, Color4 textColor, VAlign vAlign = VAlign.Bottom, HAlign hAlign = HAlign.Left)
             : this(text, textColor, "", -1, vAlign, hAlign) {
         }
 
-        public TextElement(string text, Color4 textColor, string fontName, int fontSize, VerticalAlignment vAlign = VerticalAlignment.Bottom, HorizontalAlignment hAlign = HorizontalAlignment.Left) {
+        public TextElement(string text, Color4 textColor, string fontName, int fontSize, VAlign vAlign = VAlign.Bottom, HAlign hAlign = HAlign.Left) {
             TextColor = textColor;
             String = text;
             VerticalAlignment = vAlign;
@@ -50,13 +50,13 @@ namespace MinimalAF {
             float startX = 0, startY = 0;
 
             switch (VerticalAlignment) {
-                case VerticalAlignment.Bottom:
+                case VAlign.Bottom:
                     startY = 0;
                     break;
-                case VerticalAlignment.Center:
+                case VAlign.Center:
                     startY = VH(0.5f);
                     break;
-                case VerticalAlignment.Top:
+                case VAlign.Top:
                     startY = VH(1.0f);
                     break;
                 default:
@@ -64,13 +64,13 @@ namespace MinimalAF {
             }
 
             switch (HorizontalAlignment) {
-                case HorizontalAlignment.Left:
+                case HAlign.Left:
                     startX = 0;
                     break;
-                case HorizontalAlignment.Center:
+                case HAlign.Center:
                     startX = VW(0.5f);
                     break;
-                case HorizontalAlignment.Right:
+                case HAlign.Right:
                     startX = VW(1f);
                     break;
                 default:

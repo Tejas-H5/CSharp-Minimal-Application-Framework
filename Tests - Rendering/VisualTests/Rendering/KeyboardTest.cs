@@ -34,9 +34,9 @@ namespace MinimalAF.VisualTests.Rendering {
         public override void OnRender() {
             SetDrawColor(0, 0, 0, 1);
 
-            DrawText("Press some keys:", VW(0.5f), VH(0.75f), HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText("Press some keys:", VW(0.5f), VH(0.75f), HAlign.Center, VAlign.Center);
 
-            DrawText(KeysToString(KeyboardCharactersHeld), Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText(KeysToString(KeyboardCharactersHeld), Width / 2, Height / 2, HAlign.Center, VAlign.Center);
         }
 
         public override void OnUpdate() {

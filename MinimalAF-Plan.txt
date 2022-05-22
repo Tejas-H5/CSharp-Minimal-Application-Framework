@@ -1,18 +1,14 @@
 [Final features] TODO:
 
 FINAL Items :0		
-	-* Rename 'Element' to 'Sketch', because this is a subtle nod to processing, and it makes the documentation less verbose and more self-explanatory
 	
-
 	-* Add way more unit tests 
 		-* Things we haven't yet tested:
 			- Font loading
 			- Framebuffer postprocessing
 			- ...
-	
-	-* figure out a way to run visual tests as unit tests, and display passes and fails. 
 
-	-* Finish Documentation
+	-* Documentation. Auto-generate this from comments somehow, aint no body got time to write this. There is probably a nuget package somewhere that does this
 	
 	
 Passive/as I go:

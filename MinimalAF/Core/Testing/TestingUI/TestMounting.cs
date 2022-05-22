@@ -33,7 +33,7 @@ namespace MinimalAF {
                 RenderFrequency.ToString("0.0");
 
             SetFont("Consolas", 16);
-            DrawText(infoText, 0, 0, HorizontalAlignment.Left, VerticalAlignment.Top);
+            DrawText(infoText, 0, 0, HAlign.Left, VAlign.Top);
         }
 
 

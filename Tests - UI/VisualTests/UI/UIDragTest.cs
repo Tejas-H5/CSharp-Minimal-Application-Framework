@@ -6,7 +6,7 @@ namespace MinimalAF.VisualTests.UI {
         Element GeneratePanel(string text) {
             return new Panel(Color4.VA(0, 0.1f), Color4.RGBA(0, 0, 1, 0.5f), Color4.RGBA(0, 1, 0, 0.5f))
                 .SetChildren(
-                    new TextElement(text, Color4.VA(0, 1), VerticalAlignment.Center, HorizontalAlignment.Center)
+                    new TextElement(text, Color4.VA(0, 1), VAlign.Center, HAlign.Center)
                 );
         }
 
@@ -68,7 +68,7 @@ namespace MinimalAF.VisualTests.UI {
         Element GeneratePanel(string text) {
             return new OutlineRect(Color4.VA(0, 0.1f), 2)
                 .SetChildren(
-                    new TextElement(text, Color4.VA(0, 1), VerticalAlignment.Bottom, HorizontalAlignment.Left)
+                    new TextElement(text, Color4.VA(0, 1), VAlign.Bottom, HAlign.Left)
                 );
         }
 

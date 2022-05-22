@@ -6,7 +6,7 @@ namespace MinimalAF {
         TextElement _text;
 
         public Button(string text) {
-            _text = new TextElement(text, Color4.VA(0, 1), "Consolas", 16, VerticalAlignment.Center, HorizontalAlignment.Center);
+            _text = new TextElement(text, Color4.VA(0, 1), "Consolas", 16, VAlign.Center, HAlign.Center);
             SetChildren(_text);
         }
         public override Rect DefaultRect(float parentWidth, float parentHeight) {

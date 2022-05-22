@@ -1,16 +1,13 @@
 ﻿using MinimalAF.Rendering;
 using System;
 
-namespace MinimalAF.VisualTests.Rendering
-{
-	[VisualTest(
+namespace MinimalAF.VisualTests.Rendering {
+    [VisualTest(
         description: @"Test that the outline functionality works.",
         tags: "2D"
     )]
-	class GeometryOutlineTest : Element
-    {
-        public override void OnMount(Window w)
-        {
+    class GeometryOutlineTest : Element {
+        public override void OnMount(Window w) {
             w.Size = (800, 600);
             w.Title = "Triangle";
 
@@ -18,12 +15,10 @@ namespace MinimalAF.VisualTests.Rendering
         }
 
 
-        public override void OnUpdate()
-        {
+        public override void OnUpdate() {
         }
 
-        public override void OnRender()
-        {
+        public override void OnRender() {
             SetDrawColor(1, 0, 0, 0.5f);
 
             DrawRect(20, 20, 100, 100);

@@ -38,7 +38,7 @@
             string text = "Pivot: {" + Pivot.X.ToString("0.00") + ", " + Pivot.Y.ToString("0.00") + "}\n" +
                 "(use arrow keys to move)";
 
-            DrawText(text, VW(0.5f), VH(0.5f), HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText(text, VW(0.5f), VH(0.5f), HAlign.Center, VAlign.Center);
         }
 
         public override void OnLayout() {
@@ -46,8 +46,8 @@
             LayoutInset(child, 10);
 
             LayoutInset(child, 0);
-            text.HorizontalAlignment = HorizontalAlignment.Left;
-            text.VerticalAlignment = VerticalAlignment.Bottom;
+            text.HorizontalAlignment = HAlign.Left;
+            text.VerticalAlignment = VAlign.Bottom;
 
             LayoutChildren();
         }

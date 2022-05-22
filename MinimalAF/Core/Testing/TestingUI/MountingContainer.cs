@@ -44,7 +44,7 @@ namespace MinimalAF {
         public override void OnRender() {
             SetFont("Consolas", 16);
             SetDrawColor(0, 0, 0, 1);
-            DrawText(info, 0, 0, HorizontalAlignment.Left, VerticalAlignment.Bottom);
+            DrawText(info, 0, 0, HAlign.Left, VAlign.Bottom);
         }
     }
 }

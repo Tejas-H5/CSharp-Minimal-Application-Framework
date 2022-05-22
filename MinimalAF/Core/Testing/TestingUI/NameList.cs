@@ -69,7 +69,7 @@ namespace MinimalAF {
                     }
                 }
 
-                DrawText(name, VW(0.5f), y, HorizontalAlignment.Center, VerticalAlignment.Top);
+                DrawText(name, VW(0.5f), y, HAlign.Center, VAlign.Top);
             }
         }
 

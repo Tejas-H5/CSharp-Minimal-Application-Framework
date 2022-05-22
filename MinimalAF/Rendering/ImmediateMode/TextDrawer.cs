@@ -66,11 +66,11 @@ namespace MinimalAF.Rendering {
             }
         }
 
-        private float CaratPosX(float lineWidth, HorizontalAlignment hAlign) {
+        private float CaratPosX(float lineWidth, HAlign hAlign) {
             switch (hAlign) {
-                case HorizontalAlignment.Center:
+                case HAlign.Center:
                     return -lineWidth / 2f;
-                case HorizontalAlignment.Right:
+                case HAlign.Right:
                     return -lineWidth;
                 default:
                     return 0;
@@ -79,7 +79,7 @@ namespace MinimalAF.Rendering {
 
         //TODO: IMPLEMENT tabs and newlines
         //And vertical/horizontal aiignment features
-        public Vector2 Draw(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f) {
+        public Vector2 Draw(string text, float startX, float startY, HAlign hAlign, VAlign vAlign, float scale = 1.0f) {
             Vector2 caratPos = (startX, startY);
 
             if (text == null)
@@ -90,13 +90,13 @@ namespace MinimalAF.Rendering {
 
 
             switch (vAlign) {
-                case VerticalAlignment.Bottom:
+                case VAlign.Bottom:
                     caratPos.Y = startY + textHeight - charHeight;
                     break;
-                case VerticalAlignment.Center:
+                case VAlign.Center:
                     caratPos.Y = startY + textHeight / 2f - charHeight;
                     break;
-                case VerticalAlignment.Top:
+                case VAlign.Top:
                     caratPos.Y = startY - charHeight;
                     break;
             }

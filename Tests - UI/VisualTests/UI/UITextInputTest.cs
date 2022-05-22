@@ -11,7 +11,7 @@ namespace MinimalAF.VisualTests.UI {
                     if (j == 2) {
                         rows[i * 3 + j] = new OutlineRect(Color4.VA(0, 1), 1).SetChildren(
                             new TextInput<float>(
-                                new TextElement("", Color4.VA(0, 1), "Comic-Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
+                                new TextElement("", Color4.VA(0, 1), "Comic-Sans", 16, (VAlign)i, (HAlign)j),
                                 0,
                                 (string arg) => {
                                     return float.Parse(arg);
@@ -21,7 +21,7 @@ namespace MinimalAF.VisualTests.UI {
                     } else {
                         rows[i * 3 + j] = new OutlineRect(Color4.VA(0, 1), 1).SetChildren(
                             new TextInput<string>(
-                                new TextElement("", Color4.VA(0, 1), "Comic-Sans", 16, (VerticalAlignment)i, (HorizontalAlignment)j),
+                                new TextElement("", Color4.VA(0, 1), "Comic-Sans", 16, (VAlign)i, (HAlign)j),
                                 "Bruh",
                                 (string arg) => {
                                     return arg;

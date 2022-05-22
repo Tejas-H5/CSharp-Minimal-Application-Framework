@@ -33,7 +33,7 @@ the visibility of another test.",
         public override void OnRender()
         {
 			SetDrawColor(1, 1, 1, 1);
-			DrawText("Stencil test", 0, Height, HorizontalAlignment.Left, VerticalAlignment.Top);
+			DrawText("Stencil test", 0, Height, HAlign.Left, VAlign.Top);
 
 			StartStencillingWithoutDrawing(true);
 

@@ -363,9 +363,9 @@ namespace MinimalAF {
             DrawRect(VW(1) - 10, VH(1) - 10, VW(1), VH(1));
 
             SetFont("Consolas", 16);
-            DrawText(GetType().Name + ":" + Width + ", " + Height, VW(0.5f), VH(0.5f), HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText(GetType().Name + ":" + Width + ", " + Height, VW(0.5f), VH(0.5f), HAlign.Center, VAlign.Center);
             DrawText("(" + RelativeRect.X0 + ", " + RelativeRect.Y0 + ")", 0, 0);
-            DrawText("(" + RelativeRect.X1 + ", " + RelativeRect.Y1 + ")", Width, Height, HorizontalAlignment.Right, VerticalAlignment.Top);
+            DrawText("(" + RelativeRect.X1 + ", " + RelativeRect.Y1 + ")", Width, Height, HAlign.Right, VAlign.Top);
 
             Parent.ResetCoordinates();
             float x0 = Pivot.X * Parent.Width;

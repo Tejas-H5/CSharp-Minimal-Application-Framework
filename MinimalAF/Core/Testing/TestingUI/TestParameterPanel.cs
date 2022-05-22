@@ -139,7 +139,7 @@ namespace MinimalAF {
 
             SetFont("Consolas", 16);
             SetDrawColor(0, 0, 0, 1);
-            DrawText("Test parameters", VW(0.5f), VH(1), HorizontalAlignment.Center, VerticalAlignment.Top);
+            DrawText("Test parameters", VW(0.5f), VH(1), HAlign.Center, VAlign.Top);
         }
 
 

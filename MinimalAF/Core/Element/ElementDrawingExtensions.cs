@@ -229,7 +229,7 @@ namespace MinimalAF {
             CTX.Rect.Draw(rect);
         }
 
-        protected Vector2 DrawText(string text, float startX, float startY, HorizontalAlignment hAlign, VerticalAlignment vAlign, float scale = 1.0f) {
+        protected Vector2 DrawText(string text, float startX, float startY, HAlign hAlign, VAlign vAlign, float scale = 1.0f) {
             return CTX.Text.Draw(text, startX, startY, hAlign, vAlign, scale);
         }
 

@@ -30,7 +30,7 @@ Note that this code is copypasted, and the code for " + nameof(MusicAndKeysTest)
 
             message += "Time: " + streamedSource.GetPlaybackPosition();
 
-            DrawText(message, Width / 2, Height / 2, HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText(message, Width / 2, Height / 2, HAlign.Center, VAlign.Center);
 
             SetDrawColor(1, 0, 0, 1);
             float amount = (float)(streamedSource.GetPlaybackPosition() / streamProvider.Duration);

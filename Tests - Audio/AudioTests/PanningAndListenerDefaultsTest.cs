@@ -49,7 +49,7 @@ namespace AudioEngineTests.AudioTests {
 
             SetDrawColor(1, 0, 0, 1);
             DrawCircle(MouseX, MouseY, 20);
-            DrawText("You are here (" + listenerX + "," + listenerZ + ")", MouseX, MouseY, HorizontalAlignment.Center, VerticalAlignment.Bottom);
+            DrawText("You are here (" + listenerX + "," + listenerZ + ")", MouseX, MouseY, HAlign.Center, VAlign.Bottom);
         }
     }
 }

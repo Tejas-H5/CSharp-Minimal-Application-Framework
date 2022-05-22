@@ -19,7 +19,7 @@ namespace MinimalAF {
             string text = "An exception occured:\n" +
                 exception.Message;
 
-            DrawText(text, VW(0.5f), VH(0.5f), HorizontalAlignment.Center, VerticalAlignment.Center);
+            DrawText(text, VW(0.5f), VH(0.5f), HAlign.Center, VAlign.Center);
         }
 
         public override void OnUpdate() {

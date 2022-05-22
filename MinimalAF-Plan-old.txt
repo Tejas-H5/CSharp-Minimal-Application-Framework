@@ -1,5 +1,7 @@
 Anything cluttering up MinimalAF-Plan.txt is just cut-pasted here
 =======================================================
+	-* Rename 'Element' to 'Sketch', because this is a subtle nod to processing, and it makes the documentation less verbose and more self-explanatory
+		- unnecesary, we can just fix the documentation to be more clear about how 'Element' and 'Processing Sketch' could be considered similar
 	-> Migrate to  .net6.0
 		-* stop using bitmap, font, use this instead:
 		https://docs.microsoft.com/en-us/dotnet/api/skiasharp.skfont?view=skiasharp-2.80.2

@@ -4,9 +4,13 @@ Note: This project is still in development, so it is most likely incomplete. It 
 
 A minimal application framework written in C# with support for the bare minimum that I want in an application framework. It runs on .Net core, because I like C# and it's ecosystem.
 
+## How to see it in action:
+
+Open the project in Visual Studio 2022, and then set the Active Target to "Rendering Tests" (or one of the other tests - the MinimalAF sln is just a library). Then, run it. A testing harness should open, containing several examples that you can flip between. The code for each example should all be contained within a single file.
+
 ## Why?
 I really liked programming small programs in Processing with a minimalist UI made entirely of lines, rectangles, circles and Consolas font text because that was the extent of my UX knowledge. And I actually liked the way this looked. But here are the problems I encountered with this approach:
-- But I often had trouble sending my program to other people because my 100 line processing sketch would compile into a 178 mb binary that included all of java + processing, or a 3 mb binary that just wouldn't run at all because they didn't have the correct Java. Hopefully by switching to .net, I can avoid this problem because Microsoft will be shilling .net and eventually shipping windows with it built in.
+- I often had trouble sending my program to other people because my 100 line processing sketch would compile into a 100 mb binary that included all of java + processing, or a 3 mb binary that just wouldn't run at all because they didn't have the correct Java. Hopefully by switching to .net, I can avoid this problem because Microsoft will be shilling .net and eventually shipping windows with it built in.
 - Most of my processing sketches weren't very re-useable, and I struggled to add more lines of code to a sketch after a point. I really wanted the ability to compose sketches with other sketches, as this would have made writing a lot easier.
 - I also want a way to test/prototype sketches and algorithms quickly, possibly in a parameterized way
 	

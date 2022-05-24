@@ -50,7 +50,6 @@ namespace UIVisualTests {
                 float width = rand.Next(50, 200);
                 float height = rand.Next(50, 200);
                 var sq = new SizedSquare(rand, width, height, "" + width + ", " + height);
-                // sq.Debug = true;
                 AddChild(sq);
             }
         }

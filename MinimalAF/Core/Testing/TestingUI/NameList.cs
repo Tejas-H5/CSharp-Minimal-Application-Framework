@@ -16,8 +16,6 @@ namespace MinimalAF {
 
             Filter("");
             StackingOffset = 1;
-
-            Debug = true;
         }
 
         public bool IsValid(string value) {

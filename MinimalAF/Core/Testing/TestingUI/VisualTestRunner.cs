@@ -27,8 +27,6 @@ namespace MinimalAF {
 
 
         public VisualTestRunner(Type initialTestType = null) {
-            //MinimalAFEnvironment.Debug = true;
-
             testList = new TestList(visualTestElements);
             testList.OnSelect += TestList_OnSelect;
 

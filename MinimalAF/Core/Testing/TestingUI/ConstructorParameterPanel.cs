@@ -1,6 +1,6 @@
 ﻿using System;
 
-// Warning: Tight coupling. Not for the faint of heart
+
 namespace MinimalAF {
     class ConstructorParameterPanel : Element {
         VisualTestRunner testRuner;

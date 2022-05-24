@@ -1,6 +1,7 @@
-﻿using MinimalAF.Rendering;
+﻿using MinimalAF;
+using MinimalAF.Rendering;
 
-namespace MinimalAF.VisualTests.Rendering {
+namespace RenderingEngineVisualTests {
     [VisualTest(
     description: @"Tests that framebuffers can be used properly.
 The red square must be fully visible under the circles.
@@ -22,7 +23,7 @@ The circles must actually be circular, and not a distorted oval",
             //w.RenderFrequency = 120;
             //w.UpdateFrequency = 120; 20;
 
-            SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetClearColor(Color.RGBA(1, 1, 1, 1));
 
             fb = new Framebuffer(1, 1);
             fb.Resize(800, 600);

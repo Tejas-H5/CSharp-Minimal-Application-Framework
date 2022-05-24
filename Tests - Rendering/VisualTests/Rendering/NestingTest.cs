@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MinimalAF;
+using RenderingEngineVisualTests;
 
-namespace MinimalAF.VisualTests.Rendering
+namespace RenderingEngineVisualTests
 {
 	[VisualTest(
         description: @"Test that multiple elements can be rendered side by side without interfering with one another.

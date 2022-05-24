@@ -22,7 +22,7 @@ namespace MinimalAF {
             RenderDragHandle(Direction.Right);
             RenderDragHandle(Direction.Down);
 
-            SetDrawColor(Color4.Black);
+            SetDrawColor(Color.Black);
             DrawRectOutline(1, 0, 0, Width, Height);
 
             string infoText =
@@ -74,7 +74,7 @@ namespace MinimalAF {
             (Rect hitbox, float x, float y) = DragParameters(dir);
 
             if (MouseOver(hitbox)) {
-                SetDrawColor(Color4.RGBA(0, 0, 1, 0.5f));
+                SetDrawColor(Color.RGBA(0, 0, 1, 0.5f));
                 DrawRect(hitbox);
             }
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MinimalAF.VisualTests.UI {
+namespace UIVisualTests {
     public class Panel : Element {
         Color4 color, hoverColor, clickColor;
         UIState uiState;

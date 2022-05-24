@@ -18,14 +18,14 @@ void main(){
     gl_FragColor = color * texColor;
 }";
 
-        Color4 color;
+        Color color;
         int colorLoc;
         public InternalShader()
             : base(vertSource, fragSource) {
             colorLoc = UniformLocation("color");
         }
 
-        public Color4 Color {
+        public Color Color {
             get => color; set {
                 color = value;
                 SetVector4(colorLoc, color);

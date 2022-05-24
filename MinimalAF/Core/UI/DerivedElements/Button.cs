@@ -6,7 +6,7 @@ namespace MinimalAF {
         TextElement _text;
 
         public Button(string text) {
-            _text = new TextElement(text, Color4.VA(0, 1), "Consolas", 16, VAlign.Center, HAlign.Center);
+            _text = new TextElement(text, Color.VA(0, 1), "Consolas", 16, VAlign.Center, HAlign.Center);
             SetChildren(_text);
         }
         public override Rect DefaultRect(float parentWidth, float parentHeight) {
@@ -15,17 +15,17 @@ namespace MinimalAF {
 
 
         public override void OnRender() {
-            SetDrawColor(Color4.VA(1, 0.5f));
+            SetDrawColor(Color.VA(1, 0.5f));
             if (MouseOverSelf) {
-                SetDrawColor(Color4.VA(0.5f, 0.5f));
+                SetDrawColor(Color.VA(0.5f, 0.5f));
                 if (MouseButtonHeld(MouseButton.Any)) {
-                    SetDrawColor(Color4.VA(0.5f, 1f));
+                    SetDrawColor(Color.VA(0.5f, 1f));
                 }
             }
 
             DrawRect(0, 0, Width, Height);
 
-            SetDrawColor(Color4.Black);
+            SetDrawColor(Color.Black);
             DrawRectOutline(1, 0, 0, Width, Height);
         }
 

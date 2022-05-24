@@ -17,7 +17,7 @@ namespace AudioEngineTests.AudioTests {
             w.Size = (800, 600);
             w.Title = "PanningAndListenerDefaultsTest test";
 
-            SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetClearColor(Color.RGBA(1, 1, 1, 1));
             SetFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");

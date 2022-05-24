@@ -1,10 +1,11 @@
-﻿using MinimalAF.Rendering;
+﻿using MinimalAF;
+using MinimalAF.Rendering;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.VisualTests.Rendering {
+namespace RenderingEngineVisualTests {
     [VisualTest(
         description: @"A rotating cube that was loaded in as an OBJ. It is textured.",
         tags: "3D, SetPerspective SetProjection"
@@ -30,7 +31,7 @@ namespace MinimalAF.VisualTests.Rendering {
             w.Size = (800, 600);
             w.Title = "Perspective camera test";
 
-            SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetClearColor(1, 1, 1, 1);
         }
 
         float pos = 10;

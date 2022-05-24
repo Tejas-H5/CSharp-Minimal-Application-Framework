@@ -1,10 +1,8 @@
-﻿using MinimalAF.Rendering;
-using MinimalAF.Util;
+﻿using MinimalAF;
 using OpenTK.Mathematics;
 using System.Collections.Generic;
-using System.Drawing;
 
-namespace MinimalAF.VisualTests.Rendering
+namespace RenderingEngineVisualTests
 {
 	[VisualTest(
         description: @"Test that the poly-line drawing functionality is working.",
@@ -30,7 +28,7 @@ namespace MinimalAF.VisualTests.Rendering
 			w.RenderFrequency = 120;
 			//w.UpdateFrequency = 120; 20;
 
-			SetClearColor(Color4.RGBA(1, 1, 1, 1));
+			SetClearColor(Color.RGBA(1, 1, 1, 1));
 			SetFont("Consolas", 16);
 
 			// TODO: get this working
@@ -70,8 +68,8 @@ namespace MinimalAF.VisualTests.Rendering
 			if (dragStarted)
 			{
 				linePoint = new Vector2(
-					MathUtilF.Clamp(linePointDragStart.X + MouseDragDeltaX, VW(0.25f), VW(0.75f)),
-					MathUtilF.Clamp(linePointDragStart.Y + MouseDragDeltaY, VH(0.25f), VH(0.75f))
+					MathHelper.Clamp(linePointDragStart.X + MouseDragDeltaX, VW(0.25f), VW(0.75f)),
+                    MathHelper.Clamp(linePointDragStart.Y + MouseDragDeltaY, VH(0.25f), VH(0.75f))
 				);
 			}
 		}

@@ -1,4 +1,4 @@
-﻿namespace MinimalAF.VisualTests.UI {
+﻿namespace UIVisualTests {
     public class OutlineRect : Element {
         Color4 col;
         float thickness;

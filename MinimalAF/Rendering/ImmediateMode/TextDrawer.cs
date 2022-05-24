@@ -34,11 +34,11 @@ namespace MinimalAF.Rendering {
 
         public float GetWidth(char c) {
             if (ActiveFont.FontAtlas.IsValidCharacter(c)) {
-                return ActiveFont.FontAtlas.GetCharacterSize(c).Width;
+                return ActiveFont.FontAtlas.GetCharacterSize(c).X;
             }
 
 
-            float spaceWidth = ActiveFont.FontAtlas.GetCharacterSize('|').Width;
+            float spaceWidth = ActiveFont.FontAtlas.GetCharacterSize('|').X;
 
             switch (c) {
                 case ' ':
@@ -51,12 +51,11 @@ namespace MinimalAF.Rendering {
         }
 
         public float GetHeight(char c) {
-            return ActiveFont.FontAtlas.GetCharacterSize(c).Height;
+            return ActiveFont.FontAtlas.GetCharacterSize(c).Y;
         }
 
-        public (float, float) GetSize(char c) {
-            var size = ActiveFont.FontAtlas.GetCharacterSize(c);
-            return (size.Width, size.Height);
+        public Vector2 GetSize(char c) {
+            return ActiveFont.FontAtlas.GetCharacterSize(c);
         }
 
 

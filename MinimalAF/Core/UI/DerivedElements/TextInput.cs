@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 using System;
-using System.Drawing;
+
 
 namespace MinimalAF {
     public interface IInput<T> {
@@ -87,7 +87,7 @@ namespace MinimalAF {
             this.endsTypingOnNewline = endsTypingOnNewline;
 
 
-            Color4 placeholderCol = textObject.TextColor;
+            Color placeholderCol = textObject.TextColor;
             placeholderCol.A *= 0.5f;
 
             placeholderTextObject = new TextElement(
@@ -124,7 +124,7 @@ namespace MinimalAF {
             Vector2 caratPos = textObject.GetCaratPos();
             float height = textObject.GetCharacterHeight();
 
-            Color4 col = textObject.TextColor;
+            Color col = textObject.TextColor;
             col.A *= MathF.Sin(blinkPhase);
             col.A *= col.A;
 

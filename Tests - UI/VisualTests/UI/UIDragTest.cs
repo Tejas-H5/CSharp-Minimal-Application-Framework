@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MinimalAF.VisualTests.UI {
+namespace UIVisualTests {
 
     public class DraggedContent : Element {
         Element GeneratePanel(string text) {

@@ -1,7 +1,7 @@
-﻿using MinimalAF.Rendering;
+﻿using MinimalAF;
 using System;
 
-namespace MinimalAF.VisualTests.Rendering
+namespace RenderingEngineVisualTests
 {
     [VisualTest(
         description: @"Two hands that rotate at different speeds. This is a test of the arg dawing algorithm.",
@@ -14,7 +14,7 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Arc Test";
 
-           SetClearColor(Color4.RGBA(1, 1, 1, 1));
+           SetClearColor(Color.RGBA(1, 1, 1, 1));
         }
 
         public override void OnUpdate()

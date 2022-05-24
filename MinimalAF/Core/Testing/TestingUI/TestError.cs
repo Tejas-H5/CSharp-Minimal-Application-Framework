@@ -1,6 +1,6 @@
 ﻿using System;
 
-// Warning: Tight coupling. Not for the faint of heart
+
 namespace MinimalAF {
     class TestError : Element {
         Exception exception;
@@ -10,7 +10,7 @@ namespace MinimalAF {
         }
 
         public override void OnMount(Window w) {
-            SetClearColor(Color4.VA(1, 1));
+            SetClearColor(Color.VA(1, 1));
         }
 
         public override void OnRender() {

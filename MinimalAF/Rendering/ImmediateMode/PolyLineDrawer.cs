@@ -1,4 +1,4 @@
-﻿using MinimalAF.Util;
+﻿using OpenTK.Mathematics;
 using System;
 
 namespace MinimalAF.Rendering {
@@ -18,12 +18,9 @@ namespace MinimalAF.Rendering {
 
         float thickness = 0;
 
-        float lastLastX;
-        float lastLastY;
-        float lastX;
-        float lastY;
-        float lastPerpX;
-        float lastPerpY;
+        Vector2 lastLast;
+        Vector2 last;
+        Vector2 lastPerp;
 
         uint lastV1;
         uint lastV2;
@@ -44,20 +41,17 @@ namespace MinimalAF.Rendering {
             }
 
             this.thickness = thickness;
-            lastLastX = x;
-            lastLastY = y;
-            lastX = x;
-            lastY = y;
+            lastLast = new Vector2(x, y);
+            last = lastLast;
+
             capType = cap;
             count = 1;
         }
 
 
         public void Continue(float x, float y, bool useAverage = true) {
-            float dirX, dirY, perpX, perpY;
-            CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
-
-            float mag = MathF.Sqrt(dirX * dirX + dirY * dirY);
+            CalculateLineParameters(x, y, out Vector2 dir, out Vector2 perp);
+            float mag = dir.Length;
 
             if (mag < 0.00001f)
                 return;
@@ -69,31 +63,28 @@ namespace MinimalAF.Rendering {
                 MoveLineSegmentInDirectionOf(x, y, useAverage);
             }
 
-            lastLastX = lastX;
-            lastLastY = lastY;
+            lastLast = last;
 
-            lastX = x;
-            lastY = y;
+            last = new Vector2(x, y);
             count++;
         }
 
-        private void CalculateLineParameters(float x, float y, out float dirX, out float dirY, out float perpX, out float perpY) {
-            dirX = x - lastX;
-            dirY = y - lastY;
+        private void CalculateLineParameters(float x, float y, out Vector2 dir, out Vector2 perp) {
+            dir = new Vector2(x, y) - last;
 
-            float mag = MathF.Sqrt(dirX * dirX + dirY * dirY);
+            float mag = dir.Length;
 
-            perpX = -thickness * dirY / mag;
-            perpY = thickness * dirX / mag;
+            perp = new Vector2();
+            perp.X = -thickness * dir.Y / mag;
+            perp.Y = thickness * dir.X / mag;
         }
 
         private void StartLineSegment(float x, float y) {
-            float dirX, dirY, perpX, perpY;
-            CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
+            CalculateLineParameters(x, y, out Vector2 dir, out Vector2 perp);
 
 
-            V v1 = ImmediateMode2DDrawer<V>.CreateVertex(lastX + perpX, lastY + perpY, 0, 0);
-            V v2 = ImmediateMode2DDrawer<V>.CreateVertex(lastX - perpX, lastY - perpY, 0, 0);
+            V v1 = ImmediateMode2DDrawer<V>.CreateVertex(last.X + perp.X, last.Y + perp.Y, 0, 0);
+            V v2 = ImmediateMode2DDrawer<V>.CreateVertex(last.X - perp.X, last.Y - perp.Y, 0, 0);
 
             geometryOutput.FlushIfRequired(2, 0);
             lastV1 = geometryOutput.AddVertex(v1);
@@ -101,36 +92,30 @@ namespace MinimalAF.Rendering {
 
             lastV1Vert = v1;
             lastV2Vert = v2;
-            lastPerpX = perpX;
-            lastPerpY = perpY;
+            lastPerp = perp;
 
 
-            float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
-            immediateModeDrawer.Line.DrawCap(lastX, lastY, thickness, capType, startAngle);
+            float startAngle = MathF.Atan2(dir.X, dir.Y) + MathF.PI / 2;
+            immediateModeDrawer.Line.DrawCap(last.X, last.Y, thickness, capType, startAngle);
         }
 
         private void MoveLineSegmentInDirectionOf(float x, float y, bool averageAngle = true) {
-            float dirX, dirY, perpX, perpY;
-            CalculateLineParameters(x, y, out dirX, out dirY, out perpX, out perpY);
+            CalculateLineParameters(x, y, out Vector2 dir, out Vector2 perp);
 
-
-            float perpUsedX, perpUsedY;
+            Vector2 perpUsed;
 
             if (averageAngle) {
-                perpUsedX = (perpX + lastPerpX) / 2f;
-                perpUsedY = (perpY + lastPerpY) / 2f;
+                perpUsed = (perp + lastPerp) / 2f;
 
-                float mag = MathUtilF.Mag(perpUsedX, perpUsedY);
-                perpUsedX = thickness * perpUsedX / mag;
-                perpUsedY = thickness * perpUsedY / mag;
+                float mag = perpUsed.Length;
+                perpUsed = thickness * perpUsed / mag;
             } else {
-                perpUsedX = perpX;
-                perpUsedY = perpY;
+                perpUsed = perp;
             }
 
 
-            V v3 = ImmediateMode2DDrawer<V>.CreateVertex(lastX + perpUsedX, lastY + perpUsedY, 0, 0);
-            V v4 = ImmediateMode2DDrawer<V>.CreateVertex(lastX - perpUsedX, lastY - perpUsedY, 0, 0);
+            V v3 = ImmediateMode2DDrawer<V>.CreateVertex(last.X + perpUsed.X, last.Y + perpUsed.Y, 0, 0);
+            V v4 = ImmediateMode2DDrawer<V>.CreateVertex(last.X - perpUsed.X, last.Y - perpUsed.Y, 0, 0);
 
             if (geometryOutput.FlushIfRequired(4, 6)) {
                 lastV1 = geometryOutput.AddVertex(lastV1Vert);
@@ -139,15 +124,12 @@ namespace MinimalAF.Rendering {
 
 
             //check if v3 and v4 intersect with v1 and v2
-            float lastDirX = -lastPerpY;
-            float lastDirY = lastPerpX;
-            float vec1X = (lastX + perpUsedX) - lastLastX;
-            float vec1Y = (lastY + perpUsedY) - lastLastY;
-            float vec2X = (lastX - perpUsedX) - lastLastX;
-            float vec2Y = (lastY - perpUsedY) - lastLastY;
+            var lastDir = new Vector2(-lastPerp.Y, lastPerp.X);
+            var vec1 = last + perpUsed - lastLast;
+            var vec2 = last - perpUsed - lastLast;
 
-            bool v3IsArtifacting = ((vec1X * lastDirX + vec1Y * lastDirY) > 0);
-            bool v4IsArtifacting = ((vec2X * lastDirX + vec2Y * lastDirY) > 0);
+            bool v3IsArtifacting = Vector2.Dot(vec1, lastDir) > 0;
+            bool v4IsArtifacting = Vector2.Dot(vec2, lastDir) > 0;
 
             if (v3IsArtifacting || v4IsArtifacting) {
                 if (v3IsArtifacting) {
@@ -174,8 +156,7 @@ namespace MinimalAF.Rendering {
                 lastV2Vert = v4;
             }
 
-            lastPerpX = perpX;
-            lastPerpY = perpY;
+            lastPerp = perp;
         }
 
         public void End(float x, float y) {
@@ -184,28 +165,25 @@ namespace MinimalAF.Rendering {
                 return;
             }
 
-            float dirX = x - lastX;
-            float dirY = y - lastY;
+            Vector2 dir = new Vector2(x, y) - last;
 
-            float mag = MathUtilF.Mag(dirX, dirY);
+            float mag = dir.Length;
             if (mag < 0.001f) {
-                dirX = x - lastLastX;
-                dirY = y - lastLastY;
-            }
+                dir = new Vector2(x, y) - lastLast;
+            } 
 
             Continue(x, y);
-            Continue(x + dirX, y + dirY, false);
+            Continue(x + dir.X, y + dir.Y, false);
 
-            lastX = x;
-            lastY = y;
+            last = new Vector2(x, y);
 
-            float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
+            float startAngle = MathF.Atan2(dir.X, dir.Y) + MathF.PI / 2;
 
             if (count == 1) {
-                immediateModeDrawer.Line.DrawCap(lastX, lastY, thickness, capType, startAngle);
+                immediateModeDrawer.Line.DrawCap(last.X, last.Y, thickness, capType, startAngle);
             }
 
-            immediateModeDrawer.Line.DrawCap(lastX, lastY, thickness, capType, startAngle + MathF.PI);
+            immediateModeDrawer.Line.DrawCap(last.X, last.Y, thickness, capType, startAngle + MathF.PI);
 
             canStart = true;
         }

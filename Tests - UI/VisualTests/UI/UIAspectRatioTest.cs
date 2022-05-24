@@ -1,4 +1,4 @@
-﻿namespace MinimalAF.VisualTests.UI {
+﻿namespace UIVisualTests {
     class AspectRatioContent : Element {
         TextElement text;
         Element child;

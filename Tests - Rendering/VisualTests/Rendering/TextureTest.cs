@@ -1,8 +1,9 @@
 ﻿using MinimalAF.Rendering;
+using MinimalAF;
 using OpenTK.Mathematics;
 using System;
 
-namespace MinimalAF.VisualTests.Rendering
+namespace RenderingEngineVisualTests
 {
 	[VisualTest(
         description: @"Test that texture loading works. Also test that transforms work, cause why not 
@@ -24,7 +25,7 @@ Also, the texture on the left must be still, while only the one on the right is 
             //w.RenderFrequency = 120; 60;
             //w.UpdateFrequency = 120; 120;
 
-           SetClearColor(Color4.White);
+           SetClearColor(Color.White);
 
             TextureMap.Load("placeholder", "./Res/settings_icon.png", new TextureImportSettings());
             TextureMap.Load("placeholderNN", "./Res/settings_icon.png", new TextureImportSettings { Filtering = FilteringType.NearestNeighbour });

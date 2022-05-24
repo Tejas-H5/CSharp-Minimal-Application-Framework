@@ -1,6 +1,7 @@
 ﻿using MinimalAF.Rendering;
+using MinimalAF;
 
-namespace MinimalAF.VisualTests.Rendering {
+namespace RenderingEngineVisualTests {
     [VisualTest(
         description: @"Tests that font loading is working. It is failing at the moment.",
         tags: "2D, text"
@@ -13,7 +14,7 @@ namespace MinimalAF.VisualTests.Rendering {
             //w.RenderFrequency = 120; 60;
             //w.UpdateFrequency = 120; 120;
 
-            SetClearColor(Color4.White);
+            SetClearColor(Color.White);
         }
 
         float pos = 0;
@@ -26,7 +27,7 @@ namespace MinimalAF.VisualTests.Rendering {
             SetDrawColor(0, 0, 0, 1);
             SetFont("Consolas", 16);
 
-            var tex = CTX.InternalFontAtlas.FontTexture;
+            var tex = CTX.InternalFontTexture;
             SetTexture(tex);
 
             var cX = VW(0.5f);

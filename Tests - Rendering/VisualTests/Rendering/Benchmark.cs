@@ -2,7 +2,7 @@
 using MinimalAF.Rendering;
 using System;
 
-namespace MinimalAF.VisualTests.Rendering {
+namespace RenderingEngineVisualTests {
     [VisualTest(
         description: @"Uses (currentFPS / wantedFPS) to iteratively find the number of lines that must be drawin to get some target FPS. 
 A higher number of lines drawn is always better. This test won't work when vsync is enabled, or if 'count' has been set to anything other than 0.",
@@ -33,7 +33,7 @@ A higher number of lines drawn is always better. This test won't work when vsync
             w.Size = (800, 600);
             w.Title = "Rendering Engine Line benchmark";
 
-            SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetClearColor(Color.RGBA(1, 1, 1, 1));
             SetFont("Consolas", 24);
         }
 

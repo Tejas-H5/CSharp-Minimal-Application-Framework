@@ -15,7 +15,7 @@ namespace AudioEngineTests.AudioTests {
             w.Size = (800, 600);
             w.Title = "Keyboard test";
 
-            SetClearColor(Color4.RGBA(0, 0, 0, 0));
+            SetClearColor(Color.RGBA(0, 0, 0, 0));
             SetFont("Consolas", 36);
 
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");

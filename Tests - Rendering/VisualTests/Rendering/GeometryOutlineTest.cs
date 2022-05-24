@@ -1,7 +1,8 @@
-﻿using MinimalAF.Rendering;
+﻿using MinimalAF;
+using MinimalAF.Rendering;
 using System;
 
-namespace MinimalAF.VisualTests.Rendering {
+namespace RenderingEngineVisualTests {
     [VisualTest(
         description: @"Test that the outline functionality works.",
         tags: "2D"
@@ -11,7 +12,7 @@ namespace MinimalAF.VisualTests.Rendering {
             w.Size = (800, 600);
             w.Title = "Triangle";
 
-            SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetClearColor(Color.RGBA(1, 1, 1, 1));
         }
 
 

@@ -1,9 +1,10 @@
-﻿using MinimalAF.Rendering;
+﻿using MinimalAF;
+using MinimalAF.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.VisualTests.Rendering {
+namespace RenderingEngineVisualTests {
     [VisualTest(
         description: @"Testing mesh creation using the immediate mode interface, and then drawing that mesh later.
 Would be pretty cool if this worked.",

@@ -1,9 +1,9 @@
-﻿using MinimalAF.Rendering;
+﻿using MinimalAF;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.VisualTests.Rendering
+namespace RenderingEngineVisualTests
 {
 	[VisualTest(
         description: @"Test the text rendering, and other functions that detect the text width and height",
@@ -23,7 +23,7 @@ namespace MinimalAF.VisualTests.Rendering
             w.Size = (800, 600);
             w.Title = "Matrix rain test";
 
-           SetClearColor(Color4.White);
+           SetClearColor(Color.White);
 
             SetFont("Consolas", 24);
 

@@ -1,9 +1,10 @@
-﻿using MinimalAF.Rendering;
+﻿using MinimalAF;
+using MinimalAF.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.VisualTests.Rendering {
+namespace RenderingEngineVisualTests {
     [VisualTest(
         description: @"Tests that text rendering, geometry rendering and normal texture rendering can happen
 all at once.",
@@ -18,7 +19,7 @@ all at once.",
             w.Size = (800, 600);
             w.Title = "Text and geometry test";
 
-            SetClearColor(Color4.White);
+            SetClearColor(Color.White);
 
             SetFont("Consolas", 24);
             textTest = new TextTest();
@@ -47,7 +48,7 @@ all at once.",
         float a = 0;
         public override void AfterRender() {
             SetTexture(null);
-            SetDrawColor(Color4.RGBA(0, 1, 0, 0.5f));
+            SetDrawColor(Color.RGBA(0, 1, 0, 0.5f));
             DrawArc(Width / 2, Height / 2, MathF.Min(Height / 2f, Width / 2f), a, MathF.PI * 2 + a, 6);
 
             SetTexture(tex);

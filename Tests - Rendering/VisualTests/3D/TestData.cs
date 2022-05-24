@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.VisualTests.Rendering {
+namespace RenderingEngineVisualTests {
     public class TestData {
         public const string CUBE_OBJ = @"
 # Blender v2.80 (sub 75) OBJ File: ''

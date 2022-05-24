@@ -293,7 +293,7 @@ namespace MinimalAF {
             CTX.Clear();
         }
 
-        protected void Clear(Color4 color) {
+        protected void Clear(Color color) {
             CTX.Clear(color);
         }
     }

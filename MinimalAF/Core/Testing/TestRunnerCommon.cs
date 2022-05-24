@@ -71,7 +71,7 @@ namespace MinimalAF {
         }
 
         public static TextElement CreateText(string name) {
-            return new TextElement(name, Color4.Black, "Consolas", 16, VAlign.Center, HAlign.Center);
+            return new TextElement(name, Color.Black, "Consolas", 16, VAlign.Center, HAlign.Center);
         }
     }
 }

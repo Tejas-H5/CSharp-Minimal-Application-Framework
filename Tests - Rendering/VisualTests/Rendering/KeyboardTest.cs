@@ -1,9 +1,8 @@
 ﻿using MinimalAF;
-using MinimalAF.Rendering;
 using System;
 using System.Text;
 
-namespace MinimalAF.VisualTests.Rendering {
+namespace RenderingEngineVisualTests {
     [VisualTest(
         description: @"Test that the keyboard input is working.",
         tags: "2D, keyboard input"
@@ -14,7 +13,7 @@ namespace MinimalAF.VisualTests.Rendering {
             w.Size = (800, 600);
             w.Title = "Keyboard test";
 
-            SetClearColor(Color4.White);
+            SetClearColor(Color.White);
             SetFont("Consolas", 36);
         }
 

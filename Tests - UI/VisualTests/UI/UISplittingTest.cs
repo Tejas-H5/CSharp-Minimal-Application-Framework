@@ -1,4 +1,4 @@
-﻿namespace MinimalAF.VisualTests.UI {
+﻿namespace UIVisualTests {
     [VisualTest(
         description: @"Test that " + nameof(LayoutTwoSplit) + " works.",
         tags: "UI, layout"

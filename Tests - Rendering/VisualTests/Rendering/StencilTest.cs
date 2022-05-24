@@ -1,7 +1,7 @@
-﻿using MinimalAF.Rendering;
+﻿using MinimalAF;
 using System;
 
-namespace MinimalAF.VisualTests.Rendering
+namespace RenderingEngineVisualTests
 {
 	[VisualTest(
         description: @"Test that the stencilling functionality is working.
@@ -17,7 +17,7 @@ the visibility of another test.",
             w.Size = (800, 600);
             w.Title = "Stencil rendering test";
 
-            SetClearColor(Color4.White);
+            SetClearColor(Color.White);
             SetFont("Consolas", 24);
 
 			SetChildren(geometryAndTextTest);

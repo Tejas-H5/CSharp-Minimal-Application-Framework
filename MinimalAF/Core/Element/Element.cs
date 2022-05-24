@@ -347,11 +347,11 @@ namespace MinimalAF {
 
             CTX.CurrentClippingRect = new Rect(0, 0, CTX.ContextWidth, CTX.ContextHeight);
 
-            Color4 col;
+            Color col;
             if (ScreenRect != ScreenRect.Rectified()) {
-                col = Color4.Red;
+                col = Color.Red;
             } else {
-                col = Color4.Blue;
+                col = Color.Blue;
             }
             col.A = 0.7f;
             SetDrawColor(col);

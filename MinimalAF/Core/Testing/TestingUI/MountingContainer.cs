@@ -1,4 +1,4 @@
-﻿// Warning: Tight coupling. Not for the faint of heart
+﻿
 using System.Reflection;
 
 namespace MinimalAF {

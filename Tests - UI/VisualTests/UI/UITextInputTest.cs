@@ -1,6 +1,6 @@
 ﻿using MinimalAF;
 
-namespace MinimalAF.VisualTests.UI {
+namespace UIVisualTests {
 
     class TextInputsUI : Element {
         public TextInputsUI() {
@@ -9,9 +9,9 @@ namespace MinimalAF.VisualTests.UI {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     if (j == 2) {
-                        rows[i * 3 + j] = new OutlineRect(Color4.VA(0, 1), 1).SetChildren(
+                        rows[i * 3 + j] = new OutlineRect(Color.VA(0, 1), 1).SetChildren(
                             new TextInput<float>(
-                                new TextElement("", Color4.VA(0, 1), "Comic-Sans", 16, (VAlign)i, (HAlign)j),
+                                new TextElement("", Color.VA(0, 1), "Comic-Sans", 16, (VAlign)i, (HAlign)j),
                                 0,
                                 (string arg) => {
                                     return float.Parse(arg);
@@ -19,9 +19,9 @@ namespace MinimalAF.VisualTests.UI {
                             )
                         );
                     } else {
-                        rows[i * 3 + j] = new OutlineRect(Color4.VA(0, 1), 1).SetChildren(
+                        rows[i * 3 + j] = new OutlineRect(Color.VA(0, 1), 1).SetChildren(
                             new TextInput<string>(
-                                new TextElement("", Color4.VA(0, 1), "Comic-Sans", 16, (VAlign)i, (HAlign)j),
+                                new TextElement("", Color.VA(0, 1), "Comic-Sans", 16, (VAlign)i, (HAlign)j),
                                 "Bruh",
                                 (string arg) => {
                                     return arg;
@@ -60,7 +60,7 @@ namespace MinimalAF.VisualTests.UI {
             w.Size = (800, 600);
             w.Title = "Text input ui element test";
 
-            SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetClearColor(Color.RGBA(1, 1, 1, 1));
         }
 
         Element[] rows;

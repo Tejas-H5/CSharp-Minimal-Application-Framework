@@ -143,7 +143,7 @@ namespace MinimalAF.Rendering {
             GL.Uniform4(uniformLocation, data);
         }
 
-        public void SetVector4(int uniformLocation, Color4 data) {
+        public void SetVector4(int uniformLocation, Color data) {
             CTX.Shader.UseShader(this);
             GL.Uniform4(uniformLocation, new Vector4(data.R, data.G, data.B, data.A));
         }

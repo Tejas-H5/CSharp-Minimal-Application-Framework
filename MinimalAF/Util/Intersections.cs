@@ -1,8 +1,8 @@
-﻿using System.Drawing;
+﻿using OpenTK.Mathematics;
 
 namespace MinimalAF {
     public static class Intersections {
-        public static bool IsInsideRect(PointF p, Rect a) {
+        public static bool IsInsideRect(Vector2 p, Rect a) {
             return IsInsideRect(p.X, p.Y, a.Left, a.Bottom, a.Right, a.Top);
         }
 

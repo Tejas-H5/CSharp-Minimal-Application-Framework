@@ -1,9 +1,7 @@
-﻿using SkiaSharp;
+﻿using OpenTK.Mathematics;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Text;
 using System.IO;
 
 namespace MinimalAF.Rendering.Text {
@@ -40,8 +38,8 @@ namespace MinimalAF.Rendering.Text {
         public SKBitmap Image {
             get => _bitmap;
         }
-        public float CharWidth => GetCharacterSize('?').Width;
-        public float CharHeight => GetCharacterSize('?').Height;
+        public float CharWidth => GetCharacterSize('?').X;
+        public float CharHeight => GetCharacterSize('?').Y;
 
 
         /// <summary>
@@ -100,12 +98,12 @@ namespace MinimalAF.Rendering.Text {
             return _characterQuadCoords[c];
         }
 
-        public SizeF GetCharacterSize(char c) {
+        public Vector2 GetCharacterSize(char c) {
             Rect normalized = GetCharacterUV(c);
             float width = _bitmap.Width;
             float height = _bitmap.Height;
 
-            return new SizeF(
+            return new Vector2(
                 normalized.Width * width / QUALITY_SCALE_FACTOR,
                 normalized.Height * height / QUALITY_SCALE_FACTOR
             );

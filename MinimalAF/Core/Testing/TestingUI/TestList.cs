@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// Warning: Tight coupling. Not for the faint of heart
+
 namespace MinimalAF {
     class TestList : Element {
         List<(Type, VisualTestAttribute)> visualTestElementsUnfiltered;
@@ -58,18 +58,18 @@ namespace MinimalAF {
         }
 
         public override void OnRender() {
-            SetDrawColor(Color4.VA(1, 0.5f));
+            SetDrawColor(Color.VA(1, 0.5f));
             DrawRect(0, 0, VW(1), VH(1));
 
             SetFont("Consolas", 16);
             textHeight = GetCharHeight();
 
             foreach ((float y, (Type test, VisualTestAttribute testInfo), bool isOver) in IterateTypes()) {
-                SetDrawColor(Color4.VA(0, 1));
+                SetDrawColor(Color.VA(0, 1));
                 if (isOver) {
-                    SetDrawColor(Color4.VA(0.25f, 1));
+                    SetDrawColor(Color.VA(0.25f, 1));
                     if (MouseButtonHeld(MouseButton.Left)) {
-                        SetDrawColor(Color4.RGBA(1f, 0, 0, 0.5f));
+                        SetDrawColor(Color.RGBA(1f, 0, 0, 0.5f));
                     }
                 }
 

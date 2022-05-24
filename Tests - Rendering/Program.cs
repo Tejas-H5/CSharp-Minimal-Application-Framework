@@ -1,6 +1,4 @@
 ﻿using MinimalAF;
-using MinimalAF.VisualTests.Rendering;
-using System;
 
 namespace RenderingEngineVisualTests {
     class Program {

@@ -1,10 +1,10 @@
-﻿using MinimalAF.Rendering;
+﻿using MinimalAF;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MinimalAF.VisualTests.Rendering {
+namespace RenderingEngineVisualTests {
     [VisualTest(
         description: @"A red transucent rectangle that moves around with the mouse along the XY plane in 3D.
 The camera will always be looking at it.
@@ -21,7 +21,7 @@ There is also a black rectangle with some text for reference, all of this is on 
             w.Size = (800, 600);
             w.Title = "Perspective camera test";
 
-            SetClearColor(Color4.RGBA(1, 1, 1, 1));
+            SetClearColor(Color.RGBA(1, 1, 1, 1));
         }
 
 

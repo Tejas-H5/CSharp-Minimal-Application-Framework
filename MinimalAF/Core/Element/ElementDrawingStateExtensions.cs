@@ -7,7 +7,7 @@ namespace MinimalAF {
             CTX.SetDrawColor(r, g, b, a);
         }
 
-        protected void SetDrawColor(Color4 col) {
+        protected void SetDrawColor(Color col) {
             SetDrawColor(col.R, col.G, col.B, col.A);
         }
 
@@ -22,7 +22,12 @@ namespace MinimalAF {
         protected void SetFont(string name, int size = 16) {
             CTX.Text.SetFont(name, size);
         }
-        protected void SetClearColor(Color4 value) {
+
+        protected void SetClearColor(float r, float g, float b, float a) {
+            CTX.SetClearColor(Color.RGBA(r, g, b, a));
+        }
+
+        protected void SetClearColor(Color value) {
             CTX.SetClearColor(value);
         }
 

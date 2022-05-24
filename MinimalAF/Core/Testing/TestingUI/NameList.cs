@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// Warning: Tight coupling. Not for the faint of heart
 namespace MinimalAF {
     class NameList : Element {
         readonly string[] allNames;
@@ -55,7 +54,7 @@ namespace MinimalAF {
             }
 
             foreach ((float y, string name, Rect rect) in IterateNames()) {
-                SetDrawColor(Color4.White);
+                SetDrawColor(Color.White);
                 DrawRect(rect);
 
                 SetDrawColor(0, 0, 0, 1);

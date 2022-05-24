@@ -56,16 +56,16 @@ namespace MinimalAF {
             return new Vector2(x, y);
         }
 
-        protected Color4 RGB(float r, float g, float b, float a = 1) {
-            return Color4.RGBA(r, g, b, a);
+        protected Color RGB(float r, float g, float b, float a = 1) {
+            return Color.RGBA(r, g, b, a);
         }
 
-        protected Color4 HSV(float h, float s, float v, float a = 1) {
-            return Color4.HSVA(h, s, v, a);
+        protected Color HSV(float h, float s, float v, float a = 1) {
+            return Color.HSVA(h, s, v, a);
         }
 
-        protected Color4 Greyscale(float v, float a = 1) {
-            return Color4.VA(v, a);
+        protected Color Greyscale(float v, float a = 1) {
+            return Color.VA(v, a);
         }
 
         public const float DegToRad = MathF.PI / 180f;

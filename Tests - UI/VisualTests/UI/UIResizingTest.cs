@@ -1,4 +1,4 @@
-﻿namespace MinimalAF.VisualTests.UI {
+﻿namespace UIVisualTests {
     [VisualTest(
         description: @"Test that the UI is actually layouting properly at all.",
         tags: "UI, layout"

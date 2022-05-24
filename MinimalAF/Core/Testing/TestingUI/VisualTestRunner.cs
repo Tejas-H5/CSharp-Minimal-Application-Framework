@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-// Warning: Tight coupling. Not for the faint of heart
+
 namespace MinimalAF {
     public class VisualTestRunner : Element {
         List<(Type, VisualTestAttribute)> visualTestElements = new List<(Type, VisualTestAttribute)>();
@@ -33,7 +33,7 @@ namespace MinimalAF {
             testList.OnSelect += TestList_OnSelect;
 
             searchbox = new TextInput<string>(
-                new TextElement("", Color4.VA(0, 1), "Consolas", 24), "",
+                new TextElement("", Color.VA(0, 1), "Consolas", 24), "",
                 (string s) => s
             );
 
@@ -143,14 +143,14 @@ namespace MinimalAF {
         }
 
         public override void OnRender() {
-            SetDrawColor(Color4.VA(0, 1));
+            SetDrawColor(Color.VA(0, 1));
 
             DrawRectOutline(1, testList.RelativeRect);
             DrawRectOutline(1, searchbox.RelativeRect);
             DrawRectOutline(1, reflectionPanel.RelativeRect);
             DrawRectOutline(1, mountingContainer.RelativeRect);
 
-            SetDrawColor(Color4.VA(1, .5f));
+            SetDrawColor(Color.VA(1, .5f));
             DrawRect(searchbox.RelativeRect);
         }
 

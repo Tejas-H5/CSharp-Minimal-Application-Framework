@@ -2,7 +2,7 @@
 
 namespace MinimalAF {
     public class TextElement : Element {
-        public Color4 TextColor {
+        public Color TextColor {
             get; set;
         }
         public string String { get; set; } = "";
@@ -22,16 +22,16 @@ namespace MinimalAF {
 
         private Vector2 caratPos = new Vector2();
 
-        public TextElement(string text, Color4 textColor)
+        public TextElement(string text, Color textColor)
             : this(text, textColor, "", -1, VAlign.Bottom, HAlign.Left) {
 
         }
 
-        public TextElement(string text, Color4 textColor, VAlign vAlign = VAlign.Bottom, HAlign hAlign = HAlign.Left)
+        public TextElement(string text, Color textColor, VAlign vAlign = VAlign.Bottom, HAlign hAlign = HAlign.Left)
             : this(text, textColor, "", -1, vAlign, hAlign) {
         }
 
-        public TextElement(string text, Color4 textColor, string fontName, int fontSize, VAlign vAlign = VAlign.Bottom, HAlign hAlign = HAlign.Left) {
+        public TextElement(string text, Color textColor, string fontName, int fontSize, VAlign vAlign = VAlign.Bottom, HAlign hAlign = HAlign.Left) {
             TextColor = textColor;
             String = text;
             VerticalAlignment = vAlign;

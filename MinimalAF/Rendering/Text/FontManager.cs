@@ -1,6 +1,7 @@
-﻿using System;
+﻿using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
+
 
 namespace MinimalAF.Rendering.Text {
     public class FontAtlasTexture {
@@ -146,11 +147,11 @@ namespace MinimalAF.Rendering.Text {
 
         public float GetCharWidth(char c) {
             if (activeFont.FontAtlas.IsValidCharacter(c)) {
-                return activeFont.FontAtlas.GetCharacterSize(c).Width;
+                return activeFont.FontAtlas.GetCharacterSize(c).X;
             }
 
 
-            float spaceWidth = activeFont.FontAtlas.GetCharacterSize('|').Width;
+            float spaceWidth = activeFont.FontAtlas.GetCharacterSize('|').X;
 
             switch (c) {
                 case ' ':
@@ -163,10 +164,10 @@ namespace MinimalAF.Rendering.Text {
         }
 
         public float GetCharHeight(char c) {
-            return activeFont.FontAtlas.GetCharacterSize(c).Height;
+            return activeFont.FontAtlas.GetCharacterSize(c).Y;
         }
 
-        public SizeF GetCharSize(char c) {
+        public Vector2 GetCharSize(char c) {
             return activeFont.FontAtlas.GetCharacterSize(c);
         }
 

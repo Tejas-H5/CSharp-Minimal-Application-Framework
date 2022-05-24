@@ -1,5 +1,4 @@
-﻿using MinimalAF.Rendering.Text;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using System;
@@ -60,47 +59,45 @@ namespace MinimalAF.Rendering {
             set => contextHeight = value;
         }
 
-        internal static Color4 ClearColor;
+        internal static Color ClearColor;
 
         //Composition
-        internal static TriangleDrawer<Vertex> Triangle => imDrawer.Triangle;
-        internal static QuadDrawer<Vertex> Quad => imDrawer.Quad;
-        internal static RectangleDrawer<Vertex> Rect => imDrawer.Rect;
-        internal static NGonDrawer<Vertex> NGon => imDrawer.NGon;
-        internal static PolyLineDrawer<Vertex> NLine => imDrawer.NLine;
-        internal static ArcDrawer<Vertex> Arc => imDrawer.Arc;
-        internal static CircleDrawer<Vertex> Circle => imDrawer.Circle;
-        internal static LineDrawer<Vertex> Line => imDrawer.Line;
-        internal static TextDrawer<Vertex> Text => textDrawer;
-        internal static TextureManager Texture => textureManager;
-        internal static FramebufferManager Framebuffer => framebufferManager;
-        public static ShaderManager Shader => shaderManager;
+        internal static TriangleDrawer<Vertex> Triangle => s_imDrawer.Triangle;
+        internal static QuadDrawer<Vertex> Quad => s_imDrawer.Quad;
+        internal static RectangleDrawer<Vertex> Rect => s_imDrawer.Rect;
+        internal static NGonDrawer<Vertex> NGon => s_imDrawer.NGon;
+        internal static PolyLineDrawer<Vertex> NLine => s_imDrawer.NLine;
+        internal static ArcDrawer<Vertex> Arc => s_imDrawer.Arc;
+        internal static CircleDrawer<Vertex> Circle => s_imDrawer.Circle;
+        internal static LineDrawer<Vertex> Line => s_imDrawer.Line;
+        internal static TextDrawer<Vertex> Text => s_textDrawer;
+        internal static TextureManager Texture => s_textureManager;
+        internal static FramebufferManager Framebuffer => s_framebufferManager;
+        public static ShaderManager Shader => s_shaderManager;
 
-        public static TextDrawer<Vertex> textDrawer;
-        private static MeshOutputStream<Vertex> meshOutputStream;
-        private static ImmediateMode2DDrawer<Vertex> imDrawer;
-        private static readonly VertexCreator vertexCreator = new VertexCreator();
+        private static TextDrawer<Vertex> s_textDrawer;
+        private static MeshOutputStream<Vertex> s_meshOutputStream;
+        private static ImmediateMode2DDrawer<Vertex> s_imDrawer;
+        private static readonly VertexCreator s_vertexCreator = new VertexCreator();
 
-        private static TextureManager textureManager;
-        private static FramebufferManager framebufferManager;
-        private static ShaderManager shaderManager;
-        private static InternalShader internalShader;
+        private static TextureManager s_textureManager;
+        private static FramebufferManager s_framebufferManager;
+        private static ShaderManager s_shaderManager;
+        private static InternalShader s_internalShader;
+
+        public static Texture InternalFontTexture => s_textDrawer.ActiveFont.FontTexture;
 
         public static int TimesVertexThresholdReached {
-            get => meshOutputStream.TimesVertexThresholdReached;
-            set => meshOutputStream.TimesVertexThresholdReached = value;
+            get => s_meshOutputStream.TimesVertexThresholdReached;
+            set => s_meshOutputStream.TimesVertexThresholdReached = value;
         }
 
         public static int TimesIndexThresholdReached {
-            get => meshOutputStream.TimesIndexThresholdReached;
-            set => meshOutputStream.TimesIndexThresholdReached = value;
+            get => s_meshOutputStream.TimesIndexThresholdReached;
+            set => s_meshOutputStream.TimesIndexThresholdReached = value;
         }
 
         public static float VertexToIndexRatio => (float)TimesVertexThresholdReached / (float)TimesIndexThresholdReached;
-
-        public static FontAtlasTexture InternalFontAtlas {
-            get => textDrawer.ActiveFont;
-        }
 
         internal static void SetScreenWidth(int width, int height) {
             contextWidth = ScreenWidth = width;
@@ -108,20 +105,20 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void Init(IGLFWGraphicsContext context) {
-            meshOutputStream = new MeshOutputStream<Vertex>(8 * 4096, 8 * 4096);
-            imDrawer = new ImmediateMode2DDrawer<Vertex>(meshOutputStream);
-            textDrawer = new TextDrawer<Vertex>();
+            s_meshOutputStream = new MeshOutputStream<Vertex>(8 * 4096, 8 * 4096);
+            s_imDrawer = new ImmediateMode2DDrawer<Vertex>(s_meshOutputStream);
+            s_textDrawer = new TextDrawer<Vertex>();
 
             glContext = context;
 
-            internalShader = new InternalShader();
-            shaderManager = new ShaderManager();
-            shaderManager.UseShader(internalShader);
+            s_internalShader = new InternalShader();
+            s_shaderManager = new ShaderManager();
+            s_shaderManager.UseShader(s_internalShader);
 
-            textureManager = new TextureManager();
-            framebufferManager = new FramebufferManager();
+            s_textureManager = new TextureManager();
+            s_framebufferManager = new FramebufferManager();
 
-            ClearColor = Color4.VA(0, 0);
+            ClearColor = Color.VA(0, 0);
 
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
@@ -138,11 +135,11 @@ namespace MinimalAF.Rendering {
             Console.WriteLine("Vendor: " + vendor + ", Version: " + version);
         }
 
-        internal static Color4 GetClearColor() {
+        internal static Color GetClearColor() {
             return ClearColor;
         }
 
-        internal static void SetClearColor(Color4 color) {
+        internal static void SetClearColor(Color color) {
             ClearColor = color;
         }
 
@@ -153,8 +150,8 @@ namespace MinimalAF.Rendering {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
         }
 
-        internal static void Clear(Color4 col) {
-            Color4 prev = ClearColor;
+        internal static void Clear(Color col) {
+            Color prev = ClearColor;
             ClearColor = col;
 
             Clear();
@@ -164,13 +161,13 @@ namespace MinimalAF.Rendering {
 
 
         internal static void Flush() {
-            meshOutputStream.Flush();
+            s_meshOutputStream.Flush();
         }
 
         internal static void SwapBuffers() {
             Flush();
-            framebufferManager.Use(null);
-            shaderManager.SetModelMatrix(Matrix4.Identity);
+            s_framebufferManager.Use(null);
+            s_shaderManager.SetModelMatrix(Matrix4.Identity);
 
             glContext.SwapBuffers();
 
@@ -211,7 +208,7 @@ namespace MinimalAF.Rendering {
             Matrix4 viewMatrix = Matrix4.CreateTranslation(offsetX - width / 2, offsetY - height / 2, 0);
             Matrix4 projectionMatrix = Matrix4.CreateScale(2.0f / width, 2.0f / height, 1);
 
-            shaderManager.SetViewMatrix(viewMatrix);
+            s_shaderManager.SetViewMatrix(viewMatrix);
             SetProjection(projectionMatrix);
 
             GL.DepthFunc(DepthFunction.Lequal);
@@ -222,7 +219,7 @@ namespace MinimalAF.Rendering {
             GL.Enable(EnableCap.CullFace);
             Matrix4 lookAt = Matrix4.LookAt(position, target, up);
 
-            shaderManager.SetViewMatrix(lookAt);
+            s_shaderManager.SetViewMatrix(lookAt);
         }
 
         internal static void ViewOrientation(Vector3 position, Quaternion rotation) {
@@ -232,7 +229,7 @@ namespace MinimalAF.Rendering {
             orienation.Transpose();
             orienation *= Matrix4.CreateFromQuaternion(rotation.Inverted());
 
-            shaderManager.SetViewMatrix(orienation);
+            s_shaderManager.SetViewMatrix(orienation);
         }
 
 
@@ -269,26 +266,26 @@ namespace MinimalAF.Rendering {
         internal static void SetProjection(Matrix4 matrix) {
             GL.Enable(EnableCap.CullFace);
 
-            shaderManager.SetProjectionMatrix(matrix);
+            s_shaderManager.SetProjectionMatrix(matrix);
         }
 
         // this name makes more sense imo
         internal static void SetTransform(Matrix4 matrix) {
-            shaderManager.SetModelMatrix(matrix);
+            s_shaderManager.SetModelMatrix(matrix);
         }
 
         internal static void SetDrawColor(float r, float g, float b, float a) {
-            Color4 col = Color4.RGBA(r, g, b, a);
+            Color col = Color.RGBA(r, g, b, a);
             SetDrawColor(col);
         }
 
-        internal static void SetDrawColor(Color4 col) {
-            if (internalShader.Color == col)
+        internal static void SetDrawColor(Color col) {
+            if (s_internalShader.Color == col)
                 return;
 
             Flush();
 
-            internalShader.Color = col;
+            s_internalShader.Color = col;
         }
 
 
@@ -368,14 +365,14 @@ namespace MinimalAF.Rendering {
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                meshOutputStream.Dispose();
-                internalShader.Dispose();
-                textDrawer.Dispose();
-                textureManager.Dispose();
+                s_meshOutputStream.Dispose();
+                s_internalShader.Dispose();
+                s_textDrawer.Dispose();
+                s_textureManager.Dispose();
 
                 TextureMap.UnloadAll();
 
-                framebufferManager.Dispose();
+                s_framebufferManager.Dispose();
 
                 Texture.Set(null);
                 // TODO: set large fields to null.

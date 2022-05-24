@@ -5,7 +5,7 @@
         }
 
         public override void OnRender() {
-            SetDrawColor(Color4.Black);
+            SetDrawColor(Color.Black);
             DrawRectOutline(1, 0, 0, Width, Height);
 
             var e = this[1];

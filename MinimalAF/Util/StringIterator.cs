@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace MinimalAF {
-
+    // Why does this work
     public ref struct StringIterator {
         readonly ReadOnlySpan<char> _str;
         readonly string _delimiter;

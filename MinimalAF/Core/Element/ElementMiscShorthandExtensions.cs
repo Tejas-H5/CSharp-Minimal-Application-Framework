@@ -69,5 +69,9 @@ namespace MinimalAF {
         }
 
         public const float DegToRad = MathF.PI / 180f;
+
+        public void TODO(string message="") {
+            throw new NotImplementedException(message);
+        }
     }
 }

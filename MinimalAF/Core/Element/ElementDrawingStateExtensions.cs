@@ -11,6 +11,10 @@ namespace MinimalAF {
             SetDrawColor(col.R, col.G, col.B, col.A);
         }
 
+        protected void SetDrawColor(Color col, float alpha) {
+            SetDrawColor(col.R, col.G, col.B, alpha);
+        }
+
         protected Texture GetTexture() {
             return CTX.Texture.Get();
         }

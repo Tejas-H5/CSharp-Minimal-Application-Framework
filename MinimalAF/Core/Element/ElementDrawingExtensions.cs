@@ -17,7 +17,7 @@ namespace MinimalAF {
         }
 
         /// <summary>
-        /// Sets the sharer's model matrix
+        /// Sets the shader's model matrix
         /// </summary>
         protected void SetTransform(Matrix4 transform) {
             //AssertClipping();
@@ -205,6 +205,10 @@ namespace MinimalAF {
             CTX.Circle.Draw(x0, y0, r, edges);
         }
 
+        protected void DrawRegularPolygonOutline(float thickness, float x0, float y0, float r, int edges) {
+            CTX.Circle.DrawOutline(thickness, x0, y0, r, edges);
+        }
+
         protected void DrawCircle(float x0, float y0, float r) {
             CTX.Circle.Draw(x0, y0, r);
         }
@@ -287,6 +291,27 @@ namespace MinimalAF {
 
         protected void EndPolyLine(float x, float y) {
             CTX.NLine.End(x, y);
+        }
+
+
+        protected void StartNGon(Vector2 vec, int numVerts) {
+            StartNGon(vec.X, vec.Y, numVerts);
+        }
+
+        protected void StartNGon(float x, float y, int numVerts) {
+            CTX.NGon.Begin(x, y, numVerts);
+        }
+
+        protected void ContinueNGon(Vector2 vec) {
+            ContinueNGon(vec.X, vec.Y);
+        }
+
+        protected void ContinueNGon(float x, float y) {
+            CTX.NGon.Continue(x, y);
+        }
+
+        protected void EndNGon() {
+            CTX.NGon.End();
         }
 
         protected void Clear() {

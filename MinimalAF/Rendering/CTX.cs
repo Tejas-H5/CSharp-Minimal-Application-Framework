@@ -200,7 +200,6 @@ namespace MinimalAF.Rendering {
         /// </summary>
         internal static void Cartesian2D(float scaleX = 1, float scaleY = 1, float offsetX = 0, float offsetY = 0) {
             Flush();
-            GL.Disable(EnableCap.CullFace);
 
             float width = scaleX * ContextWidth;
             float height = scaleY * ContextHeight;
@@ -216,15 +215,12 @@ namespace MinimalAF.Rendering {
 
 
         internal static void ViewLookAt(Vector3 position, Vector3 target, Vector3 up) {
-            GL.Enable(EnableCap.CullFace);
             Matrix4 lookAt = Matrix4.LookAt(position, target, up);
 
             s_shaderManager.SetViewMatrix(lookAt);
         }
 
         internal static void ViewOrientation(Vector3 position, Quaternion rotation) {
-            GL.Enable(EnableCap.CullFace);
-
             Matrix4 orienation = Matrix4.CreateTranslation(-position);
             orienation.Transpose();
             orienation *= Matrix4.CreateFromQuaternion(rotation.Inverted());
@@ -240,8 +236,6 @@ namespace MinimalAF.Rendering {
         /// </para>
         /// </summary>
         internal static void Perspective(float fovy, float aspect, float depthNear, float depthFar, float centerX = 0, float centerY = 0) {
-            GL.Enable(EnableCap.CullFace);
-
             Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(fovy, aspect, depthNear, depthFar);
             perspective = perspective * Matrix4.CreateTranslation(centerX / ContextWidth, centerY / ContextHeight, 0);
 
@@ -255,8 +249,6 @@ namespace MinimalAF.Rendering {
         /// </para>
         /// </summary>
         internal static void Orthographic(float width, float height, float depthNear, float depthFar, float centerX = 0, float centerY = 0) {
-            GL.Enable(EnableCap.CullFace);
-
             Matrix4 ortho = Matrix4.CreateOrthographic(width, height, depthNear, depthFar);
             ortho = ortho * Matrix4.CreateTranslation(centerX / ContextWidth, centerY / ContextHeight, 0);
 
@@ -264,9 +256,15 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void SetProjection(Matrix4 matrix) {
-            GL.Enable(EnableCap.CullFace);
-
             s_shaderManager.SetProjectionMatrix(matrix);
+        }
+
+        internal static void SetBackfaceCulling(bool onOrOff) {
+            if(onOrOff) {
+                GL.Enable(EnableCap.CullFace);
+            } else {
+                GL.Disable(EnableCap.CullFace);
+            }
         }
 
         // this name makes more sense imo

@@ -4,67 +4,67 @@ using System;
 namespace MinimalAF {
     // am too lazy to type
     public partial class Element {
-        protected Matrix4 Translation(float x, float y, float z) {
+        public Matrix4 Translation(float x, float y, float z) {
             return Matrix4.CreateTranslation(x, y, z);
         }
 
-        protected Matrix4 Translation(Vector3 pos) {
+        public Matrix4 Translation(Vector3 pos) {
             return Matrix4.CreateTranslation(pos);
         }
 
-        protected Quaternion Quat(float x, float y, float z) {
+        public Quaternion Quat(float x, float y, float z) {
             return Quaternion.FromEulerAngles(x, y, z);
         }
 
-        protected Quaternion Quat(Vector3 axis, float angle) {
+        public Quaternion Quat(Vector3 axis, float angle) {
             return Quaternion.FromAxisAngle(axis, angle);
         }
 
-        protected Matrix4 Rotation(float x, float y, float z) {
+        public Matrix4 Rotation(float x, float y, float z) {
             return Rotation(Quat(x, y, z));
         }
 
-        protected Matrix4 Rotation(Vector3 axis, float angle) {
+        public Matrix4 Rotation(Vector3 axis, float angle) {
             return Rotation(Quat(axis, angle));
         }
 
-        protected Matrix4 Rotation(Quaternion quat) {
+        public Matrix4 Rotation(Quaternion quat) {
             return Matrix4.CreateFromQuaternion(quat);
         }
 
-        protected Matrix4 Scale(float s) {
+        public Matrix4 Scale(float s) {
             return Matrix4.CreateScale(s);
         }
 
-        protected Matrix4 Scale(float x, float y, float z) {
+        public Matrix4 Scale(float x, float y, float z) {
             return Matrix4.CreateScale(x, y, z);
         }
 
-        protected Matrix4 Mat4(Vector4 row1, Vector4 row2, Vector4 row3, Vector4 row4) {
+        public Matrix4 Mat4(Vector4 row1, Vector4 row2, Vector4 row3, Vector4 row4) {
             return new Matrix4(row1, row2, row3, row4);
         }
 
-        protected Vector4 Vec4(float x = 0, float y = 0, float z = 0, float w = 1) {
+        public Vector4 Vec4(float x = 0, float y = 0, float z = 0, float w = 1) {
             return new Vector4(x, y, z, w);
         }
 
-        protected Vector3 Vec3(float x = 0, float y = 0, float z = 0) {
+        public Vector3 Vec3(float x = 0, float y = 0, float z = 0) {
             return new Vector3(x, y, z);
         }
 
-        protected Vector2 Vec2(float x = 0, float y = 0) {
+        public Vector2 Vec2(float x = 0, float y = 0) {
             return new Vector2(x, y);
         }
 
-        protected Color RGB(float r, float g, float b, float a = 1) {
+        public Color RGB(float r, float g, float b, float a = 1) {
             return Color.RGBA(r, g, b, a);
         }
 
-        protected Color HSV(float h, float s, float v, float a = 1) {
+        public Color HSV(float h, float s, float v, float a = 1) {
             return Color.HSVA(h, s, v, a);
         }
 
-        protected Color Greyscale(float v, float a = 1) {
+        public Color Greyscale(float v, float a = 1) {
             return Color.VA(v, a);
         }
 

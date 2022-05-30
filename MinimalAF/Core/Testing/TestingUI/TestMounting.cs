@@ -10,6 +10,7 @@ namespace MinimalAF {
 
         public TestMounting() {
             Pivot = Vec2(0.5f, 0.5f);
+            Clipping = true;
         }
 
         public void SetTestcase(Element element) {
@@ -17,11 +18,6 @@ namespace MinimalAF {
         }
 
         public override void OnRender() {
-            RenderDragHandle(Direction.Left);
-            RenderDragHandle(Direction.Up);
-            RenderDragHandle(Direction.Right);
-            RenderDragHandle(Direction.Down);
-
             SetDrawColor(Color.Black);
             DrawRectOutline(1, 0, 0, Width, Height);
 
@@ -34,6 +30,18 @@ namespace MinimalAF {
 
             SetFont("Consolas", 16);
             DrawText(infoText, 0, 0, HAlign.Left, VAlign.Top);
+        }
+
+        public override void AfterRender() {
+            if (Children.Length == 0)
+                return;
+
+            SetClipping(false);
+
+            RenderDragHandle(Direction.Left);
+            RenderDragHandle(Direction.Up);
+            RenderDragHandle(Direction.Right);
+            RenderDragHandle(Direction.Down);
         }
 
 
@@ -134,6 +142,10 @@ namespace MinimalAF {
         }
 
         public override Rect DefaultRect(float parentWidth, float parentHeight) {
+            return wantedRect();
+        }
+
+        private Rect wantedRect() {
             return Rect.PivotSize(WantedSize.Item1, WantedSize.Item2, 0.5f, 0.5f);
         }
 

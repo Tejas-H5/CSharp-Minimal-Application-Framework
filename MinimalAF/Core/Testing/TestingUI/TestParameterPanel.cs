@@ -53,6 +53,10 @@ namespace MinimalAF {
             for (int i = 0; i < properties.Length; i++) {
                 var property = properties[i];
 
+                if (property.GetCustomAttribute<IgnorePropertyTestingAttribute>() != null) {
+                    continue;
+                }
+
                 if (!TestRunnerCommon.SupportsType(property.PropertyType))
                     continue;
 
@@ -97,7 +101,7 @@ namespace MinimalAF {
                 _uiPanel = new TestParameterUI()
             );
 
-            StackingOffset = 1;
+            StackingOffset = 10000;
 
             _uiPanel.Pivot = Vec2(0, 1);
             Pivot = Vec2(0, 1);

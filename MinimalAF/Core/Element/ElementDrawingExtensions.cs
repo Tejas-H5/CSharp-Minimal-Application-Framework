@@ -6,6 +6,15 @@ namespace MinimalAF {
     public partial class Element {
 
         /// <summary>
+        /// Enables/disables the current clipping rect (Currently implement via GL.Scissor).
+        /// 
+        /// Use this when you want to render outside of your current clipping rectangle
+        /// </summary>
+        public void SetClipping(bool state) {
+            CTX.SetClipping(state);
+        }
+
+        /// <summary>
         /// Enable or disable backface culling. It is disabled by default, as it was causing issues for a lot of 2D stuff, 
         /// but it is a pretty common optimization for 3D rendering. Just make sure all your vertices are wound anti-clockwise,
         /// and it should just work (more info about this can be found on the internet)
@@ -198,7 +207,7 @@ namespace MinimalAF {
             CTX.StartUsingStencil();
         }
 
-        public void LiftStencil() {
+        public void StopUsingStencil() {
             CTX.LiftStencil();
         }
 

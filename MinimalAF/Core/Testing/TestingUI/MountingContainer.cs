@@ -12,7 +12,6 @@ namespace MinimalAF {
         public MountingContainer() {
             mounting = new TestMounting();
             testParameterPanel = new TestParameterPanel();
-            Clipping = true;
 
             SetChildren(mounting, testParameterPanel);
         }

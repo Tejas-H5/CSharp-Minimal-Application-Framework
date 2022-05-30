@@ -49,6 +49,14 @@ namespace MinimalAF.Rendering {
             }
         }
 
+        internal static void SetClipping(bool state) {
+            if (state) {
+                GL.Enable(EnableCap.ScissorTest);
+            } else {
+                GL.Disable(EnableCap.ScissorTest);
+            }
+        }
+
         public static int ContextWidth {
             get => contextWidth;
             set => contextWidth = value;

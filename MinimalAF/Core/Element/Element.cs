@@ -53,6 +53,8 @@ namespace MinimalAF {
         /// Will OnRender() be allowed to draw outside of this rectangle?
         /// </summary>
         protected ref bool Clipping => ref _clipping;
+
+        [IgnorePropertyTesting]
         public bool Debug {
             get {
 #if DEBUG
@@ -68,7 +70,7 @@ namespace MinimalAF {
             }
         }
 
-
+        [IgnorePropertyTesting]
         public bool IsVisible {
             get {
                 return _isVisible;
@@ -90,6 +92,9 @@ namespace MinimalAF {
         /// </summary>
         protected Rect ScreenRect => _screenRect;
 
+        /// <summary>
+        /// A higher stack index means that this will be rendered above other things
+        /// </summary>
         protected int StackingOffset {
             get => _stackingOffset;
             set => _stackingOffset = value;

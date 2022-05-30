@@ -58,7 +58,8 @@ namespace MinimalAF.Rendering {
             if (edgeCount < 0)
                 return;
 
-            radius += thickness / 2 - 0.1f;
+            thickness /= 2.0f;
+            radius += thickness / 2f;
 
             float deltaAngle = (endAngle - startAngle) / edgeCount;
 

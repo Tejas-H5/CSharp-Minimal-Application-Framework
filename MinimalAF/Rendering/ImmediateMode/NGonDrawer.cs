@@ -1,4 +1,5 @@
 ﻿namespace MinimalAF.Rendering {
+    // TODO: delete this class
     public class NGonDrawer<V> where V : struct, IVertexUV, IVertexPosition {
         IGeometryOutput<V> outputStream;
 

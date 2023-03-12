@@ -12,7 +12,7 @@ namespace AudioEngineTests.AudioTests {
         AudioSourceOneShot clackSound;
         AudioListener listener;
 
-        public override void OnMount(Window w) {
+        public override void OnMount() {
             
             w.Size = (800, 600);
             w.Title = "PanningAndListenerDefaultsTest test";
@@ -43,11 +43,11 @@ namespace AudioEngineTests.AudioTests {
         }
 
         public override void OnRender() {
-            SetDrawColor(0, 0, 0, 1);
+            ctx.SetDrawColor(0, 0, 0, 1);
             DrawCircle(Width / 2, Height / 2, 20);
 
 
-            SetDrawColor(1, 0, 0, 1);
+            ctx.SetDrawColor(1, 0, 0, 1);
             DrawCircle(MouseX, MouseY, 20);
             DrawText("You are here (" + listenerX + "," + listenerZ + ")", MouseX, MouseY, HAlign.Center, VAlign.Bottom);
         }

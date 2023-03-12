@@ -8,8 +8,8 @@
         }
 
         public override void OnRender() {
-            SetDrawColor(col);
-            DrawRectOutline(thickness, 0, 0, VW(1), VH(1));
+            ctx.SetDrawColor(col);
+            DrawRectOutline(thickness, 0, 0, ctx.Width * 1, ctx.Height * 1);
         }
     }
 }

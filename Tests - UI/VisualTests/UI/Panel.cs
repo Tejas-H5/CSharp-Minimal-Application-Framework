@@ -14,7 +14,7 @@ namespace UIVisualTests {
 
         Color4 drawColor;
 
-        public override void OnMount(Window w) {
+        public override void OnMount() {
             uiState = GetResource<UIState>();
         }
 
@@ -36,11 +36,11 @@ namespace UIVisualTests {
         }
 
         public override void OnRender() {
-            SetDrawColor(Color4.VA(0, 1));
-            DrawRectOutline(2, 0, 0, VW(1), VH(1));
+            ctx.SetDrawColor(Color4.VA(0, 1));
+            DrawRectOutline(2, 0, 0, ctx.Width * 1, ctx.Height * 1);
 
-            SetDrawColor(drawColor);
-            DrawRect(0, 0, VW(1), VH(1));
+            ctx.SetDrawColor(drawColor);
+            DrawRect(0, 0, ctx.Width * 1, ctx.Height * 1);
 
             base.OnRender();
         }

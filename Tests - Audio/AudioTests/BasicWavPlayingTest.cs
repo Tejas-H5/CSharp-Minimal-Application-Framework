@@ -11,7 +11,7 @@ namespace AudioEngineTests.AudioTests {
     public class BasicWavPlayingTest : Element {
         AudioSourceOneShot clackSound;
 
-        public override void OnMount(Window w) {
+        public override void OnMount() {
             w.Size = (800, 600);
             w.Title = "Keyboard test";
 
@@ -40,7 +40,7 @@ namespace AudioEngineTests.AudioTests {
         }
 
         public override void OnRender() {
-            SetDrawColor(1, 1, 1, 1);
+            ctx.SetDrawColor(1, 1, 1, 1);
 
             DrawText("Press some keys:", Width / 2, Height / 2 + 200);
 

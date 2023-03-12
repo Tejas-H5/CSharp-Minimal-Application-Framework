@@ -1,5 +1,6 @@
 ﻿using MinimalAF;
 using MinimalAF.Rendering;
+using OpenTK.Mathematics;
 
 namespace RenderingEngineVisualTests {
     [VisualTest(
@@ -12,69 +13,60 @@ This text must be 0,0,0 black
 The circles must actually be circular, and not a distorted oval",
     tags: "2D, Framebuffer"
 )]
-    public class FramebufferTest : Element {
+    public class FramebufferTest : IRenderable {
         Framebuffer fb;
-        Texture monkeyTex;
-        public override void OnMount(Window w) {
 
+        public FramebufferTest(FrameworkContext ctx) {
+            var w = ctx.Window;
             w.Size = (800, 600);
             w.Title = "FramebufferTest";
 
-            //w.RenderFrequency = 120;
-            //w.UpdateFrequency = 120; 20;
+            w.RenderFrequency = 120;
+            w.UpdateFrequency = 120;// 20;
 
-            SetClearColor(Color.RGBA(1, 1, 1, 1));
+            ctx.SetClearColor(Color.RGBA(1, 1, 1, 1));
 
             fb = new Framebuffer(1, 1);
             fb.Resize(800, 600);
-
-            Clipping = false;
-
-            monkeyTex = TextureMap.Load("monke", "./Res/monke texture.png");
         }
 
-
-        double timer = 0;
-
-        public override void OnUpdate() {
-            timer += Time.DeltaTime;
-        }
-
-        public override void OnRender() {
+        public void Render(FrameworkContext ctx) {
             float wCX = 400;
             float wCY = 300;
 
-            using(RedirectDrawCalls(fb)) {
-                Clear(RGB(0, 0, 0, 0));
+            ctx.UseFramebuffer(fb);
+            {
+                ctx.Clear(Color.RGBA(0, 0, 0, 0));
 
-                SetViewProjectionCartesian2D(1, 1, 0, 0);
-                SetTransform(Translation(0, 0, 0));
+                ctx.SetProjectionCartesian2D(1, 1, 0, 0);
+                ctx.SetTransform(Matrix4.CreateTranslation(0, 0, 0));
 
-                SetDrawColor(0, 0, 1, 1);
-                DrawDualCirclesCenter(wCX, wCY);
+                ctx.SetDrawColor(0, 0, 1, 1);
+                DrawDualCirclesCenter(ref ctx, wCX, wCY);
 
-                SetDrawColor(1, 1, 0, 1);
-                DrawRect(wCX, wCY, wCX + 50, wCY + 25);
+                ctx.SetDrawColor(1, 1, 0, 1);
+                ctx.DrawRect(wCX, wCY, wCX + 50, wCY + 25);
+
             }
+            ctx.UseFramebuffer(null);
 
-
-            SetDrawColor(1, 0, 0, 1);
+            ctx.SetDrawColor(1, 0, 0, 1);
             float rectSize = 200;
-            DrawRect(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
+            ctx.DrawRect(wCX - rectSize, wCY - rectSize, wCX + rectSize, wCY + rectSize);
 
-            SetTexture(fb.Texture);
-            SetDrawColor(1, 1, 1, 0.5f);
-            DrawRect(0, 0, 800, 600);
+            ctx.SetTexture(fb.Texture);
+            ctx.SetDrawColor(1, 1, 1, 0.5f);
+            ctx.DrawRect(0, 0, 800, 600);
 
-            SetTexture(null);
+            ctx.SetTexture(null);
 
-            SetDrawColor(0, 1, 0, 0.5f);
-            DrawRectOutline(10, wCX - wCY, wCY - wCY, wCX + wCY, wCY + wCY);
+            ctx.SetDrawColor(0, 1, 0, 0.5f);
+            ctx.DrawRectOutline(10, wCX - wCY, wCY - wCY, wCX + wCY, wCY + wCY);
         }
 
-        private void DrawDualCirclesCenter(float x, float y) {
-            DrawCircle(x - 100, y - 100, 200);
-            DrawCircle(x + 100, y + 100, 200);
+        private void DrawDualCirclesCenter(ref FrameworkContext ctx, float x, float y) {
+            ctx.DrawCircle(x - 100, y - 100, 200);
+            ctx.DrawCircle(x + 100, y + 100, 200);
         }
     }
 }

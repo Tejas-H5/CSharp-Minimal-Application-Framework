@@ -1,6 +1,7 @@
 ﻿using MinimalAF.Audio;
 using MinimalAF.Rendering;
 using MinimalAF.ResourceManagement;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using System;
@@ -14,8 +15,11 @@ namespace MinimalAF {
         Fullscreen
     }
 
-    internal class OpenTKWindowWrapper : GameWindow {
-        ApplicationWindow rootWindow;
+    // TODO: rewrite with GLFW directly, no GameWindow
+    public partial class OpenTKWindowWrapper {
+        GameWindow window;
+        IRenderable renderable;
+        Func<FrameworkContext, IRenderable> appConstructor;
 
         double time = 0;
         int renderFrames = 0;
@@ -23,101 +27,91 @@ namespace MinimalAF {
         int deletionInterval = 0;
         float fps;
         float updateFps;
+        public int Height => window.Size.Y;
+        public int Width => window.Size.X;
+        public Rect Rect => new Rect(0, 0, Width, Height);
+        public float CurrentFPS => fps;
+        public float CurrentUpdateFPS => updateFps;
 
-        public int Height {
-            get {
-                return Size.Y;
-            }
-        }
-        public int Width {
-            get {
-                return Size.X;
-            }
-        }
-        public Rect Rect {
-            get {
-                return new Rect(0, 0, Width, Height);
-            }
-        }
-        public float CurrentFPS {
-            get {
-                return fps;
-            }
+        public Vector2i Size {
+            get => window.Size;
+            set => window.Size = value;
         }
 
-        public float CurrentUpdateFPS {
-            get {
-                return updateFps;
-            }
+        public string Title {
+            get => window.Title;
+            set => window.Title = value;
         }
 
-        public OpenTKWindowWrapper(ApplicationWindow rootWindow)
-            : base(new GameWindowSettings {},
-            new NativeWindowSettings {
-                StartVisible = false
-            }) {
-            this.rootWindow = rootWindow;
+        public double RenderFrequency {
+            get => window.RenderFrequency;
+            set => window.RenderFrequency = value;
+        }
+        public double UpdateFrequency {
+            get => window.UpdateFrequency;
+            set => window.UpdateFrequency = value;
         }
 
-        public event Action<uint> TextInputEvent;
+        public void Run() {
+            window.Run();
+        }
 
-        public event Action<float> MouseWheelVertical;
+
+        public OpenTKWindowWrapper(Func<FrameworkContext, IRenderable> appConstructor) {
+            window = new GameWindow(
+                new GameWindowSettings { },
+                new NativeWindowSettings {
+                    StartVisible = false
+                }
+            );
+
+            window.IsVisible = false;
+            window.Load += OnLoad;
+            window.MouseWheel += OnWindowMouseWheel;
+            window.RenderFrame += OnRenderFrame;
+            window.UpdateFrame += OnUpdateFrame;
+            window.Closing += OnClosing;
+            //KeyDown += ProcessPhysicalKeyPress;
+            //TextInput += keyboardManager.CharactersPressed;
+
+            this.appConstructor = appConstructor;
+        }
+
+
+        private FrameworkContext CreateFrameworkContext() {
+            return new FrameworkContext(
+                new Rect(0, 0, Width, Height),
+                this
+            ).Use();
+        }
 
         bool init = false;
 
-        protected unsafe override void OnLoad() {
-            base.OnLoad();
-
-            KeyDown += ProcessPhysicalKeyPress;
-            TextInput += ProcessCharTextInputs;
-            MouseWheel += WindowInstance_MouseWheel;
-
-            CTX.Init(Context);
+        unsafe void OnLoad() {
+            CTX.Init(window.Context);
             AudioCTX.Init();
-            Input.HookToWindow(this);
-            init = true;
 
-            ResizeAction();
+            window.IsVisible = true;
 
-            rootWindow.StartMounting();
-
-            IsVisible = true;
+            // Usually an app will be donig OpenGL/OpenAL stuff that will
+            // require those things to be initialized, so we are constructing
+            // the app with a constructor rather than injecting it directly
+            renderable = appConstructor(CreateFrameworkContext());
         }
 
-        private void WindowInstance_MouseWheel(MouseWheelEventArgs obj) {
-            MouseWheelVertical?.Invoke(obj.OffsetY);
-        }
-
-        private void ProcessCharTextInputs(TextInputEventArgs obj) {
-            Console.WriteLine("char input");
-            for (int i = 0; i < obj.AsString.Length; i++) {
-                TextInputEvent?.Invoke(obj.AsString[i]);
-            }
-        }
-
-        private void ProcessPhysicalKeyPress(KeyboardKeyEventArgs obj) {
-            KeyCode keyCode = (KeyCode)obj.Key;
-
-            if ((keyCode == KeyCode.Backspace)
-                || (keyCode == KeyCode.Enter)
-                || (keyCode == KeyCode.NumpadEnter)
-                || (keyCode == KeyCode.Tab)) {
-                Console.WriteLine("non-char input");
-                TextInputEvent?.Invoke(CharKeyMapping.KeyCodeToChar(keyCode));
-            }
-        }
-
-        protected override void OnUpdateFrame(FrameEventArgs args) {
-            base.OnUpdateFrame(args);
-
-            Input.Update();
+        void OnUpdateFrame(FrameEventArgs args) {
+            UpdateKeyInput();
+            MouseUpdateInput();
             AudioCTX.Update();
 
             Time.deltaTime = (float)args.Time;
-            rootWindow.UpdateSelfAndChildren(new Rect(0, 0, Width, Height));
+
+            // TODO: set update/render mode flags
+            //rootWindow.Render(new RenderContext {
+            //    Rect = new Rect(0, 0, Width, Height)
+            //});
 
             TrackUpdateFPS(args);
-
 
             deletionInterval++;
             // 100 is an arbitrary number.
@@ -150,57 +144,28 @@ namespace MinimalAF {
         }
 
 
-        protected override void OnRenderFrame(FrameEventArgs args) {
+        protected void OnRenderFrame(FrameEventArgs args) {
             Time.deltaTime = (float)args.Time;
-
-            base.OnRenderFrame(args);
 
             CTX.SetViewport(Rect);
             CTX.Clear();
 
-            CTX.Cartesian2D(1, 1);
-
-            rootWindow.RenderSelfAndChildren(new Rect(0, 0, Width, Height));
-
+            CTX.ContextWidth = Width;
+            CTX.ContextHeight = Height;
+            // rootWindow.RenderSelfAndChildren(new Rect(0, 0, Width, Height));
+            renderable.Render(CreateFrameworkContext());
 
             CTX.SwapBuffers();
 
             renderFrames++;
         }
 
-        void ResizeAction() {
-            rootWindow.RelativeRect = new Rect(0, 0, Width, Height);
-            CTX.SetScreenWidth(Width, Height);
-
-            rootWindow.Layout();
-        }
-
-
-        protected override void OnResize(ResizeEventArgs e) {
-            if (!init)
-                return;
-
-            base.OnResize(e);
-
-            ResizeAction();
-        }
-
-        protected override void OnMaximized(MaximizedEventArgs e) {
-            ResizeAction();
-        }
-
-        //TODO: Find out why OnUnload() wasn't working
-        protected unsafe override void OnClosing(CancelEventArgs e) {
-            base.OnClosing(e);
-
+        unsafe void OnClosing(CancelEventArgs e) {
             Cleanup();
-
             e.Cancel = false;
         }
 
         private unsafe void Cleanup() {
-            rootWindow.Dismount();
-
             CTX.Dispose(true);
             AudioCTX.Cleanup();
 
@@ -208,7 +173,7 @@ namespace MinimalAF {
         }
 
         public void SetWindowState(WindowState state) {
-            WindowState = (OpenTK.Windowing.Common.WindowState)state;
+            window.WindowState = (OpenTK.Windowing.Common.WindowState)state;
         }
     }
 }

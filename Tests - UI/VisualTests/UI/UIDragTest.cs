@@ -15,7 +15,7 @@ namespace UIVisualTests {
         }
 
         UIDragTestProgram dragState;
-        public override void OnMount(Window w) {
+        public override void OnMount() {
             Console.WriteLine("Mount");
             dragState = GetAncestor<UIDragTestProgram>();
         }
@@ -79,13 +79,13 @@ namespace UIVisualTests {
         }
 
         UIDragTestProgram dragState;
-        public override void OnMount(Window w) {
+        public override void OnMount() {
             dragState = GetAncestor<UIDragTestProgram>();
         }
 
         public override void OnRender() {
             if(MouseOverSelf && !MouseStoppedDraggingAnywhere && dragState.CurrentlyDraggedContent != null) {
-                SetDrawColor(0, 0, 0, 0.5f);
+                ctx.SetDrawColor(0, 0, 0, 0.5f);
                 DrawRect(0, 0, Width, Height);
             }
         }
@@ -119,7 +119,7 @@ namespace UIVisualTests {
         }
 
         public override void OnLayout() {
-            LayoutLinear(Children, Direction.Down, VH(1f/Children.Length));
+            LayoutLinear(Children, Direction.Down, ctx.VH * 1f/Children.Length);
             LayoutInset(Children, 5);
 
             LayoutChildren();
@@ -144,7 +144,7 @@ namespace UIVisualTests {
             );
         }
 
-        public override void OnMount(Window w) {
+        public override void OnMount() {
             w.Size = (800, 600);
             w.Title = "UIAspectRatioTest";
             w.RenderFrequency = 120;

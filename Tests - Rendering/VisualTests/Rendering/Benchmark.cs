@@ -8,7 +8,7 @@ namespace RenderingEngineVisualTests {
 A higher number of lines drawn is always better. This test won't work when vsync is enabled, or if 'count' has been set to anything other than 0.",
         tags: "2D"
     )]
-    class Benchmark : Element {
+    class Benchmark : IRenderable {
         public float LineThickness {
             get; set;
         }
@@ -22,19 +22,17 @@ A higher number of lines drawn is always better. This test won't work when vsync
             get; set;
         }
 
-        public Benchmark(int lineCount = 0, CapType capType = CapType.Circle, int thickness = 5, float requiredFPS = 60) {
+        public Benchmark(FrameworkContext ctx, int lineCount = 0, CapType capType = CapType.Circle, int thickness = 5, float requiredFPS = 60) {
             LineThickness = thickness;
             CapType = capType;
             LineCount = lineCount;
             RequiredFPS = requiredFPS;
-        }
 
-        public override void OnMount(Window w) {
+            var w = ctx.Window;
             w.Size = (800, 600);
             w.Title = "Rendering Engine Line benchmark";
 
-            SetClearColor(Color.RGBA(1, 1, 1, 1));
-            SetFont("Consolas", 24);
+            ctx.SetClearColor(Color.RGBA(1, 1, 1, 1));
         }
 
         readonly Random rand = new Random(1);
@@ -45,7 +43,7 @@ A higher number of lines drawn is always better. This test won't work when vsync
         int amount = 10000;
         readonly int jump = 6000;
 
-        public override void OnRender() {
+        public void Render(FrameworkContext ctx) {
             time += Time.DeltaTime;
             frames++;
 
@@ -72,21 +70,21 @@ A higher number of lines drawn is always better. This test won't work when vsync
             }
 
 
-            SetDrawColor(1, 0, 0, 0.1f);
+            ctx.SetDrawColor(1, 0, 0, 0.1f);
             CTX.TimesVertexThresholdReached = 0;
             CTX.TimesIndexThresholdReached = 0;
 
             for (int i = 0; i < amount; i++) {
-                float x1 = VW((float)rand.NextDouble());
-                float y1 = VH((float)rand.NextDouble());
+                float x1 = ctx.VW * (float)rand.NextDouble();
+                float y1 = ctx.VH * (float)rand.NextDouble();
 
-                float x2 = VW((float)rand.NextDouble());
-                float y2 = VH((float)rand.NextDouble());
+                float x2 = ctx.VW * (float)rand.NextDouble();
+                float y2 = ctx.VH * (float)rand.NextDouble();
 
-                DrawLine(x1, y1, x2, y2, LineThickness, CapType);
+                ctx.DrawLine(x1, y1, x2, y2, LineThickness, CapType);
             }
 
-            SetDrawColor(0, 0, 0, 1f);
+            ctx.SetDrawColor(0, 0, 0, 1f);
 
             string text = "FPS: " + FPS.ToString("0.000") +
                 "\nLines drawn: " + amount +
@@ -95,7 +93,7 @@ A higher number of lines drawn is always better. This test won't work when vsync
                 "\nIndex refreshes: " + CTX.TimesIndexThresholdReached +
                 "\nVertex:Index Ratio: " + CTX.VertexToIndexRatio;
 
-            DrawText(text, 10, Height - 50);
+            ctx.DrawText(text, 10, ctx.VH - 50);
         }
     }
 }

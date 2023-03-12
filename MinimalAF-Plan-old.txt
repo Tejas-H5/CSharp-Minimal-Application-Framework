@@ -33,7 +33,7 @@ Anything cluttering up MinimalAF-Plan.txt is just cut-pasted here
 			- [Done] All values must initialize themselves to whatever the class has set them to, now they are setting themselves to 0 or something
 			- [done] numerical inputs should have left-right buttons and be draggable, like in Blender
 			
-			- [done] window should not have excess size.
+			- [do- I havene] window should not have excess size.
 				- [done] We need some kind of pivot mechanism. 
 				
 			- [done] window should be draggable.
@@ -218,7 +218,7 @@ Anything cluttering up MinimalAF-Plan.txt is just cut-pasted here
 		- It kinda works, I just need to get the stencilling to work.
 		- make input work no matter where the rect is
 			- drawing needs to be relative to a rect
-				- We shouldnt need to do any calls to CTX. we should just be able to do Rect() from inside the class. may also be helpful to be able to do VW() and VH()
+				- We shouldnt need to do any calls to CTX. we should just be able to do Rect() from inside the class. may also be helpful to be able to do ctx.Width *  and ctx.Height * 
 					- make all drawing classes internal static
 						- remove references to them in ctx
 							- Don't do this. We made those classes, so that we can reuse them in a procedural mesh generation context.

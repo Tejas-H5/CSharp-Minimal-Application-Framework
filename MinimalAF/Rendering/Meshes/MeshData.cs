@@ -35,11 +35,6 @@ namespace MinimalAF.Rendering {
             return new Mesh<V>(vertices.ToArray(), indices.ToArray(), false);
         }
 
-
-        public static MeshData<V1> FromOBJ<V1>(string text) where V1 : struct, IVertexPosition, IVertexUV {
-            return MeshParserWavefrontOBJ<V1>.FromOBJ(text);
-        }
-
         public void Flush() {
 
         }

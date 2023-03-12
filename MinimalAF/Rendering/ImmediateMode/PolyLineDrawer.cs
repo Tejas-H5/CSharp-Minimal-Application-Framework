@@ -2,7 +2,8 @@
 using System;
 
 namespace MinimalAF.Rendering {
-    //TODO: add support for 3D lines if needed
+    // TODO: delete this class, or convert it's api to be adding 2 vertices at a time, like we are extruding the side of
+    // a quad or something.
     public class PolyLineDrawer<V> where V : struct, IVertexUV, IVertexPosition {
         IGeometryOutput<V> geometryOutput;
         ImmediateMode2DDrawer<V> immediateModeDrawer;
@@ -190,7 +191,7 @@ namespace MinimalAF.Rendering {
 
 
         /// <summary>
-        /// Use very carefully.
+        /// Can be used to append NLines made by other functions, but it's very hacky. Use very carefully.
         /// </summary>
         public void DisableEnding() {
             canEnd = false;

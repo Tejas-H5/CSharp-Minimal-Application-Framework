@@ -36,14 +36,14 @@ namespace UIVisualTests {
         }
 
         public override void OnLayout() {
-            LayoutInset(Children[0, 3], 0, VH(2f / 3f), 0, 0);
-            LayoutLinear(Children[0, 3], Direction.Right, VW(1 / 3f));
+            LayoutInset(Children[0, 3], 0, ctx.VH * 2f / 3f, 0, 0);
+            LayoutLinear(Children[0, 3], Direction.Right, ctx.VW * 1 / 3f);
 
-            LayoutInset(Children[3, 6], 0, VH(1f / 3f), 0, VH(1f / 3f));
-            LayoutLinear(Children[3, 6], Direction.Right, VW(1 / 3f));
+            LayoutInset(Children[3, 6], 0, ctx.VH * 1f / 3f, 0, ctx.VH * 1f / 3f);
+            LayoutLinear(Children[3, 6], Direction.Right, ctx.VW * 1 / 3f);
 
-            LayoutInset(Children[6, 9], 0, VH(0), 0, VH(2f / 3f));
-            LayoutLinear(Children[6, 9], Direction.Right, VW(1 / 3f));
+            LayoutInset(Children[6, 9], 0, ctx.VH * 0, 0, ctx.VH * 2f / 3f);
+            LayoutLinear(Children[6, 9], Direction.Right, ctx.VW * 1 / 3f);
 
             LayoutInset(Children, 10);
 
@@ -56,7 +56,7 @@ namespace UIVisualTests {
         tags: "UI, layout"
     )]
     public class UITextInputTest : Element {
-        public override void OnMount(Window w) {
+        public override void OnMount() {
             w.Size = (800, 600);
             w.Title = "Text input ui element test";
 

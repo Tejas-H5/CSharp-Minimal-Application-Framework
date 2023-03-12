@@ -1,98 +1,98 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//using System;
+//using System.Collections.Generic;
 
 
-namespace MinimalAF {
-    class TestList : Element {
-        List<(Type, VisualTestAttribute)> visualTestElementsUnfiltered;
-        List<(Type, VisualTestAttribute)> visualTestElements = new List<(Type, VisualTestAttribute)>();
-        float scrollAmount = 0;
-        string filter = "";
-        float gap = 3;
+//namespace MinimalAF {
+//    class TestList : Element {
+//        List<(Type, VisualTestAttribute)> visualTestElementsUnfiltered;
+//        List<(Type, VisualTestAttribute)> visualTestElements = new List<(Type, VisualTestAttribute)>();
+//        float scrollAmount = 0;
+//        string filter = "";
+//        float gap = 3;
 
-        public TestList(List<(Type, VisualTestAttribute)> tests) {
-            UpdateTests(tests);
-            Clipping = true;
-        }
+//        public TestList(List<(Type, VisualTestAttribute)> tests) {
+//            UpdateTests(tests);
+//            Clipping = true;
+//        }
 
-        public void UpdateTests(List<(Type, VisualTestAttribute)> tests) {
-            visualTestElementsUnfiltered = tests;
-            SetFilter("");
-        }
+//        public void UpdateTests(List<(Type, VisualTestAttribute)> tests) {
+//            visualTestElementsUnfiltered = tests;
+//            SetFilter("");
+//        }
 
-        public event Action<Type> OnSelect;
-        float textHeight;
+//        public event Action<Type> OnSelect;
+//        float textHeight;
 
-        IEnumerable<(float, (Type, VisualTestAttribute), bool)> IterateTypes() {
-            float y = VH(1) - scrollAmount;
-            for (int i = 0; i < visualTestElements.Count; i++) {
-                y -= textHeight + gap;
+//        IEnumerable<(float, (Type, VisualTestAttribute), bool)> IterateTypes() {
+//            float y = ctx.Height * 1 - scrollAmount;
+//            for (int i = 0; i < visualTestElements.Count; i++) {
+//                y -= textHeight + gap;
 
-                if (y > VH(1)) {
-                    continue;
-                }
+//                if (y > ctx.Height * 1) {
+//                    continue;
+//                }
 
-                yield return (y, visualTestElements[i], MouseOver(0, y - gap, VW(1), y + textHeight));
-            }
-        }
+//                yield return (y, visualTestElements[i], MouseOver(0, y - gap, ctx.Width * 1, y + textHeight));
+//            }
+//        }
 
-        public override void OnUpdate() {
-            scrollAmount += MousewheelNotches * textHeight * 5;
+//        public override void OnUpdate() {
+//            scrollAmount += MousewheelNotches * textHeight * 5;
 
-            float maxScroll = -(textHeight + gap) * visualTestElements.Count;
-            if (scrollAmount < maxScroll) {
-                scrollAmount = maxScroll;
-            }
+//            float maxScroll = -(textHeight + gap) * visualTestElements.Count;
+//            if (scrollAmount < maxScroll) {
+//                scrollAmount = maxScroll;
+//            }
 
-            if (scrollAmount > 0) {
-                scrollAmount = 0;
-            }
+//            if (scrollAmount > 0) {
+//                scrollAmount = 0;
+//            }
 
-            foreach ((float y, (Type test, VisualTestAttribute testInfo), bool isOver) in IterateTypes()) {
-                if (MouseButtonPressed(MouseButton.Left)) {
-                    if (isOver) {
-                        OnSelect?.Invoke(test);
-                    }
-                }
-            }
-        }
+//            foreach ((float y, (Type test, VisualTestAttribute testInfo), bool isOver) in IterateTypes()) {
+//                if (MouseButtonPressed(MouseButton.Left)) {
+//                    if (isOver) {
+//                        OnSelect?.Invoke(test);
+//                    }
+//                }
+//            }
+//        }
 
-        public override void OnRender() {
-            SetDrawColor(Color.VA(1, 0.5f));
-            DrawRect(0, 0, VW(1), VH(1));
+//        public override void OnRender() {
+//            ctx.SetDrawColor(Color.VA(1, 0.5f));
+//            DrawRect(0, 0, ctx.Width * 1, ctx.Height * 1);
 
-            SetFont("Consolas", 16);
-            textHeight = GetCharHeight();
+//            SetFont("Consolas", 16);
+//            textHeight = GetCharHeight();
 
-            foreach ((float y, (Type test, VisualTestAttribute testInfo), bool isOver) in IterateTypes()) {
-                SetDrawColor(Color.VA(0, 1));
-                if (isOver) {
-                    SetDrawColor(Color.VA(0.25f, 1));
-                    if (MouseButtonHeld(MouseButton.Left)) {
-                        SetDrawColor(Color.RGBA(1f, 0, 0, 0.5f));
-                    }
-                }
+//            foreach ((float y, (Type test, VisualTestAttribute testInfo), bool isOver) in IterateTypes()) {
+//                ctx.SetDrawColor(Color.VA(0, 1));
+//                if (isOver) {
+//                    ctx.SetDrawColor(Color.VA(0.25f, 1));
+//                    if (MouseButtonHeld(MouseButton.Left)) {
+//                        ctx.SetDrawColor(Color.RGBA(1f, 0, 0, 0.5f));
+//                    }
+//                }
 
-                DrawText(test.Name, 10, y);
-            }
-        }
+//                DrawText(test.Name, 10, y);
+//            }
+//        }
 
-        internal void SetFilter(string value) {
-            filter = value.Trim();
+//        internal void SetFilter(string value) {
+//            filter = value.Trim();
 
-            visualTestElements.Clear();
-            foreach (var pair in visualTestElementsUnfiltered) {
-                (Type t, VisualTestAttribute testInfo) = pair;
-                if (
-                    filter != "" &&
-                    !(t.Name.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
-                    testInfo.Tags.Contains(filter, StringComparison.OrdinalIgnoreCase))
-                ) {
-                    continue;
-                }
+//            visualTestElements.Clear();
+//            foreach (var pair in visualTestElementsUnfiltered) {
+//                (Type t, VisualTestAttribute testInfo) = pair;
+//                if (
+//                    filter != "" &&
+//                    !(t.Name.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+//                    testInfo.Tags.Contains(filter, StringComparison.OrdinalIgnoreCase))
+//                ) {
+//                    continue;
+//                }
 
-                visualTestElements.Add(pair);
-            }
-        }
-    }
-}
+//                visualTestElements.Add(pair);
+//            }
+//        }
+//    }
+//}

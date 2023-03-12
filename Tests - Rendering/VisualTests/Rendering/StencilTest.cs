@@ -1,94 +1,77 @@
 ﻿using MinimalAF;
 using System;
 
-namespace RenderingEngineVisualTests
-{
-	[VisualTest(
+namespace RenderingEngineVisualTests {
+    [VisualTest(
         description: @"Test that the stencilling functionality is working.
 The red square must appear above the blue square, and there should be vertical bars that retract and extend, masking
 the visibility of another test.",
         tags: "2D, stencil"
     )]
-	public class StencilTest : Element
-    {
-        public override void OnMount(Window w)
-        {
-            
+    public class StencilTest : IRenderable {
+        GeometryAndTextTest geometryAndTextTest;
+
+        public StencilTest(FrameworkContext ctx) {
+            geometryAndTextTest = new GeometryAndTextTest(new FrameworkContext());
+
+            if (ctx.Window == null) return;
+
+            var w = ctx.Window;
             w.Size = (800, 600);
             w.Title = "Stencil rendering test";
 
-            SetClearColor(Color.White);
-            SetFont("Consolas", 24);
-
-			SetChildren(geometryAndTextTest);
-
-			base.OnMount(w);
-
+            ctx.SetClearColor(Color.White);
         }
-
-        GeometryAndTextTest geometryAndTextTest = new GeometryAndTextTest();
 
         float xPos = 0;
+        float time;
 
-        public override void OnRender()
-        {
-			SetDrawColor(1, 1, 1, 1);
-			DrawText("Stencil test", 0, Height, HAlign.Left, VAlign.Top);
+        public void Render(FrameworkContext ctx) {
+            time += (float)Time.DeltaTime;
+            xPos = 200 * MathF.Sin(time / 2.0f);
 
-			StartStencillingWithoutDrawing(true);
+            ctx.SetDrawColor(1, 1, 1, 1);
+            ctx.DrawText("Stencil test", 0, ctx.VH, HAlign.Left, VAlign.Top);
 
-            float barSize = MathF.Abs((Height / 2 - 5) * MathF.Sin(time / 4f));
-            DrawRect(0, Height - barSize, Width, Height);
-            DrawRect(0, 0, Width, barSize);
+            ctx.StartStencillingWithoutDrawing(true);
 
-            StartUsingStencil();
-        }
+            float barSize = MathF.Abs((ctx.VH / 2 - 5) * MathF.Sin(time / 4f));
+            ctx.DrawRect(0, ctx.VH - barSize, ctx.VW, ctx.VH);
+            ctx.DrawRect(0, 0, ctx.VW, barSize);
 
-        public override void AfterRender() {
-            // TODO low priority: make stencilling stack based. Any of the children elements could have called this and made wierd stuff happen
-            LiftStencil();
+            ctx.StartUsingStencil();
+            {
+                geometryAndTextTest.Render(ctx);
+            }
+            // TODO low priority: make stencilling stack based.
+            // Any of the children elements could have called this and made wierd stuff happen
+            ctx.StopUsingStencil();
 
-            StartStencillingWhileDrawing();
+            ctx.StartStencillingWhileDrawing();
 
             float size = 60;
-            DrawRedRectangle(size, xPos);
+            DrawRedRectangle(ref ctx, size, xPos);
 
-            StartUsingStencil();
+            ctx.StartUsingStencil();
 
             size = 70;
-            DrawBlueRectangle(size, xPos);
+            DrawBlueRectangle(ref ctx, size, xPos);
 
-            LiftStencil();
+            ctx.StopUsingStencil();
         }
 
-        private void DrawBlueRectangle(float size, float xPos)
-        {
-            SetTexture(null);
-            SetDrawColor(0, 0, 1, 1);
-            DrawRect(Width / 2 - size + xPos, Height / 2 - size,
-                Width / 2 + size + xPos, Height / 2 + size);
+        private void DrawBlueRectangle(ref FrameworkContext ctx, float size, float xPos) {
+            ctx.SetTexture(null);
+            ctx.SetDrawColor(0, 0, 1, 1);
+            ctx.DrawRect(ctx.VW / 2 - size + xPos, ctx.VH / 2 - size,
+                ctx.VW / 2 + size + xPos, ctx.VH / 2 + size);
         }
 
-        private void DrawRedRectangle(float size, float xPos)
-        {
-            SetTexture(null);
-            SetDrawColor(1, 0, 0, 1);
-            DrawRect(Width / 2 - size + xPos, Height / 2 - size,
-                Width / 2 + size + xPos, Height / 2 + size);
-        }
-
-        float time = 0;
-
-        public override void OnUpdate()
-        {
-            time += (float)Time.DeltaTime;
-			xPos = 200 * MathF.Sin(time / 2.0f);
-        }
-
-        public override void OnLayout() {
-            geometryAndTextTest.RelativeRect = new Rect(0, 0, VW(1), VH(1));
-
-            LayoutChildren();
+        private void DrawRedRectangle(ref FrameworkContext ctx, float size, float xPos) {
+            ctx.SetTexture(null);
+            ctx.SetDrawColor(1, 0, 0, 1);
+            ctx.DrawRect(ctx.VW / 2 - size + xPos, ctx.VH / 2 - size,
+                ctx.VW / 2 + size + xPos, ctx.VH / 2 + size);
         }
 
     }

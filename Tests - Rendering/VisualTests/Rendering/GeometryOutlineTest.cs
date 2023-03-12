@@ -7,47 +7,45 @@ namespace RenderingEngineVisualTests {
         description: @"Test that the outline functionality works.",
         tags: "2D"
     )]
-    class GeometryOutlineTest : Element {
-        public override void OnMount(Window w) {
+    class GeometryOutlineTest : IRenderable {
+
+        public GeometryOutlineTest(FrameworkContext ctx) {
+            var w = ctx.Window;
             w.Size = (800, 600);
-            w.Title = "Triangle";
+            w.Title = "Geometry Outline Test";
 
-            SetClearColor(Color.RGBA(1, 1, 1, 1));
+            ctx.SetClearColor(Color.RGBA(1, 1, 1, 1));
         }
 
+        public void Render(FrameworkContext ctx) {
+            ctx.SetDrawColor(1, 0, 0, 0.5f);
 
-        public override void OnUpdate() {
-        }
+            ctx.DrawRect(20, 20, 100, 100);
+            ctx.DrawCircle(500, 500, 200);
+            ctx.DrawArc(200, 200, 50, MathF.PI / 2, 3 * MathF.PI / 2, 3);
+            ctx.DrawArc(300, 300, 50, MathF.PI / 2, 3 * MathF.PI / 2, 2);
+            ctx.DrawArc(400, 400, 50, MathF.PI / 2, 3 * MathF.PI / 2, 1);
 
-        public override void OnRender() {
-            SetDrawColor(1, 0, 0, 0.5f);
-
-            DrawRect(20, 20, 100, 100);
-            DrawCircle(500, 500, 200);
-            DrawArc(200, 200, 50, MathF.PI / 2, 3 * MathF.PI / 2, 3);
-            DrawArc(300, 300, 50, MathF.PI / 2, 3 * MathF.PI / 2, 2);
-            DrawArc(400, 400, 50, MathF.PI / 2, 3 * MathF.PI / 2, 1);
-
-            DrawLine(Width - 60, 600, Width - 100, 200, 10.0f, CapType.None);
-            DrawLine(Width - 100, 600, Width - 130, 200, 10.0f, CapType.Circle);
+            ctx.DrawLine(ctx.VW - 60, 600, ctx.VW - 100, 200, 10.0f, CapType.None);
+            ctx.DrawLine(ctx.VW - 100, 600, ctx.VW - 130, 200, 10.0f, CapType.Circle);
 
 
             int lineSize = 100;
-            DrawLine(lineSize, lineSize, Width - lineSize, Height - lineSize, lineSize / 2, CapType.Circle);
+            ctx.DrawLine(lineSize, lineSize, ctx.VW - lineSize, ctx.VH - lineSize, lineSize / 2, CapType.Circle);
 
 
-            SetDrawColor(0, 0, 1, 1f);
+            ctx.SetDrawColor(0, 0, 1, 1f);
 
-            DrawRectOutline(5, 20, 20, 100, 100);
-            DrawCircleOutline(10, 500, 500, 200);
-            DrawArcOutline(10, 200, 200, 50, MathF.PI / 2, 3 * MathF.PI / 2, 3);
-            DrawArcOutline(10, 300, 300, 50, MathF.PI / 2, 3 * MathF.PI / 2, 2);
-            DrawArcOutline(10, 400, 400, 50, MathF.PI / 2, 3 * MathF.PI / 2, 1);
+            ctx.DrawRectOutline(5, 20, 20, 100, 100);
+            ctx.DrawCircleOutline(10, 500, 500, 200);
+            ctx.DrawArcOutline(10, 200, 200, 50, MathF.PI / 2, 3 * MathF.PI / 2, 3);
+            ctx.DrawArcOutline(10, 300, 300, 50, MathF.PI / 2, 3 * MathF.PI / 2, 2);
+            ctx.DrawArcOutline(10, 400, 400, 50, MathF.PI / 2, 3 * MathF.PI / 2, 1);
 
-            DrawLineOutline(10, Width - 60, 600, Width - 100, 200, 10.0f, CapType.None);
-            DrawLineOutline(10, Width - 100, 600, Width - 130, 200, 10.0f, CapType.Circle);
+            ctx.DrawLineOutline(10, ctx.VW - 60, 600, ctx.VW - 100, 200, 10.0f, CapType.None);
+            ctx.DrawLineOutline(10, ctx.VW - 100, 600, ctx.VW - 130, 200, 10.0f, CapType.Circle);
 
-            DrawLineOutline(10, lineSize, lineSize, Width - lineSize, Height - lineSize, lineSize / 2, CapType.Circle);
+            ctx.DrawLineOutline(10, lineSize, lineSize, ctx.VW - lineSize, ctx.VH - lineSize, lineSize / 2, CapType.Circle);
         }
     }
 }

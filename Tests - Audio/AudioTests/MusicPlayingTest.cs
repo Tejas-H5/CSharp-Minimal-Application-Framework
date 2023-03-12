@@ -13,7 +13,7 @@ Note that this code is copypasted, and the code for " + nameof(MusicAndKeysTest)
         AudioSourceStreamed streamedSource;
         AudioClipStream streamProvider;
 
-        public override void OnMount(Window w) {
+        public override void OnMount() {
             AudioData music = AudioData.FromFile("./Res/testMusicShort.mp3");
             streamProvider = new AudioClipStream(music);
 
@@ -21,7 +21,7 @@ Note that this code is copypasted, and the code for " + nameof(MusicAndKeysTest)
         }
 
         public override void OnRender() {
-            SetDrawColor(1, 1, 1, 1);
+            ctx.SetDrawColor(1, 1, 1, 1);
 
             string message = "Spacebar to Pause\n\nMousewheel to  move";
             if (streamedSource.GetSourceState() != AudioSourceState.Playing) {
@@ -32,7 +32,7 @@ Note that this code is copypasted, and the code for " + nameof(MusicAndKeysTest)
 
             DrawText(message, Width / 2, Height / 2, HAlign.Center, VAlign.Center);
 
-            SetDrawColor(1, 0, 0, 1);
+            ctx.SetDrawColor(1, 0, 0, 1);
             float amount = (float)(streamedSource.GetPlaybackPosition() / streamProvider.Duration);
             float x = amount * Width;
             DrawLine(x, 0, x, Height, 2, CapType.None);

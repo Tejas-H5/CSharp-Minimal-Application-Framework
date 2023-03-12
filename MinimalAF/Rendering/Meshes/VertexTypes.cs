@@ -16,6 +16,8 @@ namespace MinimalAF.Rendering {
 
 
     internal static class VertexTypes {
+        // TODO: make these switches
+
         static readonly Dictionary<Type, int> ComponentCounts = new Dictionary<Type, int> {
             {typeof(int), 1 },
             {typeof(float), 1 },

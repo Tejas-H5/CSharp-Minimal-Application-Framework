@@ -33,12 +33,12 @@
         }
 
         public override void OnRender() {
-            SetDrawColor(Color4.VA(0, 1));
+            ctx.SetDrawColor(Color4.VA(0, 1));
 
             string text = "Pivot: {" + Pivot.X.ToString("0.00") + ", " + Pivot.Y.ToString("0.00") + "}\n" +
                 "(use arrow keys to move)";
 
-            DrawText(text, VW(0.5f), VH(0.5f), HAlign.Center, VAlign.Center);
+            DrawText(text, ctx.VW * 0.5f, ctx.VH * 0.5f, HAlign.Center, VAlign.Center);
         }
 
         public override void OnLayout() {
@@ -69,7 +69,7 @@
             );
         }
 
-        public override void OnMount(Window w) {
+        public override void OnMount() {
             w.Size = (800, 600);
             w.Title = "UIAspectRatioTest";
             w.RenderFrequency = 120;

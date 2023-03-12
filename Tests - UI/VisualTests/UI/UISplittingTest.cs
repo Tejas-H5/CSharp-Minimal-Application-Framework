@@ -25,9 +25,9 @@
             public override void OnRender() {
                 this[0].ResetCoordinates();
 
-                SetDrawColor(Color4.VA(0, 1));
+                ctx.SetDrawColor(Color4.VA(0, 1));
                 DrawText("Split " + dir.ToString() + " " + splitAmount.ToString("0.00"),
-                    this[0].VW(0.5f), this[0].VH(0.5f),
+                    this[0].ctx.VW * 0.5f, this[0].ctx.VH * 0.5f,
                     HAlign.Center,
                     VAlign.Center
                 );
@@ -60,7 +60,7 @@
             );
         }
 
-        public override void OnMount(Window w) {
+        public override void OnMount() {
 
             w.Size = (800, 600);
             w.Title = "Splitting test";

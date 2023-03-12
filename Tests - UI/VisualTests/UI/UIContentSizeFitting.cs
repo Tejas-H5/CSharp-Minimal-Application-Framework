@@ -16,15 +16,15 @@ namespace UIVisualTests {
         }
 
         public override void OnRender() {
-            SetDrawColor(_col);
+            ctx.SetDrawColor(_col);
             DrawRect(0, 0, Width, Height);
 
-            SetDrawColor(0, 0, 0, 1);
+            ctx.SetDrawColor(0, 0, 0, 1);
             DrawRectOutline(1, 0, 0, Width, Height);
 
             SetFont("Arial", 15);
-            SetDrawColor(0, 0, 0, 1);
-            DrawText(_message, VW(0.5f), VH(0.5f), HAlign.Center, VAlign.Center);
+            ctx.SetDrawColor(0, 0, 0, 1);
+            DrawText(_message, ctx.Width * 0.5f, ctx.Height * 0.5f, HAlign.Center, VAlign.Center);
         }
 
 
@@ -57,7 +57,7 @@ namespace UIVisualTests {
 
         public override void OnLayout() {
             LayoutX0(Children, 10);
-            LayoutX1(Children, VW(1) - 10);
+            LayoutX1(Children, ctx.Width * 1 - 10);
             float height = LayoutLinear(Children, Direction.Down); 
             RelativeRect = RelativeRect
                 .ResizedHeight(height, 1);
@@ -85,7 +85,7 @@ namespace UIVisualTests {
 
         public override void OnUpdate() {
             SetFont("Consolas", 16);
-            SetDrawColor(0, 0, 0, 0.5f);
+            ctx.SetDrawColor(0, 0, 0, 0.5f);
             DrawText("Press space to refresh the children", 0, 0);
 
             if(KeyPressed(KeyCode.Space)) {
@@ -101,9 +101,9 @@ namespace UIVisualTests {
             }
         }
 
-        public override void OnMount(Window w) {
-            w.Size = (800, 600);
-            w.Title = "UIAspectRatioTest";
+        public override void OnMount() {
+            // w.Size = (800, 600);
+            // w.Title = "UIAspectRatioTest";
             w.RenderFrequency = 120;
             w.UpdateFrequency = 120;
 
@@ -112,7 +112,7 @@ namespace UIVisualTests {
 
         public override void OnLayout() {
             LayoutX0(Children, 10);
-            LayoutX1(Children, VW(1) - 10);
+            LayoutX1(Children, ctx.Width * 1 - 10);
             LayoutLinear(Children, Direction.Down, -1, _scrollOffset);
         }
     }

@@ -55,7 +55,7 @@ to only work on a single UI element at a time.",
             }
         }
 
-        public override void OnMount(Window w) {
+        public override void OnMount() {
 
             w.Size = (800, 600);
             w.Title = "UI Golden ratio test Test";

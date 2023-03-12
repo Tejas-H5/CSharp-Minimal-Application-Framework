@@ -9,35 +9,31 @@ namespace RenderingEngineVisualTests
         description: @"Test the text rendering, and other functions that detect the text width and height",
         tags: "2D, text"
     )]
-	class TextTest : Element
-    {
+	class TextTest : IRenderable {
         List<string> rain;
-
         string font;
-        public TextTest(string font = "Consolas") {
-            this.font = font;
-        }
+        StringBuilder sb = new StringBuilder();
+        Random rand = new Random();
 
-        public override void OnMount(Window w)
-        {
+        public TextTest(FrameworkContext ctx, string font = "Consolas") {
+            this.font = font;
+            rain = new List<string>();
+
+            if (ctx.Window == null) return;
+
+            var w = ctx.Window;
             w.Size = (800, 600);
             w.Title = "Matrix rain test";
 
-           SetClearColor(Color.White);
-
-            SetFont("Consolas", 24);
-
-            rain = new List<string>();
+            ctx.SetClearColor(Color.White);
         }
 
-        StringBuilder sb = new StringBuilder();
-        Random rand = new Random();
-        void PushGibberish()
+        void PushGibberish(ref FrameworkContext ctx)
         {
             sb.Clear();
 
             float totalLength = 0;
-            while (totalLength < Width)
+            while (totalLength < ctx.VW)
             {
                 int character = rand.Next(0, 512);
 				//int character = rand.Next(0, 144697);
@@ -47,43 +43,31 @@ namespace RenderingEngineVisualTests
 
                 sb.Append(c);
 
-                totalLength += GetCharWidth(c);
+                totalLength += ctx.GetCharWidth(c);
             }
 
             rain.Insert(0, sb.ToString());
-            if ((rain.Count - 2) * GetCharHeight() > Height)
-            {
+            if ((rain.Count - 2) * ctx.GetCharHeight() > ctx.VH) {
                 rain.RemoveAt(rain.Count - 1);
             }
         }
 
-
         double timer = 0;
-        public override void OnUpdate()
-        {
-            //*
+        public void Render(FrameworkContext ctx) {
+            // if (ctx.IsUpdate) {
             timer += Time.DeltaTime;
-            if (timer < 0.05)
-                return;
-            //*/
-            timer = 0;
-
-            SetFont(font, 16);
-
-            PushGibberish();
-        }
-
-        public override void OnRender()
-        {
-            SetFont(font, 16);
-            SetDrawColor(0, 1, 0, 0.8f);
-
-            for (int i = 0; i < rain.Count; i++)
-            {
-                DrawText(rain[i], 0, Height - GetCharHeight() * i);
+            if (timer > 0.05) {
+                timer = 0;
+                PushGibberish(ref ctx);
             }
+            // }
 
-            SetDrawColor(1, 0, 0, 1);
+            ctx.SetFont(font, 16);
+            ctx.SetDrawColor(0, 1, 0, 0.8f);
+
+            for (int i = 0; i < rain.Count; i++) {
+                ctx.DrawText(rain[i], 0, ctx.VH - ctx.GetCharHeight() * i);
+            }
         }
     }
 }

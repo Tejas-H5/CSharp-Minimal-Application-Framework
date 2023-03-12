@@ -12,20 +12,18 @@ The texture on the right is with nearest neighbour, and the texture on the left 
 Also, the texture on the left must be still, while only the one on the right is moving",
         tags: "2D, texture"
     )]
-	class TextureTest : Element
-    {
+	class TextureTest : IRenderable {
         Texture tex;
         Texture tex2;
 
-        public override void OnMount(Window w)
-        {
-            
+        public TextureTest(FrameworkContext ctx) {
+            var w = ctx.Window;
             w.Size = (800, 600);
             w.Title = "Texture loading test";
-            //w.RenderFrequency = 120; 60;
-            //w.UpdateFrequency = 120; 120;
+            w.RenderFrequency = 120; // 60;
+            w.UpdateFrequency = 120; // 120;
 
-           SetClearColor(Color.White);
+            ctx.SetClearColor(Color.White);
 
             TextureMap.Load("placeholder", "./Res/settings_icon.png", new TextureImportSettings());
             TextureMap.Load("placeholderNN", "./Res/settings_icon.png", new TextureImportSettings { Filtering = FilteringType.NearestNeighbour });
@@ -34,37 +32,31 @@ Also, the texture on the left must be still, while only the one on the right is 
             tex2 = TextureMap.Get("placeholderNN");
         }
 
-
-        public override void OnUpdate()
-        {
-            t += (float)Time.DeltaTime;
-        }
-
         float t = 0;
 
-        public override void OnRender()
-        {
-            SetDrawColor(1, 1, 1, 1);
+        public void Render(FrameworkContext ctx) {
+            t += Time.DeltaTime;
 
-            SetTexture(tex);
-            DrawRect(20, 20, Width / 2 - 20, Height - 20);
+            ctx.SetDrawColor(1, 1, 1, 1);
+            ctx.SetTexture(tex);
 
-            Rect rect2 = new Rect(Width / 2 + 20, 20, Width - 20, Height - 20);
+            ctx.DrawRect(20, 20, ctx.VW / 2 - 20, ctx.VH - 20);
+            Rect rect2 = new Rect(ctx.VW / 2 + 20, 20, ctx.VW - 20, ctx.VH - 20);
 
 
-            SetTransform(
-                Scale(MathF.Sin(t)) *
-                Rotation(0, 0, t) *
-                Translation(rect2.CenterX, rect2.CenterY, 0)
+            ctx.SetTransform(
+                Matrix4.CreateScale(MathF.Sin(t)) *
+                Matrix4.CreateRotationZ(t) *
+                Matrix4.CreateTranslation(rect2.CenterX, rect2.CenterY, 0)
             );
 
-			SetTexture(tex2);
-			DrawRect(new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectified());
+			ctx.SetTexture(tex2);
+			ctx.DrawRect(new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectified());
 
-            ResetCoordinates();
+            ctx.Use();
 
-            Rect centerRect = new Rect(VW(0.5f) - tex.Width / 2, VH(0.5f) - tex.Height / 2, VW(0.5f) + tex.Width / 2, VH(0.5f) + tex.Height / 2);
-            DrawRect(centerRect);
+            Rect centerRect = new Rect(ctx.VW * 0.5f - tex.Width / 2, ctx.VH * 0.5f - tex.Height / 2, ctx.VW * 0.5f + tex.Width / 2, ctx.VH * 0.5f + tex.Height / 2);
+            ctx.DrawRect(centerRect);
         }
     }
 }

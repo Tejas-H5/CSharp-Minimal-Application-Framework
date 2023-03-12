@@ -11,52 +11,46 @@ The camera will always be looking at it.
 There is also a black rectangle with some text for reference, all of this is on the same plane.",
         tags: "3D, SetPerspective SetProjection"
     )]
-    internal class PerspectiveCameraTest : Element {
+    internal class PerspectiveCameraTest : IRenderable {
         float zPos;
-        public PerspectiveCameraTest(float zPos = 10) {
+        public PerspectiveCameraTest(FrameworkContext ctx, float zPos = 10) {
             this.zPos = zPos;
-        }
 
-        public override void OnMount(Window w) {
+            if (ctx.Window == null) return;
+
+            var w = ctx.Window;
             w.Size = (800, 600);
             w.Title = "Perspective camera test";
 
-            SetClearColor(Color.RGBA(1, 1, 1, 1));
+            ctx.SetClearColor(Color.RGBA(1, 1, 1, 1));
         }
 
+        public void Render(FrameworkContext ctx) {
+            ctx.SetProjectionPerspective((float)Math.PI / 2.0f, 0.1f, 1000);
 
-        float timer = 0;
-        public override void OnUpdate() {
-            timer += Time.DeltaTime;
-        }
-
-        public override void OnRender() {
-            SetProjectionPerspective(90 * DegToRad, 0.1f, 1000);
-
-            Vector3 rectPoint = Vec3(
-                (MouseX - Width / 2) / 10f,
-                (MouseY - Height / 2) / 10f,
+            Vector3 rectPoint = new Vector3(
+                (ctx.Window.MouseX - ctx.VW / 2) / 10f,
+                (ctx.Window.MouseY - ctx.VH / 2) / 10f,
                 -20f
             );
 
-            SetViewLookAt(
-                position: Vec3(0, 0, zPos),
+            ctx.SetViewLookAt(
+                position: new Vector3(0, 0, zPos),
                 target: rectPoint,
-                up: Vec3(0, 1, 0)
+                up: new Vector3(0, 1, 0)
             );
 
-            SetTransform(Matrix4.CreateTranslation(Vec3(0, 0, -20)));
-            SetDrawColor(RGB(0, 0, 0));
-            DrawRectOutline(1, -50, -50, 50, 50);
+            ctx.SetTransform(Matrix4.CreateTranslation(new Vector3(0, 0, -20)));
+            ctx.SetDrawColor(0, 0, 0, 1);
+            ctx.DrawRectOutline(1, -50, -50, 50, 50);
 
-            SetFont("Consolas", 16);
-            DrawText("This is a wall.", 0, 0, HAlign.Center, VAlign.Center);
+            ctx.SetFont("Consolas", 16);
+            ctx.DrawText("This is a wall.", 0, 0, HAlign.Center, VAlign.Center);
 
-            SetTransform(Matrix4.CreateTranslation(rectPoint));
+            ctx.SetTransform(Matrix4.CreateTranslation(rectPoint));
 
-
-            SetDrawColor(1, 0, 0, 0.5f);
-            DrawRect(new Rect(-1, -1, 1, 1) * 10);
+            ctx.SetDrawColor(1, 0, 0, 0.5f);
+            ctx.DrawRect(new Rect(-1, -1, 1, 1) * 10);
         }
     }
 }

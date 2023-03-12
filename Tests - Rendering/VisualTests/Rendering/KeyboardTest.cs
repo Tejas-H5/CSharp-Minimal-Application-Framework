@@ -7,45 +7,58 @@ namespace RenderingEngineVisualTests {
         description: @"Test that the keyboard input is working.",
         tags: "2D, keyboard input"
     )]
-    public class KeyboardTest : Element {
-        public override void OnMount(Window w) {
-
+    public class KeyboardTest : IRenderable {
+        public KeyboardTest(FrameworkContext ctx) {
+            var w = ctx.Window;
             w.Size = (800, 600);
             w.Title = "Keyboard test";
 
-            SetClearColor(Color.White);
-            SetFont("Consolas", 36);
+            ctx.SetClearColor(Color.White);
         }
 
-        string KeysToString(string s) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < s.Length; i++) {
-                char c = s[i];
-                if (KeyHeld(KeyCode.Shift)) {
-                    c = char.ToUpper(c);
+        string GetCharactersHeld(ref FrameworkContext ctx) {
+            var held = new StringBuilder();
+            for (KeyCode key = 0; key < KeyCode.EnumLength; key++) {
+                if (ctx.Window.KeyIsDown(key)) {
+                    held.Append(CharKeyMapping.KeyCodeToChar(key));
                 }
-
-                sb.Append(CharKeyMapping.CharToString(c));
             }
-            return sb.ToString();
+
+            return held.ToString();
         }
 
-        public override void OnRender() {
-            SetDrawColor(0, 0, 0, 1);
+        string GetCharactersReleased(ref FrameworkContext ctx) {
+            var held = new StringBuilder();
+            for (KeyCode key = 0; key < KeyCode.EnumLength; key++) {
+                if (ctx.Window.KeyJustReleased(key)) {
+                    held.Append(CharKeyMapping.KeyCodeToChar(key));
+                }
+            }
 
-            DrawText("Press some keys:", VW(0.5f), VH(0.75f), HAlign.Center, VAlign.Center);
-
-            DrawText(KeysToString(KeyboardCharactersHeld), Width / 2, Height / 2, HAlign.Center, VAlign.Center);
+            return held.ToString();
         }
 
-        public override void OnUpdate() {
-            if (KeyPressed(KeyCode.Any)) {
-                Console.WriteLine("PRessed: " + KeyboardCharactersPressed);
+        public void Render(FrameworkContext ctx) {
+            ctx.SetDrawColor(0, 0, 0, 1);
+            var w = ctx.Window;
+
+
+            var keys = GetCharactersReleased(ref ctx);
+            if (w.KeyIsDown(KeyCode.Shift)) {
+                keys = keys.ToUpper();
             }
 
-            if (KeyPressed(KeyCode.Any)) {
-                Console.WriteLine("Released: " + KeyboardCharactersReleased);
+            if (w.KeyIsDown(KeyCode.Any)) {
+
+                Console.WriteLine("PRessed: " + GetCharactersHeld(ref ctx));
             }
+
+            if (w.KeyJustReleased(KeyCode.Any)) {
+                Console.WriteLine("Released: " + GetCharactersReleased(ref ctx));
+            }
+
+            ctx.DrawText("Press some keys:", ctx.VW * 0.5f, ctx.VH * 0.75f, HAlign.Center, VAlign.Center);
+            ctx.DrawText(keys, ctx.VW / 2, ctx.VH / 2, HAlign.Center, VAlign.Center);
         }
     }
 }

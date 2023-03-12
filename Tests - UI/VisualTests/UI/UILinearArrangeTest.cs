@@ -19,7 +19,7 @@
             );
         }
 
-        public override void OnMount(Window w) {
+        public override void OnMount() {
 
             w.Size = (800, 600);
             w.Title = "Text input ui element test";

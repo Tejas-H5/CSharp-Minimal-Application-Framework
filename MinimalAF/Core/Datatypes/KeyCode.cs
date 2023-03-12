@@ -145,6 +145,8 @@ namespace MinimalAF {
         /// <summary>
         /// Checks against left or right alt
         /// </summary>
-        Alt
+        Alt,
+
+        EnumLength
     }
 }

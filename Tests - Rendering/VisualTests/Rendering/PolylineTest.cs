@@ -8,9 +8,8 @@ namespace RenderingEngineVisualTests
         description: @"Test that the poly-line drawing functionality is working.",
         tags: "2D, polyline"
     )]
-	public class PolylineTest : Element
-	{
-		Queue<Vector2> points = new Queue<Vector2>();
+	public class PolylineTest : IRenderable {
+        Queue<Vector2> points = new Queue<Vector2>();
 		Queue<double> times = new Queue<double>();
 
 		Vector2 linePoint, linePointDragStart;
@@ -19,91 +18,87 @@ namespace RenderingEngineVisualTests
 
 		double timer = 0;
 
-		public override void OnMount(Window w)
-		{
-			
-			w.Size = (800, 600);
-			w.Title = "Mouse test";
-
-			w.RenderFrequency = 120;
-			//w.UpdateFrequency = 120; 20;
-
-			SetClearColor(Color.RGBA(1, 1, 1, 1));
-			SetFont("Consolas", 16);
-
-			// TODO: get this working
-			linePoint = (0,0);
-			//_linePoint = new Vector2(400, 300);
-		}
+        public PolylineTest(FrameworkContext ctx) {
+            linePoint = new Vector2(ctx.VW * 0.5f, ctx.VH * 0.5f);
+        }
 
 
-		public override void OnUpdate()
-		{
-			timer += Time.DeltaTime;
+        //  public override void OnMount() {
 
-            if (linePoint == new Vector2(0, 0)) {
-                linePoint = new Vector2(VW(0.5f), VH(0.5f));
+        //	w.Size = (800, 600);
+        //	w.Title = "Mouse test";
+
+        //	w.RenderFrequency = 120;
+        //	//w.UpdateFrequency = 120; 20;
+
+        //	SetClearColor(Color.RGBA(1, 1, 1, 1));
+        //	SetFont("Consolas", 16);
+
+        //	// TODO: get this working
+
+        //	//_linePoint = new Vector2(400, 300);
+        //}
+
+
+        public void Render(FrameworkContext ctx) {
+            var w = ctx.Window;
+
+            timer += Time.DeltaTime;
+
+            points.Enqueue(linePoint);
+            times.Enqueue(timer);
+
+            // remove points after 0.5 seconds
+            if (timer - times.Peek() > 0.5f) {
+                points.Dequeue();
+                times.Dequeue();
             }
 
-			points.Enqueue(linePoint);
-			times.Enqueue(timer);
+            if (Intersections.IsInsideCircle(w.MouseX, w.MouseY, linePoint.X, linePoint.Y, radius)) {
+                ctx.SetDrawColor(1, 0, 0, 0.5f);
+                if (w.MouseStartedDragging) {
+                    linePointDragStart = linePoint;
+                    dragStarted = true;
+                }
+            } else {
+                ctx.SetDrawColor(0, 0, 1, 0.5f);
+            }
 
-			if (timer - times.Peek() > 0.5f)
-			{
-				points.Dequeue();
-				times.Dequeue();
-			}
+            if (!w.MouseCurrentlyDragging) {
+                dragStarted = false;
+            }
 
-			if (Intersections.IsInsideCircle(MouseX, MouseY, linePoint.X, linePoint.Y, radius) && MouseStartedDragging)
-			{
-				linePointDragStart = linePoint;
-				dragStarted = true;
-			}
+            if (dragStarted && w.MouseCurrentlyDragging) {
+                linePoint = new Vector2(
+                    MathHelper.Clamp(linePointDragStart.X + w.MouseDragDeltaX, ctx.VW * 0.25f, ctx.VW * 0.75f),
+                    MathHelper.Clamp(linePointDragStart.Y + w.MouseDragDeltaY, ctx.VH * 0.25f, ctx.VH * 0.75f)
+                );
+            }
 
-			if(MouseStoppedDraggingAnywhere)
-			{
-				dragStarted = false;
-			}
+            ctx.SetDrawColor(0, 0, 0, 1);
+            ctx.DrawText(
+                "Mouse test (And polyline test) - Drag that point with your mouse",
+                0, ctx.VH,
+                HAlign.Left, VAlign.Top
+            );
 
-			if (dragStarted)
-			{
-				linePoint = new Vector2(
-					MathHelper.Clamp(linePointDragStart.X + MouseDragDeltaX, VW(0.25f), VW(0.75f)),
-                    MathHelper.Clamp(linePointDragStart.Y + MouseDragDeltaY, VH(0.25f), VH(0.75f))
-				);
-			}
-		}
+            ctx.DrawRectOutline(5, new Rect(ctx.VW * 0.25f, ctx.VH * ctx.VH * 0.25f, ctx.VW * 0.75f, ctx.VH * 0.75f));
 
-		public override void OnRender()
-		{
-			if (points.Count < 2)
-				return;
+            if (points.Count < 2)
+                return;
 
-			SetDrawColor(0,0,0,1);
-			DrawText("Mouse test (And polyline test) - Drag that point with your mouse", 0, Height, HAlign.Left, VAlign.Top);
+            int i = 0;
+            foreach (Vector2 p in points) {
+                if (i == 0) {
+                    ctx.StartPolyLine(p.X, p.Y, radius, CapType.Circle);
+                } else if (i == points.Count - 1) {
+                    ctx.EndPolyLine(p.X, p.Y);
+                } else {
+                    ctx.ContinuePolyLine(p.X, p.Y);
+                }
 
-			DrawRectOutline(5, new Rect(VW(0.25f), VH(0.25f), VW(0.75f), VH(0.75f)));
-
-			SetDrawColor(0, 0, 1, 0.5f);
-
-			int i = 0;
-			foreach (Vector2 p in points)
-			{
-				if (i == 0)
-				{
-					StartPolyLine(p.X, p.Y, radius, CapType.Circle);
-				}
-				else if (i == points.Count - 1)
-				{
-					EndPolyLine(p.X, p.Y);
-				}
-				else
-				{
-					ContinuePolyLine(p.X, p.Y);
-				}
-
-				i++;
-			}
-		}
+                i++;
+            }
+        }
 	}
 }

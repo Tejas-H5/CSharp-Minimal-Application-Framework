@@ -3,11 +3,6 @@ using MinimalAF.Rendering;
 using System;
 
 namespace RenderingEngineVisualTests {
-    [VisualTest(
-        description: @"Uses (currentFPS / wantedFPS) to iteratively find the number of lines that must be drawin to get some target FPS. 
-A higher number of lines drawn is always better. This test won't work when vsync is enabled, or if 'count' has been set to anything other than 0.",
-        tags: "2D"
-    )]
     class Benchmark : IRenderable {
         public float LineThickness {
             get; set;
@@ -22,17 +17,11 @@ A higher number of lines drawn is always better. This test won't work when vsync
             get; set;
         }
 
-        public Benchmark(FrameworkContext ctx, int lineCount = 0, CapType capType = CapType.Circle, int thickness = 5, float requiredFPS = 60) {
+        public Benchmark(int lineCount = 0, CapType capType = CapType.Circle, int thickness = 5, float requiredFPS = 60) {
             LineThickness = thickness;
             CapType = capType;
             LineCount = lineCount;
             RequiredFPS = requiredFPS;
-
-            var w = ctx.Window;
-            w.Size = (800, 600);
-            w.Title = "Rendering Engine Line benchmark";
-
-            ctx.SetClearColor(Color.RGBA(1, 1, 1, 1));
         }
 
         readonly Random rand = new Random(1);
@@ -59,7 +48,7 @@ A higher number of lines drawn is always better. This test won't work when vsync
                     double actualToWantedRatio = FPS / RequiredFPS;
 
                     amount = (int)Math.Ceiling(actualToWantedRatio * amount);
-                    if(amount < 1) {
+                    if (amount < 1) {
                         amount = 1;
                     }
 

@@ -3,20 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
 namespace RenderingEngineVisualTests {
-    [VisualTest(
-        description: @"Testing an algorithm that the polyline function uses to detect self-intersecting triangles.
-Intersections should be clearly marked with red lines.",
-        tags: "2D, polyline"
-    )]
     public class PolylineSelfIntersectionAlgorithmTest : IRenderable {
-        public PolylineSelfIntersectionAlgorithmTest(FrameworkContext ctx) {
-            var w = ctx.Window;
-            w.Size = (800, 600);
-            w.Title = "PolylineSelfIntersectionAlgorithmTest";
-
-            ctx.SetClearColor(Color.RGBA(1, 1, 1, 1));
-        }
-
         int currentPoint = 0;
         Vector2[] points = new Vector2[4];
 
@@ -27,8 +14,8 @@ Intersections should be clearly marked with red lines.",
                 ctx.DrawText(i.ToString(), points[i].X + 20, points[i].Y + 20);
             }
 
-            if (ctx.Window.MouseButtonPressed(MouseButton.Left)) {
-                points[currentPoint] = new Vector2(ctx.Window.MouseX, ctx.Window.MouseY);
+            if (ctx.MouseButtonJustPressed(MouseButton.Left)) {
+                points[currentPoint] = new Vector2(ctx.MouseX, ctx.MouseY);
                 currentPoint = (currentPoint + 1) % points.Length;
             }
 

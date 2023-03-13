@@ -15,6 +15,17 @@ namespace MinimalAF.Rendering {
 
         private static int contextWidth, contextHeight;
         internal static int ScreenWidth, ScreenHeight;
+        // The context width and height depend on the current framebuffer that is being used
+        // (And not the screen size, which would be ScreenWidth and ScreenHeight
+        public static int ContextWidth {
+            get => contextWidth;
+            set => contextWidth = value;
+        }
+
+        public static int ContextHeight {
+            get => contextHeight;
+            set => contextHeight = value;
+        }
 
         public static float Current2DDepth = 0;
 
@@ -55,16 +66,6 @@ namespace MinimalAF.Rendering {
             } else {
                 GL.Disable(EnableCap.ScissorTest);
             }
-        }
-
-        public static int ContextWidth {
-            get => contextWidth;
-            set => contextWidth = value;
-        }
-
-        public static int ContextHeight {
-            get => contextHeight;
-            set => contextHeight = value;
         }
 
         internal static Color ClearColor;
@@ -192,7 +193,6 @@ namespace MinimalAF.Rendering {
             screenRect = screenRect.Rectified();
 
             GL.Viewport((int)screenRect.X0, (int)screenRect.Y0, (int)screenRect.Width, (int)screenRect.Height);
-            CurrentClippingRect = screenRect;
         }
 
         /// <summary>
@@ -275,8 +275,7 @@ namespace MinimalAF.Rendering {
             }
         }
 
-        // this name makes more sense imo
-        internal static void SetTransform(Matrix4 matrix) {
+        internal static void SetModel(Matrix4 matrix) {
             s_shaderManager.SetModelMatrix(matrix);
         }
 
@@ -380,7 +379,7 @@ namespace MinimalAF.Rendering {
 
                 s_framebufferManager.Dispose();
 
-                Texture.Set(null);
+                Texture.Use(null);
                 // TODO: set large fields to null.
 
                 Console.WriteLine("Context disposed");

@@ -2,25 +2,11 @@
 using System;
 
 namespace RenderingEngineVisualTests {
-    [VisualTest(
-        description: @"Test that the stencilling functionality is working.
-The red square must appear above the blue square, and there should be vertical bars that retract and extend, masking
-the visibility of another test.",
-        tags: "2D, stencil"
-    )]
     public class StencilTest : IRenderable {
         GeometryAndTextTest geometryAndTextTest;
 
-        public StencilTest(FrameworkContext ctx) {
-            geometryAndTextTest = new GeometryAndTextTest(new FrameworkContext());
-
-            if (ctx.Window == null) return;
-
-            var w = ctx.Window;
-            w.Size = (800, 600);
-            w.Title = "Stencil rendering test";
-
-            ctx.SetClearColor(Color.White);
+        public StencilTest() {
+            geometryAndTextTest = new GeometryAndTextTest();
         }
 
         float xPos = 0;

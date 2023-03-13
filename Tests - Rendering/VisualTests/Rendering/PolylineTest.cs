@@ -2,47 +2,18 @@
 using OpenTK.Mathematics;
 using System.Collections.Generic;
 
-namespace RenderingEngineVisualTests
-{
-	[VisualTest(
-        description: @"Test that the poly-line drawing functionality is working.",
-        tags: "2D, polyline"
-    )]
-	public class PolylineTest : IRenderable {
+namespace RenderingEngineVisualTests {
+    public class PolylineTest : IRenderable {
         Queue<Vector2> points = new Queue<Vector2>();
-		Queue<double> times = new Queue<double>();
+        Queue<double> times = new Queue<double>();
 
-		Vector2 linePoint, linePointDragStart;
-		bool dragStarted;
-		float radius = 50;
+        Vector2 linePoint, linePointDragStart;
+        bool dragStarted;
+        float radius = 50;
 
-		double timer = 0;
-
-        public PolylineTest(FrameworkContext ctx) {
-            linePoint = new Vector2(ctx.VW * 0.5f, ctx.VH * 0.5f);
-        }
-
-
-        //  public override void OnMount() {
-
-        //	w.Size = (800, 600);
-        //	w.Title = "Mouse test";
-
-        //	w.RenderFrequency = 120;
-        //	//w.UpdateFrequency = 120; 20;
-
-        //	SetClearColor(Color.RGBA(1, 1, 1, 1));
-        //	SetFont("Consolas", 16);
-
-        //	// TODO: get this working
-
-        //	//_linePoint = new Vector2(400, 300);
-        //}
-
+        double timer = 0;
 
         public void Render(FrameworkContext ctx) {
-            var w = ctx.Window;
-
             timer += Time.DeltaTime;
 
             points.Enqueue(linePoint);
@@ -54,9 +25,9 @@ namespace RenderingEngineVisualTests
                 times.Dequeue();
             }
 
-            if (Intersections.IsInsideCircle(w.MouseX, w.MouseY, linePoint.X, linePoint.Y, radius)) {
+            if (Intersections.IsInsideCircle(ctx.MouseX, ctx.MouseY, linePoint.X, linePoint.Y, radius)) {
                 ctx.SetDrawColor(1, 0, 0, 0.5f);
-                if (w.MouseStartedDragging) {
+                if (ctx.MouseButtonIsDown(MouseButton.Any)) {
                     linePointDragStart = linePoint;
                     dragStarted = true;
                 }
@@ -64,14 +35,15 @@ namespace RenderingEngineVisualTests
                 ctx.SetDrawColor(0, 0, 1, 0.5f);
             }
 
-            if (!w.MouseCurrentlyDragging) {
+            // TODO: || ctx.window.LostFocus
+            if (dragStarted && !ctx.MouseButtonIsDown(MouseButton.Any)) {
                 dragStarted = false;
             }
 
-            if (dragStarted && w.MouseCurrentlyDragging) {
+            if (dragStarted) {
                 linePoint = new Vector2(
-                    MathHelper.Clamp(linePointDragStart.X + w.MouseDragDeltaX, ctx.VW * 0.25f, ctx.VW * 0.75f),
-                    MathHelper.Clamp(linePointDragStart.Y + w.MouseDragDeltaY, ctx.VH * 0.25f, ctx.VH * 0.75f)
+                    MathHelper.Clamp(ctx.MouseX, ctx.VW * 0.25f, ctx.VW * 0.75f),
+                    MathHelper.Clamp(ctx.MouseY, ctx.VH * 0.25f, ctx.VH * 0.75f)
                 );
             }
 
@@ -100,5 +72,5 @@ namespace RenderingEngineVisualTests
                 i++;
             }
         }
-	}
+    }
 }

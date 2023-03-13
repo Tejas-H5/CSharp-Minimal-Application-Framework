@@ -1,5 +1,3 @@
-NOTE: I am currently rewriting this a third time, so it isn't really completed.
-
 # MinimalAF rewrite 3
 
 What I want to get done:
@@ -22,7 +20,18 @@ This is what some basic UI code would look like at the moment:
 ``` C#
 // Before:
 class FilePanel : Element {
-	void Render(RenderContext ctx) {
+	File[] files;
+
+	void UseButtonFont() {
+		SetFont("source code PRO", 12);
+		SetFillColor(Colors.White);
+	}
+
+	public void SetFiles(File[] files) {
+		files = newFiles;
+	}
+
+	public override void Render() {
 		// draw background
 		SetFillColor(Colors.Black);
 		SetOutlineColor(Colors.White)
@@ -30,11 +39,10 @@ class FilePanel : Element {
 
 		// list files
 		// (Keep this code up to date with the update loop)
-		SetFont("source code PRO", 12);
+		UseButtonFont();
 		var x = r.X1 + 10;
 		var y = r.Y1;
-		SetFillColor(Colors.White);
-		for (var file of files) {
+		foreach (var file of files) {
 			// 0 height rectangle. We don't know how tall the button will be
 			var buttonRect = new Rect(x, y, x + ctx.width, y);
 			// now we know the size of the rect
@@ -46,45 +54,112 @@ class FilePanel : Element {
 		}
 	}
 
-	void Update(RenderContext ctx) {
+	public override void Update() {
 		// list files
 		// (Keep this code up to date with the render loop)
-		SetFont("source code PRO", 12);
 		var x = r.X1 + 10;
 		var y = r.Y1;
-		SetFillColor(Colors.White);
-		for (var file of files) {
+		UseButtonFont();
+		foreach (var file of files) {
 			// 0 height rectangle. We don't know how tall the button will be
 			var buttonRect = new Rect(x, y, x + ctx.width, y);
 			// now we know the size of the rect
-			buttonRect = Button.GetButtonRect(ctx.WithRect(buttonRect), file.Name); 
-
-			if (Input.GetMouse(buttonRect)) {
-				// Do something with this file. 
-			}
+			buttonRect = Button.Update(ctx.WithRect(buttonRect), file.Name, OnClick); 
 
 			y -= buttonRect.Height;
 
 			if (y < r.Y0) break;
 		}
 	}
+
+	void OnClick(string file) {
+		// do something with the file
+		...
+	}
+}
+```
+There is a lot of code duplication/implicit coupling between the Render and Update functions.
+This makes the code harder to maintain and ugly to look at.
+
+If you want something that is easy to read, you will HAVE to do a more retained-mode approach like this instead:
+
+```C#
+// Before (alternative). The code looks cleaner ?
+class FilePanel : Element {
+	File[] files;
+
+	void SetFiles(File[] files) {
+		files = newFiles;
+
+		// regenerate file buttons
+		Button[] newButtons = new Button<string>[this.file];
+		for(var i = 0; i < newFiles.Length; i++) {
+			var newFile = newFiles[i];
+
+			var newButton = new Button<string>(newFile.FileName, newFile.FilePath);
+			newButton.OnClick += OnSelectFile;
+
+			newButtons[i] = newButton;
+		}
+
+		SetChildren(newButtons);
+	}
+
+	void OnSelectFile(string filePath) {
+		// Do something with the file
+		...
+	}
+
+	void OnRender() {
+		// draw background
+		SetFillColor(Colors.Black);
+		SetOutlineColor(Colors.White)
+		DrawRect(ctx.Rect);
+	}
+
+	void OnLayout() {
+		LayoutChildrenLinear(Direction.Down);
+		LayoutInsetChildren(10);
+	}
+}
+
+class Button<T> : Element {
+	T value;
+	string text;
+	public Button(string text, T value) {
+		this.value = value;
+		this.text = text;
+	}
+
+	public override void Render() {
+		// draw background
+		SetFont("source code PRO", 12);
+		SetFillColor(Colors.White);
+		DrawText(text, 10, 0);
+	}
+
+	public override void Update() {
+		if (Input.GetMouseClick(Rect)) {
+			OnClick?.Invoke(args);
+		}
+	}
 }
 ```
 
-After, it would look like this:
+The code looks cleaner, but it forces you to constantly make your UI more and more granular.
+If you wanted to just write out your entire application as a single class with one big function, you can't. 
+There is also a bunch of stuff that the Element class is doing under the hood that you don't know about, and can't opt out of.
+
+After the rewrite, we can have immediate mode code like this:
 
 ```C#
 
 // ---- After:
 
-
-class FilePanel : Element {
-	public float scrollY; 
+class FilePanel {
 	public File[] files;
 
-	void Render(RenderContext ctx) {
-		scrollY += ctx.HandleScrollY(ctx.Rect);
-
+	public void Render(FrameworkContext ctx) {
 		// draw background
 		SetFillColor(Colors.Black);
 		SetOutlineColor(Colors.White)
@@ -101,11 +176,7 @@ class FilePanel : Element {
 			// 0 height rectangle. We don't know how tall the button will be
 			var buttonRect = new Rect(x, y, x + ctx.width, y);
 			// now we know the size of the rect
-			buttonRect = Button.Render(ctx.WithRect(buttonRect), file.Name); 
-
-			if (Input.GetMouse(buttonRect)) {
-				// Do something with this file. 
-			}
+			buttonRect = Button.Render(ctx.WithRect(buttonRect), file.Name, OnClick); 
 
 			y -= buttonRect.Height;
 
@@ -115,7 +186,7 @@ class FilePanel : Element {
 }
 ```
 
-But if we are removing elements, we would need to keep track of the current screen rectangle somehow. 
+But if we are removing the `Element`, we would need to keep track of the current screen rectangle somehow. 
 This can now be done using some RenderContext struct that gets passed down via the Render function. 
 And it is a struct, so that it can be passed via value and not reference, which is important for this kind of thing.
 
@@ -157,7 +228,7 @@ class App : IRenderable {
 	void Render(RenderContext ctx) {
 		...
 		c.Render(
-			ctx.Width(ctx.VW * 0.5).Offset(10).Use()
+			ctx.Width(ctx.VW * 0.5).Offset(10).Use()	// calling Use() here
 		);
 	}
 }
@@ -191,37 +262,22 @@ One idea is to use some sort of weird code-aesthetic builder pattern:
 ``` C#
 struct RenderContext {
 	...
-	RenderContextBuilder Offset() { ... }
+	RenderContextBuilder Offset() { ... }	// these context resizing and moving functions can return a Builder
 }
 
 struct RenderContextBuilder {
 	RenderContextBuilder Offset() { ... }
 	...
 
+	// Then this builder can return a normal RenderContext, so you can't accidentally pass in a resized render context without 
+	// calling Use()
 	RenderContext Use() {
-		// activate this new render context, and return it
-	}
-}
-
-...
-
-
-class App : IRenderable {
-	... 
-	void Render(RenderContext ctx) {
 		...
-		c.Render(
-			ctx.New()
-				.Width(ctx.VW * 0.5)
-				.Offset(10)
-				.Use()
-		);
 	}
 }
 ```
 
 This would enforce that people call Use() before passing in any render contexts, to remove the incorrect type compile error.
-
 But what if you wanted to render something, and then render something over top?
 
 ``` C#
@@ -236,42 +292,13 @@ class App : IRenderable {
 				.Use()
 		);
 
-		// This would be required to make the next code work as expected:
-		// ctx.Use();
+		
+		ctx.Use(); // no mechanism to ensure a user calls this here. before, we enforced it with Render() and AfterRender()
 
-		if (model.IsInvalidStateOrSomething) {
-			// Now render a red rectangle over top
-			ctx.SetDrawColor(AppColors.Invalid, 0.5f);
-			ctx.DrawRect(ctx.Rect);	// Won't work, because we never switched back to our render context.
-		}
+		// render something
 	}
 }
 ```
 
-The javascript way might be something like this:
-``` C#
-	void Render(RenderContext ctx) {
-		// RenderChild handles re-activating ctx
-		Framework.RenderChild(ctx, () => {
-			c.Render(ctx.Width(ctx.VW * 0.5)
-				.Offset(10)
-				.Use()
-			);
-		})
-
-		... other drawing code
-	}
-
-```
-
-but most of the time it is unnecessary to re-activate our coordinate system, so we are just wasting cpu cycles.
-
-Think I will just stick with the manual way using convention for now.
-
-
-
-
-## Garbage collector pauses
-
-I have found that this is happening quite a lot. Probably because of the string allocations.
-I will attempt to rewrite this framework to minimize the ocurrances of these (but idk what is causing them rn, will keep you posted here ...)
+However, it has several advantages. The code is much simpler. There are a lot of hooks that I can remove, because the functionality
+exists within the Render() method. And if I need more precise inputs, that can be done in other ways.

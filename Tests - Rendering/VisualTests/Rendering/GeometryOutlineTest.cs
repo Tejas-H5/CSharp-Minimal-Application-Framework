@@ -3,20 +3,7 @@ using MinimalAF.Rendering;
 using System;
 
 namespace RenderingEngineVisualTests {
-    [VisualTest(
-        description: @"Test that the outline functionality works.",
-        tags: "2D"
-    )]
     class GeometryOutlineTest : IRenderable {
-
-        public GeometryOutlineTest(FrameworkContext ctx) {
-            var w = ctx.Window;
-            w.Size = (800, 600);
-            w.Title = "Geometry Outline Test";
-
-            ctx.SetClearColor(Color.RGBA(1, 1, 1, 1));
-        }
-
         public void Render(FrameworkContext ctx) {
             ctx.SetDrawColor(1, 0, 0, 0.5f);
 

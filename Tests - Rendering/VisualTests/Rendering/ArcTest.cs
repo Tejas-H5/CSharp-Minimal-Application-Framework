@@ -2,20 +2,8 @@
 using MinimalAF.Rendering;
 using System;
 
-namespace RenderingEngineVisualTests
-{
-    [VisualTest(
-        description: @"Two hands that rotate at different speeds. This is a test of the arg dawing algorithm.",
-        tags: "2D"
-    )]
+namespace RenderingEngineVisualTests {
     class ArcTest : IRenderable {
-        public ArcTest(FrameworkContext ctx) {
-            ctx.Window.Title = "Arc test";
-            ctx.Window.Size = (800, 600);
-
-            ctx.SetClearColor(Color.RGBA(0, 1, 1, 1));
-        }
-
         float a;
         float b;
 

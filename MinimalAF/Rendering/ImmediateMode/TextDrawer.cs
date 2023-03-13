@@ -129,7 +129,7 @@ namespace MinimalAF.Rendering {
         public Vector2 Draw(string text, int start, int end, float startX, float startY, float scale) {
             Texture previousTexture = CTX.Texture.Get();
 
-            CTX.Texture.Set(ActiveFont.FontTexture);
+            CTX.Texture.Use(ActiveFont.FontTexture);
 
             float x = startX;
             float y = startY;
@@ -149,7 +149,7 @@ namespace MinimalAF.Rendering {
                 x += GetWidth(c);
             }
 
-            CTX.Texture.Set(previousTexture);
+            CTX.Texture.Use(previousTexture);
 
             return new Vector2(x, y);
         }

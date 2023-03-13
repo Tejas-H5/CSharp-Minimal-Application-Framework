@@ -33,10 +33,10 @@ namespace MinimalAF.Rendering {
 
             nullTexture = new Texture(white1x1, new TextureImportSettings { });
 
-            Set(null);
+            Use(null);
         }
 
-        public void Set(Texture texture) {
+        public void Use(Texture texture) {
             if (!TextureHasChanged(texture))
                 return;
 

@@ -1,26 +1,38 @@
 ﻿using MinimalAF;
+using MinimalAF.Testing;
+using System;
+using System.Collections.Generic;
+using OpenTK.Mathematics;
 
 namespace RenderingEngineVisualTests {
-    class BasicTest : IRenderable {
-        public BasicTest(FrameworkContext ctx) {
-            if (ctx.Window != null) {
-                ctx.SetClearColor(Color.White);
-            }
-        }
-
+    class ErrorTest : IRenderable {
         public void Render(FrameworkContext ctx) {
-            ctx.SetDrawColor(Color.Red);
-            ctx.DrawRect(0, 0, 1000, 100);
+            throw new Exception("Using this component to test error boundaries");
         }
     }
 
 
     class Program {
         static void Main(string[] args) {
-            // var testRunner = new VisualTestRunner(typeof(FramebufferTest));
+            var tests = new VisualTestRunner();
 
-            new OpenTKWindowWrapper((ctx) => new NestingTest(ctx))
-                .Run();
+            tests.AddTest("Text Test", () => new TextTest());
+            tests.AddTest("Error test", () => new ErrorTest());
+            tests.AddTest("Arc test", () => new ArcTest());
+            tests.AddTest("Performance benchmark test", () => new Benchmark());
+            tests.AddTest("Framebuffer test", () => new FramebufferTest());
+            tests.AddTest("Geometry and text test", () => new GeometryAndTextTest());
+            tests.AddTest("Geometry Outline Test", () => new GeometryOutlineTest());
+            tests.AddTest("Keyboard Test", () => new KeyboardTest());
+            tests.AddTest("MeshOutput Caching Test", () => new MeshOutputCachingTest());
+            tests.AddTest("Nesting Test", () => new NestingTest());
+            tests.AddTest("Polyline Self Intersection Algorithm Test", () => new PolylineSelfIntersectionAlgorithmTest());
+            tests.AddTest("Polyline Test", () => new PolylineTest());
+            tests.AddTest("Stencil Test", () => new StencilTest());
+            tests.AddTest("Text Font Atlas Text", () => new TextFontAtlasText());
+            tests.AddTest("Texture Test", () => new TextureTest());
+
+            new ProgramWindow((ctx) => tests.Init(ctx)).Run();
         }
     }
 }

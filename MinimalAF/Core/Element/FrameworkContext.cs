@@ -3,9 +3,8 @@ using OpenTK.Mathematics;
 using System;
 
 namespace MinimalAF {
-
     public struct FrameworkContext {
-        internal FrameworkContext(Rect rect, OpenTKWindowWrapper window) {
+        internal FrameworkContext(Rect rect, ProgramWindow window) {
             Rect = rect;
             this.window = window;
         }
@@ -52,6 +51,9 @@ namespace MinimalAF {
         /// </code>
         /// </summary>
         public FrameworkContext Use() {
+            CTX.Texture.Use(null);
+
+            SetModel(Matrix4.Identity);
             SetProjectionCartesian2D(1, 1, 0, 0);
             return this;
         }
@@ -66,8 +68,8 @@ namespace MinimalAF {
         /// <summary>
         /// The window we are running in
         /// </summary>
-        OpenTKWindowWrapper window;
-        public OpenTKWindowWrapper Window => window;
+        ProgramWindow window;
+        public ProgramWindow Window => window;
 
 
         // ---- Drawing
@@ -75,7 +77,7 @@ namespace MinimalAF {
         public void SetDrawColor(Color col) { SetDrawColor(col.R, col.G, col.B, col.A); }
         public void SetDrawColor(Color col, float alpha) { SetDrawColor(col.R, col.G, col.B, alpha); }
         public Texture GetTexture() { return CTX.Texture.Get(); }
-        public void SetTexture(Texture texture) { CTX.Texture.Set(texture); }
+        public void SetTexture(Texture texture) { CTX.Texture.Use(texture); }
         public void SetFont(string name, int size = 16) { CTX.Text.SetFont(name, size); }
         public void SetClearColor(float r, float g, float b, float a) { CTX.SetClearColor(Color.RGBA(r, g, b, a)); }
         public void SetClearColor(Color value) { CTX.SetClearColor(value); }
@@ -110,8 +112,8 @@ namespace MinimalAF {
         /// <summary>
         /// Sets the shader's model matrix
         /// </summary>
-        public void SetTransform(Matrix4 transform) {
-            CTX.SetTransform(transform);
+        public void SetModel(Matrix4 transform) {
+            CTX.SetModel(transform);
         }
 
         public void SetViewOrientation(Vector3 position, Quaternion rotation) {
@@ -219,7 +221,7 @@ namespace MinimalAF {
             CTX.Circle.Draw(x0, y0, r);
         }
 
-        public void DrawLine(float x0, float y0, float x1, float y1, float thickness, CapType cap) {
+        public void DrawLine(float x0, float y0, float x1, float y1, float thickness, CapType cap = CapType.None) {
             CTX.Line.Draw(x0, y0, x1, y1, thickness, cap);
         }
 
@@ -327,11 +329,24 @@ namespace MinimalAF {
             CTX.Clear(color);
         }
 
+        // -- Inputs
+        public bool KeyJustPressed(KeyCode key) { return window.KeyJustPressed(key); }
+        public bool KeyJustReleased(KeyCode key) { return window.KeyJustReleased(key); }
+        public bool KeyWasDown(KeyCode key) { return window.KeyWasDown(key); }
+        public bool KeyIsDown(KeyCode key) { return window.KeyIsDown(key); }
+        public bool MouseIsOver(Rect rect) { return Intersections.IsInsideRect(MouseX, MouseY, rect); }
+        public bool MouseButtonJustPressed(MouseButton b) { return window.MouseButtonJustPressed(b); }
+        public bool MouseButtonJustReleased(MouseButton b) { return window.MouseButtonJustReleased(b); }
+        public bool MouseButtonIsDown(MouseButton b) { return window.MouseButtonIsDown(b); }
+        public bool MouseButtonWasDown(MouseButton b) { return window.MouseButtonWasDown(b); }
+        public float MouseWheelNotches => window.MouseWheelNotches;
+        public float MouseX => window.MouseX - Rect.X0;
+        public float MouseY => window.MouseY - Rect.Y0;
+        public float MouseXDelta => window.MouseXDelta;
+        public float MouseYDelta => window.MouseYDelta;
     }
-
 
     public interface IRenderable {
         void Render(FrameworkContext ctx);
     }
-
 }

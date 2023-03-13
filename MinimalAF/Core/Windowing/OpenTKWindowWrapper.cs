@@ -16,7 +16,7 @@ namespace MinimalAF {
     }
 
     // TODO: rewrite with GLFW directly, no GameWindow
-    public partial class OpenTKWindowWrapper {
+    public partial class ProgramWindow {
         GameWindow window;
         IRenderable renderable;
         Func<FrameworkContext, IRenderable> appConstructor;
@@ -57,7 +57,7 @@ namespace MinimalAF {
         }
 
 
-        public OpenTKWindowWrapper(Func<FrameworkContext, IRenderable> appConstructor) {
+        public ProgramWindow(Func<FrameworkContext, IRenderable> appConstructor) {
             window = new GameWindow(
                 new GameWindowSettings { },
                 new NativeWindowSettings {
@@ -151,7 +151,10 @@ namespace MinimalAF {
             CTX.Clear();
 
             CTX.ContextWidth = Width;
+            CTX.ScreenWidth = Width;
             CTX.ContextHeight = Height;
+            CTX.ScreenHeight = Height;
+
             // rootWindow.RenderSelfAndChildren(new Rect(0, 0, Width, Height));
             renderable.Render(CreateFrameworkContext());
 

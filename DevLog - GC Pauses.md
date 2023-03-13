@@ -6,8 +6,37 @@ Also reflection, it is really handy when you're writing a level editor for a gam
 
 But, now I will have to spend the rest of eternity fighting with the garbage collector.
 
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
-
-
-
-There is no pont being made here, that is all (for now at least, will update this later)
+no solution here, just stating a fact (for now at least, will update this with a solution later)

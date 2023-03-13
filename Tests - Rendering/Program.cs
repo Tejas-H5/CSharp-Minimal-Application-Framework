@@ -31,6 +31,7 @@ namespace RenderingEngineVisualTests {
             tests.AddTest("Stencil Test", () => new StencilTest());
             tests.AddTest("Text Font Atlas Text", () => new TextFontAtlasText());
             tests.AddTest("Texture Test", () => new TextureTest());
+            tests.AddTest("Perspective Camera Test", () => new PerspectiveCameraTest());
 
             new ProgramWindow((ctx) => tests.Init(ctx)).Run();
         }

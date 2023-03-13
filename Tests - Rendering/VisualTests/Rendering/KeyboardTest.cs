@@ -30,7 +30,7 @@ namespace RenderingEngineVisualTests {
             ctx.SetDrawColor(0, 0, 0, 1);
 
             if (ctx.KeyIsDown(KeyCode.Any)) {
-                Console.WriteLine("PRessed: " + GetCharactersHeld(ref ctx));
+                Console.WriteLine("Pressed: " + GetCharactersHeld(ref ctx));
             }
 
             if (ctx.KeyJustReleased(KeyCode.Any)) {

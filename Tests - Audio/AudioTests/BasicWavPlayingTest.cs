@@ -4,63 +4,55 @@ using System;
 using System.Text;
 
 namespace AudioEngineTests.AudioTests {
-    [VisualTest(
-        description: @"Test audio loading and single sound playback",
-        tags: "audio"
-    )]
-    public class BasicWavPlayingTest : Element {
+    public class BasicWavPlayingTest : IRenderable {
         AudioSourceOneShot clackSound;
 
-        public override void OnMount() {
-            w.Size = (800, 600);
-            w.Title = "Keyboard test";
-
-            SetClearColor(Color.RGBA(0, 0, 0, 0));
-            SetFont("Consolas", 36);
-
+        public BasicWavPlayingTest() {
             AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
             clackSound = new AudioSourceOneShot(true, false, clip);
         }
 
-
-        string oldString = "";
-
-        string KeysToString(string s) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < s.Length; i++) {
-                char c = s[i];
-                if (KeyHeld(KeyCode.Shift)) {
-                    c = char.ToUpper(c);
+        string GetCharactersHeld(ref FrameworkContext ctx) {
+            var held = new StringBuilder();
+            for (KeyCode key = 0; key < KeyCode.EnumLength; key++) {
+                if (ctx.KeyIsDown(key)) {
+                    held.Append(CharKeyMapping.KeyCodeToChar(key));
                 }
-
-                sb.Append(CharKeyMapping.CharToString(c));
             }
 
-            return sb.ToString();
+            return held.ToString();
         }
 
-        public override void OnRender() {
-            ctx.SetDrawColor(1, 1, 1, 1);
+        string GetCharactersReleased(ref FrameworkContext ctx) {
+            var held = new StringBuilder();
+            for (KeyCode key = 0; key < KeyCode.EnumLength; key++) {
+                if (ctx.KeyJustReleased(key)) {
+                    held.Append(CharKeyMapping.KeyCodeToChar(key));
+                }
+            }
 
-            DrawText("Press some keys:", Width / 2, Height / 2 + 200);
+            return held.ToString();
+        }
 
-            string newString = KeysToString(KeyboardCharactersHeld);
-            if (newString != oldString) {
-                oldString = newString;
+        public void Render(FrameworkContext ctx) {
+            ctx.SetDrawColor(0, 0, 0, 1);
+
+            if (ctx.KeyJustPressed(KeyCode.Any) || ctx.KeyJustReleased(KeyCode.Any)) {
+                Console.WriteLine("Pressed: " + GetCharactersHeld(ref ctx));
                 clackSound.Play();
             }
 
-            DrawText(newString, Width / 2, Height / 2);
-        }
-
-        public override void OnUpdate() {
-            if (KeyPressed(KeyCode.Any)) {
-                Console.WriteLine("Pressed: " + KeyboardCharactersPressed);
+            if (ctx.KeyJustReleased(KeyCode.Any)) {
+                Console.WriteLine("Released: " + GetCharactersReleased(ref ctx));
             }
 
-            if (KeyReleased(KeyCode.Any)) {
-                Console.WriteLine("Released: " + KeyboardCharactersReleased);
+            var keys = GetCharactersHeld(ref ctx);
+            if (ctx.KeyIsDown(KeyCode.Shift)) {
+                keys = keys.ToUpper();
             }
+
+            ctx.DrawText("Press some keys:", ctx.VW * 0.5f, ctx.VH * 0.75f, HAlign.Center, VAlign.Center);
+            ctx.DrawText(keys, ctx.VW / 2, ctx.VH / 2, HAlign.Center, VAlign.Center);
         }
     }
 }

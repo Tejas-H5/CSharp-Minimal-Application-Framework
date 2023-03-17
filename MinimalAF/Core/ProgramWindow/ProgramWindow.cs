@@ -8,6 +8,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Text;
 using System.Threading;
 
 namespace MinimalAF {
@@ -168,15 +169,21 @@ namespace MinimalAF {
 
         /// <summary>
         ///  Does things like polling inputs and updating our input/audio subsystems.
+        ///  previous input states.
         /// </summary>
         private void ProcessUpdateEvents() {
             // GLFW and OpenTK Update
             {
+                // important that these two are in this order:
+
+                // propagate all current event states to the previous event state
+                _window.ProcessInputEvents();   
+                // checks all events, then populates current even state through GLFW callbacks.
                 GLFW.PollEvents();  // is this thread-static?
-                _window.ProcessInputEvents();
             }
 
-            // Our subsystems update
+            // Update our subsystems. They all assume that previous input states have been propagated
+            // and the window's input contain the current input states
             {
                 UpdateKeyInput();
                 MouseUpdateInput();
@@ -267,6 +274,22 @@ namespace MinimalAF {
 
             return _window.KeyboardState.WasKeyDown((Keys)key);
         }
+
+        // copy-pasted from OpenTK codebase and changed IsKeyDown to Waskeydown for debugging
+        //public string ToStringWas(KeyboardState state) {
+        //    StringBuilder stringBuilder = new StringBuilder();
+        //    stringBuilder.Append('{');
+        //    bool flag = true;
+        //    for (Keys keys = (Keys)0; keys <= Keys.Menu; keys++) {
+        //        if (state.WasKeyDown(keys)) {
+        //            stringBuilder.AppendFormat("{0}{1}", keys, (!flag) ? ", " : string.Empty);
+        //            flag = false;
+        //        }
+        //    }
+
+        //    stringBuilder.Append('}');
+        //    return stringBuilder.ToString();
+        //}
 
         internal bool KeyIsDown(KeyCode key) {
             if (key == KeyCode.Control) {

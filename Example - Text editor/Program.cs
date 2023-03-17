@@ -11,12 +11,11 @@ namespace TextEditor {
 
     class TextEditor : IRenderable {
         MutableString buffer = new MutableString();
-        int cursorPositionFromTheEnd = 0;
 
-        void ClampCursor() {
-            if (cursorPositionFromTheEnd < 0) cursorPositionFromTheEnd = 0;
-            if (cursorPositionFromTheEnd >= buffer.Length) cursorPositionFromTheEnd = buffer.Length - 1;
-        }
+        // The position the cursor is from the end of the file.
+        // I'm storing it like this so that we don't need to move the cursor while inserting new text, may backfire in the future idk
+        int cursorPositionFromTheEnd = 0; 
+
 
         void AddLetterAtCursor(char c) {
             buffer.Insert(c, buffer.Length - cursorPositionFromTheEnd);
@@ -31,20 +30,28 @@ namespace TextEditor {
             ctx.SetTexture(ctx.InternalFontTexture);
 
             // render the text
-            float x = 100;
+            float startX = 100;
+            float charHeight = ctx.GetCharHeight();
+            float x = startX;
             float y = ctx.VH - 100;
             {
                 // <= is so we can draw the cursor when it is at the very end
                 for (int i = 0; i <= buffer.Length; i++) {
                     if (i < buffer.Length) {
                         // draw text
-
                         var c = buffer[i];
+
+                        if (c == '\n') {
+                            x = startX;
+                            y -= charHeight;
+                            continue;
+                        }
+
                         var s = ctx.DrawChar(c, x, y);
                         x += s.X;
                     }
 
-                    // draw cursor if it is here
+                    // draw cursor if it is at this position
                     int distFromEnd = buffer.Length - i;
                     if (distFromEnd == cursorPositionFromTheEnd) {
                         var cursorWidth = 3;
@@ -70,9 +77,11 @@ namespace TextEditor {
                 } 
                 if (ctx.KeyJustPressed(KeyCode.Left)) {
                     cursorPositionFromTheEnd += 1;
+                    if (cursorPositionFromTheEnd >= buffer.Length) cursorPositionFromTheEnd = buffer.Length - 1;
                 }
                 if (ctx.KeyJustPressed(KeyCode.Left)) {
                     cursorPositionFromTheEnd -= 1;
+                    if (cursorPositionFromTheEnd < 0) cursorPositionFromTheEnd = 0;
                 }
 
                 // TODO: backspace

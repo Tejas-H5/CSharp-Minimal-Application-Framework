@@ -4,8 +4,11 @@ using MinimalAF.ResourceManagement;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading;
 
 namespace MinimalAF {
     public enum WindowState {
@@ -15,168 +18,390 @@ namespace MinimalAF {
         Fullscreen
     }
 
-    // TODO: rewrite with GLFW directly, no GameWindow
-    public partial class ProgramWindow {
-        GameWindow window;
-        IRenderable renderable;
-        Func<FrameworkContext, IRenderable> appConstructor;
+    internal class OpenTKNativeWindowWrapper : NativeWindow {
+        public OpenTKNativeWindowWrapper(NativeWindowSettings settings) : base(settings) {
+        }
 
-        double time = 0;
-        int renderFrames = 0;
-        int updateFrames = 0;
-        int deletionInterval = 0;
-        float fps;
-        float updateFps;
-        public int Height => window.Size.Y;
-        public int Width => window.Size.X;
-        public Rect Rect => new Rect(0, 0, Width, Height);
-        public float CurrentFPS => fps;
-        public float CurrentUpdateFPS => updateFps;
+        public Action Refresh;
+        // public Action<CancelEventArgs> Closing;
+
+        // protected override void OnClosing(CancelEventArgs e) {
+        // Closing(e);
+        // }
+
+        // Some OpenTK comment somewhere says this is ran when resizing the window  - 
+        // Ideally, we would like to rerender then as well.
+        protected override void OnRefresh() {
+            Refresh();
+        }
+    }
+
+
+    public sealed class ProgramWindow {
+        IRenderable _renderable;
+        Func<FrameworkContext, IRenderable> _renderableConstructor;
+
+        private double _frameDuration;
+
+        // We use this free some OpenGL resources every X frames. I forget why this was needed, but it was
+        // (SMH 2 years ago me for not writing a comment)
+        private int _deletionFrameCounter = 0;  
+
+        OpenTKNativeWindowWrapper _window;
+        // GameWindow _w;
+
+        /// <summary>
+        /// There is no update loop. It is dead, and we killed it
+        /// </summary>
+        public double RenderFrequency {
+            get {
+                return 1.0 / _frameDuration;
+            }
+            set {
+                _frameDuration = 1.0 / value;
+            }
+        }
 
         public Vector2i Size {
-            get => window.Size;
-            set => window.Size = value;
+            get => _window.Size;
+            set => _window.Size = value;
         }
 
         public string Title {
-            get => window.Title;
-            set => window.Title = value;
+            get => _window.Title;
+            set => _window.Title = value;
         }
 
-        public double RenderFrequency {
-            get => window.RenderFrequency;
-            set => window.RenderFrequency = value;
-        }
-        public double UpdateFrequency {
-            get => window.UpdateFrequency;
-            set => window.UpdateFrequency = value;
+        public double FrameDuration => _frameDuration;
+
+        public ProgramWindow(Func<FrameworkContext, IRenderable> renderableConstructor) {
+            this._renderableConstructor = renderableConstructor;
+
+            _window = new OpenTKNativeWindowWrapper(new NativeWindowSettings { StartVisible = false });
+
+            _window.IsVisible = false;
+            _window.MouseWheel += OnWindowMouseWheel;
+            _window.TextInput += OnTextInput;
+            _window.Refresh = OnRefresh;
         }
 
-        public void Run() {
-            window.Run();
+        public double GetSecondsSinceStart() {
+            return GLFW.GetTime();
         }
 
+        public void SetSecondsSinceStart(double t) {
+            GLFW.SetTime(t);
+        }
 
-        public ProgramWindow(Func<FrameworkContext, IRenderable> appConstructor) {
-            window = new GameWindow(
-                new GameWindowSettings { },
-                new NativeWindowSettings {
-                    StartVisible = false
+        double dt, prevFrameEnd;
+        public unsafe void Run() {
+            OnLoad();
+
+            dt = 0.0; 
+            prevFrameEnd = GetSecondsSinceStart();
+            while (!GLFW.WindowShouldClose(_window.WindowPtr)) {
+                ProcessUpdateEvents();
+
+                StepRenderLoop();
+            }
+
+            OnUnload();
+        }
+
+        void StepRenderLoop() {
+            RenderFrame(dt);
+
+            double frameEnd = GetSecondsSinceStart();
+            dt = frameEnd - prevFrameEnd;
+
+            // This is a power saving mechanism that will sleep the thread if we
+            // have the time available to do so. It reduces overall CPU consumption.
+            // It also never kicks in if _frameDuration = 0
+            {
+                double wantedNextFrameEnd = prevFrameEnd + _frameDuration;
+                double remainingTimeTillWantedNextFrameEnd = wantedNextFrameEnd - frameEnd;
+                int timeTakenToDoThisStuffMS = 1;
+                int remainingTimeTillWantedNextFrameEndMS = (int)Math.Floor(
+                    (remainingTimeTillWantedNextFrameEnd) * 1000
+                ) - timeTakenToDoThisStuffMS;
+
+                if (remainingTimeTillWantedNextFrameEndMS > 0) {
+                    Thread.Sleep(remainingTimeTillWantedNextFrameEndMS);
+                    frameEnd = GetSecondsSinceStart();
+                    dt = frameEnd - prevFrameEnd;
                 }
-            );
+            }
 
-            window.IsVisible = false;
-            window.Load += OnLoad;
-            window.MouseWheel += OnWindowMouseWheel;
-            window.RenderFrame += OnRenderFrame;
-            window.UpdateFrame += OnUpdateFrame;
-            window.Closing += OnClosing;
-            //KeyDown += ProcessPhysicalKeyPress;
-            //TextInput += keyboardManager.CharactersPressed;
-
-            this.appConstructor = appConstructor;
+            prevFrameEnd = frameEnd;
         }
 
-
-        private FrameworkContext CreateFrameworkContext() {
-            return new FrameworkContext(
-                new Rect(0, 0, Width, Height),
-                this
-            ).Use();
+        void OnRefresh() {
+            StepRenderLoop();
         }
 
-        bool init = false;
+        public void Close() {
+            _window.Close();
+        }
+       
+        void OnLoad() {
+            _window.Context?.MakeCurrent();
 
-        unsafe void OnLoad() {
-            CTX.Init(window.Context);
+            CTX.Init(_window.Context);
             AudioCTX.Init();
 
-            window.IsVisible = true;
+            _window.IsVisible = true;
 
             // Usually an app will be donig OpenGL/OpenAL stuff that will
             // require those things to be initialized, so we are constructing
             // the app with a constructor rather than injecting it directly
-            renderable = appConstructor(CreateFrameworkContext());
+            _renderable = _renderableConstructor(CreateFrameworkContext());
         }
 
-        void OnUpdateFrame(FrameEventArgs args) {
-            UpdateKeyInput();
-            MouseUpdateInput();
-            AudioCTX.Update();
+        void OnUnload() {
+            // clean up all our resources
 
-            Time.deltaTime = (float)args.Time;
-
-            // TODO: set update/render mode flags
-            //rootWindow.Render(new RenderContext {
-            //    Rect = new Rect(0, 0, Width, Height)
-            //});
-
-            TrackUpdateFPS(args);
-
-            deletionInterval++;
-            // 100 is an arbitrary number.
-            if (deletionInterval > 100) {
-                deletionInterval = 0;
-
-                GLDeletionQueue.DeleteResources();
-            }
-        }
-
-        private void TrackUpdateFPS(FrameEventArgs args) {
-            TrackFPS(args);
-
-            updateFrames++;
-        }
-
-        private void TrackFPS(FrameEventArgs args) {
-            time += args.Time;
-
-            if (time >= 1) {
-                fps = renderFrames / (float)time;
-                updateFps = updateFrames / (float)time;
-
-                Console.WriteLine("Render FPS: " + fps + ", Update FPS: " + updateFrames / time);
-
-                time = 0;
-                renderFrames = 0;
-                updateFrames = 0;
-            }
-        }
-
-
-        protected void OnRenderFrame(FrameEventArgs args) {
-            Time.deltaTime = (float)args.Time;
-
-            CTX.SetViewport(Rect);
-            CTX.Clear();
-
-            CTX.ContextWidth = Width;
-            CTX.ScreenWidth = Width;
-            CTX.ContextHeight = Height;
-            CTX.ScreenHeight = Height;
-
-            // rootWindow.RenderSelfAndChildren(new Rect(0, 0, Width, Height));
-            renderable.Render(CreateFrameworkContext());
-
-            CTX.SwapBuffers();
-
-            renderFrames++;
-        }
-
-        unsafe void OnClosing(CancelEventArgs e) {
-            Cleanup();
-            e.Cancel = false;
-        }
-
-        private unsafe void Cleanup() {
             CTX.Dispose(true);
             AudioCTX.Cleanup();
 
             GLDeletionQueue.DeleteResources();
         }
 
-        public void SetWindowState(WindowState state) {
-            window.WindowState = (OpenTK.Windowing.Common.WindowState)state;
+        /// <summary>
+        ///  Does things like polling inputs and updating our input/audio subsystems.
+        /// </summary>
+        private void ProcessUpdateEvents() {
+            // GLFW and OpenTK Update
+            {
+                GLFW.PollEvents();  // is this thread-static?
+                _window.ProcessInputEvents();
+            }
+
+            // Our subsystems update
+            {
+                UpdateKeyInput();
+                MouseUpdateInput();
+                AudioCTX.Update();
+
+                _deletionFrameCounter++;
+                // 100 is an arbitrary number.
+                if (_deletionFrameCounter > 100) {
+                    _deletionFrameCounter = 0;
+
+                    GLDeletionQueue.DeleteResources();
+                }
+            }
         }
+
+        void RenderFrame(double deltaTime) {
+            Time.deltaTime = (float)deltaTime;
+
+            // render
+            {
+                CTX.SetViewport(new Rect(0, 0, Width, Height));
+                CTX.Clear();
+
+                CTX.ContextWidth = Width;
+                CTX.ScreenWidth = Width;
+                CTX.ContextHeight = Height;
+                CTX.ScreenHeight = Height;
+
+                _renderable.Render(CreateFrameworkContext());
+
+                CTX.SwapBuffers();
+            }
+        }
+
+        public int Width => _window.Size.X;
+        public int Height => _window.Size.Y;
+
+        private FrameworkContext CreateFrameworkContext() {
+            return new FrameworkContext(
+                new Rect(0, 0, Width, Height),
+                this    // this compile error will go away soon :)
+            ).Use();
+        }
+
+        public void SetWindowState(WindowState state) {
+            _window.WindowState = (OpenTK.Windowing.Common.WindowState)state;
+        }
+
+        #region Keyboard input
+
+        internal const string KEYBOARD_CHARS = "\t\b\n `1234567890-=qwertyuiop[]asdfghjkl;'\\zxcvbnm,./";
+
+        MutableString currentKeyboardInput = new MutableString();
+        MutableString lastKeyboardInput = new MutableString();
+
+        bool wasAnyHeld;
+        bool isAnyHeld;
+
+        public MutableString TextInput => lastKeyboardInput;
+
+        private void OnTextInput(TextInputEventArgs obj) {
+            // TODO: proper utf8/unicode handling for MutableString
+            currentKeyboardInput.Append((char)obj.Unicode);
+        }
+
+
+        internal bool KeyJustPressed(KeyCode key) {
+            return (!KeyWasDown(key)) && (KeyIsDown(key));
+        }
+
+        internal bool KeyJustReleased(KeyCode key) {
+            return KeyWasDown(key) && (!KeyIsDown(key));
+        }
+
+        internal bool KeyWasDown(KeyCode key) {
+            if (key == KeyCode.Control) {
+                return KeyWasDown(KeyCode.LeftControl) || KeyWasDown(KeyCode.RightControl);
+            }
+            if (key == KeyCode.Shift) {
+                return KeyWasDown(KeyCode.LeftShift) || KeyWasDown(KeyCode.RightShift);
+            }
+            if (key == KeyCode.Alt) {
+                return KeyWasDown(KeyCode.LeftAlt) || KeyWasDown(KeyCode.RightAlt);
+            }
+            if (key == KeyCode.Any) {
+                return wasAnyHeld;
+            }
+
+            return _window.KeyboardState.WasKeyDown((Keys)key);
+        }
+
+        internal bool KeyIsDown(KeyCode key) {
+            if (key == KeyCode.Control) {
+                return KeyIsDown(KeyCode.LeftControl) || KeyIsDown(KeyCode.RightControl);
+            }
+            if (key == KeyCode.Shift) {
+                return KeyIsDown(KeyCode.LeftShift) || KeyIsDown(KeyCode.RightShift);
+            }
+            if (key == KeyCode.Alt) {
+                return KeyIsDown(KeyCode.LeftAlt) || KeyIsDown(KeyCode.RightAlt);
+            }
+            if (key == KeyCode.Any) {
+                return _window.KeyboardState.IsAnyKeyDown;
+            }
+
+            return _window.KeyboardState.IsKeyDown((Keys)key);
+        }
+
+        private void UpdateKeyInput() {
+            wasAnyHeld = isAnyHeld;
+            isAnyHeld = _window.KeyboardState.IsAnyKeyDown;
+
+            lastKeyboardInput.Clear();
+            for (int i = 0; i < currentKeyboardInput.Length; i++) {
+                lastKeyboardInput.Append(currentKeyboardInput[i]);
+            }
+            currentKeyboardInput.Clear();
+        }
+
+        #endregion
+        #region Mouse Input
+
+
+        float incomingMousewheelNotches = 0;
+        float mouseWheelNotches = 0;
+
+        bool[] prevMouseButtonStates = new bool[3];
+        bool[] mouseButtonStates = new bool[3];
+
+        bool mouseWasAnyDown = false;
+        bool mouseAnyDown = false;
+        //Mainly used to tell if we started dragging or not, and 
+        //not meant to be an accurate representation of total distance dragged
+
+        internal float MouseWheelNotches => mouseWheelNotches;
+
+        internal bool[] MouseButtonStates => mouseButtonStates;
+
+        internal bool[] MousePrevButtonStates => prevMouseButtonStates;
+
+        // TOOD [priority=low] check that the many many flags relating to dragging are actually useful.
+        // I know that I copied a lot of this code from things I have already made in Processing, but 
+        // I wonder if I would still be using this kind of stuff ...
+
+        // TODO: better names here
+        internal bool MouseIsAnyDown => mouseAnyDown;
+        internal bool MouseIsAnyJustPressed => mouseAnyDown && !mouseWasAnyDown;
+        internal bool MouseIsAnyJustReleased => !mouseAnyDown && mouseWasAnyDown;
+        internal float MouseX => _window.MouseState.Position.X;
+        internal float MouseY => Height - _window.MouseState.Position.Y;
+
+        internal float MouseXDelta => _window.MouseState.Delta.X;
+        internal float MouseYDelta => -_window.MouseState.Delta.Y;
+
+        // Currently needs to be manually invoked by the OpenTKWindowWrapper or whatever
+        void OnWindowMouseWheel(OpenTK.Windowing.Common.MouseWheelEventArgs obj) {
+            incomingMousewheelNotches += obj.OffsetY;
+        }
+
+        internal bool MouseIsOver(Rect rect) {
+            float x = MouseX, y = MouseY,
+                left = rect.X0, right = rect.X1,
+                bottom = rect.Y0, top = rect.Y1;
+
+            if (x > left && x < right) {
+                if (y < top && y > bottom) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal bool MouseButtonJustPressed(MouseButton b) {
+            return !MouseButtonWasDown(b) && MouseButtonIsDown(b);
+        }
+
+        internal bool MouseButtonJustReleased(MouseButton b) {
+            return MouseButtonWasDown(b) && !MouseButtonIsDown(b);
+        }
+
+        internal bool MouseButtonIsDown(MouseButton b) {
+            if (b == MouseButton.Any)
+                return mouseAnyDown;
+
+            return mouseButtonStates[(int)b];
+        }
+
+        internal bool MouseButtonWasDown(MouseButton b) {
+            if (b == MouseButton.Any)
+                return mouseWasAnyDown;
+
+            return prevMouseButtonStates[(int)b];
+        }
+
+        private void MouseUpdateInput() {
+            // Swap the mouse input buffers
+            {
+                bool[] temp = prevMouseButtonStates;
+                prevMouseButtonStates = mouseButtonStates;
+                mouseButtonStates = temp;
+            }
+
+            // Update mouse wheel notches
+            {
+                mouseWheelNotches = incomingMousewheelNotches;
+                incomingMousewheelNotches = 0;
+            }
+
+            // Update mouse pressed states
+            {
+                mouseWasAnyDown = mouseAnyDown;
+
+                mouseAnyDown = false;
+
+                for (int i = 0; i < mouseButtonStates.Length; i++) {
+                    mouseButtonStates[i] = _window.MouseState.IsButtonDown(
+                            (OpenTK.Windowing.GraphicsLibraryFramework.MouseButton)i
+                        );
+
+                    mouseAnyDown = mouseAnyDown || mouseButtonStates[i];
+                }
+            }
+        }
+
+        #endregion
     }
 }

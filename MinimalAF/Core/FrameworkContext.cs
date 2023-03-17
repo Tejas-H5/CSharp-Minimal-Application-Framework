@@ -9,6 +9,9 @@ namespace MinimalAF {
             this.window = window;
         }
 
+        public Texture InternalFontTexture => CTX.InternalFontTexture;
+
+
         public FrameworkContext WithRect(Rect newRect) {
             var ctx = this;
             ctx.Rect = newRect;
@@ -239,6 +242,10 @@ namespace MinimalAF {
 
         public void DrawRect(Rect rect) {
             CTX.Rect.Draw(rect);
+        }
+
+        public Vector2 DrawChar(char character, float startX, float startY, float scale = 1.0f) {
+            return CTX.Text.DrawChar(character, startX, startY, scale);
         }
 
         public Vector2 DrawText(string text, float startX, float startY, HAlign hAlign, VAlign vAlign, float scale = 1.0f) {

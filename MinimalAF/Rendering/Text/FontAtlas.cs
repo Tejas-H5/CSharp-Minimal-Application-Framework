@@ -91,7 +91,7 @@ namespace MinimalAF.Rendering.Text {
         }
 
         public Rect GetCharacterUV(char c) {
-            if (!IsValidCharacter(c)) {
+            if (!HasCharacter(c)) {
                 c = '?';
             }
 
@@ -109,7 +109,7 @@ namespace MinimalAF.Rendering.Text {
             );
         }
 
-        public bool IsValidCharacter(char c) {
+        public bool HasCharacter(char c) {
             return _characterQuadCoords.ContainsKey(c);
         }
 

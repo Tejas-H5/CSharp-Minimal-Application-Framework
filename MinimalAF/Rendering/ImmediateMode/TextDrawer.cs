@@ -33,7 +33,7 @@ namespace MinimalAF.Rendering {
         }
 
         public float GetWidth(char c) {
-            if (ActiveFont.FontAtlas.IsValidCharacter(c)) {
+            if (ActiveFont.FontAtlas.HasCharacter(c)) {
                 return ActiveFont.FontAtlas.GetCharacterSize(c).X;
             }
 
@@ -44,7 +44,7 @@ namespace MinimalAF.Rendering {
                 case ' ':
                     return spaceWidth;
                 case '\t':
-                    return 4 * spaceWidth;
+                    return 4 * spaceWidth;  // lmao this isnt how tabs work. TODO: tab stops
             }
 
             return 0;
@@ -55,7 +55,7 @@ namespace MinimalAF.Rendering {
         }
 
         public Vector2 GetSize(char c) {
-            return ActiveFont.FontAtlas.GetCharacterSize(c);
+            return new Vector2(GetWidth(c), GetHeight(c));
         }
 
 
@@ -137,13 +137,11 @@ namespace MinimalAF.Rendering {
             for (int i = start; i < end; i++) {
                 char c = text[i];
 
-                if (ActiveFont.FontAtlas.IsValidCharacter(c)) {
-                    DrawCharacter(scale, x, y, c);
+                if (c == '\n') {
+                    x = startX;
+                    y -= ActiveFont.FontAtlas.CharHeight + 2;
                 } else {
-                    if (c == '\n') {
-                        x = startX;
-                        y -= ActiveFont.FontAtlas.CharHeight + 2;
-                    }
+                    DrawChar(c, x, y, scale);
                 }
 
                 x += GetWidth(c);
@@ -154,11 +152,17 @@ namespace MinimalAF.Rendering {
             return new Vector2(x, y);
         }
 
-        private void DrawCharacter(float scale, float x, float y, char c) {
+        public Vector2 DrawChar(char c, float x, float y, float scale = 1) {
             Vector2 size = GetSize(c);
-            Rect uv = ActiveFont.FontAtlas.GetCharacterUV(c);
 
-            CTX.Rect.Draw(new Rect(x, y, x + size.X * scale, y + size.Y * scale), uv);
+            if (ActiveFont.FontAtlas.HasCharacter(c)) {
+                Rect uv = ActiveFont.FontAtlas.GetCharacterUV(c);
+                CTX.Rect.Draw(new Rect(x, y, x + size.X * scale, y + size.Y * scale), uv);
+            } else if (c != ' ' && c != '\t') {
+                return DrawChar('?', x, y, scale);
+            }
+
+            return size;
         }
 
         public void Dispose() {

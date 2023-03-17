@@ -25,10 +25,8 @@ namespace RenderingEngineVisualTests {
         }
 
         readonly Random rand = new Random(1);
-
         int frames = 0;
         double time = 0;
-
         int amount = 10000;
         readonly int jump = 6000;
 
@@ -81,6 +79,8 @@ namespace RenderingEngineVisualTests {
                 "\nVertex refreshes: " + CTX.TimesVertexThresholdReached +
                 "\nIndex refreshes: " + CTX.TimesIndexThresholdReached +
                 "\nVertex:Index Ratio: " + CTX.VertexToIndexRatio;
+
+            text.ToCharArray();
 
             ctx.DrawText(text, 10, ctx.VH - 50);
         }

@@ -146,7 +146,7 @@ namespace MinimalAF.Rendering.Text {
         }
 
         public float GetCharWidth(char c) {
-            if (activeFont.FontAtlas.IsValidCharacter(c)) {
+            if (activeFont.FontAtlas.HasCharacter(c)) {
                 return activeFont.FontAtlas.GetCharacterSize(c).X;
             }
 

@@ -34,6 +34,19 @@ namespace RenderingEngineVisualTests {
             tests.AddTest("Perspective Camera Test", () => new PerspectiveCameraTest());
 
             new ProgramWindow((ctx) => tests.Init(ctx)).Run();
+
+            // This is a useful test, but I haven't figured out how to put it with the other tests
+            // just yet, because it changes the render frequency, meaning that tests can have
+            // an influence on the outcome of other tests.
+
+            //var fpsLimitedTests = new VisualTestRunner();
+            //fpsLimitedTests.AddTest("Deltatime powersaving loop + timing test", () => new DeltatimeTest());
+            //new ProgramWindow((ctx) => {
+            //    ctx.Window.RenderFrequency = 60.0;
+            //    return fpsLimitedTests.Init(ctx);
+            //}).Run();
+
+            Console.WriteLine("Done");
         }
     }
 }

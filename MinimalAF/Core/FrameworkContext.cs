@@ -5,17 +5,34 @@ using System.Collections.Generic;
 
 namespace MinimalAF {
     public struct FrameworkContext {
-        internal FrameworkContext(Rect rect, ProgramWindow window) {
+        /// <summary>
+        /// The rectangle where stuff will be drawn
+        /// </summary>
+        public Rect Rect;
+        /// <summary>
+        /// The window we are running in
+        /// </summary>
+        ProgramWindow window;
+
+        /// <summary>
+        /// Should we enable scissor test and set the scissor rect to Rect when we call Use?
+        /// </summary>
+        public bool RectShouldClipOverflow;
+
+
+        internal FrameworkContext(Rect rect, ProgramWindow window, bool isClipping) {
             Rect = rect;
             this.window = window;
+            this.RectShouldClipOverflow = isClipping;
         }
 
         public Texture InternalFontTexture => CTX.InternalFontTexture;
 
-
-        public FrameworkContext WithRect(Rect newRect) {
+        public FrameworkContext WithRect(Rect newRect, bool clipOverflow = false) {
             var ctx = this;
             ctx.Rect = newRect;
+            ctx.RectShouldClipOverflow = clipOverflow;
+
             return ctx;
         }
 
@@ -56,23 +73,23 @@ namespace MinimalAF {
         /// </summary>
         public FrameworkContext Use() {
             CTX.Texture.Use(null);
+            if (RectShouldClipOverflow) {
+                CTX.CurrentClippingRect = Rect;
+            } else {
+                CTX.DisableClipping();
+            }
 
             SetModel(Matrix4.Identity);
             SetProjectionCartesian2D(1, 1, 0, 0);
             return this;
         }
 
-        /// <summary>
-        /// The rectangle where stuff will be drawn
-        /// </summary>
-        public Rect Rect;
+
+
         public float VW => Rect.Width;
         public float VH => Rect.Height;
 
-        /// <summary>
-        /// The window we are running in
-        /// </summary>
-        ProgramWindow window;
+
         public ProgramWindow Window => window;
 
 
@@ -82,6 +99,10 @@ namespace MinimalAF {
         public void SetDrawColor(Color col, float alpha) { SetDrawColor(col.R, col.G, col.B, alpha); }
         public Texture GetTexture() { return CTX.Texture.Get(); }
         public void SetTexture(Texture texture) { CTX.Texture.Use(texture); }
+        /// <summary>
+        /// Note: Try to use a constant font and font size in as many places as you can, because currently we are creating a new font atlas
+        /// for each new font name and font size that you specify
+        /// </summary>
         public void SetFont(string name, int size = 16) { CTX.Text.SetFont(name, size); }
         public void SetClearColor(float r, float g, float b, float a) { CTX.SetClearColor(Color.RGBA(r, g, b, a)); }
         public void SetClearColor(Color value) { CTX.SetClearColor(value); }
@@ -96,15 +117,6 @@ namespace MinimalAF {
         public Matrix4 GetModelMatrix() { return CTX.Shader.Model; }
         public Matrix4 GetViewMatrix() { return CTX.Shader.View; }
         public Matrix4 GetProjectionMatrix() { return CTX.Shader.Projection; }
-
-        /// <summary>
-        /// Enables/disables the current clipping rect (Currently implement via GL.Scissor).
-        /// 
-        /// Use this when you want to render outside of your current clipping rectangle
-        /// </summary>
-        public void SetClipping(bool state) {
-            CTX.SetClipping(state);
-        }
 
         /// <summary>
         /// Clockwise-winding vertices are drawn, anti-clockwise are not
@@ -338,7 +350,7 @@ namespace MinimalAF {
         }
 
         // -- Inputs
-        public List<KeyCode> StruckKeys => window.StruckKeys;
+        public List<RepeatableKeyboardInput> RepeatableKeysInput => window.RepeatableKeysInput;
         public bool KeyJustPressed(KeyCode key) { return window.KeyJustPressed(key); }
         public bool KeyJustReleased(KeyCode key) { return window.KeyJustReleased(key); }
         public bool KeyWasDown(KeyCode key) { return window.KeyWasDown(key); }

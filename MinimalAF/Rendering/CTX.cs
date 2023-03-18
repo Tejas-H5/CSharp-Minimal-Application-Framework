@@ -60,12 +60,12 @@ namespace MinimalAF.Rendering {
             }
         }
 
-        internal static void SetClipping(bool state) {
-            if (state) {
-                GL.Enable(EnableCap.ScissorTest);
-            } else {
-                GL.Disable(EnableCap.ScissorTest);
-            }
+        /// <summary>
+        /// If you want to enable clipping, just set CurrentClippingRect
+        /// </summary>
+        internal static void DisableClipping() {
+            Flush();
+            GL.Disable(EnableCap.ScissorTest);
         }
 
         internal static Color ClearColor;

@@ -20,6 +20,27 @@ namespace MinimalAF {
         Fullscreen
     }
 
+
+    public enum RepeatableKeyboardInputType {
+        KeyboardInput,
+        TextInput
+    }
+
+    /// <summary>
+    /// These are for capturing inputs to a text input or similar
+    /// </summary>
+    public struct RepeatableKeyboardInput {
+        public RepeatableKeyboardInputType Type;
+        public KeyCode KeyCode;
+
+        /// <summary>
+        /// This is a unicode char codepoint returned by GLFW.
+        /// I've seen code examples of people just doing (char)TextInput but 
+        /// there is probably a better way to handle this
+        /// </summary>
+        public int TextInput;
+    }
+
     internal class OpenTKNativeWindowWrapper : NativeWindow {
         public OpenTKNativeWindowWrapper(NativeWindowSettings settings) : base(settings) {
         }
@@ -83,7 +104,8 @@ namespace MinimalAF {
 
             _window.IsVisible = false;
             _window.MouseWheel += OnWindowMouseWheel;
-            _window.KeyDown += OnTextInput;
+            _window.KeyDown += OnKeyDown;
+            _window.TextInput += OnTextInput;
             _window.Refresh = OnRefresh;
         }
 
@@ -207,6 +229,8 @@ namespace MinimalAF {
 
             // render
             {
+                var ctx = CreateFrameworkContext().Use();
+
                 CTX.SetViewport(new Rect(0, 0, Width, Height));
                 CTX.Clear();
 
@@ -215,7 +239,7 @@ namespace MinimalAF {
                 CTX.ContextHeight = Height;
                 CTX.ScreenHeight = Height;
 
-                _renderable.Render(CreateFrameworkContext());
+                _renderable.Render(ctx);
 
                 CTX.SwapBuffers();
             }
@@ -227,8 +251,9 @@ namespace MinimalAF {
         private FrameworkContext CreateFrameworkContext() {
             return new FrameworkContext(
                 new Rect(0, 0, Width, Height),
-                this    // this compile error will go away soon :)
-            ).Use();
+                this,
+                isClipping: false
+            );
         }
 
         public void SetWindowState(WindowState state) {
@@ -239,7 +264,7 @@ namespace MinimalAF {
 
         internal const string KEYBOARD_CHARS = "\t\b\n `1234567890-=qwertyuiop[]asdfghjkl;'\\zxcvbnm,./";
 
-        List<KeyCode> currentKeyboardInput = new List<KeyCode>();
+        List<RepeatableKeyboardInput> repeatableKeyInputs = new List<RepeatableKeyboardInput>();
         
         bool wasAnyHeld;
         bool isAnyHeld;
@@ -250,12 +275,38 @@ namespace MinimalAF {
         /// 
         /// In the future, this may be augmented with the GLFW TextInput callback have all inputted text
         /// </summary>
-        internal List<KeyCode> StruckKeys => currentKeyboardInput;
+        internal List<RepeatableKeyboardInput> RepeatableKeysInput => repeatableKeyInputs;
 
-        // this thing fires on repeats as well
-        private void OnTextInput(KeyboardKeyEventArgs args) {
+        
+        bool IsRepeatableKeyThatIsntCapturedByGLFWTextCallback(KeyCode key) {
+            return key == KeyCode.Left ||
+                key == KeyCode.Right ||
+                key == KeyCode.Up ||
+                key == KeyCode.Down ||
+                key == KeyCode.Enter ||
+                key == KeyCode.Backspace ||
+                key == KeyCode.PageUp ||
+                key == KeyCode.PageDown ||
+                key == KeyCode.Home ||
+                key == KeyCode.Tab ||
+                key == KeyCode.End;
+        }
+
+        // this thing fires on repeats as well, so it is useful for capturing inputs for
+        // text inputs and such but not necessarily for games
+        private void OnKeyDown(KeyboardKeyEventArgs args) {
+            repeatableKeyInputs.Add(new RepeatableKeyboardInput {
+                Type = RepeatableKeyboardInputType.KeyboardInput,
+                KeyCode = (KeyCode)args.Key
+            });
+        }
+
+        private void OnTextInput(TextInputEventArgs obj) {
             // TODO: proper utf8/unicode handling for MutableString
-            currentKeyboardInput.Add((KeyCode)args.Key);
+            repeatableKeyInputs.Add(new RepeatableKeyboardInput {
+                Type = RepeatableKeyboardInputType.TextInput,
+                TextInput = obj.Unicode
+            });
         }
 
 
@@ -318,7 +369,7 @@ namespace MinimalAF {
         }
 
         private void UpdateKeyInputsBeforePoll() {
-            currentKeyboardInput.Clear();
+            repeatableKeyInputs.Clear();
         }
 
         private void UpdateKeyInput() {

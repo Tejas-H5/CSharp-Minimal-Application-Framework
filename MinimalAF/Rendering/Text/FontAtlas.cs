@@ -22,7 +22,7 @@ namespace MinimalAF.Rendering.Text {
 
     //concept taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
     public class FontAtlas {
-        public const string DefaultCharacters = "!#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'";
+        public const string DefaultCharacters = "!#$%&\"()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'";
         private SKTypeface _skTypeface;
         private SKPaint _skStyle;
         private float _fontBottom;

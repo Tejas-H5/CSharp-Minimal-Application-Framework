@@ -1,6 +1,7 @@
 ﻿using MinimalAF.Rendering;
 using OpenTK.Mathematics;
 using System;
+using System.Collections.Generic;
 
 namespace MinimalAF {
     public struct FrameworkContext {
@@ -337,6 +338,7 @@ namespace MinimalAF {
         }
 
         // -- Inputs
+        public List<KeyCode> StruckKeys => window.StruckKeys;
         public bool KeyJustPressed(KeyCode key) { return window.KeyJustPressed(key); }
         public bool KeyJustReleased(KeyCode key) { return window.KeyJustReleased(key); }
         public bool KeyWasDown(KeyCode key) { return window.KeyWasDown(key); }

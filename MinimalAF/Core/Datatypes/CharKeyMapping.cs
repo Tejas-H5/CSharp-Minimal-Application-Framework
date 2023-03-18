@@ -159,167 +159,165 @@
             }
         }
 
-        public static char KeyCodeToChar(KeyCode key) {
+        public static (char, bool found) ToChar(this KeyCode key) {
             switch (key) {
                 case KeyCode.D1:
-                    return '1';
+                    return ('1', true);
 
                 case KeyCode.D2:
-                    return '2';
+                    return ('2', true);
 
                 case KeyCode.D3:
-                    return '3';
+                    return ('3', true);
 
                 case KeyCode.D4:
-                    return '4';
+                    return ('4', true);
 
                 case KeyCode.D5:
-                    return '5';
+                    return ('5', true);
 
                 case KeyCode.D6:
-                    return '6';
+                    return ('6', true);
 
                 case KeyCode.D7:
-                    return '7';
+                    return ('7', true);
 
                 case KeyCode.D8:
-                    return '8';
+                    return ('8', true);
 
                 case KeyCode.D9:
-                    return '9';
+                    return ('9', true);
 
                 case KeyCode.D0:
-                    return '0';
+                    return ('0', true);
 
                 case KeyCode.Q:
-                    return 'q';
+                    return ('q', true);
 
                 case KeyCode.W:
-                    return 'w';
+                    return ('w', true);
 
                 case KeyCode.E:
-                    return 'e';
+                    return ('e', true);
 
                 case KeyCode.R:
-                    return 'r';
+                    return ('r', true);
 
                 case KeyCode.T:
-                    return 't';
+                    return ('t', true);
 
                 case KeyCode.Y:
-                    return 'y';
+                    return ('y', true);
 
                 case KeyCode.U:
-                    return 'u';
+                    return ('u', true);
 
                 case KeyCode.I:
-                    return 'i';
+                    return ('i', true);
 
                 case KeyCode.O:
-                    return 'o';
+                    return ('o', true);
 
                 case KeyCode.P:
-                    return 'p';
+                    return ('p', true);
 
                 case KeyCode.A:
-                    return 'a';
+                    return ('a', true);
 
                 case KeyCode.S:
-                    return 's';
+                    return ('s', true);
 
                 case KeyCode.D:
-                    return 'd';
+                    return ('d', true);
 
                 case KeyCode.F:
-                    return 'f';
+                    return ('f', true);
 
                 case KeyCode.G:
-                    return 'g';
+                    return ('g', true);
 
                 case KeyCode.H:
-                    return 'h';
+                    return ('h', true);
 
                 case KeyCode.J:
-                    return 'j';
+                    return ('j', true);
 
                 case KeyCode.K:
-                    return 'k';
+                    return ('k', true);
 
                 case KeyCode.L:
-                    return 'l';
+                    return ('l', true);
 
                 case KeyCode.Z:
-                    return 'z';
+                    return ('z', true);
 
                 case KeyCode.X:
-                    return 'x';
+                    return ('x', true);
 
                 case KeyCode.C:
-                    return 'c';
+                    return ('c', true);
 
                 case KeyCode.V:
-                    return 'v';
+                    return ('v', true);
 
                 case KeyCode.B:
-                    return 'b';
+                    return ('b', true);
 
                 case KeyCode.N:
-                    return 'n';
+                    return ('n', true);
 
                 case KeyCode.M:
-                    return 'm';
+                    return ('m', true);
 
                 case KeyCode.BackTick:
-                    return '`';
+                    return ('`', true);
 
                 case KeyCode.LeftBracket:
-                    return '[';
+                    return ('[', true);
 
                 case KeyCode.RightBracket:
-                    return ']';
+                    return (']', true);
 
                 case KeyCode.Backslash:
-                    return '\\';
+                    return ('\\', true);
 
                 case KeyCode.Semicolon:
-                    return ';';
+                    return (';', true);
 
                 case KeyCode.Apostrophe:
-                    return '\'';
+                    return ('\'', true);
 
                 case KeyCode.Comma:
-                    return ',';
+                    return (',', true);
 
                 case KeyCode.Period:
-                    return '.';
+                    return ('.', true);
 
                 case KeyCode.Slash:
-                    return '/';
+                    return ('/', true);
 
                 case KeyCode.Minus:
-                    return '-';
+                    return ('-', true);
 
                 case KeyCode.Equal:
-                    return '=';
+                    return ('=', true);
 
                 case KeyCode.Space:
-                    return ' ';
+                    return (' ', true);
 
                 case KeyCode.Tab:
-                    return '\t';
+                    return ('\t', true);
 
                 case KeyCode.Enter:
-                    return '\n';
+                    return ('\n', true);
 
                 case KeyCode.NumpadEnter:
-                    return '\n';
-
+                    return ('\n', true);
                 case KeyCode.Backspace:
-                    return '\b';
-
+                    return ('\b', true);
+                default:
+                    return ((char)0, false);
             }
-
-            return (char)0;
         }
     }
 }

@@ -8,7 +8,8 @@ namespace RenderingEngineVisualTests {
             var held = new StringBuilder();
             for (KeyCode key = 0; key < KeyCode.EnumLength; key++) {
                 if (ctx.KeyIsDown(key)) {
-                    held.Append(CharKeyMapping.KeyCodeToChar(key));
+                    held.Append(key.ToString());
+                    held.Append(" ");
                 }
             }
 
@@ -19,7 +20,8 @@ namespace RenderingEngineVisualTests {
             var held = new StringBuilder();
             for (KeyCode key = 0; key < KeyCode.EnumLength; key++) {
                 if (ctx.KeyJustReleased(key)) {
-                    held.Append(CharKeyMapping.KeyCodeToChar(key));
+                    held.Append(key.ToString());
+                    held.Append(" ");
                 }
             }
 

@@ -8,7 +8,7 @@ namespace MinimalAF {
     /// <summary>
     /// To reduce string allocations when printing out text in a render loop
     /// </summary>
-    public struct MutableString {
+    public class MutableString {
         char[] characters;
         int length = 0;
         public char[] Characters => characters;
@@ -65,9 +65,10 @@ namespace MinimalAF {
         }
 
         public void Insert(char c, int pos) {
+            if (pos < 0 || pos > length) return;
             ResizeIfRequired(length + 1);
 
-            // moves all the characters to the right of pos one over.
+            // moves all the characters to the right of pos one more to the right
             // it is supposed to be fast because of cache coherency? I heard that on a youtube video somewhere but its hard to believe
             // TODO: test somehow
             for (var i = length; i > pos; i--) {
@@ -77,8 +78,18 @@ namespace MinimalAF {
             length++;
         }
 
-        public void Remove(char c, int pos) {
-        
+        public void Remove(int pos) {
+            if (pos < 0 || pos >= length) return;
+
+            // moves all the characters to the right of pos one to the left
+            for (var i = pos; i < length; i++) {
+                characters[i] = characters[i + 1];
+            }
+            length--;
+        }
+
+        public bool Contanis(char c) {
+            return Array.IndexOf(characters, c) != -1;
         }
     }
 }

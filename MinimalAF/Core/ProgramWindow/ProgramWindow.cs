@@ -6,6 +6,7 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
@@ -82,7 +83,7 @@ namespace MinimalAF {
 
             _window.IsVisible = false;
             _window.MouseWheel += OnWindowMouseWheel;
-            _window.TextInput += OnTextInput;
+            _window.KeyDown += OnTextInput;
             _window.Refresh = OnRefresh;
         }
 
@@ -177,7 +178,9 @@ namespace MinimalAF {
                 // important that these two are in this order:
 
                 // propagate all current event states to the previous event state
-                _window.ProcessInputEvents();   
+                _window.ProcessInputEvents();
+                UpdateKeyInputsBeforePoll();
+
                 // checks all events, then populates current even state through GLFW callbacks.
                 GLFW.PollEvents();  // is this thread-static?
             }
@@ -236,17 +239,23 @@ namespace MinimalAF {
 
         internal const string KEYBOARD_CHARS = "\t\b\n `1234567890-=qwertyuiop[]asdfghjkl;'\\zxcvbnm,./";
 
-        MutableString currentKeyboardInput = new MutableString();
-        MutableString lastKeyboardInput = new MutableString();
-
+        List<KeyCode> currentKeyboardInput = new List<KeyCode>();
+        
         bool wasAnyHeld;
         bool isAnyHeld;
 
-        public MutableString TextInput => lastKeyboardInput;
+        /// <summary>
+        /// StruckKeys is different fron KeyJustPressed, in that it contains all keys that were just pressed or
+        /// repeated. Mainly useful for keyboard input systems. 
+        /// 
+        /// In the future, this may be augmented with the GLFW TextInput callback have all inputted text
+        /// </summary>
+        internal List<KeyCode> StruckKeys => currentKeyboardInput;
 
-        private void OnTextInput(TextInputEventArgs obj) {
+        // this thing fires on repeats as well
+        private void OnTextInput(KeyboardKeyEventArgs args) {
             // TODO: proper utf8/unicode handling for MutableString
-            currentKeyboardInput.Append((char)obj.Unicode);
+            currentKeyboardInput.Add((KeyCode)args.Key);
         }
 
 
@@ -308,15 +317,13 @@ namespace MinimalAF {
             return _window.KeyboardState.IsKeyDown((Keys)key);
         }
 
+        private void UpdateKeyInputsBeforePoll() {
+            currentKeyboardInput.Clear();
+        }
+
         private void UpdateKeyInput() {
             wasAnyHeld = isAnyHeld;
             isAnyHeld = _window.KeyboardState.IsAnyKeyDown;
-
-            lastKeyboardInput.Clear();
-            for (int i = 0; i < currentKeyboardInput.Length; i++) {
-                lastKeyboardInput.Append(currentKeyboardInput[i]);
-            }
-            currentKeyboardInput.Clear();
         }
 
         #endregion

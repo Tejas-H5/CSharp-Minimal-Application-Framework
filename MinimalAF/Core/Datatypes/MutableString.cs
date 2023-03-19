@@ -47,12 +47,18 @@ namespace MinimalAF {
             length = newSize;
         }
 
-
-        public void RemoveRange(int start, int end) {
+        public void RemoveRange(int startIn, int endIn) {
             // TODO: implement this with an Insert method when I make it
 
+            int start = MathHelpers.Min(startIn, endIn);
+            int end = MathHelpers.Max(startIn, endIn);
+
             int amount = end - start;
-            for (int i = start; i < Length - amount; i++) {
+            if (amount == 0) {
+                return;
+            }
+
+            for (int i = start; i + amount < Length; i++) {
                 this.characters[i] = this.characters[i + amount];
             }
 

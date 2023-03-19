@@ -35,7 +35,14 @@ Which is what I am doing now actually.
     - ESC to clear the selection
     - should be able to be used with ALL other movement commands, almost no exceptions if possible
     - Funnily enough I implemented this wrong so now typing capital letters gets things selected. It's fixed now I think
-
+- Inserting text should replace the current selection [Ongoing]
+    - Looks like this is ongoing sadly. I have to make sure I remove whatever is selected from every method that inserts into the document or deletes.
+        - Backspace [DONE]
+            - need to make sure I reset the cursor position to the min of the two selected things
+        - Normal typing [DONE]
+        - Other cases [Haven't found any yet]
+- Tab stops of length 4
+    - going to insert spaces instead of tabs, tabs make moving up and down a line a bit complicated. It can be done, but I have to rewrite a bunch of code, and I would rather do that later tbh
 - ALT + LEFT, RIGHT to go back and forth through jump points
 
 - CTRL + up, CTRL + down to move between paragraphs

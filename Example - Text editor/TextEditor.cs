@@ -51,16 +51,6 @@ namespace TextEditor {
             );
         }
 
-        float lerp(float a, float b, float t) {
-            return a + (b - a) * t;
-        }
-        int min(int a, int b) {
-            return a < b ? a : b;
-        }
-        int max(int a, int b) {
-            return a > b ? a : b;
-        }
-
         void RenderText(FrameworkContext ctx) {
             float padding = 10;
 
@@ -74,7 +64,8 @@ namespace TextEditor {
             float charWidth = ctx.GetCharWidth();
             float documentY = 0;
 
-            _currentScroll = lerp(_currentScroll, _wantedScrollPos, 20 * Time.DeltaTime);
+            // _currentScroll = MathHelpers.Lerp(_currentScroll, _wantedScrollPos, 50 * Time.DeltaTime);
+            _currentScroll = _wantedScrollPos;
 
             var relativeY = () => (documentY + ctx.VH * 0.5f - _currentScroll);
             int startPos = 0;
@@ -150,8 +141,8 @@ namespace TextEditor {
                                         var s = ctx.DrawChar(c, x, y);
 
                                         // set up a highlight region if applicable
-                                        int minSel = min(_selectStartPos, _selectEndPos);
-                                        int maxSel = max(_selectStartPos, _selectEndPos);
+                                        int minSel = MathHelpers.Min(_selectStartPos, _selectEndPos);
+                                        int maxSel = MathHelpers.Max(_selectStartPos, _selectEndPos);
                                         if (HasSelection && (i >= minSel && i < maxSel)) {
                                             _highlightRegions.Add(new Rect(x, y, x + s.X, y + s.Y));
                                         }
@@ -192,6 +183,29 @@ namespace TextEditor {
             Update(ref ctx);
         }
 
+        void CancelSelection() {
+            // _cursorPos as the value to set here is not an arbitrary decision. It allows selections to work as expected when 
+            // Typing capital letters while holding shift, and then moving around while still holding down shift
+            _selectStartPos = _cursorPos;
+            _selectEndPos = _cursorPos;
+            _bufferLengthWhenSelectionWasMade = _buffer.Length;
+        }
+
+        int AddLetterAtPosition(int pos, char c) {
+            if (HasSelection) {
+                pos = DeleteSelection(_selectStartPos, _selectEndPos);
+            }
+
+            return _buffer.AddLetterAtCursor(pos, c);
+        }
+
+        int DeleteSelection(int start, int end) {
+            _buffer.RemoveRange(start, end);
+            CancelSelection();
+
+            return MathHelpers.Min(start, end);
+        }
+
         void Update(ref FrameworkContext ctx) {
             // selection part one
             {
@@ -214,19 +228,21 @@ namespace TextEditor {
                     var rKey = ctx.RepeatableKeysInput[i];
 
                     if (rKey.Type == RepeatableKeyboardInputType.TextInput) {
-                        _cursorPos = _buffer.AddLetterAtCursor(_cursorPos, (char)rKey.TextInput);
+                        _cursorPos = AddLetterAtPosition(_cursorPos, (char)rKey.TextInput);
                         continue;
                     }
 
                     if (rKey.Type == RepeatableKeyboardInputType.KeyboardInput) {
                         var key = rKey.KeyCode;
                         if (key == KeyCode.Enter) {
-                            _cursorPos = _buffer.AddLetterAtCursor(_cursorPos, '\n');
+                            _cursorPos = AddLetterAtPosition(_cursorPos, '\n');
                             continue;
                         }
 
                         if (key == KeyCode.Backspace) {
-                            if (ctx.KeyIsDown(KeyCode.Control)) {
+                            if (HasSelection) {
+                                _cursorPos = DeleteSelection(_selectStartPos, _selectEndPos);
+                            } else if (ctx.KeyIsDown(KeyCode.Control)) {
                                 // remove an entire word
                                 int toPrevWord = _buffer.MoveCursorBackAWord(_cursorPos);
                                 _buffer.RemoveRange(toPrevWord, _cursorPos);
@@ -239,7 +255,7 @@ namespace TextEditor {
                         }
 
                         if (key == KeyCode.Tab) {
-                            _cursorPos = _buffer.AddLetterAtCursor(_cursorPos, '\t');
+                            _cursorPos = AddLetterAtPosition(_cursorPos, '\t');
                             continue;
                         }
 
@@ -257,14 +273,9 @@ namespace TextEditor {
                 {
                     bool shouldCancelSelection = ctx.KeyJustPressed(KeyCode.Escape) || _bufferLengthWhenSelectionWasMade != _buffer.Length;
                     if (shouldCancelSelection) {
-                        // _cursorPos is not an arbitrary decision. It allows selections to work as expected when 
-                        // Typing capital letters while holding shift, and then moving while still holding down shift
-                        _selectStartPos = _cursorPos;
-                        _selectEndPos = _cursorPos;
-                        _bufferLengthWhenSelectionWasMade = _buffer.Length;
+                        CancelSelection();
                     }
                 }
-
             }
 
             // process scrolling the mosuewheel

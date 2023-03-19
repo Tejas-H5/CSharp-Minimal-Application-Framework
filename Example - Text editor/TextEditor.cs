@@ -7,10 +7,11 @@ namespace TextEditor {
         // offset from start of bufferer where we are inserting/removing characters
         int _cursorPos = 0;
         TextBuffer _buffer;
-        float _lastCursorPosY = 0;
+        float _wantedScrollPos = 0;
+        float _currentScroll = 0;
 
         public TextEditor() {
-            // _buffer = new TextBuffer();
+            // _buffer = new TextBuffer("");
             _buffer = new TextBuffer(
                 TestData.TextTextCSharpCodeIDKwhereitsfromguysWhatCouldItBe
                     .Replace("\r", "")
@@ -33,6 +34,10 @@ namespace TextEditor {
             );
         }
 
+        float lerp(float a, float b, float t) {
+            return a + (b - a) * t;
+        }
+
         void RenderText(FrameworkContext ctx) {
             float padding = 10;
 
@@ -45,14 +50,18 @@ namespace TextEditor {
             float charHeight = ctx.GetCharHeight();
             float charWidth = ctx.GetCharWidth();
             float documentY = 0;
-            var relativeY = () => (documentY + ctx.VH * 0.5f - _lastCursorPosY);
+
+            _currentScroll = lerp(_currentScroll, _wantedScrollPos, 20 * Time.DeltaTime);
+
+            var relativeY = () => (documentY + ctx.VH * 0.5f - _currentScroll);
             int startPos = 0;
 
-            float startY = documentY;
-            int startLineNumber = currentLineNumber;
-            int maxLineNumber = currentLineNumber + (int)Math.Ceiling(ctx.VH / charHeight);
+            // float startY = documentY;
+            // int startLineNumber = currentLineNumber;
+
             // TODO: remove allocation. Need to update text API to support MutableString
-            float lineNumberMargin = ctx.GetStringWidth(maxLineNumber.ToString()) + 2 * padding;
+            int totalLineCount = _buffer.CountOccurrances("\n");
+            float lineNumberMargin = ctx.GetStringWidth(totalLineCount.ToString()) + 2 * padding;
 
             // render all the text
             {
@@ -121,7 +130,7 @@ namespace TextEditor {
                                 ctx.DrawRect(characterStartX, characterStartY, characterStartX + cursorWidth, characterStartY + charHeight);
                                 ctx.SetTexture(ctx.InternalFontTexture);
 
-                                _lastCursorPosY = documentY;
+                                _wantedScrollPos = documentY;
                             }
 
                             if (lineEnded) {
@@ -136,24 +145,29 @@ namespace TextEditor {
             ProcessInputs(ref ctx);
         }
 
-        void ProcessMovementModeInputs(ref FrameworkContext ctx) {
-            for (int i = 0; i < ctx.RepeatableKeysInput.Count; i++) {
-                var rKey = ctx.RepeatableKeysInput[i];
-                if (rKey.Type == RepeatableKeyboardInputType.TextInput) continue;
-
-                var key = rKey.KeyCode;
-                if (key == KeyCode.A) {
-                    _cursorPos = _buffer.MoveCursorToEndOfPreviousWord(_cursorPos);
-                } else if (key == KeyCode.D) {
-                    _cursorPos = _buffer.MoveCursorToEndOfNextWord(_cursorPos);
-                } else if (rKey.KeyCode == KeyCode.W) {
-                    _cursorPos = _buffer.MoveCursorUpALine(_cursorPos);
-                } else if (rKey.KeyCode == KeyCode.S) {
-                    _cursorPos = _buffer.MoveCursorDownALine(_cursorPos);
-                }
+        // A problem with C# is that to get aesthetic looking switch statements you
+        // need to extract functions
+        int MoveCursorBasedOnKeyCodeForMovementMode(KeyCode key, int pos) {
+            switch (key) {
+                case KeyCode.J:
+                    return _buffer.ClampCursorPosition(pos - 1);
+                case KeyCode.L:
+                    return _buffer.ClampCursorPosition(pos + 1);
+                case KeyCode.I:
+                    return _buffer.MoveCursorUpALine(pos);
+                case KeyCode.K:
+                    return _buffer.MoveCursorDownALine(pos);
+                case KeyCode.O:
+                    return _buffer.MoveCursorToEndOfLine(pos);
+                case KeyCode.U:
+                    return _buffer.MoveCursorToHomeOfLine(pos);
+                case KeyCode.D:
+                    return _buffer.MoveCursorToEndOfNextWord(pos);
+                case KeyCode.A:
+                    return _buffer.MoveCursorToEndOfPreviousWord(pos);
             }
 
-            ProcessTypicalMovement(ref ctx);
+            return pos;
         }
 
         void ProcessInsertModeInputs(ref FrameworkContext ctx) {
@@ -187,30 +201,51 @@ namespace TextEditor {
             ProcessTypicalMovement(ref ctx);
         }
 
+
+        // A problem with C# is that to get aesthetic looking switch statements you
+        // need to extract functions
+        int MoveCursorBasedOnKeyCodeForTypicalMovement(KeyCode key, int pos) {
+            switch (key) {
+                case KeyCode.Left:
+                    return _buffer.ClampCursorPosition(pos - 1);
+                case KeyCode.Right:
+                    return _buffer.ClampCursorPosition(pos + 1);
+                case KeyCode.Up:
+                    return _buffer.MoveCursorUpALine(pos);
+                case KeyCode.Down:
+                    return _buffer.MoveCursorDownALine(pos);
+                case KeyCode.End:
+                    return _buffer.MoveCursorToEndOfLine(pos);
+                case KeyCode.Home:
+                    return _buffer.MoveCursorToHomeOfLine(pos);
+            }
+
+            return pos;
+        }
+
+
         void ProcessTypicalMovement(ref FrameworkContext ctx) {
             for(int i = 0; i < ctx.RepeatableKeysInput.Count; i++) {
                 var rKey = ctx.RepeatableKeysInput[i];
                 if (rKey.Type == RepeatableKeyboardInputType.TextInput) continue;
 
-                if (rKey.KeyCode == KeyCode.Left) {
-                    _cursorPos = _buffer.MoveCursor(_cursorPos - 1);
-                } else if (rKey.KeyCode == KeyCode.Right) {
-                    _cursorPos = _buffer.MoveCursor(_cursorPos + 1);
-                } else if (rKey.KeyCode == KeyCode.Up) {
-                    _cursorPos = _buffer.MoveCursorUpALine(_cursorPos);
-                } else if (rKey.KeyCode == KeyCode.Right) {
-                    _cursorPos = _buffer.MoveCursorDownALine(_cursorPos);
-                }
+                _cursorPos = MoveCursorBasedOnKeyCodeForTypicalMovement(rKey.KeyCode, _cursorPos);
             }
         }
 
         void ProcessInputs(ref FrameworkContext ctx) {
-            if (ctx.KeyIsDown(KeyCode.Control)) {
-                ProcessMovementModeInputs(ref ctx);
-                return;
-            }
-
             ProcessInsertModeInputs(ref ctx);
+
+            Console.WriteLine(ctx.MouseWheelNotches);
+            if (ctx.MouseWheelNotches > 0.5f) {
+                for (int i = 0; i < 5; i++) {
+                    _cursorPos = _buffer.MoveCursorUpALine(_cursorPos);
+                }
+            } else if (ctx.MouseWheelNotches < -0.5f) {
+                for (int i = 0; i < 5; i++) {
+                    _cursorPos = _buffer.MoveCursorDownALine(_cursorPos);
+                }
+            }
         }
     }
 }

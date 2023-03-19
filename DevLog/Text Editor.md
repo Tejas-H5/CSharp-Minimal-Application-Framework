@@ -26,38 +26,32 @@ Why not VIM?
 Which is what I am doing now actually. 
 
 ## Features left to add:
-Not all features are listed here, I only started making this list after I had a bunch of them in already.
 
+- CTRL + Backspace to erase the  last word
+- CTRL + END, HOME 
+    - maybe this can be scoped based. so rather than going to the end of the document, you go to the 
+    start of the block, then the previous block, then the start of the document.
+- ALT + LEFT, RIGHT to go back and forth through jump points
+- SHIFT HOLD to start select
+    - ESC to clear the selection
+    - should be able to be used with all other movement commands
+- CTRL + up, CTRL + down to move between paragraphs
+- CTRL + Z, CTRL + Y to undo and redo
+- CTRL + C, CTRL + V to copy paste
+- CTRL + SHIFT + C, CTRL + SHIFT + V to copy paste to a buffer that u select with numbers
+- CTRL + B to see what u have in the 0 to 9 buffers and edit that stuff before you paste
+- CTRL + F to start finding stuff, enter to select to the next thing
+- CTRL + R to replace
+- CTRL + . to repeat the last thing you did
+- CTRL + S to open up the save menu -> 
+    - ESC to close
+    - CTRL + S to save
+- CTRL + P to open
+- CTRL + new to make a new file
+- CTRL + G to go to a line number
+- 
 
-- Line numbers [DONE]
-- Keep the current line in the vertical center at all times [DONE]
-    - feature is harder than I thought. I will need some way to know how far down in the document the cursor is.
-    Word wrap is what makes this hard. 
-    I guess the easy way would be to just render every letter. And then just use like some sort of offset to get the cursor where
-    it needs to be. I will try that for now, and move to something else
-- Typical movement (These movements work on literally every text input in the operating system, and even across operating systems I think. Its a bit silly to not have these in some way or another)
-    - CTRL + backspace to delete a whole world
-    - CTRL + delete to delete the next word
-    - DELETE to delete the next char
+## Features I've canned
+
 - Movement mode [hold down Ctrl]
-    - Jump to the end of the line [E]
-    - Jump to the start of the line [Q]
-    - CTRL + F to enter 'find mode' 
-        - CTRL + F + A to enter reverse find ?
-        - toggle case sensitive, whole word
-            - CTRL + Q in find mode to toggle case sensitive
-            - CTRL + W in find mode to toggle whole word
-        - Type something, and we get matches for it
-        - 
-- Command mode [ CTRL + SPACE ]
-    - Save file
-    - Run terminal command ? (idk if this is hard or not. maybe not if it's too hard)
-    - CTRL + J, K, L, ; -> Go to editor
-    - CTRL + P
-        - open file in folder
-     
-- Select mode [hold down CTRL + SHIFT]
-    - pressing shift highlights from the start of the move to the end
-    - Backspace deletes the selection
-
-
+    

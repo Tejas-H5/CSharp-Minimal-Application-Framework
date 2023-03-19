@@ -14,7 +14,7 @@ namespace TextEditor {
             }
         }
 
-        public int MoveCursor(int newPosition) {
+        public int ClampCursorPosition(int newPosition) {
             if (newPosition < 0) newPosition = 0;
             if (newPosition > _buffer.Length) newPosition = _buffer.Length;
             return newPosition;
@@ -26,11 +26,11 @@ namespace TextEditor {
             if (c == '\b') {
                 // we really want to remove a character that is behind the cursor
                 _buffer.Remove(cursorPosition - 1);
-                return MoveCursor(cursorPosition - 1);
+                return ClampCursorPosition(cursorPosition - 1);
             }
 
             _buffer.Insert(c, cursorPosition);
-            return MoveCursor(cursorPosition + 1);
+            return ClampCursorPosition(cursorPosition + 1);
         }
 
         public int MoveCursorToEndOfNextWord(int pos) {
@@ -71,63 +71,106 @@ namespace TextEditor {
             return pos;
         }
 
-        public int MoveCursorUpALine(int pos) {
-            int prevNewLine  = _buffer.PrevIndexOf("\n", pos);
+        public int MoveCursorToLineStart(int pos) {
+            int prevNewLine = _buffer.PrevIndexOf("\n", pos - 1);
             if (prevNewLine == -1) {
-                // We are at the start of the file, don't move the cursor anywhere ? 
-                return pos;
+                return 0;
+            }
+            return prevNewLine + 1;
+        }
+
+        int max(int a, int b) {
+            return a > b ? a : b;
+        }
+
+        public int MoveCursorUpALine(int pos) {
+            pos = ClampCursorPosition(pos);
+
+            int startOfThisLine = MoveCursorToLineStart(pos);
+            if (startOfThisLine == 0) {
+                return 0;
             }
 
-            int currentDistFromPrevNewLine = pos - prevNewLine;
-            int previousPreviousNewline = _buffer.PrevIndexOf("\n", pos - currentDistFromPrevNewLine - 1);
+            int startOfPreviousLine = MoveCursorToLineStart(startOfThisLine - 1);
+            int endOfPreviousLine = startOfThisLine - 1;
+            return min(endOfPreviousLine, startOfPreviousLine + (pos - startOfThisLine));
+        }
 
-            if (previousPreviousNewline == -1) {
-                // we found prevNewLine, so we are probably 1 line from the top of the file.
-                previousPreviousNewline = 0;
-            }
-
-            int previousLineLength = prevNewLine - previousPreviousNewline;
-            if (currentDistFromPrevNewLine > previousLineLength) {
-                return prevNewLine;
-            }
-
-            return previousPreviousNewline + currentDistFromPrevNewLine;
+        int min(int a, int b) {
+            return a < b ? a : b;
         }
 
         public int MoveCursorDownALine(int pos) {
-            int prevNewLine = _buffer.PrevIndexOf("\n", pos - 1);
-            if (prevNewLine == -1) {
-                // We are at the start of the file, can just use 0
-                prevNewLine = 0;
-            }
-            int currentDistFromPrevNewLine = pos - prevNewLine;
+            // Using this algorithm: newPosition = min(endOfNextLine, startOfNextLine + (pos - startOfThisLine))
 
-            int nextNewLine = _buffer.IndexOf("\n", pos);
-            if (nextNewLine == -1) {
-                // we are at the end of the file, dont move anywhere
-                return pos;
-            }
+            pos = ClampCursorPosition(pos);
+            int startOfThisLine = MoveCursorToLineStart(pos);
 
-            int nextNextNewLine = _buffer.IndexOf("\n", nextNewLine + 1);
-            if (nextNextNewLine == -1) {
-                // we found nextNewLine so we are 1 line from the end of the file.
-                nextNextNewLine = _buffer.Length;
+            int endOfThisLine = MoveCursorToEndOfLine(pos);
+            if (endOfThisLine == _buffer.Length) {
+                return endOfThisLine;
             }
+            int startOfNextLine = endOfThisLine + 1;
+            int endOfNextLine = MoveCursorToEndOfLine(startOfNextLine);
 
-            int nextLineLength = nextNextNewLine - nextNewLine;
-            if (currentDistFromPrevNewLine > nextLineLength) {
-                return nextNextNewLine;
+            return min(endOfNextLine, startOfNextLine + (pos - startOfThisLine));
+        }
+
+        public int MoveCursorToEndOfLine(int pos) {
+            pos = _buffer.IndexOf("\n", pos);
+            if (pos == -1) {
+                pos = _buffer.Length;
             }
-
-            return nextNewLine + currentDistFromPrevNewLine;
+            return pos;
         }
 
         /// <summary>
-        /// You would use this to iterate an immediate mode render loop
+        /// The behaviour when we press 'home' in a typical editor
         /// </summary>
-        public int MoveCursorToNextLine(int pos) {
-            return _buffer.IndexOf("\n", pos + 1);
+        public int MoveCursorToHomeOfLine(int pos) {
+            // if we are at the start of the line, dont move anywhere
+            if (pos > 0 && _buffer[pos - 1] == '\n') {
+                return pos;
+            }
+
+            // we don't actually want to go to the start of the line.
+            // we want to go the first non-whitespace character in the line.
+            // and if the cursor is already there or before there, _then_ we go to the start of the line.
+            // Some editors will go back to the first non-whitespace char if we are at the very start of the line,
+            // but I think that is kinda annoying so I won't implement that
+
+            int lineStart = MoveCursorToLineStart(pos);
+            if (lineStart == pos) {
+                return pos;
+            }
+
+            int firstNonWhitspace = lineStart;
+            while (
+                firstNonWhitspace < _buffer.Length && 
+                char.IsWhiteSpace(_buffer[firstNonWhitspace])
+            ) {
+                firstNonWhitspace++;
+            }
+
+            return firstNonWhitspace;
         }
 
+        public int CountOccurrances(string s) {
+            int count = 0;
+            for(int i = 0; i < _buffer.Length; i++) {
+                if (_buffer.CompareAtPosition(s, i)) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+#if DEBUG
+        public static void RunTests(Testing t) {
+            t.Run("MoveCursorToStartOfLine - tests", (ctx) => {
+                // TODO: write tests
+            });
+        }
+#endif
     }
 }

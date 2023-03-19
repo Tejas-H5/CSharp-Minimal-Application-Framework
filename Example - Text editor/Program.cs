@@ -11,6 +11,12 @@ namespace TextEditor {
 
     class Program {
         static void Main(string[] args) {
+#if DEBUG
+            var test = new Testing();
+            TextBuffer.RunTests(test);
+#endif
+
+
             new ProgramWindow((FrameworkContext ctx) => {
                 ctx.SetClearColor(AppColors.BG);
                 ctx.Window.Title = "Text editor";

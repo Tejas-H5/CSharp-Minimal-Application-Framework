@@ -26,7 +26,7 @@ namespace MinimalAF {
             this.RectShouldClipOverflow = isClipping;
         }
 
-        public Texture InternalFontTexture => CTX.InternalFontTexture;
+        internal Texture InternalFontTexture => CTX.InternalFontTexture;
 
         public FrameworkContext WithRect(Rect newRect, bool clipOverflow = false) {
             var ctx = this;
@@ -259,6 +259,13 @@ namespace MinimalAF {
 
         public Vector2 DrawChar(char character, float startX, float startY, float scale = 1.0f) {
             return CTX.Text.DrawChar(character, startX, startY, scale);
+        }
+
+        /// <summary>
+        /// You will need to call this before calling DrawChar.
+        /// </summary>
+        public void SetTextureToCurrentFontTexture() {
+            SetTexture(InternalFontTexture);
         }
 
         public Vector2 DrawText(string text, float startX, float startY, HAlign hAlign, VAlign vAlign, float scale = 1.0f) {

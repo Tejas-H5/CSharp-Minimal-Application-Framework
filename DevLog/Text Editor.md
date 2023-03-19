@@ -27,14 +27,17 @@ Which is what I am doing now actually.
 
 ## Features left to add:
 
-- CTRL + Backspace to erase the  last word
-- CTRL + END, HOME 
+- CTRL + Backspace to erase the  last word [Done, scuffed]
+- CTRL + END, HOME  [Done kinda]
     - maybe this can be scoped based. so rather than going to the end of the document, you go to the 
     start of the block, then the previous block, then the start of the document.
-- ALT + LEFT, RIGHT to go back and forth through jump points
-- SHIFT HOLD to start select
+- SHIFT HOLD to start select [DONE]
     - ESC to clear the selection
-    - should be able to be used with all other movement commands
+    - should be able to be used with ALL other movement commands, almost no exceptions if possible
+    - Funnily enough I implemented this wrong so now typing capital letters gets things selected. It's fixed now I think
+
+- ALT + LEFT, RIGHT to go back and forth through jump points
+
 - CTRL + up, CTRL + down to move between paragraphs
 - CTRL + Z, CTRL + Y to undo and redo
 - CTRL + C, CTRL + V to copy paste

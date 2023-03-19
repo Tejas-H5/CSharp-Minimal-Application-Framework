@@ -47,6 +47,18 @@ namespace MinimalAF {
             length = newSize;
         }
 
+
+        public void RemoveRange(int start, int end) {
+            // TODO: implement this with an Insert method when I make it
+
+            int amount = end - start;
+            for (int i = start; i < Length - amount; i++) {
+                this.characters[i] = this.characters[i + amount];
+            }
+
+            length -= amount;
+        }
+
         void ResizeBackingBufferIfRequired(int additionalChars) {
             int newLength = length + additionalChars;
             if (newLength > 100000) {

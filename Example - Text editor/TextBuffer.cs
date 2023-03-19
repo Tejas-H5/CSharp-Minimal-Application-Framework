@@ -9,7 +9,7 @@ namespace TextEditor {
 
         public TextBuffer(string initText) {
             _buffer.Resize(initText.Length);
-            for(int i = 0; i < initText.Length; i++) {
+            for (int i = 0; i < initText.Length; i++) {
                 _buffer[i] = initText[i];
             }
         }
@@ -20,20 +20,35 @@ namespace TextEditor {
             return newPosition;
         }
 
+        public int BackspaceLetter(int cursorPosition) {
+            cursorPosition--;
+            // we really want to remove a character that is behind the cursor
+            _buffer.Remove(cursorPosition);
+            return ClampCursorPosition(cursorPosition);
+        }
+
+
         public int AddLetterAtCursor(int cursorPosition, char c) {
             if (c == '\r') return cursorPosition;
 
             if (c == '\b') {
-                // we really want to remove a character that is behind the cursor
-                _buffer.Remove(cursorPosition - 1);
-                return ClampCursorPosition(cursorPosition - 1);
+                return BackspaceLetter(cursorPosition);
             }
 
             _buffer.Insert(c, cursorPosition);
             return ClampCursorPosition(cursorPosition + 1);
         }
 
-        public int MoveCursorToEndOfNextWord(int pos) {
+
+        bool IsNonWord(int pos) {
+            return (
+                !char.IsLetter(_buffer[pos]) &&
+                !char.IsPunctuation(_buffer[pos])
+            );
+        }
+
+        public int MoveCursorForwardsAWord(int pos) {
+            pos++;
             if (pos >= _buffer.Length) return _buffer.Length;
 
             if (char.IsLetter(_buffer[pos])) {
@@ -45,14 +60,21 @@ namespace TextEditor {
             }
 
             // move to the start of the next word
-            while (pos < _buffer.Length && !char.IsLetter(_buffer[pos])) {
+            while (
+                pos < _buffer.Length && (
+                    !char.IsLetter(_buffer[pos]) &&
+                    !char.IsPunctuation(_buffer[pos]) &&
+                    _buffer[pos] != '\n'
+                )
+            ) {
                 pos++;
             }
 
             return pos;
         }
 
-        public int MoveCursorToEndOfPreviousWord(int pos) {
+        public int MoveCursorBackAWord(int pos) {
+            pos--;
             if (pos <= 0) return 0;
 
             if (char.IsLetter(_buffer[pos - 1])) {
@@ -64,7 +86,13 @@ namespace TextEditor {
             }
 
             // move to (1 before) the start of the next word (going backwards)
-            while (pos > 0 && !char.IsLetter(_buffer[pos - 1])) {
+            while (
+                pos > 0 && (
+                    !char.IsLetter(_buffer[pos - 1]) && 
+                    !char.IsPunctuation(_buffer[pos - 1]) && 
+                    _buffer[pos - 1] != '\n'
+                )
+            ) {
                 pos--;
             }
 
@@ -136,11 +164,11 @@ namespace TextEditor {
             // we don't actually want to go to the start of the line.
             // we want to go the first non-whitespace character in the line.
             // and if the cursor is already there or before there, _then_ we go to the start of the line.
-            // Some editors will go back to the first non-whitespace char if we are at the very start of the line,
-            // but I think that is kinda annoying so I won't implement that
 
             int lineStart = MoveCursorToLineStart(pos);
             if (lineStart == pos) {
+                // Some editors will go back to the first non-whitespace char if we are at the very start of the line,
+                // but I think that is kinda annoying so I won't implement that
                 return pos;
             }
 
@@ -150,6 +178,10 @@ namespace TextEditor {
                 char.IsWhiteSpace(_buffer[firstNonWhitspace])
             ) {
                 firstNonWhitspace++;
+            }
+
+            if (pos == firstNonWhitspace) {
+                return lineStart;
             }
 
             return firstNonWhitspace;
@@ -165,9 +197,13 @@ namespace TextEditor {
             return count;
         }
 
+        public void RemoveRange(int start, int end) {
+            _buffer.RemoveRange(start, end);
+        }
+
 #if DEBUG
         public static void RunTests(Testing t) {
-            t.Run("MoveCursorToStartOfLine - tests", (ctx) => {
+            t.Run("MoveCursorToStartOfLine - tests (there are no tests tbh)", (ctx) => {
                 // TODO: write tests
             });
         }

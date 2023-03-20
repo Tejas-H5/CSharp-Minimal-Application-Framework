@@ -172,6 +172,7 @@ namespace TextEditor {
                 return pos;
             }
 
+
             int firstNonWhitspace = lineStart;
             while (
                 firstNonWhitspace < _buffer.Length && 
@@ -180,7 +181,7 @@ namespace TextEditor {
                 firstNonWhitspace++;
             }
 
-            if (pos == firstNonWhitspace) {
+            if (pos <= firstNonWhitspace) {
                 return lineStart;
             }
 
@@ -199,6 +200,32 @@ namespace TextEditor {
 
         public void RemoveRange(int start, int end) {
             _buffer.RemoveRange(start, end);
+        }
+
+        /// <summary>
+        /// Literally a linear search, not a super efficient method at the moment
+        /// so avoid using this too much.
+        /// </summary>
+        public int GetLinePos(int lineNumber) {
+            int currentLine = 0;
+            for(int i = 0; i < _buffer.Length; i++) {
+                if (_buffer[i] == '\n') {
+                    currentLine++;
+                    if (lineNumber == currentLine) {
+                        return i+1;
+                    }
+                }
+            }
+
+            return -1;
+        }
+
+        public void Clear() {
+            _buffer.Clear();
+        }
+
+        public string BuildString() {
+            return _buffer.BuildString();
         }
 
 #if DEBUG

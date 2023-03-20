@@ -41,8 +41,14 @@ Which is what I am doing now actually.
             - need to make sure I reset the cursor position to the min of the two selected things
         - Normal typing [DONE]
         - Other cases [Haven't found any yet]
-- Tab stops of length 4
+- Tab stops of length 4 [Multiple features]
     - going to insert spaces instead of tabs, tabs make moving up and down a line a bit complicated. It can be done, but I have to rewrite a bunch of code, and I would rather do that later tbh
+    - When adding \t [Done]
+    - when Backspacing whitespace [TODO]
+- CTRL + G to go to a line number [Done]
+- CTRL + F to start finding stuff, enter to select to the next thing [DOING]
+    - CTRL + R to replace
+
 - ALT + LEFT, RIGHT to go back and forth through jump points
 
 - CTRL + up, CTRL + down to move between paragraphs
@@ -50,15 +56,14 @@ Which is what I am doing now actually.
 - CTRL + C, CTRL + V to copy paste
 - CTRL + SHIFT + C, CTRL + SHIFT + V to copy paste to a buffer that u select with numbers
 - CTRL + B to see what u have in the 0 to 9 buffers and edit that stuff before you paste
-- CTRL + F to start finding stuff, enter to select to the next thing
-- CTRL + R to replace
+
 - CTRL + . to repeat the last thing you did
 - CTRL + S to open up the save menu -> 
     - ESC to close
     - CTRL + S to save
 - CTRL + P to open
 - CTRL + new to make a new file
-- CTRL + G to go to a line number
+
 - 
 
 ## Features I've canned

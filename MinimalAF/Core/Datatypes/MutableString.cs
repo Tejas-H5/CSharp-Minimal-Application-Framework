@@ -179,5 +179,22 @@ namespace MinimalAF {
 
             return -1;
         }
+
+        /// <summary>
+        /// Use this for debug purposes or one-time things only, it allocates a whole array
+        /// each time. 
+        /// 
+        /// An example use case is for a modal that wants a user to input an int value, and
+        /// they input that stuff into this. You would only call ToString()
+        /// if you want to pass this input to the int.TryParse or whatever external parsing function
+        /// that usually takes a string when a user presses "Enter" or however your modal works
+        /// </summary>
+        public string BuildString() {
+            return string.Create(length, characters, (chars, state) => {
+                for(int i = 0; i < length; i++) {
+                    chars[i] = state[i];
+                }
+            });
+        }
     }
 }

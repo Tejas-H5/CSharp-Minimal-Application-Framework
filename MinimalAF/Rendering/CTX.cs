@@ -94,7 +94,7 @@ namespace MinimalAF.Rendering {
         private static ShaderManager s_shaderManager;
         private static InternalShader s_internalShader;
 
-        internal static Texture InternalFontTexture => s_textDrawer.ActiveFont.FontTexture;
+        internal static Texture CurrentFontTexture => s_textDrawer.ActiveFont.FontTexture;
 
         public static int TimesVertexThresholdReached {
             get => s_meshOutputStream.TimesVertexThresholdReached;

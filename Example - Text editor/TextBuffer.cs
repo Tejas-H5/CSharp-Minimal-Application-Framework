@@ -2,10 +2,15 @@
 
 namespace TextEditor {
     class TextBuffer {
-        MutableString _buffer = new MutableString();
-        public MutableString Buffer => _buffer;
+        MutableString _buffer = new MutableString();        
         public int Length => _buffer.Length;
         public char this[int pos] => _buffer[pos];
+
+        public event Action? TextEdited;
+
+        void OnTextEdited() {
+            TextEdited?.Invoke();
+        }
 
         public TextBuffer(string initText) {
             _buffer.Resize(initText.Length);
@@ -24,6 +29,9 @@ namespace TextEditor {
             cursorPosition--;
             // we really want to remove a character that is behind the cursor
             _buffer.Remove(cursorPosition);
+
+            OnTextEdited();
+
             return ClampCursorPosition(cursorPosition);
         }
 
@@ -36,15 +44,9 @@ namespace TextEditor {
             }
 
             _buffer.Insert(c, cursorPosition);
+            OnTextEdited();
+
             return ClampCursorPosition(cursorPosition + 1);
-        }
-
-
-        bool IsNonWord(int pos) {
-            return (
-                !char.IsLetter(_buffer[pos]) &&
-                !char.IsPunctuation(_buffer[pos])
-            );
         }
 
         public int MoveCursorForwardsAWord(int pos) {
@@ -121,11 +123,7 @@ namespace TextEditor {
 
             int startOfPreviousLine = MoveCursorToLineStart(startOfThisLine - 1);
             int endOfPreviousLine = startOfThisLine - 1;
-            return min(endOfPreviousLine, startOfPreviousLine + (pos - startOfThisLine));
-        }
-
-        int min(int a, int b) {
-            return a < b ? a : b;
+            return MathHelpers.Min(endOfPreviousLine, startOfPreviousLine + (pos - startOfThisLine));
         }
 
         public int MoveCursorDownALine(int pos) {
@@ -141,7 +139,7 @@ namespace TextEditor {
             int startOfNextLine = endOfThisLine + 1;
             int endOfNextLine = MoveCursorToEndOfLine(startOfNextLine);
 
-            return min(endOfNextLine, startOfNextLine + (pos - startOfThisLine));
+            return MathHelpers.Min(endOfNextLine, startOfNextLine + (pos - startOfThisLine));
         }
 
         public int MoveCursorToEndOfLine(int pos) {
@@ -208,12 +206,12 @@ namespace TextEditor {
         /// </summary>
         public int GetLinePos(int lineNumber) {
             int currentLine = 0;
-            for(int i = 0; i < _buffer.Length; i++) {
-                if (_buffer[i] == '\n') {
-                    currentLine++;
+            for(int i = 0; i <= _buffer.Length; i++) {
+                if (i == _buffer.Length || _buffer[i] == '\n') {
                     if (lineNumber == currentLine) {
-                        return i+1;
+                        return i;
                     }
+                    currentLine++;
                 }
             }
 
@@ -222,6 +220,7 @@ namespace TextEditor {
 
         public void Clear() {
             _buffer.Clear();
+            OnTextEdited();
         }
 
         public string BuildString() {

@@ -12,6 +12,8 @@ namespace TextEditor {
 
 
         TextBuffer _buffer;
+        bool _bufferContentsChanged;
+
         // offset from start of bufferer where we are inserting/removing characters
         int _cursorPos = 0;
 
@@ -42,6 +44,11 @@ namespace TextEditor {
         public TextArea(string initialText) {
             // _buffer = new TextBuffer("");
             _buffer = new TextBuffer(initialText.Replace("\r", ""));
+            _buffer.TextEdited += _buffer_TextEdited;
+        }
+
+        private void _buffer_TextEdited() {
+            _bufferContentsChanged = true;
         }
 
         public void Render(FrameworkContext ctx) {
@@ -273,10 +280,12 @@ namespace TextEditor {
             // If we move, then when we start typing again, we start adding stuff at the place we highlighted.
             // Fixing these problems takes a lot of effort or causes more problems IMO
             {
-                if (
-                    _buffer.Length != bufferLengthBeforeCommands ||
-                    !_isSelecting && cursorPosBeforeCommands != _cursorPos
-                ) {
+                if (_bufferContentsChanged) {
+                    _bufferContentsChanged = false;
+                    CancelSelection();
+                }
+
+                if (!_isSelecting && cursorPosBeforeCommands != _cursorPos) {
                     CancelSelection();
                 }
             }

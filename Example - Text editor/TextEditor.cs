@@ -120,6 +120,5 @@ namespace TextEditor {
                 _gotoLinePrompt.Reset();
             }
         }
-
     }
 }

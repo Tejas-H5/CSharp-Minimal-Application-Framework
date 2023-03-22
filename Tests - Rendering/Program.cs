@@ -11,11 +11,20 @@ namespace RenderingEngineVisualTests {
         }
     }
 
+    // You never know when this will come in handy
+    class BasicTest : IRenderable {
+        public void Render(FrameworkContext ctx) {
+            ctx.SetDrawColor(Color.Red);
+            IM.Rect(ctx, new Rect(250, 200, 500, 500));
+        }
+    }
+
 
     class Program {
         static void Main(string[] args) {
             var tests = new VisualTestRunner();
 
+            tests.AddTest("Basic test", () => new BasicTest());
             tests.AddTest("Text Test", () => new TextTest());
             tests.AddTest("Error test", () => new ErrorTest());
             tests.AddTest("Arc test", () => new ArcTest());
@@ -26,7 +35,6 @@ namespace RenderingEngineVisualTests {
             tests.AddTest("Keyboard Test", () => new KeyboardTest());
             tests.AddTest("MeshOutput Caching Test", () => new MeshOutputCachingTest());
             tests.AddTest("Nesting Test", () => new NestingTest());
-            tests.AddTest("Polyline Self Intersection Algorithm Test", () => new PolylineSelfIntersectionAlgorithmTest());
             tests.AddTest("Polyline Test", () => new PolylineTest());
             tests.AddTest("Stencil Test", () => new StencilTest());
             tests.AddTest("Text Font Atlas Text", () => new TextFontAtlasText());
@@ -34,6 +42,7 @@ namespace RenderingEngineVisualTests {
             tests.AddTest("Perspective Camera Test", () => new PerspectiveCameraTest());
 
             new ProgramWindow((ctx) => tests.Init(ctx)).Run();
+            //new ProgramWindow((ctx) => new BasicTest()).Run();
 
             // This is a useful test, but I haven't figured out how to put it with the other tests
             // just yet, because it changes the render frequency, meaning that tests can have

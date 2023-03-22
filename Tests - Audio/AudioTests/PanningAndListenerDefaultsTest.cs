@@ -35,12 +35,12 @@ namespace AudioEngineTests.AudioTests {
             }
 
             ctx.SetDrawColor(0, 0, 0, 1);
-            ctx.DrawCircle(ctx.VW / 2, ctx.VH / 2, 20);
+            IM.Circle(ctx, ctx.VW / 2, ctx.VH / 2, 20);
 
 
             ctx.SetDrawColor(1, 0, 0, 1);
-            ctx.DrawCircle(ctx.MouseX, ctx.MouseY, 20);
-            ctx.DrawText("You are here (" + listenerX + "," + listenerZ + ")", ctx.MouseX, ctx.MouseY, HAlign.Center, VAlign.Bottom);
+            IM.Circle(ctx, ctx.MouseX, ctx.MouseY, 20);
+            _font.Draw(ctx, "You are here (" + listenerX + "," + listenerZ + ")", ctx.MouseX, ctx.MouseY, HAlign.Center, VAlign.Bottom);
         }
     }
 }

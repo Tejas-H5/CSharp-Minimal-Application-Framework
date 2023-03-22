@@ -13,6 +13,8 @@ namespace RenderingEngineVisualTests {
 
         double timer = 0;
 
+        DrawableFont _font = new DrawableFont("", 0);
+
         public void Render(FrameworkContext ctx) {
             timer += Time.DeltaTime;
 
@@ -48,13 +50,14 @@ namespace RenderingEngineVisualTests {
             }
 
             ctx.SetDrawColor(0, 0, 0, 1);
-            ctx.DrawText(
+            _font.Draw(
+                ctx,
                 "Mouse test (And polyline test) - Drag that point with your mouse",
                 0, ctx.VH,
                 HAlign.Left, VAlign.Top
             );
 
-            ctx.DrawRectOutline(5, new Rect(ctx.VW * 0.25f, ctx.VH * ctx.VH * 0.25f, ctx.VW * 0.75f, ctx.VH * 0.75f));
+            IM.RectOutline(ctx, 5, new Rect(ctx.VW * 0.25f, ctx.VH * ctx.VH * 0.25f, ctx.VW * 0.75f, ctx.VH * 0.75f));
 
             if (points.Count < 2)
                 return;
@@ -62,11 +65,9 @@ namespace RenderingEngineVisualTests {
             int i = 0;
             foreach (Vector2 p in points) {
                 if (i == 0) {
-                    ctx.StartPolyLine(p.X, p.Y, radius, CapType.Circle);
-                } else if (i == points.Count - 1) {
-                    ctx.EndPolyLine(p.X, p.Y);
+                    IM.NLineBegin(ctx, p.X, p.Y, p.X + 10, p.Y + 10);
                 } else {
-                    ctx.ContinuePolyLine(p.X, p.Y);
+                    IM.NLineExtend(ctx, p.X, p.Y, p.X + 10, p.Y + 10);
                 }
 
                 i++;

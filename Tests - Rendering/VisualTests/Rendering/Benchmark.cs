@@ -24,6 +24,7 @@ namespace RenderingEngineVisualTests {
             RequiredFPS = requiredFPS;
         }
 
+        DrawableFont _font = new DrawableFont("Source code pro", 16);
         readonly Random rand = new Random(1);
         int frames = 0;
         double time = 0;
@@ -68,7 +69,7 @@ namespace RenderingEngineVisualTests {
                 float x2 = ctx.VW * (float)rand.NextDouble();
                 float y2 = ctx.VH * (float)rand.NextDouble();
 
-                ctx.DrawLine(x1, y1, x2, y2, LineThickness, CapType);
+                IM.Line(ctx, x1, y1, x2, y2, LineThickness, CapType);
             }
 
             ctx.SetDrawColor(0, 0, 0, 1f);
@@ -82,7 +83,7 @@ namespace RenderingEngineVisualTests {
 
             text.ToCharArray();
 
-            ctx.DrawText(text, 10, ctx.VH - 50);
+            _font.Draw(ctx, text, 10, ctx.VH - 50);
         }
     }
 }

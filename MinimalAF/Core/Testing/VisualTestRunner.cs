@@ -33,6 +33,8 @@ namespace MinimalAF.Testing {
         bool showPropertiesPanel = false;
         IRenderable test;
 
+        DrawableFont _font;
+
         public VisualTestRunner Init(FrameworkContext ctx) {
             var w = ctx.Window;
             if (w == null) return this;
@@ -41,6 +43,8 @@ namespace MinimalAF.Testing {
             w.SetWindowState(WindowState.Maximized);
 
             ctx.SetClearColor(Color.White);
+
+            _font = new DrawableFont("Source Code Pro", 24);
 
             return this;
         }
@@ -53,9 +57,8 @@ namespace MinimalAF.Testing {
         }
 
         public Rect RenderTextBoxButton(ref FrameworkContext ctx, string text, float x, float y, float padding, Action onClick = null) {
-            ctx.SetFont("Source Code Pro", 24);
-            float width = ctx.GetStringWidth(text);
-            float height = ctx.GetStringHeight(text);
+            float width = _font.GetStringWidth(text);
+            float height = _font.GetStringHeight(text);
             var rect = new Rect(x, y, x + width + 2 * padding, y + height + 2 * padding);
 
             var color = Color.Black;
@@ -75,11 +78,12 @@ namespace MinimalAF.Testing {
                 }
             }
 
+            ctx.SetTexture(null);
             ctx.SetDrawColor(color, alpha);
-            ctx.DrawRect(rect);
+            IM.Rect(ctx, rect);
 
             ctx.SetDrawColor(Color.White);
-            ctx.DrawText(text, x + padding, y + padding, HAlign.Left, VAlign.Bottom);
+            _font.Draw(ctx, text, x + padding, y + padding, HAlign.Left, VAlign.Bottom);
 
             return rect;
         }
@@ -88,7 +92,7 @@ namespace MinimalAF.Testing {
         public void Render(FrameworkContext ctx) {
             if (tests.Count == 0) {
                 ctx.SetDrawColor(Color.Black);
-                ctx.DrawText("No Tests", ctx.VW * 0.5f, ctx.VH * 0.5f);
+                _font.Draw(ctx, "No Tests", ctx.VW * 0.5f, ctx.VH * 0.5f);
                 return;
             }
 
@@ -112,9 +116,8 @@ namespace MinimalAF.Testing {
                         stackTrace = err.StackTrace;
                     }
 
-                    ctx.SetFont("Source Code Pro", 24);
                     ctx.SetDrawColor(Color.Red);
-                    ctx.DrawText(err.ToString(), ctx.VW * 0.5f, ctx.VH * 0.5f, HAlign.Center, VAlign.Center);
+                    _font.Draw(ctx, err.ToString(), ctx.VW * 0.5f, ctx.VH * 0.5f, HAlign.Center, VAlign.Center);
                 }
             }
 

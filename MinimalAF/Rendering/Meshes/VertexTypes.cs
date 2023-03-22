@@ -14,70 +14,66 @@ namespace MinimalAF.Rendering {
         public string Name;
     }
 
+    public struct VertexDescription {
+        public VertexAttributeInfo[] Attributes;
+
+        /// <summary>
+        /// Returns the vertex size in bytes
+        /// </summary>
+        public int GetSizeInBytes() {
+            int sizeOfVertex = 0;
+            foreach (var info in Attributes) {
+                sizeOfVertex += info.ComponentCount * info.SizeOf;
+            }
+            return sizeOfVertex;
+        }
+    }
+
 
     internal static class VertexTypes {
-        // TODO: make these switches
-
-        static readonly Dictionary<Type, int> ComponentCounts = new Dictionary<Type, int> {
-            {typeof(int), 1 },
-            {typeof(float), 1 },
-            {typeof(bool), 1 },
-            {typeof(Vector2), 2 },
-            {typeof(Vector3), 3 },
-            {typeof(Vector4), 4 },
-            {typeof(Matrix2), 4 },
-            {typeof(Matrix3), 9 },
-            {typeof(Matrix4), 16 }, // why tf would anyone have a Matrix4 vertex ?
-        };
-
-        static readonly Dictionary<Type, int> SubcomponentSizeOf = new Dictionary<Type, int> {
-            {typeof(int), sizeof(int) },
-            {typeof(float), sizeof(float) },
-            {typeof(bool), sizeof(bool) },
-            {typeof(Vector2), sizeof(float) },
-            {typeof(Vector3), sizeof(float) },
-            {typeof(Vector4), sizeof(float) },
-            {typeof(Matrix2), sizeof(float) },
-            {typeof(Matrix3), sizeof(float) },
-            {typeof(Matrix4), sizeof(float) },
-        };
-
-        static readonly Dictionary<Type, VertexAttribPointerType> GLType = new Dictionary<Type, VertexAttribPointerType> {
-            {typeof(int), VertexAttribPointerType.Int },
-            {typeof(float), VertexAttribPointerType.Float },
-            {typeof(bool), VertexAttribPointerType.Int },
-            {typeof(Vector2), VertexAttribPointerType.Float },
-            {typeof(Vector3), VertexAttribPointerType.Float },
-            {typeof(Vector4), VertexAttribPointerType.Float },
-            {typeof(Matrix2), VertexAttribPointerType.Float },
-            {typeof(Matrix3), VertexAttribPointerType.Float },
-            {typeof(Matrix4), VertexAttribPointerType.Float },
-        };
-
-        static readonly Dictionary<Type, VertexAttributeInfo[]> vertexInfoCache = new Dictionary<Type, VertexAttributeInfo[]>();
-
         static int GetComponentCount(Type t) {
-            if (ComponentCounts.ContainsKey(t)) {
-                return ComponentCounts[t];
-            }
+            if (t == typeof(int)) return 1;
+            if (t == typeof(float)) return 1;
+            if (t == typeof(bool)) return 1;
+            if (t == typeof(Vector2)) return 2;
+            if (t == typeof(Vector3)) return 3;
+            if (t == typeof(Vector4)) return 4;
+            if (t == typeof(Matrix2)) return 4;
+            if (t == typeof(Matrix3)) return 9;
+            if (t == typeof(Matrix4)) return 16; // why tf would anyone have a Matrix4 vertex ?
 
             return -1;
         }
 
         static int SizeOf(Type t) {
-            return SubcomponentSizeOf[t];
+            if (t == typeof(int)) return sizeof(int);
+            if (t == typeof(float)) return sizeof(float);
+            if (t == typeof(bool)) return sizeof(bool);
+            if (t == typeof(Vector2)) return sizeof(float);
+            if (t == typeof(Vector3)) return sizeof(float);
+            if (t == typeof(Vector4)) return sizeof(float);
+            if (t == typeof(Matrix2)) return sizeof(float);
+            if (t == typeof(Matrix3)) return sizeof(float);
+            if (t == typeof(Matrix4)) return sizeof(float);
+
+            return -1;
         }
 
         static VertexAttribPointerType AttribType(Type t) {
-            return GLType[t];
+            if (t == typeof(int)) return VertexAttribPointerType.Int;
+            if (t == typeof(float)) return VertexAttribPointerType.Float;
+            if (t == typeof(bool)) return VertexAttribPointerType.Int;
+            if (t == typeof(Vector2)) return VertexAttribPointerType.Float;
+            if (t == typeof(Vector3)) return VertexAttribPointerType.Float;
+            if (t == typeof(Vector4)) return VertexAttribPointerType.Float;
+            if (t == typeof(Matrix2)) return VertexAttribPointerType.Float;
+            if (t == typeof(Matrix3)) return VertexAttribPointerType.Float;
+            if (t == typeof(Matrix4)) return VertexAttribPointerType.Float;
+            return (VertexAttribPointerType)(-1);
         }
 
 
-        public static VertexAttributeInfo[] GetVertexDescription<T>() where T : struct {
-            if (vertexInfoCache.ContainsKey(typeof(T))) {
-                return vertexInfoCache[typeof(T)];
-            }
-
+        public static VertexDescription GetVertexDescription<T>() where T : struct {
             var fields = typeof(T).GetFields()
                 .OrderBy(field => (uint)Marshal.OffsetOf(typeof(T), field.Name))
                 .ToArray();
@@ -87,11 +83,11 @@ namespace MinimalAF.Rendering {
             for (int i = 0; i < fields.Length; i++) {
                 Type t = fields[i].FieldType;
                 int componentCount = GetComponentCount(t);
-
                 if (componentCount == -1) {
                     throw new Exception("Vertex struct can't have a field of type " + t.Name);
                 }
 
+                // we assume the others work if GetComponentCount works
                 info[i] = new VertexAttributeInfo {
                     SizeOf = SizeOf(t),
                     ComponentCount = componentCount,
@@ -100,8 +96,9 @@ namespace MinimalAF.Rendering {
                 };
             }
 
-            vertexInfoCache[typeof(T)] = info;
-            return info;
+            return new VertexDescription {
+                Attributes = info
+            };
         }
     }
 }

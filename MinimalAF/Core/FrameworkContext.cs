@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 
 namespace MinimalAF {
-    public struct FrameworkContext {
+    public struct FrameworkContext : IGeometryOutput<Vertex> {
         /// <summary>
         /// The rectangle where stuff will be drawn
         /// </summary>
@@ -82,16 +82,23 @@ namespace MinimalAF {
             return this;
         }
 
+        public uint AddVertex(Vertex v) {
+            return CTX.MeshOutput.AddVertex(v);
+        }
+
+        public void MakeTriangle(uint v1, uint v2, uint v3) {
+            CTX.MeshOutput.MakeTriangle(v1, v2, v3);
+        }
+
+        public bool FlushIfRequired(int incomingVertexCount, int incomingIndexConut) {
+            return CTX.MeshOutput.FlushIfRequired(incomingVertexCount, incomingIndexConut);
+        }
 
 
         public float VW => Rect.Width;
         public float VH => Rect.Height;
 
-
         public ProgramWindow Window => window;
-
-        public Texture CurrentFontTexture => CTX.CurrentFontTexture;
-
 
         // ---- Drawing
         public void SetDrawColor(float r, float g, float b, float a) { CTX.SetDrawColor(r, g, b, a); }
@@ -99,21 +106,8 @@ namespace MinimalAF {
         public void SetDrawColor(Color col, float alpha) { SetDrawColor(col.R, col.G, col.B, alpha); }
         public Texture GetTexture() { return CTX.Texture.Get(); }
         public void SetTexture(Texture texture) { CTX.Texture.Use(texture); }
-        /// <summary>
-        /// Note: Try to use a constant font and font size in as many places as you can, because currently we are creating a new font atlas
-        /// for each new font name and font size that you specify
-        /// </summary>
-        public void SetFont(string name, int size = 16) { CTX.Text.SetFont(name, size); }
         public void SetClearColor(float r, float g, float b, float a) { CTX.SetClearColor(Color.RGBA(r, g, b, a)); }
         public void SetClearColor(Color value) { CTX.SetClearColor(value); }
-        public float GetStringHeight(string s) { return CTX.Text.GetStringHeight(s); }
-        public float GetStringHeight(string s, int start, int end) { return CTX.Text.GetStringHeight(s, start, end); }
-        public float GetStringWidth(string s) { return CTX.Text.GetStringWidth(s); }
-        public float GetStringWidth(string s, int start, int end) { return CTX.Text.GetStringWidth(s, start, end); }
-        public float GetCharWidth(char c) { return CTX.Text.GetWidth(c); }
-        public float GetCharHeight(char c) { return CTX.Text.GetHeight(c); }
-        public float GetCharWidth() { return CTX.Text.GetWidth(); }
-        public float GetCharHeight() { return CTX.Text.GetHeight(); }
         public Matrix4 GetModelMatrix() { return CTX.Shader.Model; }
         public Matrix4 GetViewMatrix() { return CTX.Shader.View; }
         public Matrix4 GetProjectionMatrix() { return CTX.Shader.Projection; }
@@ -217,130 +211,6 @@ namespace MinimalAF {
             CTX.LiftStencil();
         }
 
-        public void DrawArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle) {
-            CTX.Arc.Draw(xCenter, yCenter, radius, startAngle, endAngle);
-        }
-
-        public void DrawArc(float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount) {
-            CTX.Arc.Draw(xCenter, yCenter, radius, startAngle, endAngle, edgeCount);
-        }
-
-        public void DrawRegularPolygon(float x0, float y0, float r, int edges) {
-            CTX.Circle.Draw(x0, y0, r, edges);
-        }
-
-        public void DrawRegularPolygonOutline(float thickness, float x0, float y0, float r, int edges) {
-            CTX.Circle.DrawOutline(thickness, x0, y0, r, edges);
-        }
-
-        public void DrawCircle(float x0, float y0, float r) {
-            CTX.Circle.Draw(x0, y0, r);
-        }
-
-        public void DrawLine(float x0, float y0, float x1, float y1, float thickness, CapType cap = CapType.None) {
-            CTX.Line.Draw(x0, y0, x1, y1, thickness, cap);
-        }
-
-        public void DrawQuad(Vertex v1, Vertex v2, Vertex v3, Vertex v4) {
-            CTX.Quad.Draw(v1, v2, v3, v4);
-        }
-
-        public void DrawRect(float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 0, float u1 = 1, float v1 = 1) {
-            CTX.Rect.Draw(x0, y0, x1, y1, u0, v0, u1, v1);
-        }
-
-        public void DrawRect(Rect rect, Rect uvs) {
-            CTX.Rect.Draw(rect, uvs);
-        }
-
-        public void DrawRect(Rect rect) {
-            CTX.Rect.Draw(rect);
-        }
-
-        public Vector2 DrawChar(char character, float startX, float startY, float scale = 1.0f) {
-            return CTX.Text.DrawChar(character, startX, startY, scale);
-        }
-
-        public Vector2 DrawText(string text, float startX, float startY, HAlign hAlign, VAlign vAlign, float scale = 1.0f) {
-            return CTX.Text.Draw(text, startX, startY, hAlign, vAlign, scale);
-        }
-
-        public Vector2 DrawText(string text, float startX, float startY, float scale = 1.0f) {
-            return CTX.Text.Draw(text, startX, startY, scale);
-        }
-
-        public Vector2 DrawText(string text, int start, int end, float startX, float startY, float scale) {
-            return CTX.Text.Draw(text, start, end, startX, startY, scale);
-        }
-
-        public void DrawTriangle(Vertex v1, Vertex v2, Vertex v3) {
-            CTX.Triangle.Draw(v1, v2, v3);
-        }
-
-        public void DrawArcOutline(float thickness, float x0, float y0, float r, float startAngle, float endAngle) {
-            CTX.Arc.DrawOutline(thickness, x0, y0, r, startAngle, endAngle);
-        }
-
-        public void DrawArcOutline(float thickness, float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount) {
-            CTX.Arc.DrawOutline(thickness, xCenter, yCenter, radius, startAngle, endAngle, edgeCount);
-        }
-
-        public void DrawCircleOutline(float thickness, float x0, float y0, float r, int edges) {
-            CTX.Circle.DrawOutline(thickness, x0, y0, r, edges);
-        }
-
-        public void DrawCircleOutline(float thickness, float x0, float y0, float r) {
-            CTX.Circle.DrawOutline(thickness, x0, y0, r);
-        }
-
-        public void DrawLineOutline(float outlineThickness, float x0, float y0, float x1, float y1, float thickness, CapType cap) {
-            CTX.Line.DrawOutline(outlineThickness, x0, y0, x1, y1, thickness, cap);
-        }
-
-        public void DrawRectOutline(float thickness, Rect rect) {
-            CTX.Rect.DrawOutline(thickness, rect);
-        }
-
-        public void DrawRectOutline(float thickness, float x0, float y0, float x1, float y1) {
-            CTX.Rect.DrawOutline(thickness, x0, y0, x1, y1);
-        }
-
-        public void DrawTriangleOutline(float thickness, float x0, float y0, float x1, float y1, float x2, float y2) {
-            CTX.Triangle.DrawOutline(thickness, x0, y0, x1, y1, x2, y2);
-        }
-
-        public void StartPolyLine(float x, float y, float thickness, CapType cap) {
-            CTX.NLine.Begin(x, y, thickness, cap);
-        }
-
-        public void ContinuePolyLine(float x, float y, bool useAverage = true) {
-            CTX.NLine.Continue(x, y, useAverage);
-        }
-
-        public void EndPolyLine(float x, float y) {
-            CTX.NLine.End(x, y);
-        }
-
-        public void StartNGon(Vector2 vec, int numVerts) {
-            StartNGon(vec.X, vec.Y, numVerts);
-        }
-
-        public void StartNGon(float x, float y, int numVerts) {
-            CTX.NGon.Begin(x, y, numVerts);
-        }
-
-        public void ContinueNGon(Vector2 vec) {
-            ContinueNGon(vec.X, vec.Y);
-        }
-
-        public void ContinueNGon(float x, float y) {
-            CTX.NGon.Continue(x, y);
-        }
-
-        public void EndNGon() {
-            CTX.NGon.End();
-        }
-
         public void Clear() {
             CTX.Clear();
         }
@@ -360,6 +230,7 @@ namespace MinimalAF {
         public bool MouseButtonJustReleased(MouseButton b) { return window.MouseButtonJustReleased(b); }
         public bool MouseButtonIsDown(MouseButton b) { return window.MouseButtonIsDown(b); }
         public bool MouseButtonWasDown(MouseButton b) { return window.MouseButtonWasDown(b); }
+
         public float MouseWheelNotches => window.MouseWheelNotches;
         public float MouseX => window.MouseX - Rect.X0;
         public float MouseY => window.MouseY - Rect.Y0;

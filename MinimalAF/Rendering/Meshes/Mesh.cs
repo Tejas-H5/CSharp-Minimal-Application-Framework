@@ -6,161 +6,179 @@ namespace MinimalAF.Rendering {
     public interface IMesh : IDisposable {
     }
 
+    struct ArrayList<T> {
+        public T[] Data;
+        public int Length;
 
-    public class Mesh<V> : IMesh where V : struct {
-        V[] vertices;
-        uint[] indices;
-
-        int vbo;
-        int ebo;
-
-        int vao;
-
-        uint indexCount;
-        uint vertexCount;
-
-        public int Handle {
-            get {
-                return vao;
-            }
+        public ArrayList(T[] data, int length) {
+            Data = data;
+            Length = length;
         }
 
-        public V[] Vertices {
-            get {
-                return vertices;
-            }
+
+        public int Capacity => Data.Length;
+
+        public void Clear() {
+            Length = 0;
         }
 
-        public uint[] Indices {
-            get {
-                return indices;
-            }
+        public void Resize(int newSize) {
+            T[] newData = new T[newSize];
+            Array.Copy(Data, newData, Data.Length);
+            Data = newData;
         }
 
-        VertexAttributeInfo[] vertexAttributeInfo;
-        int sizeOfVertex;
+        public void Append(T item) {
+            if (Length >= Data.Length) {
+                Resize(MathHelpers.Max(1, Data.Length * 2));
+            }
+
+            Data[Length] = item;
+            Length++;
+        }
+    }
+
+    public enum MeshBufferType {
+        Static, Dynamic, Stream
+    }
+
+    public class Mesh<V> : IMesh, IGeometryOutput<V> where V : struct {
+        int _vbo;
+        int _ebo;
+        int _vao;
+        int _sizeOfVertex;
+        bool _changed = false;
+        BufferUsageHint _bufferUsage;
+
+        bool _allowResizing;
+
+        ArrayList<V> _vertices;
+        ArrayList<uint> _indices;
+
+        public V[] Vertices => _vertices.Data;
+        public uint[] Indices => _indices.Data;
+        public int IndexCount => _indices.Length;
+        public int VertexCount => _vertices.Length;
+
+        int _lastVertexCount, _lastIndexCount;
+
+        public int Handle => _vao;
+
+        public void Clear() {
+            _vertices.Clear();
+            _indices.Clear();
+        }
 
         /// <summary>
         /// If you are going to update the data every frame with UpdateBuffers, then set stream=true.
         /// </summary>
-        public Mesh(V[] data, uint[] indices, bool stream = false) {
-            vertexAttributeInfo = VertexTypes.GetVertexDescription<V>();
-            sizeOfVertex = 0;
-            foreach (var info in vertexAttributeInfo) {
-                sizeOfVertex += info.ComponentCount * info.SizeOf;
-            }
+        public Mesh(
+            V[] vertices, 
+            uint[] indices, 
+            bool stream, 
+            bool allowResizing
+        ) {
+            _vertices = new ArrayList<V>(vertices, vertices.Length);
+            _indices = new ArrayList<uint>(indices, indices.Length);
 
-            BufferUsageHint bufferUsage = BufferUsageHint.StaticDraw;
-            if (stream)
-                bufferUsage = BufferUsageHint.StreamDraw;
+            _allowResizing = allowResizing;
 
-            vertices = data;
-            this.indices = indices;
+            // There is also BufferUsageHint.DynamicDraw but idk whats so great about that
+            // (but maybe this is an incorrect assumption)
+            _bufferUsage = stream ? BufferUsageHint.StreamDraw : BufferUsageHint.StaticDraw;
 
-            indexCount = (uint)indices.Length;
-            vertexCount = (uint)vertices.Length;
+            // Set up mesh within OpenGL
+            {
+                var vertexDesc = VertexTypes.GetVertexDescription<V>();
+                _sizeOfVertex = vertexDesc.GetSizeInBytes();
+                var vertexAttributeInfo = vertexDesc.Attributes;
 
-            InitMeshOpenGL(bufferUsage);
-        }
+                _vao = GL.GenVertexArray();
+                GL.BindVertexArray(_vao);
 
+                _vbo = GL.GenBuffer();
+                ReallocateVertices();
 
+                _ebo = GL.GenBuffer();
+                ReallocateIndices();
 
-        private void InitMeshOpenGL(BufferUsageHint bufferUsage) {
-            InitializeVertices(bufferUsage);
-            InitializeIndices(bufferUsage);
+                // register vertex attributes using vertex description.
+                // Might remove this if it becomes too much of a hassle
+                int currentOffset = 0;
+                for (int attribute = 0; attribute < vertexAttributeInfo.Length; attribute++) {
+                    int fieldCount = vertexAttributeInfo[attribute].ComponentCount; ;
+                    var fieldType = vertexAttributeInfo[attribute].GLType;
+                    bool normalized = false;
+                    int stride = _sizeOfVertex;
+                    int offsetIntoVertex = currentOffset;
 
-            GL.BindVertexArray(0);
-        }
+                    GL.VertexAttribPointer(attribute, fieldCount, fieldType, normalized, stride, offsetIntoVertex);
+                    GL.EnableVertexAttribArray(attribute);
 
-        private void InitializeVertices(BufferUsageHint bufferUsage) {
-            GenerateAndBindVertexBuffer();
-            SendDataToBoundBuffer(bufferUsage);
-            GenerateAndBindVertexArray();
-            RegisterVertexAttributes();
-        }
+                    currentOffset += fieldCount * vertexAttributeInfo[attribute].SizeOf;
+                }
 
-        private void GenerateAndBindVertexBuffer() {
-            vbo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-        }
-
-        private void SendDataToBoundBuffer(BufferUsageHint bufferUsage) {
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeOfVertex, vertices, bufferUsage);
-        }
-
-        private void GenerateAndBindVertexArray() {
-            vao = GL.GenVertexArray();
-            GL.BindVertexArray(vao);
-        }
-
-
-
-        private void RegisterVertexAttributes() {
-            int currentOffset = 0;
-
-            for (int i = 0; i < vertexAttributeInfo.Length; i++) {
-                int fieldCount = vertexAttributeInfo[i].ComponentCount; ;
-                CreateVertexAttribPointer(i, fieldCount, currentOffset, vertexAttributeInfo[i].GLType);
-
-                currentOffset += fieldCount * vertexAttributeInfo[i].SizeOf;
+                // unbind this thing so that future GL calls won't act on this by accident
+                GL.BindVertexArray(0);
             }
         }
 
-        private void CreateVertexAttribPointer(int attribute, int length, int offsetInArray, VertexAttribPointerType type) {
-            GL.VertexAttribPointer(attribute, length, type, false, sizeOfVertex, offsetInArray);
-            GL.EnableVertexAttribArray(attribute);
+        private void ReallocateVertices() {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Data.Length * _sizeOfVertex, _vertices.Data, _bufferUsage);
+            _lastVertexCount = _vertices.Data.Length;
         }
 
-        private void InitializeIndices(BufferUsageHint bufferUsage) {
-            GenerateAndBindIndexBuffer();
-            SendIndicesToBoundIndexBuffer(bufferUsage);
-        }
-
-        private void GenerateAndBindIndexBuffer() {
-            ebo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
-        }
-
-        private void SendIndicesToBoundIndexBuffer(BufferUsageHint bufferUsage) {
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, bufferUsage);
-        }
-
-        public void UpdateBuffers() {
-            UpdateBuffers((uint)vertices.Length, (uint)indices.Length);
+        private void ReallocateIndices() {
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Data.Length * sizeof(uint), _indices.Data, _bufferUsage);
+            _lastIndexCount = _indices.Data.Length;
         }
 
         /// <summary>
         /// newVertexCount and newIndexCount MUST be less than the total number of vertices and indices on this mesh object.
         /// </summary>
-        public void UpdateBuffers(uint newVertexCount, uint newIndexCount) {
-            indexCount = newIndexCount;
-            vertexCount = newVertexCount;
+        public void UploadToGPU() {
+            GL.BindVertexArray(_vao);
 
-            if (indexCount > indices.Length || vertexCount > vertices.Length) {
-                throw new Exception("The mesh buffer does not have this many vertices."
-                    + "you may only specify new index and vertex counts that are less than the amount initially allocated");
+            if (_indices.Length > _lastIndexCount || _vertices.Length > _lastVertexCount) {
+                if (!_allowResizing) {
+                    throw new Exception("This mesh buffer cannot be resized. You added too many verts or indices");
+                }
+
+                // re-allocate the vertex and index buffers. these functions automatically copy things, 
+                // so we don't need to use buffer sub-data
+                ReallocateVertices();
+                ReallocateIndices();
+            } else {
+                // update subset of vertices
+                GL.BindBuffer(
+                    BufferTarget.ArrayBuffer, _vbo
+                );
+                GL.BufferSubData(
+                    BufferTarget.ArrayBuffer, (IntPtr)0, _vertices.Length * _sizeOfVertex, _vertices.Data
+                );
+
+                // update subset of indices
+                GL.BindBuffer(
+                    BufferTarget.ElementArrayBuffer, _ebo
+                );
+                GL.BufferSubData(
+                    BufferTarget.ElementArrayBuffer, (IntPtr)0, _indices.Length * sizeof(uint), _indices.Data
+                );
             }
 
-
-            GL.BindVertexArray(vao);
-
-            UpdateVertexBuffer();
-            UpdateIndexBuffer();
-        }
-
-        private void UpdateVertexBuffer() {
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (int)vertexCount * sizeOfVertex, vertices);
-        }
-
-        private void UpdateIndexBuffer() {
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
-            GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)0, (int)indexCount * sizeof(uint), indices);
+            _changed = false;
         }
 
         public void Draw() {
-            GL.BindVertexArray(vao);
-            GL.DrawElements(PrimitiveType.Triangles, (int)indexCount, DrawElementsType.UnsignedInt, (IntPtr)0);
+            if (_changed) {
+                _changed = false;
+                UploadToGPU();
+            }
+
+            GL.BindVertexArray(_vao);
+            GL.DrawElements(PrimitiveType.Triangles, (int)_indices.Length, DrawElementsType.UnsignedInt, (IntPtr)0);
         }
 
 
@@ -169,9 +187,9 @@ namespace MinimalAF.Rendering {
             if (disposed)
                 return;
 
-            GLDeletionQueue.QueueBufferForDeletion(vbo);
-            GLDeletionQueue.QueueBufferForDeletion(ebo);
-            GLDeletionQueue.QueueVertexArrayForDeletion(vao);
+            GLDeletionQueue.QueueBufferForDeletion(_vbo);
+            GLDeletionQueue.QueueBufferForDeletion(_ebo);
+            GLDeletionQueue.QueueVertexArrayForDeletion(_vao);
             Console.WriteLine("Mesh destructed");
 
             disposed = true;
@@ -184,6 +202,26 @@ namespace MinimalAF.Rendering {
         public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public uint AddVertex(V v) {
+            _changed = true;
+
+            _vertices.Append(v);
+            return (uint)_vertices.Length - 1;
+        }
+
+        public void MakeTriangle(uint v1, uint v2, uint v3) {
+            _indices.Append(v1);
+            _indices.Append(v2);
+            _indices.Append(v3);
+
+            _changed = true;
+        }
+
+        public bool FlushIfRequired(int incomingVertexCount, int incomingIndexConut) {
+            // The concept of flushing doesn't apply here
+            return false;
         }
     }
 }

@@ -29,18 +29,6 @@ namespace MinimalAF.Rendering {
 
         public static float Current2DDepth = 0;
 
-        class VertexCreator {
-            public VertexCreator() {
-            }
-
-            public Vertex New(float x, float y, float u, float v) {
-                return new Vertex(
-                    new Vector3(x, y, CTX.Current2DDepth - 1.0f), new Vector2(u, v)
-                );
-            }
-        }
-
-
         private static Rect currentClippingRect;
         internal static Rect CurrentClippingRect {
             get => currentClippingRect;
@@ -71,30 +59,27 @@ namespace MinimalAF.Rendering {
         internal static Color ClearColor;
 
         //Composition
-        internal static TriangleDrawer<Vertex> Triangle => s_imDrawer.Triangle;
-        internal static QuadDrawer<Vertex> Quad => s_imDrawer.Quad;
-        internal static RectangleDrawer<Vertex> Rect => s_imDrawer.Rect;
-        internal static NGonDrawer<Vertex> NGon => s_imDrawer.NGon;
-        internal static PolyLineDrawer<Vertex> NLine => s_imDrawer.NLine;
-        internal static ArcDrawer<Vertex> Arc => s_imDrawer.Arc;
-        internal static CircleDrawer<Vertex> Circle => s_imDrawer.Circle;
-        internal static LineDrawer<Vertex> Line => s_imDrawer.Line;
-        internal static TextDrawer<Vertex> Text => s_textDrawer;
         internal static TextureManager Texture => s_textureManager;
         internal static FramebufferManager Framebuffer => s_framebufferManager;
         public static ShaderManager Shader => s_shaderManager;
 
-        private static TextDrawer<Vertex> s_textDrawer;
         private static MeshOutputStream<Vertex> s_meshOutputStream;
-        private static ImmediateMode2DDrawer<Vertex> s_imDrawer;
+        public static MeshOutputStream<Vertex> MeshOutput => s_meshOutputStream;
+        class VertexCreator : IVertexCreator2D<Vertex> {
+            public Vertex CreateVertex(float x, float y, float u, float v) {
+                return new Vertex(
+                    new Vector3(x, y, CTX.Current2DDepth - 1.0f), new Vector2(u, v)
+                );
+            }
+        }
+
+
         private static readonly VertexCreator s_vertexCreator = new VertexCreator();
 
         private static TextureManager s_textureManager;
         private static FramebufferManager s_framebufferManager;
         private static ShaderManager s_shaderManager;
         private static InternalShader s_internalShader;
-
-        internal static Texture CurrentFontTexture => s_textDrawer.ActiveFont.FontTexture;
 
         public static int TimesVertexThresholdReached {
             get => s_meshOutputStream.TimesVertexThresholdReached;
@@ -115,8 +100,7 @@ namespace MinimalAF.Rendering {
 
         internal static void Init(IGLFWGraphicsContext context) {
             s_meshOutputStream = new MeshOutputStream<Vertex>(8 * 4096, 8 * 4096);
-            s_imDrawer = new ImmediateMode2DDrawer<Vertex>(s_meshOutputStream);
-            s_textDrawer = new TextDrawer<Vertex>();
+            IM.VertexCreator2D = new VertexCreator();
 
             glContext = context;
 
@@ -372,7 +356,6 @@ namespace MinimalAF.Rendering {
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
                 s_meshOutputStream.Dispose();
                 s_internalShader.Dispose();
-                s_textDrawer.Dispose();
                 s_textureManager.Dispose();
 
                 TextureMap.UnloadAll();

@@ -10,10 +10,8 @@ namespace RenderingEngineVisualTests {
         Mesh<Vertex> mesh;
 
         public MeshOutputCachingTest() {
-            var data = new MeshData<Vertex>();
-            var imRenderer = new ImmediateMode2DDrawer<Vertex>(data);
-            imRenderer.Circle.Draw(0, 0, 120f);
-            mesh = data.ToDrawableMesh();
+            mesh = new Mesh<Vertex>(new Vertex[0], new uint[0], stream:false, allowResizing: true);
+            IM.Circle(mesh, 0, 0, 120f);
         }
 
         public void Render(FrameworkContext ctx) {

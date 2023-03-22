@@ -112,14 +112,14 @@ namespace TextEditor {
                     if (HasSelection) {
                         for (int i = 0; i < _highlightRegions.Count; i++) {
                             var region = _highlightRegions[i];
-                            ctx.DrawRect(region);
+                            IM.Rect(ctx, region);
                         }
                     }
                     _highlightRegions.Clear();
                 }
 
                 ctx.SetDrawColor(AppConfig.FG);
-                ctx.DrawLine(dividerLineX, 0, dividerLineX, ctx.VH, 1);
+                IM.Line(ctx, dividerLineX, 0, dividerLineX, ctx.VH, 1);
                 ctx.SetTexture(ctx.CurrentFontTexture);
 
                 // render the text
@@ -133,7 +133,7 @@ namespace TextEditor {
                             float relY = relativeY();
                             if (relY > -charHeight && relY < ctx.VH) {
                                 // TODO: stop allocation
-                                ctx.DrawText(currentLineNumber.ToString(), padding, relY);
+                                _font.Draw(ctx, currentLineNumber.ToString(), padding, relY);
                             }
                             currentLineNumber++;
                         }
@@ -193,7 +193,7 @@ namespace TextEditor {
                             if (_cursorPos == i) {
                                 var cursorWidth = 3;
                                 ctx.SetTexture(null);
-                                ctx.DrawRect(characterStartX, characterStartY, characterStartX + cursorWidth, characterStartY + charHeight);
+                                IM.Rect(ctx, characterStartX, characterStartY, characterStartX + cursorWidth, characterStartY + charHeight);
                                 ctx.SetTexture(ctx.CurrentFontTexture);
 
                                 _wantedScrollPos = documentY + charHeight / 2.0f;

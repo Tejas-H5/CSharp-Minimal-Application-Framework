@@ -25,7 +25,7 @@ namespace RenderingEngineVisualTests
             ctx.SetDrawColor(1, 1, 1, 1);
             ctx.SetTexture(tex);
 
-            ctx.DrawRect(20, 20, ctx.VW / 2 - 20, ctx.VH - 20);
+            IM.Rect(ctx, 20, 20, ctx.VW / 2 - 20, ctx.VH - 20);
             Rect rect2 = new Rect(ctx.VW / 2 + 20, 20, ctx.VW - 20, ctx.VH - 20);
 
 
@@ -36,12 +36,12 @@ namespace RenderingEngineVisualTests
             );
 
 			ctx.SetTexture(tex2);
-			ctx.DrawRect(new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectified());
+			IM.Rect(ctx, new Rect(-rect2.Width / 2, -rect2.Height / 2, rect2.Width / 2, rect2.Height / 2).Rectified());
 
             ctx.Use();
 
             Rect centerRect = new Rect(ctx.VW * 0.5f - tex.Width / 2, ctx.VH * 0.5f - tex.Height / 2, ctx.VW * 0.5f + tex.Width / 2, ctx.VH * 0.5f + tex.Height / 2);
-            ctx.DrawRect(centerRect);
+            IM.Rect(ctx, centerRect);
         }
     }
 }

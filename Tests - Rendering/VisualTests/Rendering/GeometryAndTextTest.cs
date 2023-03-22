@@ -25,12 +25,12 @@ namespace RenderingEngineVisualTests {
 
             ctx.SetTexture(null);
             ctx.SetDrawColor(Color.RGBA(0, 1, 0, 0.5f));
-            ctx.DrawArc(ctx.VW / 2, ctx.VH / 2, MathF.Min(ctx.VH / 2f, ctx.VW / 2f), a, MathF.PI * 2 + a, 6);
+            IM.Arc(ctx, ctx.VW / 2, ctx.VH / 2, MathF.Min(ctx.VH / 2f, ctx.VW / 2f), a, MathF.PI * 2 + a, 6);
 
             ctx.SetTexture(tex);
 
-            ctx.DrawRect(ctx.VW * 0.5f - 50, ctx.VH * 0.5f - 50, ctx.VW * 0.5f + 50, ctx.VH * 0.5f + 50);
-            ctx.DrawRect(100, 100, ctx.VW - 100, ctx.VH - 100);
+            IM.Rect(ctx, ctx.VW * 0.5f - 50, ctx.VH * 0.5f - 50, ctx.VW * 0.5f + 50, ctx.VH * 0.5f + 50);
+            IM.Rect(ctx, 100, 100, ctx.VW - 100, ctx.VH - 100);
         }
     }
 }

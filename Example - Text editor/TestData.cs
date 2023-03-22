@@ -30,7 +30,7 @@ namespace TextEditor {
             );
 
             ctx.SetDrawColor(Color.Black);
-            ctx.DrawRectOutline(2, pageRect);
+            IM.RectOutline(ctx, 2, pageRect);
 
             RenderText(
                 ctx.WithRect(pageRect, true).Use()
@@ -75,7 +75,7 @@ namespace TextEditor {
                 // line between line numbers and text
                 float dividerLineX = lineNumberMargin - padding / 2;
                 ctx.SetTexture(null);
-                ctx.DrawLine(dividerLineX, 0, dividerLineX, ctx.VH, 1);
+                IM.Line(ctx, dividerLineX, 0, dividerLineX, ctx.VH, 1);
                 ctx.SetTexture(ctx.InternalFontTexture);
 
                 // start rendering the text
@@ -89,7 +89,7 @@ namespace TextEditor {
                             float relY = relativeY();
                             if (relY > -charHeight && relY < ctx.VH) {
                                 // TODO: stop allocation
-                                ctx.DrawText(currentLineNumber.ToString(), padding, relY);
+                                _font.Draw(ctx, currentLineNumber.ToString(), padding, relY);
                             }
                             currentLineNumber++;
                         }
@@ -130,7 +130,7 @@ namespace TextEditor {
                             if (_cursorPos == i) {
                                 var cursorWidth = 3;
                                 ctx.SetTexture(null);
-                                ctx.DrawRect(characterStartX, characterStartY, characterStartX + cursorWidth, characterStartY + charHeight);
+                                IM.Rect(ctx, characterStartX, characterStartY, characterStartX + cursorWidth, characterStartY + charHeight);
                                 ctx.SetTexture(ctx.InternalFontTexture);
 
                                 _wantedScrollPos = documentY;

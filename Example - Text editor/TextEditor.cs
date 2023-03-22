@@ -35,15 +35,15 @@ namespace TextEditor {
 
             ctx.SetDrawColor(AppConfig.BG, 0.8f);
             ctx.SetTexture(null);
-            ctx.DrawRect(rect);
-            ctx.DrawRectOutline(2, rect);
+            IM.Rect(ctx, rect);
+            IM.RectOutline(ctx, 2, rect);
 
             ctx.SetDrawColor(AppConfig.FG);
             ctx.SetTexture(ctx.CurrentFontTexture);
-            var labelEnd = ctx.DrawText(_title, padding, padding);
+            var labelEnd = _font.Draw(ctx, _title, padding, padding);
 
             ctx.SetDrawColor(AppConfig.ErrorCol);
-            labelEnd = ctx.DrawText(_error, labelEnd.X + padding, padding);
+            labelEnd = _font.Draw(ctx, _error, labelEnd.X + padding, padding);
 
             rect.X0 = labelEnd.X + padding;
 

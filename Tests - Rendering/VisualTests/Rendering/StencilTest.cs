@@ -4,7 +4,7 @@ using System;
 namespace RenderingEngineVisualTests {
     public class StencilTest : IRenderable {
         GeometryAndTextTest geometryAndTextTest;
-
+        DrawableFont _font = new DrawableFont("Source code pro", 16);
         public StencilTest() {
             geometryAndTextTest = new GeometryAndTextTest();
         }
@@ -17,13 +17,13 @@ namespace RenderingEngineVisualTests {
             xPos = 200 * MathF.Sin(time / 2.0f);
 
             ctx.SetDrawColor(1, 1, 1, 1);
-            ctx.DrawText("Stencil test", 0, ctx.VH, HAlign.Left, VAlign.Top);
+            _font.Draw(ctx, "Stencil test", 0, ctx.VH, HAlign.Left, VAlign.Top);
 
             ctx.StartStencillingWithoutDrawing(true);
 
             float barSize = MathF.Abs((ctx.VH / 2 - 5) * MathF.Sin(time / 4f));
-            ctx.DrawRect(0, ctx.VH - barSize, ctx.VW, ctx.VH);
-            ctx.DrawRect(0, 0, ctx.VW, barSize);
+            IM.Rect(ctx, 0, ctx.VH - barSize, ctx.VW, ctx.VH);
+            IM.Rect(ctx, 0, 0, ctx.VW, barSize);
 
             ctx.StartUsingStencil();
             {
@@ -49,14 +49,14 @@ namespace RenderingEngineVisualTests {
         private void DrawBlueRectangle(ref FrameworkContext ctx, float size, float xPos) {
             ctx.SetTexture(null);
             ctx.SetDrawColor(0, 0, 1, 1);
-            ctx.DrawRect(ctx.VW / 2 - size + xPos, ctx.VH / 2 - size,
+            IM.Rect(ctx, ctx.VW / 2 - size + xPos, ctx.VH / 2 - size,
                 ctx.VW / 2 + size + xPos, ctx.VH / 2 + size);
         }
 
         private void DrawRedRectangle(ref FrameworkContext ctx, float size, float xPos) {
             ctx.SetTexture(null);
             ctx.SetDrawColor(1, 0, 0, 1);
-            ctx.DrawRect(ctx.VW / 2 - size + xPos, ctx.VH / 2 - size,
+            IM.Rect(ctx, ctx.VW / 2 - size + xPos, ctx.VH / 2 - size,
                 ctx.VW / 2 + size + xPos, ctx.VH / 2 + size);
         }
 

@@ -4,24 +4,6 @@ namespace MinimalAF.Rendering {
     public class MeshOutputStream<V> : IDisposable, IGeometryOutput<V> where V : struct {
         private Mesh<V> backingMesh;
 
-        private double utilization = 0;
-
-        public double Utilization {
-            get {
-                return utilization;
-            }
-        }
-
-        /// <summary>
-        /// Only used in DEBUG mode
-        /// </summary>
-        public int TimesVertexThresholdReached = 0;
-        /// <summary>
-        /// Only used in DEBUG mode
-        /// </summary>
-        public int TimesIndexThresholdReached = 0;
-
-
         public V GetVertex(uint i) {
             return backingMesh.Vertices[i];
         }
@@ -30,13 +12,10 @@ namespace MinimalAF.Rendering {
             return backingMesh.Indices[i];
         }
 
-        public MeshOutputStream(int vertexBufferSize, int indexBufferSize) {
-            vertexBufferSize /= 3;
-            vertexBufferSize *= 3;
-
+        public MeshOutputStream(int vertexBufferVerts, int indexBufferTriangles) {
             backingMesh = new Mesh<V>(
-                new V[vertexBufferSize], 
-                new uint[indexBufferSize], 
+                vertexBufferVerts,
+                indexBufferTriangles,
                 stream: true, 
                 allowResizing: false
             );
@@ -54,7 +33,7 @@ namespace MinimalAF.Rendering {
         public void Flush() {
             // actually draw what we have so far
             backingMesh.UploadToGPU();
-            backingMesh.Draw();
+            backingMesh.Render();
             backingMesh.Clear();
         }
 
@@ -67,13 +46,6 @@ namespace MinimalAF.Rendering {
             int currentVertexIndex = backingMesh.VertexCount;
             if (currentIndexIndex + numIncomingIndices >= backingMesh.Indices.Length ||
                     currentVertexIndex + numIncomingVerts >= backingMesh.Vertices.Length) {
-#if DEBUG
-                if (currentIndexIndex + numIncomingIndices >= backingMesh.Indices.Length) {
-                    TimesIndexThresholdReached++;
-                } else if (currentVertexIndex + numIncomingVerts >= backingMesh.Vertices.Length) {
-                    TimesVertexThresholdReached++;
-                }
-#endif
 
                 Flush();
                 return true;

@@ -30,14 +30,14 @@ namespace RenderingEngineVisualTests {
 
             ctx.SetModel(Matrix4.CreateTranslation(new Vector3(0, 0, -20)));
             ctx.SetDrawColor(0, 0, 0, 1);
-            IM.RectOutline(ctx, 1, -50, -50, 50, 50);
+            IM.DrawRectOutline(ctx, 1, -50, -50, 50, 50);
 
             _font.Draw(ctx, "This is a wall.", 0, 0, HAlign.Center, VAlign.Center);
 
             ctx.SetModel(Matrix4.CreateTranslation(rectPoint));
 
             ctx.SetDrawColor(1, 0, 0, 0.5f);
-            IM.Rect(ctx, new Rect(-1, -1, 1, 1) * 10);
+            IM.DrawRect(ctx, new Rect(-1, -1, 1, 1) * 10);
         }
     }
 }

@@ -57,7 +57,7 @@ namespace RenderingEngineVisualTests {
                 HAlign.Left, VAlign.Top
             );
 
-            IM.RectOutline(ctx, 5, new Rect(ctx.VW * 0.25f, ctx.VH * ctx.VH * 0.25f, ctx.VW * 0.75f, ctx.VH * 0.75f));
+            IM.DrawRectOutline(ctx, 5, new Rect(ctx.VW * 0.25f, ctx.VH * ctx.VH * 0.25f, ctx.VW * 0.75f, ctx.VH * 0.75f));
 
             if (points.Count < 2)
                 return;
@@ -65,9 +65,9 @@ namespace RenderingEngineVisualTests {
             int i = 0;
             foreach (Vector2 p in points) {
                 if (i == 0) {
-                    IM.NLineBegin(ctx, p.X, p.Y, p.X + 10, p.Y + 10);
+                    IM.DrawNLineBegin(ctx, p.X, p.Y, p.X + 10, p.Y + 10);
                 } else {
-                    IM.NLineExtend(ctx, p.X, p.Y, p.X + 10, p.Y + 10);
+                    IM.DrawNLineExtend(ctx, p.X, p.Y, p.X + 10, p.Y + 10);
                 }
 
                 i++;

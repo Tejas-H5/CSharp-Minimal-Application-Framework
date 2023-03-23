@@ -1,7 +1,8 @@
 ﻿using OpenTK.Mathematics;
 using System.Runtime.InteropServices;
 
-namespace MinimalAF.Rendering {
+namespace MinimalAF {
+
     [StructLayout(LayoutKind.Sequential)]
     public struct Vertex {
         public Vector3 position;

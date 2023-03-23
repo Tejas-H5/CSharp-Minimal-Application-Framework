@@ -6,7 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace MinimalAF {
+    public class IM : ImmediateModeHelpers<Vertex> {}
+
+    public class MeshOutput : Mesh<Vertex> {
+        public MeshOutput(int vertexCount, int triangleCount, bool stream, bool allowResizing) 
+            : base(vertexCount, triangleCount, stream, allowResizing) {}
+    }
+}
+
+
+namespace MinimalAF.Rendering {
     /// <summary>
     ///  This is the interface used to output geometry to the screen.
     /// </summary>
@@ -21,8 +32,6 @@ namespace MinimalAF {
     public interface IVertexCreator2D<V> where V: struct {
         public V CreateVertex(float x, float y, float u, float v);
     }
-
-    public class IM : ImmediateModeHelpers<Vertex> {}
 
 
     /// <summary>
@@ -41,8 +50,6 @@ namespace MinimalAF {
         static IVertexCreator2D<V> _vertexCreator;
         public static IVertexCreator2D<V> VertexCreator2D {
             get {
-                IGeometryOutput<Vertex> _out;
-
                 if (_vertexCreator == null) {
                     throw new Exception("You need to set IM<V>.VertexCreator before calling this function for this to work.");
                 }
@@ -62,7 +69,7 @@ namespace MinimalAF {
         static uint _firstVertexIndex;
         static uint _secondVertexIndex;
 
-        public void Triangle<Out>(Out outputStream, V v1, V v2, V v3) where Out : IGeometryOutput<V> {
+        public void DrawTriangle<Out>(Out outputStream, V v1, V v2, V v3) where Out : IGeometryOutput<V> {
             outputStream.FlushIfRequired(3, 3);
 
             uint i1 = outputStream.AddVertex(v1);
@@ -73,7 +80,7 @@ namespace MinimalAF {
         }
 
 
-        public void Triangle<Out>(
+        public void DrawTriangle<Out>(
             Out outputStream,
             float x0, float y0, float x1, float y1, float x2, float y2,
             float u0 = 0.0f, float v0 = 0.0f, float u1 = 0.5f, float v1 = 1f, float u2 = 1, float v2 = 0
@@ -82,10 +89,10 @@ namespace MinimalAF {
             V vertex2 = VertexCreator2D.CreateVertex(x1, y1, u1, v1);
             V vertex3 = VertexCreator2D.CreateVertex(x2, y2, u2, v2);
 
-            Triangle(outputStream, vertex1, vertex2, vertex3);
+            DrawTriangle(outputStream, vertex1, vertex2, vertex3);
         }
 
-        public void DrawOutline<Out>(Out outputStream, float thickness, float x0, float y0, float x1, float y1, float x2, float y2) where Out : IGeometryOutput<V> {
+        public void DrawTriangleOutline<Out>(Out outputStream, float thickness, float x0, float y0, float x1, float y1, float x2, float y2) where Out : IGeometryOutput<V> {
             var v0Inner = VertexCreator2D.CreateVertex(x0, y0, x0, y0);
             var v1Inner = VertexCreator2D.CreateVertex(x1, y1, x1, y1);
             var v2Inner = VertexCreator2D.CreateVertex(x2, y2, x2, y2);
@@ -106,16 +113,16 @@ namespace MinimalAF {
             var v1Outer = VertexCreator2D.CreateVertex(v11.X, v11.Y, v11.X, v11.Y);
             var v2Outer = VertexCreator2D.CreateVertex(v22.X, v22.Y, v22.X, v22.Y);
 
-            NLineBegin(outputStream, v0Inner, v0Outer);
-            NLineExtend(outputStream, v1Inner, v1Outer);
-            NLineExtend(outputStream, v2Inner, v2Outer);
-            NLineExtend(outputStream, v0Inner, v0Outer);
+            DrawNLineBegin(outputStream, v0Inner, v0Outer);
+            DrawNLineExtend(outputStream, v1Inner, v1Outer);
+            DrawNLineExtend(outputStream, v2Inner, v2Outer);
+            DrawNLineExtend(outputStream, v0Inner, v0Outer);
         }
 
         /// <summary>
         /// Assumes the verts are defined clockwise
         /// </summary>
-        public static void Quad<Out>(Out outputStream, V v1, V v2, V v3, V v4) where Out : IGeometryOutput<V> {
+        public static void DrawQuad<Out>(Out outputStream, V v1, V v2, V v3, V v4) where Out : IGeometryOutput<V> {
             outputStream.FlushIfRequired(4, 6);
 
             uint i1 = outputStream.AddVertex(v1);
@@ -127,39 +134,39 @@ namespace MinimalAF {
             outputStream.MakeTriangle(i3, i4, i1);
         }
 
-        public static void Rect<Out>(Out outputStream, float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 0, float u1 = 1, float v1 = 1) where Out : IGeometryOutput<V> {
+        public static void DrawRect<Out>(Out outputStream, float x0, float y0, float x1, float y1, float u0 = 0, float v0 = 0, float u1 = 1, float v1 = 1) where Out : IGeometryOutput<V> {
             var vert0 = VertexCreator2D.CreateVertex(x0, y0, u0, v1);
             var vert1 = VertexCreator2D.CreateVertex(x1, y0, u1, v1);
             var vert2 = VertexCreator2D.CreateVertex(x1, y1, u1, v0);
             var vert3 = VertexCreator2D.CreateVertex(x0, y1, u0, v0);
 
-            Quad(outputStream, vert0, vert1, vert2, vert3);
+            DrawQuad(outputStream, vert0, vert1, vert2, vert3);
         }
 
-        public static void Rect<Out>(Out outputStream, Rect rect, Rect uvs) where Out : IGeometryOutput<V> {
-            Rect(outputStream, rect.X0, rect.Y0, rect.X1, rect.Y1, uvs.X0, uvs.Y0, uvs.X1, uvs.Y1);
+        public static void DrawRect<Out>(Out outputStream, Rect rect, Rect uvs) where Out : IGeometryOutput<V> {
+            DrawRect(outputStream, rect.X0, rect.Y0, rect.X1, rect.Y1, uvs.X0, uvs.Y0, uvs.X1, uvs.Y1);
         }
 
-        public static void Rect<Out>(Out outputStream, Rect rect) where Out : IGeometryOutput<V> {
-            Rect(outputStream, rect.X0, rect.Y0, rect.X1, rect.Y1);
+        public static void DrawRect<Out>(Out outputStream, Rect rect) where Out : IGeometryOutput<V> {
+            DrawRect(outputStream, rect.X0, rect.Y0, rect.X1, rect.Y1);
         }
 
-        public static void RectOutline<Out>(Out outputStream, float thickness, Rect rect) where Out : IGeometryOutput<V> {
-            RectOutline(outputStream, thickness, rect.X0, rect.Y0, rect.X1, rect.Y1);
+        public static void DrawRectOutline<Out>(Out outputStream, float thickness, Rect rect) where Out : IGeometryOutput<V> {
+            DrawRectOutline(outputStream, thickness, rect.X0, rect.Y0, rect.X1, rect.Y1);
         }
 
-        public static void RectOutline<Out>(Out outputStream, float thickness, float x0, float y0, float x1, float y1) where Out : IGeometryOutput<V> {
-            Rect(outputStream, x0 - thickness, y0 - thickness, x1, y0);
-            Rect(outputStream, x0, y1, x1 + thickness, y1 + thickness);
+        public static void DrawRectOutline<Out>(Out outputStream, float thickness, float x0, float y0, float x1, float y1) where Out : IGeometryOutput<V> {
+            DrawRect(outputStream, x0 - thickness, y0 - thickness, x1, y0);
+            DrawRect(outputStream, x0, y1, x1 + thickness, y1 + thickness);
 
-            Rect(outputStream, x0 - thickness, y0, x0, y1 + thickness);
-            Rect(outputStream, x1, y0 - thickness, x1 + thickness, y1);
+            DrawRect(outputStream, x0 - thickness, y0, x0, y1 + thickness);
+            DrawRect(outputStream, x1, y0 - thickness, x1 + thickness, y1);
         }
 
-        public static void Arc<Out>(Out outputStream, float xCenter, float yCenter, float radius, float startAngle, float endAngle, int maxCircleEdgeCount = 32, float circleEdgeLength = 1) where Out : IGeometryOutput<V> {
+        public static void DrawArc<Out>(Out outputStream, float xCenter, float yCenter, float radius, float startAngle, float endAngle, int maxCircleEdgeCount = 32, float circleEdgeLength = 1) where Out : IGeometryOutput<V> {
             int edgeCount = GetEdgeCount(radius, startAngle, endAngle, maxCircleEdgeCount, circleEdgeLength);
 
-            Arc(outputStream, xCenter, yCenter, radius, startAngle, endAngle, edgeCount);
+            DrawArc(outputStream, xCenter, yCenter, radius, startAngle, endAngle, edgeCount);
         }
 
         private static int GetEdgeCount(float radius, float startAngle, float endAngle, int maxCircleEdgeCount, float circleEdgeLength) {
@@ -174,7 +181,7 @@ namespace MinimalAF {
         }
 
         // we need at least 2 vertices to start creating triangles with NGonContinue
-        public static void NGonBegin<Out>(Out outputStream, V v1, V v2) where Out : IGeometryOutput<V> {
+        public static void DrawNGonBegin<Out>(Out outputStream, V v1, V v2) where Out : IGeometryOutput<V> {
             _polygonFirst = outputStream.AddVertex(v1);
             _firstVertex = v1;
 
@@ -182,7 +189,7 @@ namespace MinimalAF {
             _secondVertex = v2;
         }
 
-        public static void NGonContinue<Out>(Out outputStream, V v) where Out : IGeometryOutput<V> {
+        public static void DrawNGonExtend<Out>(Out outputStream, V v) where Out : IGeometryOutput<V> {
             if (outputStream.FlushIfRequired(1, 3)) {
                 // the first and second verts got flushed, so we need to re-add them
                 _polygonFirst = outputStream.AddVertex(_firstVertex);
@@ -196,7 +203,7 @@ namespace MinimalAF {
             _secondVertex = v;
         }
 
-        private static void Arc<Out>(Out outputStream, float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount) where Out : IGeometryOutput<V> {
+        private static void DrawArc<Out>(Out outputStream, float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount) where Out : IGeometryOutput<V> {
             if (edgeCount < 0)
                 return;
 
@@ -212,20 +219,19 @@ namespace MinimalAF {
 
                 if (first == true) {
                     first = false;
-                    NGonBegin(outputStream, vCenter, v);
+                    DrawNGonBegin(outputStream, vCenter, v);
                 } else {
-                    NGonContinue(outputStream, v);
+                    DrawNGonExtend(outputStream, v);
                 }
             }
         }
 
-
-        public static void ArcOutline<Out>(Out outputStream, float thickness, float x0, float y0, float r, float startAngle, float endAngle, int maxCircleEdgeCount = 32, float circleEdgeLength = 1) where Out : IGeometryOutput<V> {
+        public static void DrawArcOutline<Out>(Out outputStream, float thickness, float x0, float y0, float r, float startAngle, float endAngle, int maxCircleEdgeCount = 32, float circleEdgeLength = 1) where Out : IGeometryOutput<V> {
             int edges = GetEdgeCount(r, startAngle, endAngle, maxCircleEdgeCount, circleEdgeLength);
-            ArcOutline(outputStream, thickness, x0, y0, r, startAngle, endAngle, edges);
+            DrawArcOutline(outputStream, thickness, x0, y0, r, startAngle, endAngle, edges);
         }
 
-        public static void ArcOutline<Out>(Out outputStream, float thickness, float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount) where Out : IGeometryOutput<V> {
+        public static void DrawArcOutline<Out>(Out outputStream, float thickness, float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount) where Out : IGeometryOutput<V> {
             if (edgeCount < 0)
                 return;
 
@@ -245,32 +251,32 @@ namespace MinimalAF {
                 var v2 = VertexCreator2D.CreateVertex(X2, Y2, sinAngle, cosAngle);
 
                 if (first) {
-                    NLineBegin(outputStream, v1, v2);
+                    DrawNLineBegin(outputStream, v1, v2);
                     first = false;
                 } else {
-                    NLineExtend(outputStream, v1, v2);
+                    DrawNLineExtend(outputStream, v1, v2);
                 }
             }
         }
 
 
-        public static void NLineBegin<Out>(Out outputStream, float v1x, float v1y, float v2x, float v2y) where Out : IGeometryOutput<V> {
-            NLineBegin(
+        public static void DrawNLineBegin<Out>(Out outputStream, float v1x, float v1y, float v2x, float v2y) where Out : IGeometryOutput<V> {
+            DrawNLineBegin(
                 outputStream,
                 VertexCreator2D.CreateVertex(v1x, v1y, v1x, v1y),
                 VertexCreator2D.CreateVertex(v2x, v2y, v2x, v2y)
             );
         }
 
-        public static void NLineBegin<Out>(Out outputStream, V v1, V v2) where Out : IGeometryOutput<V> {
+        public static void DrawNLineBegin<Out>(Out outputStream, V v1, V v2) where Out : IGeometryOutput<V> {
             _firstVertex = v1;
             _secondVertex = v2;
             _firstVertexIndex = outputStream.AddVertex(v1);
             _secondVertexIndex = outputStream.AddVertex(v2);
         }
 
-        public static void NLineExtend<Out>(Out outputStream, float v1x, float v1y, float v2x, float v2y) where Out : IGeometryOutput<V> {
-            NLineExtend(
+        public static void DrawNLineExtend<Out>(Out outputStream, float v1x, float v1y, float v2x, float v2y) where Out : IGeometryOutput<V> {
+            DrawNLineExtend(
                 outputStream,
                 VertexCreator2D.CreateVertex(v1x, v1y, v1x, v1y),
                 VertexCreator2D.CreateVertex(v2x, v2y, v2x, v2y)
@@ -281,7 +287,7 @@ namespace MinimalAF {
         /// <summary>
         /// NLines don't need to be ended now. Just extedn them however many times you need.
         /// </summary>
-        public static void NLineExtend<Out>(Out outputStream, V v1, V v2) where Out : IGeometryOutput<V> {
+        public static void DrawNLineExtend<Out>(Out outputStream, V v1, V v2) where Out : IGeometryOutput<V> {
             uint nextLast1Index = outputStream.AddVertex(v1);
             uint nextLast2Index = outputStream.AddVertex(v2);
 
@@ -301,7 +307,7 @@ namespace MinimalAF {
         }
 
 
-        public static void Line<Out>(Out outputStream, float x0, float y0, float x1, float y1, float thickness, CapType cap) where Out : IGeometryOutput<V> {
+        public static void DrawLine<Out>(Out outputStream, float x0, float y0, float x1, float y1, float thickness, CapType cap = CapType.None) where Out : IGeometryOutput<V> {
             thickness /= 2;
 
             float dirX = x1 - x0;
@@ -315,14 +321,14 @@ namespace MinimalAF {
             var v2 = VertexCreator2D.CreateVertex(x0 - perpX, y0 - perpY, x0 - perpX, y0 - perpY);
             var v3 = VertexCreator2D.CreateVertex(x1 - perpX, y1 - perpY, x1 - perpX, y1 - perpY);
             var v4 = VertexCreator2D.CreateVertex(x1 + perpX, y1 + perpY, x1 + perpX, y1 + perpY);
-            Quad(outputStream, v1, v2, v3, v4);
+            DrawQuad(outputStream, v1, v2, v3, v4);
 
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
             DrawCap(outputStream, x0, y0, thickness, cap, startAngle);
             DrawCap(outputStream, x1, y1, thickness, cap, startAngle + MathF.PI);
         }
 
-        public static void LineOutline<Out>(Out outputStream, float outlineThickness, float x0, float y0, float x1, float y1, float thickness, CapType cap) where Out : IGeometryOutput<V> {
+        public static void DrawLineOutline<Out>(Out outputStream, float outlineThickness, float x0, float y0, float x1, float y1, float thickness, CapType cap) where Out : IGeometryOutput<V> {
             thickness /= 2;
 
             float dirX = x1 - x0;
@@ -352,7 +358,7 @@ namespace MinimalAF {
                 x1 + perpXOuter, y1 + perpYOuter,
                 perpXOuter, perpYOuter
             );
-            Quad(outputStream, vInner, vOuter, v1Outer, v1Inner);
+            DrawQuad(outputStream, vInner, vOuter, v1Outer, v1Inner);
 
             // draw quad on other side of the line
             vInner = VertexCreator2D.CreateVertex(
@@ -371,7 +377,7 @@ namespace MinimalAF {
                 x1 - perpXOuter, y1 - perpYOuter,
                 -perpXOuter, -perpYOuter
             );
-            Quad(outputStream, vInner, vOuter, v1Outer, v1Inner);
+            DrawQuad(outputStream, vInner, vOuter, v1Outer, v1Inner);
 
             // Draw both caps
             float startAngle = MathF.Atan2(dirX, dirY) + MathF.PI / 2;
@@ -392,7 +398,7 @@ namespace MinimalAF {
 
 
         public static void DrawCircleCap<Out>(Out outputStream, float x0, float y0, float thickness, float angle) where Out : IGeometryOutput<V> {
-            Arc(outputStream, x0, y0, thickness, angle, angle + MathF.PI);
+            DrawArc(outputStream, x0, y0, thickness, angle, angle + MathF.PI);
         }
 
         public static void DrawCapOutline<Out>(Out outputStream, float outlineThickness, float x0, float y0, float radius, CapType cap, float startAngle) where Out : IGeometryOutput<V> {
@@ -407,23 +413,23 @@ namespace MinimalAF {
         }
 
         public static void DrawDefaultCapOutline<Out>(Out outputStream, float thickness, float x0, float y0, float radius, float angle) where Out : IGeometryOutput<V> {
-            ArcOutline(outputStream, thickness, x0, y0, radius, angle, angle + MathF.PI, 1);
+            DrawArcOutline(outputStream, thickness, x0, y0, radius, angle, angle + MathF.PI, 1);
         }
 
         public static void DrawCircleCapOutline<Out>(Out outputStream, float thickness, float x0, float y0, float radius, float angle) where Out : IGeometryOutput<V> {
-            ArcOutline(outputStream, thickness, x0, y0, radius, angle, angle + MathF.PI);
+            DrawArcOutline(outputStream, thickness, x0, y0, radius, angle, angle + MathF.PI);
         }
 
-        public static void Circle<Out>(Out outputStream, float x0, float y0, float r, int edges) where Out : IGeometryOutput<V> {
-            Arc(outputStream, x0, y0, r, 0, MathF.PI * 2, edges);
+        public static void DrawCircle<Out>(Out outputStream, float x0, float y0, float r, int edges) where Out : IGeometryOutput<V> {
+            DrawArc(outputStream, x0, y0, r, 0, MathF.PI * 2, edges);
         }
 
-        public static void Circle<Out>(Out outputStream, float x0, float y0, float r) where Out : IGeometryOutput<V> {
-            Arc(outputStream, x0, y0, r, 0, MathF.PI * 2);
+        public static void DrawCircle<Out>(Out outputStream, float x0, float y0, float r) where Out : IGeometryOutput<V> {
+            DrawArc(outputStream, x0, y0, r, 0, MathF.PI * 2);
         }
 
-        public static void CircleOutline<Out>(Out outputStream, float thickness, float x0, float y0, float r, int edges = 32) where Out : IGeometryOutput<V> {
-            ArcOutline(outputStream, thickness, x0, y0, r, 0, MathF.PI * 2, edges);
+        public static void DrawCircleOutline<Out>(Out outputStream, float thickness, float x0, float y0, float r, int edges = 32) where Out : IGeometryOutput<V> {
+            DrawArcOutline(outputStream, thickness, x0, y0, r, 0, MathF.PI * 2, edges);
         }
     }
 }

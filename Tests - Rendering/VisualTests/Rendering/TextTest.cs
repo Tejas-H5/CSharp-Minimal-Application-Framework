@@ -60,7 +60,7 @@ namespace RenderingEngineVisualTests
             ctx.SetModel(Matrix4.CreateTranslation(0, -((float)translateAmount), 0));
 
             for (int i = 0; i < rain.Count; i++) {
-                font.Draw(ctx, rain[i], 0, ctx.VH - font.GetStringHeight("|") * i);
+                font.DrawText(ctx, rain[i], 0, ctx.VH - font.GetStringHeight("|") * i);
 
                 // nah we're using a whole ass matrix bc i feel like it
                 // _font.Draw(ctx, rain[i], 0, -translateAmount + ctx.VH - ctx.GetCharHeight() * i);

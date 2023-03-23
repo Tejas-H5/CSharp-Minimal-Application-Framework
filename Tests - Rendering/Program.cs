@@ -15,7 +15,7 @@ namespace RenderingEngineVisualTests {
     class BasicTest : IRenderable {
         public void Render(FrameworkContext ctx) {
             ctx.SetDrawColor(Color.Red);
-            IM.Rect(ctx, new Rect(250, 200, 500, 500));
+            IM.DrawRect(ctx, new Rect(250, 200, 500, 500));
         }
     }
 

@@ -11,7 +11,7 @@ namespace RenderingEngineVisualTests {
 
         public MeshOutputCachingTest() {
             mesh = new Mesh<Vertex>(new Vertex[0], new uint[0], stream:false, allowResizing: true);
-            IM.Circle(mesh, 0, 0, 120f);
+            IM.DrawCircle(mesh, 0, 0, 120f);
         }
 
         public void Render(FrameworkContext ctx) {
@@ -25,7 +25,7 @@ namespace RenderingEngineVisualTests {
 
                 ctx.SetDrawColor(xNorm, 0, 1f - xNorm, 0.4f);
                 ctx.SetModel(Matrix4.CreateTranslation(x, y, 0));
-                mesh.Draw();
+                mesh.Render();
             }
         }
     }

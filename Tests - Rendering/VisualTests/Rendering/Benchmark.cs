@@ -59,8 +59,8 @@ namespace RenderingEngineVisualTests {
 
 
             ctx.SetDrawColor(1, 0, 0, 0.1f);
-            CTX.TimesVertexThresholdReached = 0;
-            CTX.TimesIndexThresholdReached = 0;
+            //CTX.TimesVertexThresholdReached = 0;
+            //CTX.TimesIndexThresholdReached = 0;
 
             for (int i = 0; i < amount; i++) {
                 float x1 = ctx.VW * (float)rand.NextDouble();
@@ -69,21 +69,21 @@ namespace RenderingEngineVisualTests {
                 float x2 = ctx.VW * (float)rand.NextDouble();
                 float y2 = ctx.VH * (float)rand.NextDouble();
 
-                IM.Line(ctx, x1, y1, x2, y2, LineThickness, CapType);
+                IM.DrawLine(ctx, x1, y1, x2, y2, LineThickness, CapType);
             }
 
             ctx.SetDrawColor(0, 0, 0, 1f);
 
             string text = "FPS: " + FPS.ToString("0.000") +
                 "\nLines drawn: " + amount +
-                "\nCapType: " + CapType.ToString() +
-                "\nVertex refreshes: " + CTX.TimesVertexThresholdReached +
-                "\nIndex refreshes: " + CTX.TimesIndexThresholdReached +
-                "\nVertex:Index Ratio: " + CTX.VertexToIndexRatio;
+                "\nCapType: " + CapType.ToString();
+                //"\nVertex refreshes: " + CTX.TimesVertexThresholdReached +
+                //"\nIndex refreshes: " + CTX.TimesIndexThresholdReached +
+                //"\nVertex:Index Ratio: " + CTX.VertexToIndexRatio;
 
             text.ToCharArray();
 
-            _font.Draw(ctx, text, 10, ctx.VH - 50);
+            _font.DrawText(ctx, text, 10, ctx.VH - 50);
         }
     }
 }

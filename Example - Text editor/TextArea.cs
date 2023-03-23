@@ -10,6 +10,9 @@ namespace TextEditor {
         public bool LineNumbers = true;
         public bool AcceptsNewLines = true;
 
+        MeshOutput _textOutput;
+        MeshOutput _highlightRangeOutput;
+        Rect _cursorRect;
 
         TextBuffer _buffer;
         bool _bufferContentsChanged;
@@ -39,12 +42,13 @@ namespace TextEditor {
             CancelSelection();
         }
 
-        List<Rect> _highlightRegions = new List<Rect>();
-
         public TextArea(string initialText) {
             // _buffer = new TextBuffer("");
             _buffer = new TextBuffer(initialText.Replace("\r", ""));
             _buffer.TextEdited += _buffer_TextEdited;
+
+            _textOutput = new MeshOutput(400, 600, stream: true, allowResizing: true);
+            _highlightRangeOutput = new MeshOutput(400, 600, stream: true, allowResizing: true);
         }
 
         private void _buffer_TextEdited() {
@@ -65,17 +69,21 @@ namespace TextEditor {
             return -1;
         }
 
+        void DrawToMeshOutputStreams() {
+
+        }
+
+
         public void RenderText(FrameworkContext ctx, bool update) {
             float padding = 10;
-
-            ctx.SetFont(AppConfig.EditorFont, AppConfig.FontSize1);
+    
             ctx.SetDrawColor(AppConfig.FG);
-            ctx.SetTexture(ctx.CurrentFontTexture);
+            ctx.SetTexture(AppConfig.MainFont.Texture);
 
             // TODO: scrolling
             int currentLineNumber = 0;
-            float charHeight = ctx.GetCharHeight();
-            float charWidth = ctx.GetCharWidth();
+            float charHeight = AppConfig.MainFont.GetCharHeight();
+            float charWidth = AppConfig.MainFont.GetCharWidth();
             float documentY = 0;
 
             _currentScroll = MathHelpers.Lerp(_currentScroll, _wantedScrollPos, 40 * Time.DeltaTime);
@@ -91,7 +99,7 @@ namespace TextEditor {
             if (LineNumbers) {
                 int totalLineCount = _buffer.CountOccurrances("\n");
                 // the lengths I go to avoid allocation :(
-                lineNumberMargin = ctx.GetStringWidth("0") * (1 + MathF.Floor(MathF.Log10(totalLineCount)))
+                lineNumberMargin = AppConfig.MainFont.GetStringWidth("0") * (1 + MathF.Floor(MathF.Log10(MathHelpers.Max(1, totalLineCount))))
                     + 2 * padding;
             } 
 
@@ -104,108 +112,115 @@ namespace TextEditor {
                 // line between line numbers and text
                 float dividerLineX = lineNumberMargin - padding / 2;
 
-                ctx.SetTexture(null);
-                ctx.SetDrawColor(Color.Blue, 0.4f);
-
-                // render the higlight regions we found in the previous frame
-                {
-                    if (HasSelection) {
-                        for (int i = 0; i < _highlightRegions.Count; i++) {
-                            var region = _highlightRegions[i];
-                            IM.Rect(ctx, region);
-                        }
-                    }
-                    _highlightRegions.Clear();
-                }
-
                 ctx.SetDrawColor(AppConfig.FG);
-                IM.Line(ctx, dividerLineX, 0, dividerLineX, ctx.VH, 1);
-                ctx.SetTexture(ctx.CurrentFontTexture);
+                ctx.SetTexture(null);
+                IM.DrawLine(ctx, dividerLineX, 0, dividerLineX, ctx.VH, 1);
+                ctx.SetTexture(AppConfig.MainFont.Texture);
 
-                // render the text
-                {
-                    x = startX;
-                    for (int i = startPos; i <= _buffer.Length; documentY -= charHeight) {
-                        // draw line numbers here itself.
-                        // the text may wrap, causing incorrect line numbers if we draw them in 
-                        // a seperate loop
-                        if (LineNumbers) {
-                            float relY = relativeY();
-                            if (relY > -charHeight && relY < ctx.VH) {
-                                // TODO: stop allocation
-                                _font.Draw(ctx, currentLineNumber.ToString(), padding, relY);
-                            }
-                            currentLineNumber++;
+                // output the text, and highlighted ranges we render them
+                _textOutput.Clear();
+                _highlightRangeOutput.Clear();
+
+                x = startX;
+                for (int i = startPos; i <= _buffer.Length; documentY -= charHeight) {
+                    // draw line numbers here itself.
+                    // the text may wrap, causing incorrect line numbers if we draw them in 
+                    // a seperate loop
+                    if (LineNumbers) {
+                        float relY = relativeY();
+                        if (relY > -charHeight && relY < ctx.VH) {
+                            // TODO: stop allocation
+                            AppConfig.MainFont.DrawText(ctx, currentLineNumber.ToString(), padding, relY);
                         }
+                        currentLineNumber++;
+                    }
 
-                        // draw text on this line. It may wrap - 
-                        // <= is so we can draw the cursor when it is at the very end
-                        for (; i <= _buffer.Length; i++) {
-                            float characterStartX = x, characterStartY = relativeY();
-                            float y = characterStartY;
-                            bool lineEnded = false;
+                    // draw text on this line. It may wrap - 
+                    // <= is so we can draw the cursor when it is at the very end
+                    for (; i <= _buffer.Length; i++) {
+                        float characterStartX = x, characterStartY = relativeY();
+                        float y = characterStartY;
+                        bool lineEnded = false;
 
-                            // draw a single thing
-                            if (i < _buffer.Length) {
-                                var c = _buffer[i];
-                                if (c == '\n') {
-                                    // draw newline
-                                    x = startX;
-                                    lineEnded = true;
+                        // draw a single thing
+                        if (i < _buffer.Length) {
+                            var c = _buffer[i];
+                            if (c == '\n') {
+                                // draw newline
+                                x = startX;
+                                lineEnded = true;
 
-                                    // set up a highlight region if applicable for the newline
+                                // set up a highlight region if applicable for the newline
+                                int minSel = MathHelpers.Min(_selectStartPos, _selectEndPos);
+                                int maxSel = MathHelpers.Max(_selectStartPos, _selectEndPos);
+                                float newlineHighlightWidth = 10;
+                                if (HasSelection && (i >= minSel && i < maxSel)) {
+                                    var rect = new Rect(
+                                        characterStartX, characterStartY, characterStartX + newlineHighlightWidth, characterStartY + charHeight
+                                    );
+                                    IM.DrawRect(_highlightRangeOutput, rect);
+                                }
+                            } else {
+                                // draw character
+                                float relY = relativeY();
+                                if (relY > -charHeight && relY < ctx.VH) {
+                                    var rect = AppConfig.MainFont.DrawChar(_textOutput, c, x, y);
+                                    if (ctx.MouseIsOver(rect) && ctx.MouseButtonJustPressed(MouseButton.Left)) {
+                                        _cursorPos = i;
+                                    }
+
+                                    // set up a highlight region if applicable
                                     int minSel = MathHelpers.Min(_selectStartPos, _selectEndPos);
                                     int maxSel = MathHelpers.Max(_selectStartPos, _selectEndPos);
-                                    float newlineHighlightWidth = 10;
                                     if (HasSelection && (i >= minSel && i < maxSel)) {
-                                        _highlightRegions.Add(new Rect(
-                                            characterStartX, characterStartY, characterStartX + newlineHighlightWidth, characterStartY + charHeight
-                                        ));
+                                        IM.DrawRect(_highlightRangeOutput, rect);
                                     }
+
+                                    x += rect.Width;
                                 } else {
-                                    // draw character
-                                    float relY = relativeY();
-                                    if (relY > -charHeight && relY < ctx.VH) {
-                                        var s = ctx.DrawChar(c, x, y);
+                                    x += AppConfig.MainFont.GetCharWidth(c);
+                                }
 
-                                        // set up a highlight region if applicable
-                                        int minSel = MathHelpers.Min(_selectStartPos, _selectEndPos);
-                                        int maxSel = MathHelpers.Max(_selectStartPos, _selectEndPos);
-                                        if (HasSelection && (i >= minSel && i < maxSel)) {
-                                            _highlightRegions.Add(new Rect(x, y, x + s.X, y + s.Y));
-                                        }
-
-                                        x += s.X;
-                                    } else {
-                                        x += ctx.GetCharWidth(c);
-                                    }
-
-                                    // TODO: wrap words somehow instead of characters. would involve
-                                    // some sort of lookahead I think
-                                    if (x + charWidth > ctx.VW) {
-                                        x = lineNumberMargin + wrapMargin;
-                                        documentY -= charHeight;
-                                    }
+                                // TODO: wrap words somehow instead of characters. would involve
+                                // some sort of lookahead I think
+                                if (x + charWidth > ctx.VW) {
+                                    x = lineNumberMargin + wrapMargin;
+                                    documentY -= charHeight;
                                 }
                             }
+                        }
 
-                            // draw cursor if it is at this position
-                            if (_cursorPos == i) {
-                                var cursorWidth = 3;
-                                ctx.SetTexture(null);
-                                IM.Rect(ctx, characterStartX, characterStartY, characterStartX + cursorWidth, characterStartY + charHeight);
-                                ctx.SetTexture(ctx.CurrentFontTexture);
+                        // draw cursor if it is at this position
+                        if (_cursorPos == i) {
+                            var cursorWidth = 3;
+                            _cursorRect = new Rect(
+                                characterStartX, characterStartY, characterStartX + cursorWidth, characterStartY + charHeight
+                            );
 
-                                _wantedScrollPos = documentY + charHeight / 2.0f;
-                            }
+                            _wantedScrollPos = documentY + charHeight / 2.0f;
+                        }
 
-                            if (lineEnded) {
-                                i++;
-                                break;  // breaking here should increment and draw a line number
-                            }
+                        if (lineEnded) {
+                            i++;
+                            break;  // breaking here should increment and draw a line number
                         }
                     }
                 }
+            }
+
+            // render the text, highlight regions, and cursor in that order
+            {
+                ctx.SetTexture(null);
+                ctx.SetDrawColor(Color.Blue, 0.5f);
+                _highlightRangeOutput.Render();
+
+                ctx.SetTexture(AppConfig.MainFont.Texture);
+                ctx.SetDrawColor(AppConfig.FG);
+                _textOutput.Render();
+
+                ctx.SetTexture(null);
+                ctx.SetDrawColor(AppConfig.FG);
+                IM.DrawRect(ctx, _cursorRect);
             }
 
             if (update) {

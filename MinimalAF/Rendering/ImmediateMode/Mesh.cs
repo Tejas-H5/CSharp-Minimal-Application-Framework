@@ -73,13 +73,13 @@ namespace MinimalAF.Rendering {
         /// If you are going to update the data every frame with UpdateBuffers, then set stream=true.
         /// </summary>
         public Mesh(
-            V[] vertices, 
-            uint[] indices, 
+            int vertexCount, 
+            int triangleCount, 
             bool stream, 
             bool allowResizing
         ) {
-            _vertices = new ArrayList<V>(vertices, vertices.Length);
-            _indices = new ArrayList<uint>(indices, indices.Length);
+            _vertices = new ArrayList<V>(new V[vertexCount], vertexCount);
+            _indices = new ArrayList<uint>(new uint[triangleCount * 3], triangleCount * 3);
 
             _allowResizing = allowResizing;
 
@@ -170,8 +170,8 @@ namespace MinimalAF.Rendering {
 
             _changed = false;
         }
-
-        public void Draw() {
+        
+        public void Render() {
             if (_changed) {
                 _changed = false;
                 UploadToGPU();

@@ -8,8 +8,16 @@ namespace TextEditor {
         public static Color FG => Color.Black;
         public static Color ErrorCol => Color.Red;
 
-        public static string EditorFont = "Source code pro";
-        public static int FontSize1 = 24;
+        static DrawableFont? _mainFont;
+        public static DrawableFont MainFont {
+            get {
+                if (_mainFont == null) {
+                    _mainFont = new DrawableFont("Source Code Pro", 24);
+                }
+
+                return _mainFont;
+            }
+        }
     }
 
 
@@ -31,6 +39,8 @@ namespace TextEditor {
 
                 return new TextEditor();
             }).Run();
+
+            Console.WriteLine("End");
         }
     }
 }

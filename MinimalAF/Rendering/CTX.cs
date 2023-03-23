@@ -81,18 +81,6 @@ namespace MinimalAF.Rendering {
         private static ShaderManager s_shaderManager;
         private static InternalShader s_internalShader;
 
-        public static int TimesVertexThresholdReached {
-            get => s_meshOutputStream.TimesVertexThresholdReached;
-            set => s_meshOutputStream.TimesVertexThresholdReached = value;
-        }
-
-        public static int TimesIndexThresholdReached {
-            get => s_meshOutputStream.TimesIndexThresholdReached;
-            set => s_meshOutputStream.TimesIndexThresholdReached = value;
-        }
-
-        public static float VertexToIndexRatio => (float)TimesVertexThresholdReached / (float)TimesIndexThresholdReached;
-
         internal static void SetScreenWidth(int width, int height) {
             contextWidth = ScreenWidth = width;
             contextHeight = ScreenHeight = height;
@@ -163,13 +151,6 @@ namespace MinimalAF.Rendering {
             s_shaderManager.SetModelMatrix(Matrix4.Identity);
 
             glContext.SwapBuffers();
-
-
-#if DEBUG
-            TimesVertexThresholdReached = 0;
-            TimesIndexThresholdReached = 0;
-#endif
-
         }
 
 

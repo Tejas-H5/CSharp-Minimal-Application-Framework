@@ -21,7 +21,7 @@ namespace RenderingEngineVisualTests {
                 cX + font.Texture.Width / 2f, cY + font.Texture.Height / 2f
             );
 
-            IM.Rect(ctx, rect);
+            IM.DrawRect(ctx, rect);
         }
     }
 }

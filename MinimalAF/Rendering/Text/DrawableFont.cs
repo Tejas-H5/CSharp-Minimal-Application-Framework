@@ -41,7 +41,6 @@ namespace MinimalAF {
                     FontSize = fontSize
                 }
             );
-
         }
 
         public void SetSize(int size) {
@@ -157,7 +156,7 @@ namespace MinimalAF {
             return caratPos;
         }
 
-        public Vector2 Draw<Out>(Out output, string text, float startX, float startY, float scale = 1.0f) where Out : IGeometryOutput<Vertex> {
+        public Vector2 DrawText<Out>(Out output, string text, float startX, float startY, float scale = 1.0f) where Out : IGeometryOutput<Vertex> {
             return Draw(output, text, 0, text.Length, startX, startY, scale);
         }
 
@@ -187,17 +186,18 @@ namespace MinimalAF {
             return new Vector2(x, y);
         }
 
-        public Vector2 DrawChar<Out>(Out output, char c, float x, float y, float scale = 1) where Out : IGeometryOutput<Vertex> {
+        public Rect DrawChar<Out>(Out output, char c, float x, float y, float scale = 1) where Out : IGeometryOutput<Vertex> {
             Vector2 size = GetSize(c);
 
+            var charRect = new Rect(x, y, x + size.X * scale, y + size.Y * scale);
             if (_currentFontAtlas.HasCharacter(c)) {
                 Rect uv = _currentFontAtlas.GetCharacterUV(c);
-                IM.Rect(output, new Rect(x, y, x + size.X * scale, y + size.Y * scale), uv);
+                IM.DrawRect(output, charRect, uv);
             } else if (c != ' ' && c != '\t') {
                 return DrawChar(output, '?', x, y, scale);
             }
 
-            return size;
+            return charRect;
         }
 
         public float GetStringHeight(string s) {
@@ -255,15 +255,38 @@ namespace MinimalAF {
             return 0;
         }
 
+        public float GetCharWidth() {
+            return GetCharWidth(' ');
+        }
+
         public float GetCharHeight(char c) {
             return _currentFontAtlas.GetCharacterSize(c).Y;
         }
 
+        public float GetCharHeight() {
+            return GetCharHeight('|');
+        }
 
-        public void Dispose() {
-            foreach(var fontAtlas in _atlasForSize.Values) {
+        private bool disposed = false;
+        protected virtual void Dispose(bool disposing) {
+            if (disposed)
+                return;
+
+            foreach (var fontAtlas in _atlasForSize.Values) {
                 fontAtlas.Dispose();
             }
+            Console.WriteLine("Font destructed");
+
+            disposed = true;
+        }
+
+        ~DrawableFont() {
+            Dispose(false);
+        }
+
+        public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

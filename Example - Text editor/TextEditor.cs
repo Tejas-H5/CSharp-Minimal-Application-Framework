@@ -27,23 +27,22 @@ namespace TextEditor {
         }
         
         public void Render(FrameworkContext ctx) {
-            ctx.SetFont(AppConfig.EditorFont, AppConfig.FontSize1);
-            var charHeight = ctx.GetCharHeight();
+            var charHeight = AppConfig.MainFont.GetCharHeight();
             var padding = 5;
 
             var rect = new Rect(0, 0, ctx.VW, charHeight + 2 * padding);
 
             ctx.SetDrawColor(AppConfig.BG, 0.8f);
             ctx.SetTexture(null);
-            IM.Rect(ctx, rect);
-            IM.RectOutline(ctx, 2, rect);
+            IM.DrawRect(ctx, rect);
+            IM.DrawRectOutline(ctx, 2, rect);
 
             ctx.SetDrawColor(AppConfig.FG);
-            ctx.SetTexture(ctx.CurrentFontTexture);
-            var labelEnd = _font.Draw(ctx, _title, padding, padding);
+            ctx.SetTexture(AppConfig.MainFont.Texture);
+            var labelEnd = AppConfig.MainFont.DrawText(ctx, _title, padding, padding);
 
             ctx.SetDrawColor(AppConfig.ErrorCol);
-            labelEnd = _font.Draw(ctx, _error, labelEnd.X + padding, padding);
+            labelEnd = AppConfig.MainFont.DrawText(ctx, _error, labelEnd.X + padding, padding);
 
             rect.X0 = labelEnd.X + padding;
 

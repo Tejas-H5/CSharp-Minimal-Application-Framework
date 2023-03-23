@@ -34,7 +34,7 @@ namespace AudioEngineTests.AudioTests {
                 ctx.SetDrawColor(1, 0, 0, 1);
                 float amount = (float)(streamedSource.GetPlaybackPosition() / streamProvider.Duration);
                 float x = amount * ctx.VW;
-                IM.Line(ctx, x, 0, x, ctx.VH, 2, CapType.None);
+                IM.DrawLine(ctx, x, 0, x, ctx.VH, 2, CapType.None);
 
                 if (amount > 1) {
                     _font.Draw(ctx, "Duration: " + streamProvider.Duration, 0, 0);

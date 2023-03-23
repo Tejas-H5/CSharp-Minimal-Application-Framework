@@ -22,8 +22,8 @@ namespace RenderingEngineVisualTests {
             ctx.StartStencillingWithoutDrawing(true);
 
             float barSize = MathF.Abs((ctx.VH / 2 - 5) * MathF.Sin(time / 4f));
-            IM.Rect(ctx, 0, ctx.VH - barSize, ctx.VW, ctx.VH);
-            IM.Rect(ctx, 0, 0, ctx.VW, barSize);
+            IM.DrawRect(ctx, 0, ctx.VH - barSize, ctx.VW, ctx.VH);
+            IM.DrawRect(ctx, 0, 0, ctx.VW, barSize);
 
             ctx.StartUsingStencil();
             {
@@ -49,14 +49,14 @@ namespace RenderingEngineVisualTests {
         private void DrawBlueRectangle(ref FrameworkContext ctx, float size, float xPos) {
             ctx.SetTexture(null);
             ctx.SetDrawColor(0, 0, 1, 1);
-            IM.Rect(ctx, ctx.VW / 2 - size + xPos, ctx.VH / 2 - size,
+            IM.DrawRect(ctx, ctx.VW / 2 - size + xPos, ctx.VH / 2 - size,
                 ctx.VW / 2 + size + xPos, ctx.VH / 2 + size);
         }
 
         private void DrawRedRectangle(ref FrameworkContext ctx, float size, float xPos) {
             ctx.SetTexture(null);
             ctx.SetDrawColor(1, 0, 0, 1);
-            IM.Rect(ctx, ctx.VW / 2 - size + xPos, ctx.VH / 2 - size,
+            IM.DrawRect(ctx, ctx.VW / 2 - size + xPos, ctx.VH / 2 - size,
                 ctx.VW / 2 + size + xPos, ctx.VH / 2 + size);
         }
 

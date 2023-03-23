@@ -7,15 +7,16 @@ The audio part will be evaluated when I try making a DAW.
     - Need a CTX API to say SetTabWidth(x) and GetTabWidth(). 
     - I probably don't want to couple MutableString to this. 
         - Dont think I even need to, all the "moveCursorUpALine" and such methods are in my TextBuffer class which won't be in MinmalAF, so probably isn't a risk atm.
-
 - We need bold and italic for text
 - We need to move text to signed distance fields
     - We are making an entirely new font atlas for characters with a different size, not ideal. 
     We may want to move to using just 1 medium/large texture or SDF or do some sort of mim-mapping style image pyramid type thing
-
+- Make sure the new font is being disposed of properly [todo...]
+    - Still TODO, but I think its working. will test later
 - I keep forgetting to switch to a null texture before rendering text.
     - but I'd rather not add if statements to unset the text texture. 
     - It may be worth moving to the mesh-vector method sooner than later.
+
 
 # not really an issue / solved
 
@@ -74,10 +75,21 @@ The audio part will be evaluated when I try making a DAW.
         - It looks like I have some other MeshBuilder class, but it doesn't have any mechanism to rebuild a mesh in-place. It is getting deleted as well
     - I really don't want to have two different ways of drawing though, because then peolpe will need to memorize two seperate but linked APIs. E.g I don'tw ant to have IM.Rect(ctx, rect) and IM.Rect(ctx.MeshOutput, rect) as the two equally valid but different ways to draw. It also doesn't make sense for appending vertices onto a plain c# object to be coupled to FrameworkContext ctx though, so I think I will actually just completely move to a convention like IM.NameOfThingWeWantToDraw(output, ...params). Then if we want normal immediate mode behaviour, we do IM.Rect(ctx, rect) and if we want to draw this rect to a mesh buffer, we do IM.Rect(_buffer, rect); and then call _buffer.Draw() when we want to draw the thing.
         Frameworkctx will have to inherit from IGeometryOutput and wrap some calls to the buffered mesh output, but I think it will look better than IM.Rect(ctx.BufferedMeshOutput, rect) each time;
+    - Also, there will be other classes and methods that people will make that also do the IGeometryOutput api thing. But if I design my API like:
+        - IM.Rect(output, ...)
+        - IM.Triangle(output, ...)
+        - IM.Circle(output, ...)
+        - IM.Line(output, ...)
+    Then I have a font class like DrawableFont, how should that follow this convention? maybe I would write a method that would be called like:
+        - _font.Text(output, ...)
+        - _font.Character(output, ...)
+    The main problem here is that the name doesn;t make it obvious what the method actually does. However, something like this would be far more clear, but it would be inconsistent with the other APIs:
+        - _font.DrawText(output, ...)
+        - _font.DrawCharacter(output, ...)
+    So I will probably rename the IM APIs to be like IM.DrawRect, etc. so it is easier for other things to follow the convention and also have good method names.
 
     - Final steps:
         - set IVertexcreator2D _vertexCreator to something [DONE]
         - make _font.Draw(font, ) set the texture [done]
         - Make sure the new font is being disposed of properly [todo...]
-
-    - this is almost solved :0
+            - Still TODO, but I think its working. will test later

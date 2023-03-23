@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace MinimalAF.Rendering {
+namespace MinimalAF {
 
     public struct VertexAttributeInfo {
         public int ComponentCount;

@@ -80,7 +80,7 @@ namespace MinimalAF.Testing {
 
             ctx.SetTexture(null);
             ctx.SetDrawColor(color, alpha);
-            IM.Rect(ctx, rect);
+            IM.DrawRect(ctx, rect);
 
             ctx.SetDrawColor(Color.White);
             _font.Draw(ctx, text, x + padding, y + padding, HAlign.Left, VAlign.Bottom);
@@ -92,7 +92,7 @@ namespace MinimalAF.Testing {
         public void Render(FrameworkContext ctx) {
             if (tests.Count == 0) {
                 ctx.SetDrawColor(Color.Black);
-                _font.Draw(ctx, "No Tests", ctx.VW * 0.5f, ctx.VH * 0.5f);
+                _font.DrawText(ctx, "No Tests", ctx.VW * 0.5f, ctx.VH * 0.5f);
                 return;
             }
 

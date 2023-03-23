@@ -16,22 +16,22 @@ namespace RenderingEngineVisualTests {
             float y0 = ctx.VH * 0.5f;
             float r = MathF.Min(ctx.VH, ctx.VW) * 0.45f;
 
-            IM.Arc(ctx, x0, y0, r, a, b);
+            IM.DrawArc(ctx, x0, y0, r, a, b);
 
             ctx.SetDrawColor(0, 0, 0, 0.5f);
             DrawHand(ref ctx, x0, y0, r, a);
             DrawHand(ref ctx, x0, y0, r, b);
 
             ctx.SetDrawColor(0, 0, 0, 1);
-            _font.Draw(ctx, "Angle a: " + a, 0, ctx.VH - 30);
-            _font.Draw(ctx, "Angle b: " + b, 0, ctx.VH - 50);
+            _font.DrawText(ctx, "Angle a: " + a, 0, ctx.VH - 30);
+            _font.DrawText(ctx, "Angle b: " + b, 0, ctx.VH - 50);
 
             a += Time.DeltaTime;
             b += Time.DeltaTime * 2f;
         }
 
         private void DrawHand(ref FrameworkContext ctx, float x0, float y0, float r, float angle) {
-            IM.Line(ctx, x0, y0, x0 + r * MathF.Sin(angle), y0 + r * MathF.Cos(angle), 15f, CapType.Circle);
+            IM.DrawLine(ctx, x0, y0, x0 + r * MathF.Sin(angle), y0 + r * MathF.Cos(angle), 15f, CapType.Circle);
         }
     }
 }

@@ -1,4 +1,4 @@
-NOTE: I am currently not working on this, and no solution was found yet
+NOTE: I am currently not working on this, and no good solution was found yet
 
 # Window resizing
 
@@ -60,8 +60,8 @@ I can think of 4 options that allow us to keep the simple API:
             - renderable.Render() as normal;
             - render thread can pull input state from a shared memory buffer using non-blocking producer/consumer approach. 
             - This might be the simplest solution actually    
-            - However, I am encountering issues where a lot of the GLFW windowing methods can only be called via the main thread. They will need to be synchronized via p/c. 
-            - This approach ends up being kind of funny, in that we are using 2 threads but we don't get any performance benefits because we are blocking for inputs.
+                - However, I am encountering issues where a lot of the GLFW windowing methods can only be called via the main thread. They will need to be synchronized somehow ?. 
+                - This approach ends up being kind of funny, in that we are using 2 threads but we don't get any performance benefits because we are blocking for inputs.
 
 - Make a seperate thread for rendering, run the Render() function on the main thread and send rendering commands to that other thread somehow
     - share a bunch of rendering primitives with the render thread using a producer/consumer approach

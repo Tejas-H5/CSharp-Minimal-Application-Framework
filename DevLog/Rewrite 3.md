@@ -302,3 +302,61 @@ class App : IRenderable {
 
 However, it has several advantages. The code is much simpler. There are a lot of hooks that I can remove, because the functionality
 exists within the Render() method. And if I need more precise inputs, that can be done in other ways.
+
+## Update 2 weeks later:
+
+There are actually some cases where having a separate Render() and Update() method is really nice. For example:
+
+``` C#
+class App : IRenderable, IUpdatable {
+	void Render(FrameworkContext ctx) {
+		// render text editor
+	}
+
+	void Update(FrameworkContext ctx) {
+		// process keyboard inputs for text editor
+	}
+}
+```
+
+I am still not convinced that my framework should support it though. Currently I am doing something like this:
+
+``` C#
+class App : IRenderable {
+	void Render(FrameworkContext ctx) {
+		// render text editor
+		...
+
+		ProcessKeyboardInputs(ref ctx);
+	}
+
+	void ProcessKeyboardInputs(ref FrameworkContext ctx) {
+		// process keyboard inputs for text editor
+	}
+}
+```
+
+Maybe there are some performance benefits of splitting the render and update loop. But then I would expect people to do that themselves.
+
+I have also changed my mind about running the Render() function multiple times, but disabling the rendering using a backend flag. 
+This hidden step makes it a bit hard to follow exactly what is happening, and it is fairly simple to do something like this:
+
+```C# 
+class App : IRenderable {
+	void ProcessInputsAndMaybeRender(ref FrameworkContext ctx, bool isRenderPass) {
+		if (isRenderPass) {
+			// rendering code here
+		}
+	}
+
+	void Render(FrameworkContext ctx) {
+		ProcessInputsAndMaybeRender(ref ctx, false);
+		ProcessInputsAndMaybeRender(ref ctx, true);
+		...
+	}
+}
+```
+And I would have to add a bunch of if-guards in the rendering code, which would make that implementation more complicated. 
+
+The framework definitely has a lot less code in it now, which is good. 
+Right now, I need to remove as much scope as I possibly can, and make this API good at very specific things that are useful to me

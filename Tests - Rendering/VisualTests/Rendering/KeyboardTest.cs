@@ -3,49 +3,51 @@ using System;
 using System.Text;
 
 namespace RenderingEngineVisualTests {
-    [VisualTest(
-        description: @"Test that the keyboard input is working.",
-        tags: "2D, keyboard input"
-    )]
-    public class KeyboardTest : Element {
-        public override void OnMount(Window w) {
+    public class KeyboardTest : IRenderable {
+        DrawableFont _font = new DrawableFont("Source code pro", 16);
 
-            w.Size = (800, 600);
-            w.Title = "Keyboard test";
-
-            SetClearColor(Color.White);
-            SetFont("Consolas", 36);
-        }
-
-        string KeysToString(string s) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < s.Length; i++) {
-                char c = s[i];
-                if (KeyHeld(KeyCode.Shift)) {
-                    c = char.ToUpper(c);
+        string GetCharactersHeld(ref FrameworkContext ctx) {
+            var held = new StringBuilder();
+            for (KeyCode key = 0; key < KeyCode.EnumLength; key++) {
+                if (ctx.KeyIsDown(key)) {
+                    held.Append(key.ToString());
+                    held.Append(" ");
                 }
-
-                sb.Append(CharKeyMapping.CharToString(c));
             }
-            return sb.ToString();
+
+            return held.ToString();
         }
 
-        public override void OnRender() {
-            SetDrawColor(0, 0, 0, 1);
+        string GetCharactersReleased(ref FrameworkContext ctx) {
+            var held = new StringBuilder();
+            for (KeyCode key = 0; key < KeyCode.EnumLength; key++) {
+                if (ctx.KeyJustReleased(key)) {
+                    held.Append(key.ToString());
+                    held.Append(" ");
+                }
+            }
 
-            DrawText("Press some keys:", VW(0.5f), VH(0.75f), HAlign.Center, VAlign.Center);
-
-            DrawText(KeysToString(KeyboardCharactersHeld), Width / 2, Height / 2, HAlign.Center, VAlign.Center);
+            return held.ToString();
         }
 
-        public override void OnUpdate() {
-            if (KeyPressed(KeyCode.Any)) {
-                Console.WriteLine("PRessed: " + KeyboardCharactersPressed);
+        public void Render(FrameworkContext ctx) {
+            ctx.SetDrawColor(0, 0, 0, 1);
+
+            if (ctx.KeyIsDown(KeyCode.Any)) {
+                Console.WriteLine("Pressed: " + GetCharactersHeld(ref ctx));
             }
 
-            if (KeyPressed(KeyCode.Any)) {
-                Console.WriteLine("Released: " + KeyboardCharactersReleased);
+            if (ctx.KeyJustReleased(KeyCode.Any)) {
+                Console.WriteLine("Released: " + GetCharactersReleased(ref ctx));
             }
+
+            var keys = GetCharactersHeld(ref ctx);
+            if (ctx.KeyIsDown(KeyCode.Shift)) {
+                keys = keys.ToUpper();
+            }
+
+            _font.Draw(ctx, "Press some keys:", ctx.VW * 0.5f, ctx.VH * 0.75f, HAlign.Center, VAlign.Center);
+            _font.Draw(ctx, keys, ctx.VW / 2, ctx.VH / 2, HAlign.Center, VAlign.Center);
         }
     }
 }

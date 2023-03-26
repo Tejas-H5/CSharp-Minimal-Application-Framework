@@ -49,33 +49,11 @@ namespace MinimalAF {
             return newRect;
         }
 
-        public float Left {
-            get {
-                return X0 < X1 ? X0 : X1;
-            }
-        }
-        public float Right {
-            get {
-                return X0 < X1 ? X1 : X0;
-            }
-        }
-        public float Bottom {
-            get {
-                return Y0 < Y1 ? Y0 : Y1;
-            }
-        }
-        public float Top {
-            get {
-                return Y0 < Y1 ? Y1 : Y0;
-            }
-        }
-
-        public float CenterX {
-            get {
-                return X0 + (X1 - X0) * 0.5f;
-            }
-        }
-
+        public float Left => X0 < X1 ? X0 : X1;
+        public float Right => X0 < X1 ? X1 : X0;
+        public float Bottom => Y0 < Y1 ? Y0 : Y1;
+        public float Top => Y0 < Y1 ? Y1 : Y0;
+        public float CenterX => X0 + (X1 - X0) * 0.5f;
 
         // TODO: override the divide operator for this
         public Rect Normalized(float width, float height) {
@@ -108,37 +86,12 @@ namespace MinimalAF {
             return newRect;
         }
 
-
-        public float CenterY {
-            get {
-                return Y0 + (Y1 - Y0) * 0.5f;
-            }
-        }
-
-        public float SmallerDimension {
-            get {
-                return Width < Height ? Width : Height;
-            }
-        }
-
-        public float LargerDimension {
-            get {
-                return Width > Height ? Width : Height;
-            }
-        }
-
-        public float Width {
-            get {
-                return MathF.Abs(X0 - X1);
-            }
-        }
-
-        public float Height {
-            get {
-                return MathF.Abs(Y0 - Y1);
-            }
-        }
-
+        public float CenterY => Y0 + (Y1 - Y0) * 0.5f;
+        public float SmallerDimension => Width < Height ? Width : Height;
+        public float LargerDimension => Width > Height ? Width : Height;
+        public float Width => MathF.Abs(X0 - X1);
+        public float Height => MathF.Abs(Y0 - Y1);
+        
         public bool IsInverted() {
             return X0 > X1 || Y0 > Y1;
         }

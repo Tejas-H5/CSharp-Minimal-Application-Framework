@@ -10,30 +10,25 @@ namespace MinimalAF.Rendering {
             CTX.Flush();
 
             if (framebuffer == null) {
-                StopUsing();
-                return;
+                CTX.ContextWidth = CTX.ScreenWidth;
+                CTX.ContextHeight = CTX.ScreenHeight;
+
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                CTX.SetViewport(new Rect(0, 0, CTX.ContextWidth, CTX.ContextHeight));
+
+                current = null;
+            } else {
+                framebuffer.Use();
+
+                CTX.SetViewport(new Rect(0, 0, framebuffer.Width, framebuffer.Height));
+
+                CTX.ContextWidth = framebuffer.Width;
+                CTX.ContextHeight = framebuffer.Height;
+
+                current = framebuffer;
             }
-
-
-            framebuffer.Use();
-
-            CTX.SetViewport(new Rect(0, 0, framebuffer.Width, framebuffer.Height));
-
-            CTX.ContextWidth = framebuffer.Width;
-            CTX.ContextHeight = framebuffer.Height;
-
-            current = framebuffer;
         }
 
-        private void StopUsing() {
-            CTX.ContextWidth = CTX.ScreenWidth;
-            CTX.ContextHeight = CTX.ScreenHeight;
-
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-            CTX.SetViewport(new Rect(0, 0, CTX.ContextWidth, CTX.ContextHeight));
-
-            current = null;
-        }
 
         public void Dispose() {
             // was used before but now it's a no-op

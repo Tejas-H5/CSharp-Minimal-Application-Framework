@@ -13,25 +13,12 @@ namespace MinimalAF.Rendering {
         int fbo;
         int renderBufferObject;
         Texture textureObject;
-        TextureImportSettings textureSettings;
+        TextureImportSettings _textureSettings;
 
-        public int Width {
-            get {
-                return width;
-            }
-        }
-        public int Height {
-            get {
-                return height;
-            }
-        }
+        public int Width => width;
+        public int Height => height;
 
-
-        public Texture Texture {
-            get {
-                return textureObject;
-            }
-        }
+        public Texture Texture => textureObject;
 
 
         public Framebuffer(int width, int height, TextureImportSettings textureSettings = null) {
@@ -39,7 +26,7 @@ namespace MinimalAF.Rendering {
                 textureSettings = new TextureImportSettings();
             }
 
-            this.textureSettings = textureSettings;
+            _textureSettings = textureSettings;
 
             textureObject = new Texture(1, 1, textureSettings);
             fbo = GL.GenFramebuffer();

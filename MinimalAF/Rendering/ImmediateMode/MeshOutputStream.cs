@@ -3,77 +3,49 @@
 namespace MinimalAF.Rendering {
     public class MeshOutputStream<V> : IDisposable, IGeometryOutput<V> where V : struct {
         private Mesh<V> backingMesh;
-        private uint currentVertexIndex = 0;
-        private uint currentIndexIndex = 0;
-
-        private double utilization = 0;
-
-        public double Utilization {
-            get {
-                return utilization;
-            }
-        }
-
-        /// <summary>
-        /// Only used in DEBUG mode
-        /// </summary>
-        public int TimesVertexThresholdReached = 0;
-        /// <summary>
-        /// Only used in DEBUG mode
-        /// </summary>
-        public int TimesIndexThresholdReached = 0;
-
 
         public V GetVertex(uint i) {
             return backingMesh.Vertices[i];
         }
 
-        public uint GetIndex(uint i) {
+        public uint GetIndex(int i) {
             return backingMesh.Indices[i];
         }
 
-        public MeshOutputStream(int vertexBufferSize, int indexBufferSize) {
-            vertexBufferSize /= 3;
-            vertexBufferSize *= 3;
-
-            backingMesh = new Mesh<V>(new V[vertexBufferSize], new uint[indexBufferSize], stream: true);
+        public MeshOutputStream(int vertexBufferVerts, int indexBufferTriangles) {
+            backingMesh = new Mesh<V>(
+                vertexBufferVerts,
+                indexBufferTriangles,
+                stream: true, 
+                allowResizing: false
+            );
+            backingMesh.Clear();
         }
 
         public uint AddVertex(V v) {
-            backingMesh.Vertices[currentVertexIndex] = v;
-            return currentVertexIndex++;
+            return backingMesh.AddVertex(v);
         }
 
         public void MakeTriangle(uint v1, uint v2, uint v3) {
-            backingMesh.Indices[currentIndexIndex] = v1;
-            backingMesh.Indices[currentIndexIndex + 1] = v2;
-            backingMesh.Indices[currentIndexIndex + 2] = v3;
-
-            currentIndexIndex += 3;
+            backingMesh.MakeTriangle(v1, v2, v3);
         }
 
         public void Flush() {
-            if (currentIndexIndex == 0)
-                return;
-
             // actually draw what we have so far
-            backingMesh.UpdateBuffers(currentVertexIndex, currentIndexIndex);
-            backingMesh.Draw();
-
-            currentVertexIndex = 0;
-            currentIndexIndex = 0;
+            backingMesh.UploadToGPU();
+            backingMesh.Render();
+            backingMesh.Clear();
         }
 
+        /// <summary>
+        /// Return true if this function called Flush().
+        /// Useful for when you want to ensure that we can send numIncomingVerts and numIncomingIndices without flushing.
+        /// </summary>
         public bool FlushIfRequired(int numIncomingVerts, int numIncomingIndices) {
+            int currentIndexIndex = backingMesh.IndexCount;
+            int currentVertexIndex = backingMesh.VertexCount;
             if (currentIndexIndex + numIncomingIndices >= backingMesh.Indices.Length ||
                     currentVertexIndex + numIncomingVerts >= backingMesh.Vertices.Length) {
-#if DEBUG
-                if (currentIndexIndex + numIncomingIndices >= backingMesh.Indices.Length) {
-                    TimesIndexThresholdReached++;
-                } else if (currentVertexIndex + numIncomingVerts >= backingMesh.Vertices.Length) {
-                    TimesVertexThresholdReached++;
-                }
-#endif
 
                 Flush();
                 return true;
@@ -82,13 +54,6 @@ namespace MinimalAF.Rendering {
             return false;
         }
 
-        public uint CurrentV() {
-            return currentVertexIndex;
-        }
-
-        public uint CurrentI() {
-            return currentIndexIndex;
-        }
 
         public void Dispose() {
             backingMesh.Dispose();

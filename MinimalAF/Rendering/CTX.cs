@@ -15,20 +15,19 @@ namespace MinimalAF.Rendering {
 
         private static int contextWidth, contextHeight;
         internal static int ScreenWidth, ScreenHeight;
-
-        public static float Current2DDepth = 0;
-
-        class VertexCreator {
-            public VertexCreator() {
-            }
-
-            public Vertex New(float x, float y, float u, float v) {
-                return new Vertex(
-                    new Vector3(x, y, CTX.Current2DDepth - 1.0f), new Vector2(u, v)
-                );
-            }
+        // The context width and height depend on the current framebuffer that is being used
+        // (And not the screen size, which would be ScreenWidth and ScreenHeight
+        public static int ContextWidth {
+            get => contextWidth;
+            set => contextWidth = value;
         }
 
+        public static int ContextHeight {
+            get => contextHeight;
+            set => contextHeight = value;
+        }
+
+        public static float Current2DDepth = 0;
 
         private static Rect currentClippingRect;
         internal static Rect CurrentClippingRect {
@@ -49,63 +48,38 @@ namespace MinimalAF.Rendering {
             }
         }
 
-        internal static void SetClipping(bool state) {
-            if (state) {
-                GL.Enable(EnableCap.ScissorTest);
-            } else {
-                GL.Disable(EnableCap.ScissorTest);
-            }
-        }
-
-        public static int ContextWidth {
-            get => contextWidth;
-            set => contextWidth = value;
-        }
-
-        public static int ContextHeight {
-            get => contextHeight;
-            set => contextHeight = value;
+        /// <summary>
+        /// If you want to enable clipping, just set CurrentClippingRect
+        /// </summary>
+        internal static void DisableClipping() {
+            Flush();
+            GL.Disable(EnableCap.ScissorTest);
         }
 
         internal static Color ClearColor;
 
         //Composition
-        internal static TriangleDrawer<Vertex> Triangle => s_imDrawer.Triangle;
-        internal static QuadDrawer<Vertex> Quad => s_imDrawer.Quad;
-        internal static RectangleDrawer<Vertex> Rect => s_imDrawer.Rect;
-        internal static NGonDrawer<Vertex> NGon => s_imDrawer.NGon;
-        internal static PolyLineDrawer<Vertex> NLine => s_imDrawer.NLine;
-        internal static ArcDrawer<Vertex> Arc => s_imDrawer.Arc;
-        internal static CircleDrawer<Vertex> Circle => s_imDrawer.Circle;
-        internal static LineDrawer<Vertex> Line => s_imDrawer.Line;
-        internal static TextDrawer<Vertex> Text => s_textDrawer;
         internal static TextureManager Texture => s_textureManager;
         internal static FramebufferManager Framebuffer => s_framebufferManager;
         public static ShaderManager Shader => s_shaderManager;
 
-        private static TextDrawer<Vertex> s_textDrawer;
         private static MeshOutputStream<Vertex> s_meshOutputStream;
-        private static ImmediateMode2DDrawer<Vertex> s_imDrawer;
+        public static MeshOutputStream<Vertex> MeshOutput => s_meshOutputStream;
+        class VertexCreator : IVertexCreator2D<Vertex> {
+            public Vertex CreateVertex(float x, float y, float u, float v) {
+                return new Vertex(
+                    new Vector3(x, y, CTX.Current2DDepth - 1.0f), new Vector2(u, v)
+                );
+            }
+        }
+
+
         private static readonly VertexCreator s_vertexCreator = new VertexCreator();
 
         private static TextureManager s_textureManager;
         private static FramebufferManager s_framebufferManager;
         private static ShaderManager s_shaderManager;
         private static InternalShader s_internalShader;
-
-        public static Texture InternalFontTexture => s_textDrawer.ActiveFont.FontTexture;
-
-        public static int TimesVertexThresholdReached {
-            get => s_meshOutputStream.TimesVertexThresholdReached;
-            set => s_meshOutputStream.TimesVertexThresholdReached = value;
-        }
-
-        public static int TimesIndexThresholdReached {
-            get => s_meshOutputStream.TimesIndexThresholdReached;
-            set => s_meshOutputStream.TimesIndexThresholdReached = value;
-        }
-
-        public static float VertexToIndexRatio => (float)TimesVertexThresholdReached / (float)TimesIndexThresholdReached;
 
         internal static void SetScreenWidth(int width, int height) {
             contextWidth = ScreenWidth = width;
@@ -114,8 +88,7 @@ namespace MinimalAF.Rendering {
 
         internal static void Init(IGLFWGraphicsContext context) {
             s_meshOutputStream = new MeshOutputStream<Vertex>(8 * 4096, 8 * 4096);
-            s_imDrawer = new ImmediateMode2DDrawer<Vertex>(s_meshOutputStream);
-            s_textDrawer = new TextDrawer<Vertex>();
+            IM.VertexCreator2D = new VertexCreator();
 
             glContext = context;
 
@@ -178,13 +151,6 @@ namespace MinimalAF.Rendering {
             s_shaderManager.SetModelMatrix(Matrix4.Identity);
 
             glContext.SwapBuffers();
-
-
-#if DEBUG
-            TimesVertexThresholdReached = 0;
-            TimesIndexThresholdReached = 0;
-#endif
-
         }
 
 
@@ -192,7 +158,6 @@ namespace MinimalAF.Rendering {
             screenRect = screenRect.Rectified();
 
             GL.Viewport((int)screenRect.X0, (int)screenRect.Y0, (int)screenRect.Width, (int)screenRect.Height);
-            CurrentClippingRect = screenRect;
         }
 
         /// <summary>
@@ -275,8 +240,7 @@ namespace MinimalAF.Rendering {
             }
         }
 
-        // this name makes more sense imo
-        internal static void SetTransform(Matrix4 matrix) {
+        internal static void SetModel(Matrix4 matrix) {
             s_shaderManager.SetModelMatrix(matrix);
         }
 
@@ -373,14 +337,13 @@ namespace MinimalAF.Rendering {
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
                 s_meshOutputStream.Dispose();
                 s_internalShader.Dispose();
-                s_textDrawer.Dispose();
                 s_textureManager.Dispose();
 
                 TextureMap.UnloadAll();
 
                 s_framebufferManager.Dispose();
 
-                Texture.Set(null);
+                Texture.Use(null);
                 // TODO: set large fields to null.
 
                 Console.WriteLine("Context disposed");

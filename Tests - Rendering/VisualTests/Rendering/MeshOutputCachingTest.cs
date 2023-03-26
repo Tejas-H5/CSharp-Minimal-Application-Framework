@@ -1,40 +1,31 @@
 ﻿using MinimalAF;
 using MinimalAF.Rendering;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace RenderingEngineVisualTests {
-    [VisualTest(
-        description: @"Testing mesh creation using the immediate mode interface, and then drawing that mesh later.
-Would be pretty cool if this worked.",
-        tags: "2D, mesh"
-    )]
-    public class MeshOutputCachingTest : Element {
+    public class MeshOutputCachingTest : IRenderable {
         Mesh<Vertex> mesh;
 
         public MeshOutputCachingTest() {
-            var data = new MeshData<Vertex>();
-
-            var imRenderer = new ImmediateMode2DDrawer<Vertex>(data);
-
-            imRenderer.Circle.Draw(0, 0, 120f);
-
-            mesh = data.ToDrawableMesh();
+            mesh = new Mesh<Vertex>(new Vertex[0], new uint[0], stream:false, allowResizing: true);
+            IM.DrawCircle(mesh, 0, 0, 120f);
         }
 
-        public override void OnRender() {
-            SetDrawColor(1, 0, 0, 0.4f);
+        public void Render(FrameworkContext ctx) {
+            ctx.SetDrawColor(1, 0, 0, 0.4f);
 
             for (int i = 0; i < 10; i++) {
                 float xNorm = i / 9f;
 
-                float x = VW(xNorm);
-                float y = VH(xNorm);
+                float x = ctx.VW * xNorm;
+                float y = ctx.VH * xNorm;
 
-                SetDrawColor(xNorm, 0, 1f - xNorm, 0.4f);
-                SetTransform(Translation(x, y, 0));
-                mesh.Draw();
+                ctx.SetDrawColor(xNorm, 0, 1f - xNorm, 0.4f);
+                ctx.SetModel(Matrix4.CreateTranslation(x, y, 0));
+                mesh.Render();
             }
         }
     }

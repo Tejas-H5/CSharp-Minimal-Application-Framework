@@ -273,7 +273,6 @@ namespace MinimalAF {
         public static Color WhiteSmoke => RGB255(245, 245, 245);
         public static Color Yellow => RGB255(255, 255, 0);
         public static Color YellowGreen => RGB255(154, 205, 50);
-
         #endregion
     }
 }

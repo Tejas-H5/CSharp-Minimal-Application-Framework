@@ -1,10 +1,11 @@
-﻿using OpenTK.Mathematics;
+﻿using MinimalAF.Rendering;
+using OpenTK.Mathematics;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MinimalAF.Rendering.Text {
+namespace MinimalAF {
     //taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
     public class FontImportSettings {
         public static string Text = "GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);";
@@ -21,8 +22,10 @@ namespace MinimalAF.Rendering.Text {
     }
 
     //concept taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
-    public class FontAtlas {
-        public const string DefaultCharacters = "!#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'";
+    public class FontAtlas : IDisposable {
+        public const string DefaultCharacters = "!#$%&\"()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'";
+        public const float QUALITY_SCALE_FACTOR = 1f;
+
         private SKTypeface _skTypeface;
         private SKPaint _skStyle;
         private float _fontBottom;
@@ -30,7 +33,22 @@ namespace MinimalAF.Rendering.Text {
         private Dictionary<char, Rect> _characterQuadCoords;
         private FontImportSettings _importSettings;
 
-        const float QUALITY_SCALE_FACTOR = 1f;
+        Texture _texture;
+        public Texture Texture {
+            get {
+                if (_texture == null) {
+                    _texture = new Texture(
+                        _bitmap,
+                        new TextureImportSettings {
+                            Filtering = FilteringType.Bilinear
+                        }
+                    );
+                }
+
+                return _texture;
+            }
+        }
+
 
         public SKTypeface SystemFont {
             get => _skTypeface;
@@ -41,12 +59,12 @@ namespace MinimalAF.Rendering.Text {
         public float CharWidth => GetCharacterSize('?').X;
         public float CharHeight => GetCharacterSize('?').Y;
 
-
         /// <summary>
         /// May be different to what was specified.
         /// </summary>
         public string FontName => _importSettings.FontName;
         public int FontSize => _importSettings.FontSize;
+
 
         public static FontAtlas CreateFontAtlas(FontImportSettings importSettings, string characters = DefaultCharacters) {
             SKTypeface systemFont = TryLoadFont(importSettings);
@@ -69,6 +87,7 @@ namespace MinimalAF.Rendering.Text {
             };
 
             // edge-case rendering code relies on the question mark always being a valid character
+            // TODO: use that wierd diamond + question mark character thinggy
             if (!characters.Contains('?', StringComparison.Ordinal))
                 characters += '?';
 
@@ -78,20 +97,20 @@ namespace MinimalAF.Rendering.Text {
             _bitmap = RenderAtlas(characters, _characterQuadCoords, padding);
 
 #if DEBUG
-            // TODO: REMOVE THIS LATER, ITS JUST FOR DEBUG
-            // Create the file.
-            using (MemoryStream memStream = new MemoryStream())
-            using (SKManagedWStream wstream = new SKManagedWStream(memStream)) {
-                var res = _bitmap.Encode(wstream, SKEncodedImageFormat.Png, 100);
-                byte[] data = memStream.ToArray();
+            //// TODO: REMOVE THIS LATER, ITS JUST FOR DEBUG
+            //// Create the file.
+            //using (MemoryStream memStream = new MemoryStream())
+            //using (SKManagedWStream wstream = new SKManagedWStream(memStream)) {
+            //    var res = _bitmap.Encode(wstream, SKEncodedImageFormat.Png, 100);
+            //    byte[] data = memStream.ToArray();
 
-                File.WriteAllBytes($"./debug-{_skStyle.TextSize}-{_skTypeface.FamilyName}.png", data);
-            }
+            //    File.WriteAllBytes($"./debug-{_skStyle.TextSize}-{_skTypeface.FamilyName}.png", data);
+            //}
 #endif
         }
 
         public Rect GetCharacterUV(char c) {
-            if (!IsValidCharacter(c)) {
+            if (!HasCharacter(c)) {
                 c = '?';
             }
 
@@ -109,7 +128,7 @@ namespace MinimalAF.Rendering.Text {
             );
         }
 
-        public bool IsValidCharacter(char c) {
+        public bool HasCharacter(char c) {
             return _characterQuadCoords.ContainsKey(c);
         }
 
@@ -181,6 +200,10 @@ namespace MinimalAF.Rendering.Text {
             _fontBottom = metrics.Bottom;
 
             return ((int)MathF.Ceiling(width), (int)MathF.Ceiling(extents));
+        }
+
+        public void Dispose() {
+            _texture.Dispose();
         }
     }
 }

@@ -3,12 +3,7 @@ using MinimalAF.Rendering;
 using System;
 
 namespace RenderingEngineVisualTests {
-    [VisualTest(
-        description: @"Uses (currentFPS / wantedFPS) to iteratively find the number of lines that must be drawin to get some target FPS. 
-A higher number of lines drawn is always better. This test won't work when vsync is enabled, or if 'count' has been set to anything other than 0.",
-        tags: "2D"
-    )]
-    class Benchmark : Element {
+    class Benchmark : IRenderable {
         public float LineThickness {
             get; set;
         }
@@ -29,23 +24,14 @@ A higher number of lines drawn is always better. This test won't work when vsync
             RequiredFPS = requiredFPS;
         }
 
-        public override void OnMount(Window w) {
-            w.Size = (800, 600);
-            w.Title = "Rendering Engine Line benchmark";
-
-            SetClearColor(Color.RGBA(1, 1, 1, 1));
-            SetFont("Consolas", 24);
-        }
-
+        DrawableFont _font = new DrawableFont("Source code pro", 16);
         readonly Random rand = new Random(1);
-
         int frames = 0;
         double time = 0;
-
         int amount = 10000;
         readonly int jump = 6000;
 
-        public override void OnRender() {
+        public void Render(FrameworkContext ctx) {
             time += Time.DeltaTime;
             frames++;
 
@@ -61,7 +47,7 @@ A higher number of lines drawn is always better. This test won't work when vsync
                     double actualToWantedRatio = FPS / RequiredFPS;
 
                     amount = (int)Math.Ceiling(actualToWantedRatio * amount);
-                    if(amount < 1) {
+                    if (amount < 1) {
                         amount = 1;
                     }
 
@@ -72,30 +58,32 @@ A higher number of lines drawn is always better. This test won't work when vsync
             }
 
 
-            SetDrawColor(1, 0, 0, 0.1f);
-            CTX.TimesVertexThresholdReached = 0;
-            CTX.TimesIndexThresholdReached = 0;
+            ctx.SetDrawColor(1, 0, 0, 0.1f);
+            //CTX.TimesVertexThresholdReached = 0;
+            //CTX.TimesIndexThresholdReached = 0;
 
             for (int i = 0; i < amount; i++) {
-                float x1 = VW((float)rand.NextDouble());
-                float y1 = VH((float)rand.NextDouble());
+                float x1 = ctx.VW * (float)rand.NextDouble();
+                float y1 = ctx.VH * (float)rand.NextDouble();
 
-                float x2 = VW((float)rand.NextDouble());
-                float y2 = VH((float)rand.NextDouble());
+                float x2 = ctx.VW * (float)rand.NextDouble();
+                float y2 = ctx.VH * (float)rand.NextDouble();
 
-                DrawLine(x1, y1, x2, y2, LineThickness, CapType);
+                IM.DrawLine(ctx, x1, y1, x2, y2, LineThickness, CapType);
             }
 
-            SetDrawColor(0, 0, 0, 1f);
+            ctx.SetDrawColor(0, 0, 0, 1f);
 
             string text = "FPS: " + FPS.ToString("0.000") +
                 "\nLines drawn: " + amount +
-                "\nCapType: " + CapType.ToString() +
-                "\nVertex refreshes: " + CTX.TimesVertexThresholdReached +
-                "\nIndex refreshes: " + CTX.TimesIndexThresholdReached +
-                "\nVertex:Index Ratio: " + CTX.VertexToIndexRatio;
+                "\nCapType: " + CapType.ToString();
+                //"\nVertex refreshes: " + CTX.TimesVertexThresholdReached +
+                //"\nIndex refreshes: " + CTX.TimesIndexThresholdReached +
+                //"\nVertex:Index Ratio: " + CTX.VertexToIndexRatio;
 
-            DrawText(text, 10, Height - 50);
+            text.ToCharArray();
+
+            _font.DrawText(ctx, text, 10, ctx.VH - 50);
         }
     }
 }

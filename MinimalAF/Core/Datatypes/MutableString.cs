@@ -122,20 +122,12 @@ namespace MinimalAF {
             return true;
         }
 
-        public bool ReverseCompareAtPosition(string s, int pos) {
-            if (pos - (s.Length - 1) < 0) return false;
-
-            for (int i = 0; i < s.Length; i++) {
-                if (characters[pos - i] != s[s.Length - 1 - i]) {
-                    return false;
-                }
+        public int IndexOf(string s, int start) {
+            if (start < 0) {
+                start = 0;
             }
 
-            return true;
-        }
-
-        public int IndexOf(string s, int start) {
-            for(int pos = start; pos < length; pos++) {
+            for (int pos = start; pos < length; pos++) {
                 if (CompareAtPosition(s, pos)) {
                     return pos;
                 }
@@ -145,8 +137,12 @@ namespace MinimalAF {
         }
 
         public int PrevIndexOf(string s, int start) {
+            if (start < 0) {
+                start = 0;
+            }
+
             for (int pos = start; pos >= 0; pos--) {
-                if (ReverseCompareAtPosition(s, pos)) {
+                if (CompareAtPosition(s, pos)) {
                     return pos;
                 }
             }
@@ -171,7 +167,7 @@ namespace MinimalAF {
             for (int pos = start; pos >= 0; pos--) {
                 for (int i = 0; i < strings.Length; i++) {
                     string s = strings[i];
-                    if (ReverseCompareAtPosition(s, pos)) {
+                    if (CompareAtPosition(s, pos)) {
                         return pos;
                     }
                 }

@@ -12,7 +12,7 @@ namespace TextEditor {
         public static DrawableFont MainFont {
             get {
                 if (_mainFont == null) {
-                    _mainFont = new DrawableFont("Source Code Pro", 24);
+                    _mainFont = new DrawableFont("Source Code Pro", 18);
                 }
 
                 return _mainFont;

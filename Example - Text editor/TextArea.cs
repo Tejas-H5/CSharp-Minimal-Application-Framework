@@ -9,6 +9,7 @@ namespace TextEditor {
     internal class TextArea : IRenderable {
         public bool LineNumbers = true;
         public bool AcceptsNewLines = true;
+        public Action? OnTextEdited = null;
 
         MeshOutput _textOutput;
         MeshOutput _highlightRangeOutput;
@@ -23,18 +24,39 @@ namespace TextEditor {
         // scrolling
         float _wantedScrollPos = 0;
         float _currentScroll = 0;
+        float _scrollAccumulator = 0; // We want to scroll at a consistent lines per second. this is the way we do that
 
         // selection
         int _selectStartPos;
         int _selectEndPos;
         bool _isSelecting;
 
-        bool HasSelection => _selectEndPos != _selectStartPos;
+        public bool HasSelection => _selectEndPos != _selectStartPos;
+        public int CursorPos {
+            get => _cursorPos;
+            set {
+                if (_cursorPos != value) {
+                    _cursorPos = _buffer.ClampCursorPosition(value);
+                    CancelSelection();
+                }
+            }
+        }
+
+        public int SelectPos => _selectStartPos;
 
 
         public string GetText() {
             return _buffer.BuildString();
         }
+
+        public int IndexOf(string s, int start) {
+            return _buffer.IndexOf(s, start);
+        }
+
+        public int PrevIndexOf(string s, int start) {
+            return _buffer.PrevIndexOf(s, start);
+        }
+
 
         public void Clear() {
             _buffer.Clear();
@@ -53,43 +75,40 @@ namespace TextEditor {
 
         private void _buffer_TextEdited() {
             _bufferContentsChanged = true;
+
+            if (OnTextEdited != null) {
+                OnTextEdited();
+            }
         }
 
         public void Render(FrameworkContext ctx) {
             RenderText(ctx, true);
         }
 
-        public int GoToLine(int line) {
+        public int GetLinePos(int line) {
             int linePos = _buffer.GetLinePos(line);
             if (linePos != -1) {
-                _cursorPos = linePos;
                 return linePos;
             }
 
             return -1;
         }
 
-        void DrawToMeshOutputStreams() {
-
-        }
-
-
-        public void RenderText(FrameworkContext ctx, bool update) {
+        /// Running this with isRenderPass = false should find the current cursor position.
+        /// Running this with isRenderPass = true should actually do rendering and input logic.
+        /// 
+        /// Am doing it like this so that we can 
+        void HydrateAndRender(ref FrameworkContext ctx, bool isRenderPass) {
             float padding = 10;
-    
-            ctx.SetDrawColor(AppConfig.FG);
-            ctx.SetTexture(AppConfig.MainFont.Texture);
 
-            // TODO: scrolling
             int currentLineNumber = 0;
             float charHeight = AppConfig.MainFont.GetCharHeight();
             float charWidth = AppConfig.MainFont.GetCharWidth();
             float documentY = 0;
 
             _currentScroll = MathHelpers.Lerp(_currentScroll, _wantedScrollPos, 40 * Time.DeltaTime);
-            // _currentScroll = _wantedScrollPos;
 
-            var relativeY = () => (documentY + ctx.VH * 0.5f - _currentScroll);
+            var relativeY = (ref FrameworkContext ctx) => (documentY + ctx.VH * 0.5f - _currentScroll);
             int startPos = 0;
 
             // float startY = documentY;
@@ -101,7 +120,7 @@ namespace TextEditor {
                 // the lengths I go to avoid allocation :(
                 lineNumberMargin = AppConfig.MainFont.GetStringWidth("0") * (1 + MathF.Floor(MathF.Log10(MathHelpers.Max(1, totalLineCount))))
                     + 2 * padding;
-            } 
+            }
 
             // render all the text
             {
@@ -112,10 +131,11 @@ namespace TextEditor {
                 // line between line numbers and text
                 float dividerLineX = lineNumberMargin - padding / 2;
 
-                ctx.SetDrawColor(AppConfig.FG);
-                ctx.SetTexture(null);
-                IM.DrawLine(ctx, dividerLineX, 0, dividerLineX, ctx.VH, 1);
-                ctx.SetTexture(AppConfig.MainFont.Texture);
+                if (isRenderPass) {
+                    ctx.SetDrawColor(AppConfig.FG);
+                    ctx.SetTexture(null);
+                    IM.DrawLine(ctx, dividerLineX, 0, dividerLineX, ctx.VH, 1);
+                }
 
                 // output the text, and highlighted ranges we render them
                 _textOutput.Clear();
@@ -127,10 +147,12 @@ namespace TextEditor {
                     // the text may wrap, causing incorrect line numbers if we draw them in 
                     // a seperate loop
                     if (LineNumbers) {
-                        float relY = relativeY();
-                        if (relY > -charHeight && relY < ctx.VH) {
-                            // TODO: stop allocation
-                            AppConfig.MainFont.DrawText(ctx, currentLineNumber.ToString(), padding, relY);
+                        if (isRenderPass) {
+                            float relY = relativeY(ref ctx);
+                            if (relY > -charHeight && relY < ctx.VH) {
+                                // TODO: stop allocation
+                                AppConfig.MainFont.DrawText(ctx, currentLineNumber.ToString(), padding, relY);
+                            }
                         }
                         currentLineNumber++;
                     }
@@ -138,7 +160,7 @@ namespace TextEditor {
                     // draw text on this line. It may wrap - 
                     // <= is so we can draw the cursor when it is at the very end
                     for (; i <= _buffer.Length; i++) {
-                        float characterStartX = x, characterStartY = relativeY();
+                        float characterStartX = x, characterStartY = relativeY(ref ctx);
                         float y = characterStartY;
                         bool lineEnded = false;
 
@@ -150,30 +172,36 @@ namespace TextEditor {
                                 x = startX;
                                 lineEnded = true;
 
-                                // set up a highlight region if applicable for the newline
-                                int minSel = MathHelpers.Min(_selectStartPos, _selectEndPos);
-                                int maxSel = MathHelpers.Max(_selectStartPos, _selectEndPos);
-                                float newlineHighlightWidth = 10;
-                                if (HasSelection && (i >= minSel && i < maxSel)) {
-                                    var rect = new Rect(
-                                        characterStartX, characterStartY, characterStartX + newlineHighlightWidth, characterStartY + charHeight
-                                    );
-                                    IM.DrawRect(_highlightRangeOutput, rect);
+                                if (isRenderPass) {
+                                    // set up a highlight region if applicable for the newline
+                                    int minSel = MathHelpers.Min(_selectStartPos, _selectEndPos);
+                                    int maxSel = MathHelpers.Max(_selectStartPos, _selectEndPos);
+                                    float newlineHighlightWidth = 10;
+
+                                    if (HasSelection && (i >= minSel && i < maxSel)) {
+                                        var rect = new Rect(
+                                            characterStartX, characterStartY, characterStartX + newlineHighlightWidth, characterStartY + charHeight
+                                        );
+                                        IM.DrawRect(_highlightRangeOutput, rect);
+                                    }
                                 }
                             } else {
                                 // draw character
-                                float relY = relativeY();
+                                float relY = relativeY(ref ctx);
                                 if (relY > -charHeight && relY < ctx.VH) {
                                     var rect = AppConfig.MainFont.DrawChar(_textOutput, c, x, y);
+
                                     if (ctx.MouseIsOver(rect) && ctx.MouseButtonJustPressed(MouseButton.Left)) {
                                         _cursorPos = i;
                                     }
 
-                                    // set up a highlight region if applicable
-                                    int minSel = MathHelpers.Min(_selectStartPos, _selectEndPos);
-                                    int maxSel = MathHelpers.Max(_selectStartPos, _selectEndPos);
-                                    if (HasSelection && (i >= minSel && i < maxSel)) {
-                                        IM.DrawRect(_highlightRangeOutput, rect);
+                                    if (isRenderPass) {
+                                        // set up a highlight region if applicable
+                                        int minSel = MathHelpers.Min(_selectStartPos, _selectEndPos);
+                                        int maxSel = MathHelpers.Max(_selectStartPos, _selectEndPos);
+                                        if (HasSelection && (i >= minSel && i < maxSel)) {
+                                            IM.DrawRect(_highlightRangeOutput, rect);
+                                        }
                                     }
 
                                     x += rect.Width;
@@ -209,7 +237,7 @@ namespace TextEditor {
             }
 
             // render the text, highlight regions, and cursor in that order
-            {
+            if (isRenderPass) {
                 ctx.SetTexture(null);
                 ctx.SetDrawColor(Color.Blue, 0.5f);
                 _highlightRangeOutput.Render();
@@ -222,17 +250,38 @@ namespace TextEditor {
                 ctx.SetDrawColor(AppConfig.FG);
                 IM.DrawRect(ctx, _cursorRect);
             }
+        }
 
-            if (update) {
-                Update(ref ctx);
+
+        public void RenderText(FrameworkContext ctx, bool acceptInput) {
+            HydrateAndRender(ref ctx, isRenderPass: false);
+            HydrateAndRender(ref ctx, isRenderPass: true);
+
+            int cursorPosBeforeCommands = _cursorPos;
+
+            if (acceptInput) {
+                ProcessInput(ref ctx);
+            }
+
+            // Some updates should take place no matter what.
+
+            // Cancel the selection if we have inserted something or if we have moved.
+            {
+                // set by a callback on the _textBuffer when we edit it
+                if (_bufferContentsChanged) {
+                    _bufferContentsChanged = false;
+                    CancelSelection();
+                }
+
+                // if we moved
+                if (!_isSelecting && cursorPosBeforeCommands != _cursorPos) {
+                    CancelSelection();
+                }
             }
         }
 
 
-        void Update(ref FrameworkContext ctx) {
-            int bufferLengthBeforeCommands = _buffer.Length;
-            int cursorPosBeforeCommands = _cursorPos;
-
+        void ProcessInput(ref FrameworkContext ctx) {
             // selection part one
             {
                 _isSelecting = ctx.KeyIsDown(KeyCode.Shift);
@@ -244,75 +293,74 @@ namespace TextEditor {
                 }
             }
 
-
             // process repeating keyboard inputs
             {
-                for (int i = 0; i < ctx.RepeatableKeysInput.Count; i++) {
-                    var rKey = ctx.RepeatableKeysInput[i];
+                for (int i = 0; i < ctx.CharsJustInputted.Count; i++) {
+                    _cursorPos = AddLetterAtPosition(
+                        _cursorPos, 
+                        (char)ctx.CharsJustInputted[i]
+                    );
+                }
 
-                    if (rKey.Type == RepeatableKeyboardInputType.TextInput) {
-                        _cursorPos = AddLetterAtPosition(_cursorPos, (char)rKey.TextInput);
+
+                for (int i = 0; i < ctx.KeysJustPressedOrRepeated.Count; i++) {
+                    var key = ctx.KeysJustPressedOrRepeated[i];
+
+                    if (key == KeyCode.Enter) {
+                        _cursorPos = AddLetterAtPosition(_cursorPos, '\n');
                         continue;
                     }
 
-                    if (rKey.Type == RepeatableKeyboardInputType.KeyboardInput) {
-                        var key = rKey.KeyCode;
-                        if (key == KeyCode.Enter) {
-                            _cursorPos = AddLetterAtPosition(_cursorPos, '\n');
-                            continue;
+                    if (key == KeyCode.Backspace) {
+                        if (HasSelection) {
+                            _cursorPos = DeleteSelection(_selectStartPos, _selectEndPos);
+                        } else if (ctx.KeyIsDown(KeyCode.Ctrl)) {
+                            // remove an entire word
+                            int toPrevWord = _buffer.MoveCursorBackAWord(_cursorPos);
+                            _buffer.RemoveRange(toPrevWord, _cursorPos);
+                            _cursorPos = toPrevWord;
+                        } else {
+                            // remove just a letter
+                            _cursorPos = _buffer.BackspaceLetter(_cursorPos);
                         }
-
-                        if (key == KeyCode.Backspace) {
-                            if (HasSelection) {
-                                _cursorPos = DeleteSelection(_selectStartPos, _selectEndPos);
-                            } else if (ctx.KeyIsDown(KeyCode.Control)) {
-                                // remove an entire word
-                                int toPrevWord = _buffer.MoveCursorBackAWord(_cursorPos);
-                                _buffer.RemoveRange(toPrevWord, _cursorPos);
-                                _cursorPos = toPrevWord;
-                            } else {
-                                // remove just a letter
-                                _cursorPos = _buffer.BackspaceLetter(_cursorPos);
-                            }
-                            continue;
-                        }
-
-                        if (key == KeyCode.Tab) {
-                            _cursorPos = AddLetterAtPosition(_cursorPos, '\t');
-                            continue;
-                        }
-
-                        _cursorPos = MoveCursorBasedOnKeyCodeForTypicalMovement(
-                            rKey.KeyCode, _cursorPos, ctx.KeyIsDown(KeyCode.Control)
-                        );
                         continue;
                     }
+
+                    if (key == KeyCode.Tab) {
+                        _cursorPos = AddLetterAtPosition(_cursorPos, '\t');
+                        continue;
+                    }
+
+                    _cursorPos = MoveCursorBasedOnKeyCodeForTypicalMovement(
+                        key, _cursorPos, ctx.KeyIsDown(KeyCode.Ctrl)
+                    );
+                    continue;
                 }
             }
 
-            // Cancel the selection if we have inserted something or if we have moved.
-            // If we insert something, the bounds become invalid.
-            // If we move, then when we start typing again, we start adding stuff at the place we highlighted.
-            // Fixing these problems takes a lot of effort or causes more problems IMO
+            // process scrolling with mousewheel or page-up/page-down
             {
-                if (_bufferContentsChanged) {
-                    _bufferContentsChanged = false;
-                    CancelSelection();
+                // accumulate the scroll in a consistent time
+                {
+                    _scrollAccumulator += ctx.MouseWheelNotches * 5;
+
+                    // In this text editor, Page-up and page-down can actually be good, by being a normal
+                    // game-style isDown input rather than a normal repeating character input
+                    bool ctrlDown = ctx.KeyIsDown(KeyCode.Ctrl);
+                    if (ctx.KeyIsDown(KeyCode.PageUp)) {
+                        _scrollAccumulator += (ctrlDown ? 500.0f : 100.0f) * Time.DeltaTime;
+                    } else if (ctx.KeyIsDown(KeyCode.PageDown)) {
+                        _scrollAccumulator -= (ctrlDown ? 500.0f : 100.0f) * Time.DeltaTime;
+                    }
                 }
 
-                if (!_isSelecting && cursorPosBeforeCommands != _cursorPos) {
-                    CancelSelection();
-                }
-            }
-
-            // process scrolling the mosuewheel
-            {
-                if (ctx.MouseWheelNotches > 0.5f) {
-                    for (int i = 0; i < 5; i++) {
+                // do the scrolling
+                {
+                    for (; _scrollAccumulator > 1; _scrollAccumulator -= 1.0f) {
                         _cursorPos = _buffer.MoveCursorUpALine(_cursorPos);
                     }
-                } else if (ctx.MouseWheelNotches < -0.5f) {
-                    for (int i = 0; i < 5; i++) {
+
+                    for (;_scrollAccumulator < -1; _scrollAccumulator += 1.0f) {
                         _cursorPos = _buffer.MoveCursorDownALine(_cursorPos);
                     }
                 }
@@ -389,6 +437,30 @@ namespace TextEditor {
                     // over or something. Or maybe augment addLetterAtPosition to take a repeat count
 
 
+                    pos = _buffer.AddLetterAtCursor(pos, ' ');
+                }
+                return pos;
+            }
+
+            if (c == '\n') {
+                // We also want to add a bunch of whitespace, equivelant to how much was at the start of
+                // the previous line, but only if we are on the end of the line
+                int spacesOnStartOfPreviousLine = 0;
+                int cursorStart = pos;
+                if (_buffer.MoveCursorToEndOfLine(pos) == cursorStart) {
+                    int lineStart = _buffer.MoveCursorToLineStart(pos);
+
+                    for(int i = lineStart; i < cursorStart; i++) {
+                        if (!char.IsWhiteSpace(_buffer[i])) {
+                            break;
+                        }
+
+                        spacesOnStartOfPreviousLine++;
+                    }
+                }
+
+                pos = _buffer.AddLetterAtCursor(pos, '\n');
+                for(int i = 0; i < spacesOnStartOfPreviousLine; i++) {
                     pos = _buffer.AddLetterAtCursor(pos, ' ');
                 }
                 return pos;

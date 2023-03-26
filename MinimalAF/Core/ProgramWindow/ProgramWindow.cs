@@ -20,27 +20,6 @@ namespace MinimalAF {
         Fullscreen
     }
 
-
-    public enum RepeatableKeyboardInputType {
-        KeyboardInput,
-        TextInput
-    }
-
-    /// <summary>
-    /// These are for capturing inputs to a text input or similar
-    /// </summary>
-    public struct RepeatableKeyboardInput {
-        public RepeatableKeyboardInputType Type;
-        public KeyCode KeyCode;
-
-        /// <summary>
-        /// This is a unicode char codepoint returned by GLFW.
-        /// I've seen code examples of people just doing (char)TextInput but 
-        /// there is probably a better way to handle this
-        /// </summary>
-        public int TextInput;
-    }
-
     internal class OpenTKNativeWindowWrapper : NativeWindow {
         public OpenTKNativeWindowWrapper(NativeWindowSettings settings) : base(settings) {
         }
@@ -264,49 +243,23 @@ namespace MinimalAF {
 
         internal const string KEYBOARD_CHARS = "\t\b\n `1234567890-=qwertyuiop[]asdfghjkl;'\\zxcvbnm,./";
 
-        List<RepeatableKeyboardInput> repeatableKeyInputs = new List<RepeatableKeyboardInput>();
-        
+        List<KeyCode> _keysJustPressedOrRepeated = new List<KeyCode>();
+        List<int> _charsJustInputted = new List<int>();
+
         bool wasAnyHeld;
         bool isAnyHeld;
 
-        /// <summary>
-        /// StruckKeys is different fron KeyJustPressed, in that it contains all keys that were just pressed or
-        /// repeated. Mainly useful for keyboard input systems. 
-        /// 
-        /// In the future, this may be augmented with the GLFW TextInput callback have all inputted text
-        /// </summary>
-        internal List<RepeatableKeyboardInput> RepeatableKeysInput => repeatableKeyInputs;
-
-        
-        bool IsRepeatableKeyThatIsntCapturedByGLFWTextCallback(KeyCode key) {
-            return key == KeyCode.Left ||
-                key == KeyCode.Right ||
-                key == KeyCode.Up ||
-                key == KeyCode.Down ||
-                key == KeyCode.Enter ||
-                key == KeyCode.Backspace ||
-                key == KeyCode.PageUp ||
-                key == KeyCode.PageDown ||
-                key == KeyCode.Home ||
-                key == KeyCode.Tab ||
-                key == KeyCode.End;
-        }
+        internal List<KeyCode> KeysJustPressedOrRepeated => _keysJustPressedOrRepeated;
+        internal List<int> CharsJustInputted => _charsJustInputted;
 
         // this thing fires on repeats as well, so it is useful for capturing inputs for
         // text inputs and such but not necessarily for games
         private void OnKeyDown(KeyboardKeyEventArgs args) {
-            repeatableKeyInputs.Add(new RepeatableKeyboardInput {
-                Type = RepeatableKeyboardInputType.KeyboardInput,
-                KeyCode = (KeyCode)args.Key
-            });
+            _keysJustPressedOrRepeated.Add((KeyCode)args.Key);
         }
 
         private void OnTextInput(TextInputEventArgs obj) {
-            // TODO: proper utf8/unicode handling for MutableString
-            repeatableKeyInputs.Add(new RepeatableKeyboardInput {
-                Type = RepeatableKeyboardInputType.TextInput,
-                TextInput = obj.Unicode
-            });
+            _charsJustInputted.Add(obj.Unicode);
         }
 
 
@@ -319,7 +272,7 @@ namespace MinimalAF {
         }
 
         internal bool KeyWasDown(KeyCode key) {
-            if (key == KeyCode.Control) {
+            if (key == KeyCode.Ctrl) {
                 return KeyWasDown(KeyCode.LeftControl) || KeyWasDown(KeyCode.RightControl);
             }
             if (key == KeyCode.Shift) {
@@ -352,7 +305,7 @@ namespace MinimalAF {
         //}
 
         internal bool KeyIsDown(KeyCode key) {
-            if (key == KeyCode.Control) {
+            if (key == KeyCode.Ctrl) {
                 return KeyIsDown(KeyCode.LeftControl) || KeyIsDown(KeyCode.RightControl);
             }
             if (key == KeyCode.Shift) {
@@ -369,7 +322,8 @@ namespace MinimalAF {
         }
 
         private void UpdateKeyInputsBeforePoll() {
-            repeatableKeyInputs.Clear();
+            _keysJustPressedOrRepeated.Clear();
+            _charsJustInputted.Clear();
         }
 
         private void UpdateKeyInput() {

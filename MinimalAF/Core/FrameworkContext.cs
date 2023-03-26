@@ -220,7 +220,8 @@ namespace MinimalAF {
         }
 
         // -- Inputs
-        public List<RepeatableKeyboardInput> RepeatableKeysInput => window.RepeatableKeysInput;
+        public List<KeyCode> KeysJustPressedOrRepeated => window.KeysJustPressedOrRepeated;
+        public List<int> CharsJustInputted => window.CharsJustInputted;
         public bool KeyJustPressed(KeyCode key) { return window.KeyJustPressed(key); }
         public bool KeyJustReleased(KeyCode key) { return window.KeyJustReleased(key); }
         public bool KeyWasDown(KeyCode key) { return window.KeyWasDown(key); }

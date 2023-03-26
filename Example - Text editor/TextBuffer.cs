@@ -102,10 +102,17 @@ namespace TextEditor {
         }
 
         public int MoveCursorToLineStart(int pos) {
+            if (pos == 0) return 0;
+
             int prevNewLine = _buffer.PrevIndexOf("\n", pos - 1);
             if (prevNewLine == -1) {
                 return 0;
             }
+
+            if (prevNewLine == pos) {
+                return 0;
+            }
+
             return prevNewLine + 1;
         }
 
@@ -217,6 +224,16 @@ namespace TextEditor {
 
             return -1;
         }
+
+        public int IndexOf(string s, int start) {
+            return _buffer.IndexOf(s, start);
+        }
+
+        public int PrevIndexOf(string s, int start) {
+            return _buffer.PrevIndexOf(s, start);
+        }
+
+
 
         public void Clear() {
             _buffer.Clear();

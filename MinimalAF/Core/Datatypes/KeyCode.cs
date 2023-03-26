@@ -141,7 +141,7 @@ namespace MinimalAF {
         /// <summary>
         /// Checks against left or right control
         /// </summary>
-        Control,
+        Ctrl,
         /// <summary>
         /// Checks against left or right alt
         /// </summary>

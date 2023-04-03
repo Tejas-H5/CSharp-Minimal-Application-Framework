@@ -3,6 +3,7 @@ The audio part will be evaluated when I try making a DAW.
 
 # Current issues with the framework
 
+## Text
 - Tab width has been hardcoded to 4. 
     - Need a CTX API to say SetTabWidth(x) and GetTabWidth(). 
     - I probably don't want to couple MutableString to this. 
@@ -16,3 +17,13 @@ The audio part will be evaluated when I try making a DAW.
 - I keep forgetting to switch to a null texture before rendering text.
     - but I'd rather not add if statements to unset the text texture. 
     - It may be worth moving to the mesh-vector method sooner than later.
+
+
+## Audio
+- Audio classes are all badly named
+    - the names are retained from an old codebase, we should rename them
+- Right now, an AudioInputSource thinggy that streams a thing can only be used as an input into a single audio source at a time
+    - AudioSourceInput needs to stop being the thing that is played, and rather an object that can create a new instance of a thing that can be played. One shot clips can just point straight back to the object itself without allocating anything, and audio streamed sources can make a sepearte stream for each audio clip. 
+        - Is this the factory pattern? 
+            - Who cares
+

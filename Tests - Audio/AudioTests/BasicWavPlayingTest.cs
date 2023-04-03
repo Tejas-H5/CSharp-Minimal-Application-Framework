@@ -1,58 +1,36 @@
-﻿using MinimalAF;
+using MinimalAF;
 using MinimalAF.Audio;
+using OpenTK.Mathematics;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace AudioEngineTests.AudioTests {
+    // This test might not be needed
     public class BasicWavPlayingTest : IRenderable {
-        AudioSourceOneShot clackSound;
+        AudioSourceOneShot _clackSound;
+        AudioListener _listener;
+        DrawableFont _font = new DrawableFont("Consolas", 16);
+
+        List<AudioSource> _sources = new List<AudioSource>();
 
         public BasicWavPlayingTest() {
-            AudioClipOneShot clip = AudioClipOneShot.FromFile("./Res/keyboardClack0.wav");
-            clackSound = new AudioSourceOneShot(true, false, clip);
+            _clackSound = new AudioSourceOneShot(
+                AudioData.FromFile("./Res/keyboardClack0.wav")
+            );
+
+            _listener = new AudioListener().MakeCurrent();
         }
 
-        string GetCharactersHeld(ref FrameworkContext ctx) {
-            var held = new StringBuilder();
-            for (KeyCode key = 0; key < KeyCode.EnumLength; key++) {
-                if (ctx.KeyIsDown(key)) {
-                    held.Append(CharKeyMapping.ToChar(key));
-                }
-            }
-
-            return held.ToString();
-        }
-
-        string GetCharactersReleased(ref FrameworkContext ctx) {
-            var held = new StringBuilder();
-            for (KeyCode key = 0; key < KeyCode.EnumLength; key++) {
-                if (ctx.KeyJustReleased(key)) {
-                    held.Append(CharKeyMapping.ToChar(key));
-                }
-            }
-
-            return held.ToString();
-        }
-
+        int sourceCount = 0;
         public void Render(FrameworkContext ctx) {
-            ctx.SetDrawColor(0, 0, 0, 1);
+            // TODO: implement.
+            // I want exactly n sources playing at some given time. or something likle that
 
-            if (ctx.KeyJustPressed(KeyCode.Any) || ctx.KeyJustReleased(KeyCode.Any)) {
-                Console.WriteLine("Pressed: " + GetCharactersHeld(ref ctx));
-                clackSound.Play();
+
+            while(_sources.Count < sourceCount) {
+
             }
-
-            if (ctx.KeyJustReleased(KeyCode.Any)) {
-                Console.WriteLine("Released: " + GetCharactersReleased(ref ctx));
-            }
-
-            var keys = GetCharactersHeld(ref ctx);
-            if (ctx.KeyIsDown(KeyCode.Shift)) {
-                keys = keys.ToUpper();
-            }
-
-            _font.Draw(ctx, "Press some keys:", ctx.VW * 0.5f, ctx.VH * 0.75f, HAlign.Center, VAlign.Center);
-            _font.Draw(ctx, keys, ctx.VW / 2, ctx.VH / 2, HAlign.Center, VAlign.Center);
         }
     }
 }

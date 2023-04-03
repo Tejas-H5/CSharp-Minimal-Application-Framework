@@ -58,12 +58,12 @@ namespace MinimalAF.Rendering {
         }
 
         private string PerformStringReplacements(string vertexSource) {
-            if (!vertexSource.Contains("{{globals}}")) {
+            if (!vertexSource.Contains("{{globals}}", StringComparison.Ordinal)) {
                 throw new Exception("You should add '{{globals}}' in your vertex shader after the #version preprocessor directive " +
                     "to inject a bunch of the framework's internal global variables into your shader.");
             }
 
-            vertexSource = vertexSource.Replace("{{globals}}", VERTEX_GLOBALS);
+            vertexSource = vertexSource.Replace("{{globals}}", VERTEX_GLOBALS, StringComparison.Ordinal);
 
             return vertexSource;
         }

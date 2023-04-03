@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using OpenTK.Audio.OpenAL;
+using OpenTK.Mathematics;
 
 namespace MinimalAF.Audio {
     public class AudioListener {
@@ -22,17 +23,22 @@ namespace MinimalAF.Audio {
             OrientationUp = new Vector3(upX, upY, upZ);
         }
 
-        public void SetPosition(float x, float y, float z) {
-            Position = new Vector3(x, y, z);
-        }
-
-        public void SetVelocity(float x, float y, float z) {
-            Velocity = new Vector3(x, y, z);
-        }
-
         public AudioListener MakeCurrent() {
-            ALAudioListener.CurrentSelectedInstance = this;
+            AudioCTX.SetCurrentListener(this);
             return this;
+        }
+
+        public void Update() {
+            AudioCTX.ALCall(() => {
+                AL.Listener(ALListenerf.Gain, Gain);
+                AL.Listener(ALListenerf.EfxMetersPerUnit, EfxMetersPerUnit);
+                AL.Listener(ALListener3f.Position, Position.X, Position.Y, Position.Z);
+                AL.Listener(ALListener3f.Velocity, Velocity.X, Velocity.Y, Velocity.Z);
+
+                var at = OrientationLookAt;
+                var up = OrientationUp;
+                AL.Listener(ALListenerfv.Orientation, ref at, ref up);
+            });
         }
     }
 }

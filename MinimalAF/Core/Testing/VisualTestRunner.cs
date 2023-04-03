@@ -105,20 +105,22 @@ namespace MinimalAF.Testing {
 
             // do the test
             {
-                try {
+                // its probably better if we don't catch the exceptions just yet.
+                // maybe I could do some work on this later?
+                // try {
                     currentTest.Instance.Render(ctx);
-                } catch (Exception err) {
-                    ctx.Use();
-                    ctx.UseFramebuffer(null);
+                //} catch (Exception err) {
+                //    ctx.Use();
+                //    ctx.UseFramebuffer(null);
 
-                    string stackTrace = "";
-                    if (err.StackTrace != null) {
-                        stackTrace = err.StackTrace;
-                    }
+                //    string stackTrace = "";
+                //    if (err.StackTrace != null) {
+                //        stackTrace = err.StackTrace;
+                //    }
 
-                    ctx.SetDrawColor(Color.Red);
-                    _font.Draw(ctx, err.ToString(), ctx.VW * 0.5f, ctx.VH * 0.5f, HAlign.Center, VAlign.Center);
-                }
+                //    ctx.SetDrawColor(Color.Red);
+                //    _font.Draw(ctx, err.ToString(), ctx.VW * 0.5f, ctx.VH * 0.5f, HAlign.Center, VAlign.Center);
+                //}
             }
 
             ctx.Use();

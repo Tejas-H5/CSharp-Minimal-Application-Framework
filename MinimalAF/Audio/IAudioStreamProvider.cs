@@ -1,6 +1,16 @@
 ﻿using OpenTK.Audio.OpenAL;
 
 namespace MinimalAF.Audio {
+
+    /// <summary>
+    /// Not sure if they are redundant or not yet, need to experiment with this 
+    /// </summary>
+    public struct StreamAdvanceResult {
+        public int WriteCount;
+        public double CursorPosSeconds;
+    }
+
+
     /// <summary>
     /// Should be used to playback of audio by calling low level OpenAL Apis, through a single Play() call,
     /// streaming, or something else. 
@@ -11,9 +21,9 @@ namespace MinimalAF.Audio {
     public interface IAudioStreamProvider {
         /// <summary>
         /// advances the stream by dataUnitsToWrite (short)s, then 
-        /// returns the number of (short)s that were written to the output bufferregardless of format or channels
+        /// returns the new cursor position. This is to keep track of the current playback position.
         /// </summary>
-        int AdvanceStream(short[] outputBuffer, int dataUnitsToWrite);
+        StreamAdvanceResult AdvanceStream(short[] outputBuffer, int dataUnitsToWrite);
 
         double PlaybackPosition {
             get; set;

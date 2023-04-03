@@ -3,6 +3,10 @@ using OpenTK.Audio.OpenAL;
 using System;
 
 namespace MinimalAF.Audio {
+    public class AudioDataImportSettings {
+        public bool ForceMono { get; set; } = false;
+    }
+
     /// <summary>
     /// Represents audio as an array of shorts.
     /// 

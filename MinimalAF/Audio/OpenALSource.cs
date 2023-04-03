@@ -8,13 +8,12 @@ namespace MinimalAF.Audio {
     /// Only a finite number of these classes may be created as determined by the OpenAL
     /// that is operating on a particular machine
     /// </summary>
-    internal class OpenALSource : IDisposable {
+    public class OpenALSource : IDisposable {
         private int alSourceId;
         internal int ALSourceID => alSourceId;
 
         public static OpenALSource CreateOpenALSource() {
-            int alSource = 0;
-            AudioCTX.ALCall(out alSource, () => {
+            AudioCTX.ALCall(out int alSource, () => {
                 return AL.GenSource();
             });
 
@@ -30,7 +29,7 @@ namespace MinimalAF.Audio {
         }
 
         public void Play() {
-            if (GetSourceState() == AudioSourceState.Playing)
+            if (GetSourceState() == ALSourceState.Playing)
                 return;
 
             AudioCTX.ALCall(() => { AL.SourcePlay(alSourceId); });
@@ -44,13 +43,19 @@ namespace MinimalAF.Audio {
             AudioCTX.ALCall(() => { AL.SourceStop(alSourceId); });
         }
 
-        public AudioSourceState GetSourceState() {
+        public ALSourceState GetSourceState() {
             ALSourceState state = AL.GetSourceState(alSourceId);
 
-            return (AudioSourceState)state;
+            return state;
         }
 
         public void QueueBuffer(int alBufferID) {
+            if (_lastBuffer != 0) {
+                // The buffer that was set in a one-shot way
+                // needs to be manually zeroed before we can start queueing buffers
+                SetBuffer(0);
+            }
+
             int bufferCount = GetBuffersQueued();
             AudioCTX.ALCall(() => {
                 AL.SourceQueueBuffer(alSourceId, alBufferID);
@@ -302,8 +307,14 @@ namespace MinimalAF.Audio {
             return this;
         }
 
+        int _lastBuffer = 0;
         public OpenALSource SetBuffer(int value) {
+            if (_lastBuffer == value) return this;
+
             AudioCTX.ALCall(() => { AL.Source(alSourceId, ALSourcei.Buffer, value); });
+
+            _lastBuffer = value;
+
             return this;
         }
 

@@ -15,6 +15,15 @@ namespace MinimalAF {
         public float B;
         public float A;
 
+        public static Color Lerp(Color color1, Color color2, float t) {
+            return new Color(
+                MathHelpers.Lerp(color1.R, color2.R, t),
+                MathHelpers.Lerp(color1.G, color2.G, t),
+                MathHelpers.Lerp(color1.B, color2.B, t),
+                MathHelpers.Lerp(color1.A, color2.A, t)
+            );
+        }
+
         private Color(float r, float g, float b, float a) {
             R = r;
             G = g;
@@ -181,6 +190,7 @@ namespace MinimalAF {
         public static Color Goldenrod => RGB255(218, 165, 32);
         public static Color Gray => RGB255(128, 128, 128);
         public static Color Green => RGB255(0, 128, 0);
+        public static Color GreenLime => RGB255(0, 255, 0);
         public static Color GreenYellow => RGB255(173, 255, 47);
         public static Color Grey => RGB255(128, 128, 128);
         public static Color Honeydew => RGB255(240, 255, 240);

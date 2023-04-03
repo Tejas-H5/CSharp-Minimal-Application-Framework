@@ -7,10 +7,9 @@ namespace AudioEngine {
         static void Main(string[] args) {
             var tests = new VisualTestRunner();
 
-            tests.AddTest("Wav playing", () => new BasicWavPlayingTest());
             tests.AddTest("Music playing", () => new MusicPlayingTest());
-            tests.AddTest("Panning and listner defaults", () => new PanningAndListenerDefaultsTest());
-            tests.AddTest("Panning test 2", () => new PanningTest2());
+            tests.AddTest("Wav playing (Complicated)", () => new ComplicatedWavPLayingTest());
+            tests.AddTest("Wav playing (Basic)", () => new BasicWavPlayingTest());
 
             new ProgramWindow((ctx) => tests.Init(ctx)).Run();
         }

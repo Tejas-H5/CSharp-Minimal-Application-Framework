@@ -1,4 +1,5 @@
 ﻿using OpenTK.Audio.OpenAL;
+using System;
 
 namespace MinimalAF.Audio {
     /// <summary>
@@ -9,7 +10,7 @@ namespace MinimalAF.Audio {
     /// </summary>
     public class AudioClipStream : IAudioStreamProvider {
         AudioData data;
-        int cursor = 0;
+        long cursor = 0;
 
         /// <summary>
         /// Can the playback position go negative?
@@ -34,19 +35,20 @@ namespace MinimalAF.Audio {
             get {
                 return cursor / (double)data.SampleRate / data.Channels;
             }
-
             set {
-                cursor = data.Channels * (int)(value * data.SampleRate);
-                ConstrainSlack();
+                cursor = (long)(value * data.SampleRate * data.Channels);
+                cursor = ConstrainCursor(cursor);
             }
         }
 
-        private void ConstrainSlack() {
+        private long ConstrainCursor(long cursor) {
             if (!UseSlackAtBegining && cursor < 0)
-                cursor = 0;
+                return 0;
 
-            if (!UseSlackAtEnd && (cursor >= data.RawData.Length - data.Channels))
-                cursor = data.RawData.Length - data.Channels;
+            if (!UseSlackAtEnd && (cursor >= data.RawData.LongLength))
+                return data.RawData.LongLength;
+
+            return cursor;
         }
 
         public double Duration => data.Duration;
@@ -57,40 +59,29 @@ namespace MinimalAF.Audio {
 
         public int Channels => data.Channels;
 
-        public int AdvanceStream(short[] outputBuffer, int dataToWrite) {
-            if (cursor < 0) {
-                int zeroesToWrite = -cursor;
-                if (zeroesToWrite > dataToWrite)
-                    zeroesToWrite = dataToWrite;
+        public StreamAdvanceResult AdvanceStream(short[] outputBuffer, int dataToWrite) {
+            cursor = ConstrainCursor(cursor);
 
-                for (int i = 0; i < zeroesToWrite; i++) {
+            // if cursor is before the start, fill the buffer with zeroes till it isn't
+            int i = 0;
+            for (;i < dataToWrite && cursor < 0; cursor++, i++) {
+                outputBuffer[i] = 0;
+            }
+
+            for (; i < dataToWrite && cursor < data.RawData.LongLength; cursor++, i++) {
+                outputBuffer[i] = data.RawData[cursor];
+            }
+
+            if (UseSlackAtEnd) {
+                for (; i < dataToWrite; i++) {
                     outputBuffer[i] = 0;
                 }
-
-                cursor += zeroesToWrite;
-
-                if (zeroesToWrite == dataToWrite)
-                    return dataToWrite;
-
-                dataToWrite -= zeroesToWrite;
             }
 
-            int dataLeft = data.RawData.Length - cursor;
-
-            if (dataLeft <= 0)
-                return 0;
-
-            if (dataToWrite > dataLeft) {
-                dataToWrite = dataLeft;
-            }
-
-            for (int i = 0; i < dataToWrite; i++) {
-                outputBuffer[i] = data.RawData[cursor + i];
-            }
-
-            cursor += dataToWrite;
-
-            return dataToWrite;
+            return new StreamAdvanceResult {
+                WriteCount = i,
+                CursorPosSeconds = PlaybackPosition
+            };
         }
     }
 }

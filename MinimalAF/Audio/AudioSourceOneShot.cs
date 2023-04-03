@@ -1,4 +1,7 @@
-﻿namespace MinimalAF.Audio {
+﻿using OpenTK.Audio.OpenAL;
+using System;
+
+namespace MinimalAF.Audio {
     /// <summary>
     /// Use this one to load and play small sound effects. 
     /// Despite the name, the audio may be looped
@@ -11,80 +14,93 @@
     ///         - No support for custom signal processing effect chains as a consequence of this
     ///         - this use case requires AudioSourceStreamed
     /// </summary>
-    public class AudioSourceOneShot : AudioSource {
-        AudioClipOneShot clip;
-        float pausedTime = 0;
+    public class AudioSourceOneShot : IAudioSourceInput, IDisposable {
+        public float PlayStartOffset = 0;
 
-        public AudioSourceOneShot(bool relative, bool looping, AudioClipOneShot sound = null)
-            : base(relative, looping) {
-            SetAudioClip(sound);
+        private int _alBuffer;
+        AudioData _audioData;
+
+        public AudioSourceOneShot(AudioData audioData) {
+            AudioCTX.ALCall(out _alBuffer, () => { return AL.GenBuffer(); });
+
+            if (audioData == null) {
+                throw new System.Exception("audioData can't be null here");
+            }
+
+            _audioData = audioData;
+            AudioCTX.ALCall(() => AL.BufferData(
+                _alBuffer,
+                _audioData.Channels == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
+                _audioData.RawData,
+                _audioData.SampleRate
+            ));
         }
 
-        public void SetAudioClip(AudioClipOneShot sound) {
-            clip = sound;
-
-            if (sound == null)
-                return;
-        }
-
-
-        public override void Play() {
-            playInternal(pausedTime);
-        }
-
-        public void Play(float offset) {
-            playInternal(offset);
-        }
-
-        private void playInternal(float offset) {
-            if (clip == null)
-                return;
-
-            OpenALSource alSource = ALAudioSourcePool.AcquireSource(this);
-            if (alSource == null)
-                return;
-
-            alSource.SetBuffer(clip.ALBuffer);
-            alSource.SetSecOffset(offset);
+        public void Play(OpenALSource alSource) {
+            alSource.SetBuffer(_alBuffer);
+            alSource.SetSecOffset(PlayStartOffset);
 
             alSource.Play();
         }
 
-        public override void Pause() {
-            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
-            if (alSource == null)
-                return;
-
+        public void Pause(OpenALSource alSource) {
             alSource.Pause();
-
-            pausedTime = alSource.GetSecOffset();
+            PlayStartOffset = alSource.GetSecOffset();
         }
 
-        public override void Stop() {
-            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
-            if (alSource == null)
-                return;
-
+        public void Stop(OpenALSource alSource) {
             alSource.StopAndUnqueueAllBuffers();
-
-            pausedTime = 0;
+            PlayStartOffset = 0;
         }
 
-        public override double GetPlaybackPosition() {
-            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
-            if (alSource == null)
-                return 0;
-
+        public double GetRealtimePlaybackPosition(OpenALSource alSource) {
             return alSource.GetSecOffset();
         }
 
-        public override void SetPlaybackPosition(double pos) {
-            OpenALSource alSource = ALAudioSourcePool.GetActiveSource(this);
-            if (alSource == null)
-                return;
-
+        public void SetPlaybackPosition(OpenALSource alSource, double pos) {
             alSource.SetSecOffset((float)pos);
         }
 
+        /// <summary>
+        /// it's a no-op
+        /// </summary>
+        public void Update(OpenALSource alSource) {}
+
+        #region IDisposable Support
+        private bool _disposed = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing) {
+            if (_disposed) return;
+
+            _audioData = null;
+
+            // TODO: also detatch from source if possible
+            AudioCTX.ALCall(() => AL.DeleteBuffer(_alBuffer));
+
+            _disposed = true;
+        }
+
+        public PlaybackState GetPlaybackState(OpenALSource alSource) {
+            var state = alSource.GetSourceState();
+            if (state == ALSourceState.Playing) {
+                return PlaybackState.Playing;
+            }
+
+            if (state == ALSourceState.Paused) {
+                return PlaybackState.Paused;
+            }
+
+            return PlaybackState.Stopped;
+        }
+
+        ~AudioSourceOneShot() {
+            Dispose(false);
+        }
+
+        public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

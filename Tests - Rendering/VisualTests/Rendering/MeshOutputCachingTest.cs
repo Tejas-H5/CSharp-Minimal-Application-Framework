@@ -10,7 +10,7 @@ namespace RenderingEngineVisualTests {
         Mesh<Vertex> mesh;
 
         public MeshOutputCachingTest() {
-            mesh = new Mesh<Vertex>(new Vertex[0], new uint[0], stream:false, allowResizing: true);
+            mesh = new Mesh<Vertex>(0, 0, stream:false, allowResizing: true);
             IM.DrawCircle(mesh, 0, 0, 120f);
         }
 

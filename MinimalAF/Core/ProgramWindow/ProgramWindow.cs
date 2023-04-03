@@ -112,10 +112,13 @@ namespace MinimalAF {
         }
 
         void StepRenderLoop() {
-            RenderFrame(dt);
+            RenderFrame();
 
             double frameEnd = GetSecondsSinceStart();
             dt = frameEnd - prevFrameEnd;
+            Time.deltaTime = (float)dt;
+            Time.time = frameEnd;
+
 
             // This is a power saving mechanism that will sleep the thread if we
             // have the time available to do so. It reduces overall CPU consumption.
@@ -203,25 +206,20 @@ namespace MinimalAF {
             }
         }
 
-        void RenderFrame(double deltaTime) {
-            Time.deltaTime = (float)deltaTime;
+        void RenderFrame() {
+            var ctx = CreateFrameworkContext().Use();
 
-            // render
-            {
-                var ctx = CreateFrameworkContext().Use();
+            CTX.SetViewport(new Rect(0, 0, Width, Height));
+            CTX.Clear();
 
-                CTX.SetViewport(new Rect(0, 0, Width, Height));
-                CTX.Clear();
+            CTX.ContextWidth = Width;
+            CTX.ScreenWidth = Width;
+            CTX.ContextHeight = Height;
+            CTX.ScreenHeight = Height;
 
-                CTX.ContextWidth = Width;
-                CTX.ScreenWidth = Width;
-                CTX.ContextHeight = Height;
-                CTX.ScreenHeight = Height;
+            _renderable.Render(ctx);
 
-                _renderable.Render(ctx);
-
-                CTX.SwapBuffers();
-            }
+            CTX.SwapBuffers();
         }
 
         public int Width => _window.Size.X;

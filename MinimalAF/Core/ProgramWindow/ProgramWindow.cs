@@ -358,11 +358,24 @@ namespace MinimalAF {
         internal bool MouseIsAnyDown => mouseAnyDown;
         internal bool MouseIsAnyJustPressed => mouseAnyDown && !mouseWasAnyDown;
         internal bool MouseIsAnyJustReleased => !mouseAnyDown && mouseWasAnyDown;
-        internal float MouseX => _window.MouseState.Position.X;
-        internal float MouseY => Height - _window.MouseState.Position.Y;
+
+        internal Vector2 MousePosition {
+            get {
+                var pos = _window.MousePosition;
+                return new Vector2(pos.X, Height - pos.Y);
+            }
+            set {
+                _window.MousePosition = value;
+            }
+        }
+
+        internal CursorState CursorState {
+            get => _window.CursorState;
+            set => _window.CursorState = value;
+        }
 
         internal float MouseXDelta => _window.MouseState.Delta.X;
-        internal float MouseYDelta => -_window.MouseState.Delta.Y;
+        internal float MouseYDelta => -_window.MouseState.Delta.Y;  // y is being flipped
 
         // Currently needs to be manually invoked by the OpenTKWindowWrapper or whatever
         void OnWindowMouseWheel(OpenTK.Windowing.Common.MouseWheelEventArgs obj) {
@@ -370,7 +383,8 @@ namespace MinimalAF {
         }
 
         internal bool MouseIsOver(Rect rect) {
-            float x = MouseX, y = MouseY,
+            var pos = MousePosition;
+            float x = pos.X, y = pos.Y,
                 left = rect.X0, right = rect.X1,
                 bottom = rect.Y0, top = rect.Y1;
 

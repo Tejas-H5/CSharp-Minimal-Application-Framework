@@ -9,6 +9,21 @@ namespace MinimalAF.Audio {
     }
 
     public interface IAudioSourceInput {
+        /// <summary>
+        /// Can this thing be consumed by multiple Audio sources at the same time?
+        /// 
+        /// I was super worried about people attaching a streamed audio source input to multiple audio sources, and
+        /// all the 'smart' workarounds to make a simple API that just allowed this led to bad side-effects or implementation
+        /// details, so now, streamed audio source inputs will return true here, and this will trigger a check to see
+        /// if we have another audio source input that is currently trying to play this thing.
+        /// 
+        /// Ideally want to make sure that a streamed AudioSourceInput is only ever assigned to one thing, but 
+        /// I can't think of a non-fragile way of doing that so we have this thing
+        /// </summary>
+        bool CanHaveMultipleConsumers {
+            get;
+        }
+
         void Play(OpenALSource alSource);
         void Pause(OpenALSource alSource);
         void Stop(OpenALSource alSource);
@@ -37,6 +52,9 @@ namespace MinimalAF.Audio {
         //// any of the sources using them, then the lower priority AudioSource will release it's
         //// resource and give it to this one
         // public int Priority = 0;
+
+
+
         public float Gain { get; set; } = 1;
         public float Pitch { get; set; } = 1;
         public bool Relative { get; set; } = false;
@@ -45,8 +63,9 @@ namespace MinimalAF.Audio {
         public Vector3 Velocity { get; set; } = Vector3.Zero;
         public Vector3 Direction { get; set; } = Vector3.Zero;
 
-
         IAudioSourceInput _currentInput;
+
+        public IAudioSourceInput CurrentInput => _currentInput;
 
         public void SetInput(IAudioSourceInput input) {
             if (_currentInput != null) {
@@ -54,6 +73,14 @@ namespace MinimalAF.Audio {
             }
 
             _currentInput = input;
+
+            if (_currentInput != null) {
+                if (!_currentInput.CanHaveMultipleConsumers) {
+                    if (AudioCTX.GetIndexForIAudioSourceInput(_currentInput) != -1) {
+                        throw new System.Exception("Streamed audio sources can't be played by multiple audio sources at the same time.");
+                    }
+                }
+            }
         }
 
         public void Play() {
@@ -98,6 +125,7 @@ namespace MinimalAF.Audio {
             if (_currentInput == null || CurrentALSource == null) return;
 
             _currentInput.Update(CurrentALSource);
+
         }
 
         public PlaybackState PlaybackState {

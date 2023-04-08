@@ -1,5 +1,6 @@
 ﻿using MinimalAF.Rendering;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using System;
 using System.Collections.Generic;
 
@@ -139,23 +140,17 @@ namespace MinimalAF {
         }
 
         /// <summary>
-        /// <inheritdoc cref="CTX.Perspective(float, float, float, float)"/>
-        /// <para>
-        /// The aspect-ratio is just computed using this element's rectangle size.
-        /// </para>
+        /// Creates a projection matrix with the respective settings that works with the current screen rect.
+        /// 
+        /// `fovy` is in radians.   
         /// </summary>
         public void SetProjectionPerspective(float fovy, float depthNear, float depthFar) {
             //AssertClipping();
 
             CTX.Perspective(
                 fovy, VW / VH, depthNear, depthFar,
-                2 * Rect.X0 + VW - window.Width,
-                2 * Rect.Y0 + VH - window.Height
-
-            // I am not sure why we need to multuply by 2 here, but it works. going to
-            // keep this intuitive version with more ops here in case it helps me figure it out later
-            //2 * (Rect.X0 + Width / 2 - window.Width / 2),
-            //2 * (Rect.Y0 + Height / 2 - window.Height / 2)
+                Rect.X0 + VW * 0.5f - window.Width * 0.5f,
+                Rect.Y0 + VH * 0.5f - window.Height * 0.5f
             );
         }
 
@@ -186,7 +181,7 @@ namespace MinimalAF {
         /// </summary>
         public void SetProjectionCartesian2D(float scaleX, float scaleY, float offsetX, float offsetY) {
             CTX.Cartesian2D(scaleX, scaleY, Rect.X0 + offsetX, Rect.Y0 + offsetY);
-        }               
+        }
 
         /// <summary>
         /// Starts drawing to a framebuffer.
@@ -226,19 +221,39 @@ namespace MinimalAF {
         public bool KeyJustReleased(KeyCode key) { return window.KeyJustReleased(key); }
         public bool KeyWasDown(KeyCode key) { return window.KeyWasDown(key); }
         public bool KeyIsDown(KeyCode key) { return window.KeyIsDown(key); }
-        public bool MouseIsOver(Rect rect) { return Intersections.IsInsideRect(MouseX, MouseY, rect); }
+        public bool MouseIsOver(Rect rect) { 
+            return Intersections.IsInsideRect(MouseX, MouseY, rect); 
+        }
         public bool MouseButtonJustPressed(MouseButton b) { return window.MouseButtonJustPressed(b); }
         public bool MouseButtonJustReleased(MouseButton b) { return window.MouseButtonJustReleased(b); }
         public bool MouseButtonIsDown(MouseButton b) { return window.MouseButtonIsDown(b); }
         public bool MouseButtonWasDown(MouseButton b) { return window.MouseButtonWasDown(b); }
 
         public float MouseWheelNotches => window.MouseWheelNotches;
-        public float MouseX => window.MouseX - Rect.X0;
-        public float MouseY => window.MouseY - Rect.Y0;
+        public float MouseX {
+            get => window.MousePosition.X - Rect.X0;
+        }
+        public float MouseY {
+            get => window.MousePosition.Y - Rect.Y0;
+        }
+
+        public Vector2 MousePosition {
+            get => new Vector2(MouseX, MouseY);
+            set => window.MousePosition = new Vector2(Rect.X0 + value.X, Rect.Y0 + value.Y);
+        }
+
+        public CursorState MouseState {
+            get => window.CursorState;
+            set => window.CursorState = value;
+        }
+
+
         public float MouseXDelta => window.MouseXDelta;
         public float MouseYDelta => window.MouseYDelta;
     }
 
+
+    // NOTE: Refrain from the temptation to add void Init(), void Update(), or any other methods here yeah
     public interface IRenderable {
         void Render(FrameworkContext ctx);
     }

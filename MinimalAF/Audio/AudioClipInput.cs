@@ -14,13 +14,15 @@ namespace MinimalAF.Audio {
     ///         - No support for custom signal processing effect chains as a consequence of this
     ///         - this use case requires AudioSourceStreamed
     /// </summary>
-    public class AudioSourceOneShot : IAudioSourceInput, IDisposable {
+    public class AudioClipInput : IAudioSourceInput, IDisposable {
         public float PlayStartOffset = 0;
 
         private int _alBuffer;
-        AudioData _audioData;
+        AudioRawData _audioData;
 
-        public AudioSourceOneShot(AudioData audioData) {
+        public bool CanHaveMultipleConsumers => true;
+
+        public AudioClipInput(AudioRawData audioData) {
             AudioCTX.ALCall(out _alBuffer, () => { return AL.GenBuffer(); });
 
             if (audioData == null) {
@@ -31,7 +33,7 @@ namespace MinimalAF.Audio {
             AudioCTX.ALCall(() => AL.BufferData(
                 _alBuffer,
                 _audioData.Channels == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
-                _audioData.RawData,
+                _audioData.Samples,
                 _audioData.SampleRate
             ));
         }
@@ -93,7 +95,7 @@ namespace MinimalAF.Audio {
             return PlaybackState.Stopped;
         }
 
-        ~AudioSourceOneShot() {
+        ~AudioClipInput() {
             Dispose(false);
         }
 

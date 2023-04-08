@@ -17,7 +17,7 @@ namespace RenderingEngineVisualTests {
             xPos = 200 * MathF.Sin(time / 2.0f);
 
             ctx.SetDrawColor(1, 1, 1, 1);
-            _font.Draw(ctx, "Stencil test", 0, ctx.VH, HAlign.Left, VAlign.Top);
+            _font.DrawText(ctx, "Stencil test", 0, ctx.VH, HAlign.Left, VAlign.Top);
 
             ctx.StartStencillingWithoutDrawing(true);
 

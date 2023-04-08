@@ -8,8 +8,8 @@ namespace AudioEngine {
             var tests = new VisualTestRunner();
 
             tests.AddTest("Music playing", () => new MusicPlayingTest());
+            tests.AddTest("First person game", () => new FirstPersonGameTest());
             tests.AddTest("Wav playing (Complicated)", () => new ComplicatedWavPLayingTest());
-            tests.AddTest("Wav playing (Basic)", () => new BasicWavPlayingTest());
 
             new ProgramWindow((ctx) => tests.Init(ctx)).Run();
         }

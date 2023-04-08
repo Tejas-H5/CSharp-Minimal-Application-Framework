@@ -8,22 +8,22 @@ namespace AudioEngineTests.AudioTests {
     // Note that this code is copypasted, and the code for " + nameof(MusicAndKeysTest) + " is more up to date",
     class MusicPlayingTest : IRenderable {
         AudioSource _source;
-        AudioSourceStreamed _audioStream;
-        AudioClipStream _audioClipStream;
+        AudioStreamInput _audioStream;
+        AudioStreamRawData _audioClipStream;
         DrawableFont _font = new DrawableFont("Consolas", 16);
         AudioListener _listener;
 
         public MusicPlayingTest() {
-            _audioStream = new AudioSourceStreamed(
-                _audioClipStream = new AudioClipStream(
-                    AudioData.FromFile("./Res/testMusicShort.mp3")
+            _audioStream = new AudioStreamInput(
+                _audioClipStream = new AudioStreamRawData(
+                    AudioRawData.FromFile("./Res/testMusicShort.mp3")
                 )
             );
 
             _source = new AudioSource();
 
             _source.SetInput(_audioStream);
-            _listener = new AudioListener().MakeCurrent();
+            _listener = new AudioListener();
         }
 
 
@@ -38,7 +38,7 @@ namespace AudioEngineTests.AudioTests {
                 var playbackPos = _source.PlaybackPosition;
                 message += "Time: " + playbackPos;
 
-                _font.Draw(ctx, message, ctx.VW / 2, ctx.VH / 2, HAlign.Center, VAlign.Center);
+                _font.DrawText(ctx, message, ctx.VW / 2, ctx.VH / 2, HAlign.Center, VAlign.Center);
 
                 ctx.SetDrawColor(1, 0, 0, 1);
                 float amount = (float)(playbackPos / _audioClipStream.Duration);
@@ -46,12 +46,14 @@ namespace AudioEngineTests.AudioTests {
                 IM.DrawLine(ctx, x, 0, x, ctx.VH, 2, CapType.None);
 
                 if (amount > 1) {
-                    _font.Draw(ctx, "Duration: " + _audioClipStream.Duration, 0, 0, HAlign.Left, VAlign.Bottom);
+                    _font.DrawText(ctx, "Duration: " + _audioClipStream.Duration, 0, 0, HAlign.Left, VAlign.Bottom);
                 }
             }
 
             // update streams, handle input 
             {
+                _listener.MakeCurrent();
+
                 if (ctx.KeyJustPressed(KeyCode.Space)) {
                     if (_source.PlaybackState != PlaybackState.Playing) {
                         _source.Play();

@@ -7,17 +7,17 @@ using System.Text;
 
 namespace AudioEngineTests.AudioTests {
     public class ComplicatedWavPLayingTest : IRenderable {
-        AudioSourceOneShot _clackSound;
+        AudioClipInput _clackSound;
         AudioListener _listener;
         DrawableFont _font = new DrawableFont("Consolas", 16);
         Random _random = new Random();
 
         public ComplicatedWavPLayingTest() {
-            _clackSound = new AudioSourceOneShot(
-                AudioData.FromFile("./Res/keyboardClack0.wav")
+            _clackSound = new AudioClipInput(
+                AudioRawData.FromFile("./Res/keyboardClack0.wav")
             );
 
-            _listener = new AudioListener().MakeCurrent();
+            _listener = new AudioListener();
         }
 
         void DrawCrosshairs(ref FrameworkContext ctx, float x, float y, float size) {
@@ -92,6 +92,7 @@ namespace AudioEngineTests.AudioTests {
 
             // update minigun barrel
             {
+
                 _barrelSpeed = MathHelpers.MoveTowards(
                     _barrelSpeed,
                     isFiring ? 1 : 0,
@@ -123,6 +124,7 @@ namespace AudioEngineTests.AudioTests {
             // update listener 
             {
                 // _listener.Position = new Vector3(ctx.VW / 2, 0, ctx.VH / 2);
+                _listener.MakeCurrent();
                 _listener.Position = (0, 0, 0);
             }
         }

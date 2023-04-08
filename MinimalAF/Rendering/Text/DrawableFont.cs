@@ -104,7 +104,7 @@ namespace MinimalAF {
 
         //TODO: IMPLEMENT tabs and newlines
         //And vertical/horizontal aiignment features
-        public Vector2 Draw<Out>(Out output, string text, float startX, float startY, HAlign hAlign, VAlign vAlign, float scale = 1.0f) where Out : IGeometryOutput<Vertex> {
+        public Vector2 DrawText<Out>(Out output, string text, float startX, float startY, HAlign hAlign, VAlign vAlign, float scale = 1.0f) where Out : IGeometryOutput<Vertex> {
             var prevTexture = CTX.Texture.Get();
 
             Vector2 caratPos = (startX, startY);
@@ -145,7 +145,7 @@ namespace MinimalAF {
 
                     caratPos.X = startX + CaratPosX(lineWidth, hAlign);
 
-                    caratPos = Draw(output, text, lineStart, lineEnd, caratPos.X, caratPos.Y, scale);
+                    caratPos = DrawText(output, text, lineStart, lineEnd, caratPos.X, caratPos.Y, scale);
 
                     lineStart = lineEnd;
                 }
@@ -157,10 +157,10 @@ namespace MinimalAF {
         }
 
         public Vector2 DrawText<Out>(Out output, string text, float startX, float startY, float scale = 1.0f) where Out : IGeometryOutput<Vertex> {
-            return Draw(output, text, 0, text.Length, startX, startY, scale);
+            return DrawText(output, text, 0, text.Length, startX, startY, scale);
         }
 
-        public Vector2 Draw<Out>(Out output, string text, int start, int end, float startX, float startY, float scale) where Out : IGeometryOutput<Vertex> {
+        public Vector2 DrawText<Out>(Out output, string text, int start, int end, float startX, float startY, float scale) where Out : IGeometryOutput<Vertex> {
             Texture previousTexture = CTX.Texture.Get();
 
             CTX.Texture.Use(Texture);

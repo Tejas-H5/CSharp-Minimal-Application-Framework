@@ -32,7 +32,7 @@ namespace RenderingEngineVisualTests {
             ctx.SetDrawColor(0, 0, 0, 1);
             IM.DrawRectOutline(ctx, 1, -50, -50, 50, 50);
 
-            _font.Draw(ctx, "This is a wall.", 0, 0, HAlign.Center, VAlign.Center);
+            _font.DrawText(ctx, "This is a wall.", 0, 0, HAlign.Center, VAlign.Center);
 
             ctx.SetModel(Matrix4.CreateTranslation(rectPoint));
 

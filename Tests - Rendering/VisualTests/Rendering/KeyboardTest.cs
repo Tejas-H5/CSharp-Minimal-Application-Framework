@@ -46,8 +46,8 @@ namespace RenderingEngineVisualTests {
                 keys = keys.ToUpper();
             }
 
-            _font.Draw(ctx, "Press some keys:", ctx.VW * 0.5f, ctx.VH * 0.75f, HAlign.Center, VAlign.Center);
-            _font.Draw(ctx, keys, ctx.VW / 2, ctx.VH / 2, HAlign.Center, VAlign.Center);
+            _font.DrawText(ctx, "Press some keys:", ctx.VW * 0.5f, ctx.VH * 0.75f, HAlign.Center, VAlign.Center);
+            _font.DrawText(ctx, keys, ctx.VW / 2, ctx.VH / 2, HAlign.Center, VAlign.Center);
         }
     }
 }

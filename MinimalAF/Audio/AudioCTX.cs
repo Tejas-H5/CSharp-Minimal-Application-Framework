@@ -12,23 +12,17 @@ namespace MinimalAF.Audio {
     /// and disposed of when the program is done with Cleanup().
     /// </summary>
     public static class AudioCTX {
-        public const int MAX_AUDIO_SOURCES = 256;
-        // public const int MAX_AUDIO_SOURCES = 6;
-
-        private static ALDevice s_device;
-        private static ALContext s_context;
-
         struct ALSourceAudioSourcePair {
             public OpenALSource AlSource;
             public AudioSource AudioSource;
         }
 
+        private static ALDevice s_device;
+        private static ALContext s_context;
         private static ALSourceAudioSourcePair[] s_allAvailableOpenALSources = new ALSourceAudioSourcePair[MAX_AUDIO_SOURCES];
         private static AudioListener s_currentListener;
-
-        public static AudioListener CurrentListener {
-            get => s_currentListener;
-        }
+        public static AudioListener CurrentListener => s_currentListener;
+        public const int MAX_AUDIO_SOURCES = 256;
 
         public static void SetCurrentListener(AudioListener instance) {
             s_currentListener = instance;
@@ -66,13 +60,6 @@ namespace MinimalAF.Audio {
                     Console.WriteLine("Audio powered by OpenAL v" + version + " from" + vendor + ". Audio rendered with " + renderer);
                 }
             }
-
-            // init al sources
-            {
-                //for(int i = 0; i < s_allAvailableOpenALSources.Length; i++) {
-                //    s_allAvailableOpenALSources[i].AlSource = OpenALSource.CreateOpenALSource();
-                //}
-            }
         }
 
         static int NextAvailableALSource() {
@@ -83,6 +70,18 @@ namespace MinimalAF.Audio {
                         s_allAvailableOpenALSources[i].AlSource = OpenALSource.CreateOpenALSource();
                     }
 
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        internal static int GetIndexForIAudioSourceInput(IAudioSourceInput input) {
+            for(int i = 0; i < s_allAvailableOpenALSources.Length; i++) {
+                if (s_allAvailableOpenALSources[i].AudioSource == null) continue;
+
+                if (s_allAvailableOpenALSources[i].AudioSource.CurrentInput == input) {
                     return i;
                 }
             }
@@ -109,8 +108,7 @@ namespace MinimalAF.Audio {
 
 
             // This code is highly suspect. If we have a low priority streamed thing,
-            // and we pull out the audio source from under it, then a lot of the methods
-            // won't even work. 
+            // and we pull out the audio source from under it, then a lot of things will break
             //// But what if there isn't another audio source available? 
             //// We want to find the lowest priority source, and if it is lower priority than
             //// audioSource, we will re-assign it's OpenAL audio source to audioSource.
@@ -135,7 +133,6 @@ namespace MinimalAF.Audio {
             //    }
             //}
 
-            // we couldn't find another audio source with lower priority :(
             return null;
         }
 
@@ -293,6 +290,5 @@ namespace MinimalAF.Audio {
         public static void SetDeviceListener(string name) {
             ALC.OpenDevice(name);
         }
-
     }
 }

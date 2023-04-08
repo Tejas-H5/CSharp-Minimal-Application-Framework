@@ -64,6 +64,7 @@ namespace MinimalAF.Testing {
             var color = Color.Black;
             float alpha = 0.5f;
             if (onClick != null) {
+                Console.WriteLine(rect + " " + ctx.MousePosition + " " + ctx.MouseIsOver(rect));
                 if (ctx.MouseIsOver(rect)) {
                     if (ctx.MouseButtonJustReleased(MouseButton.Any)) {
                         onClick();
@@ -83,7 +84,7 @@ namespace MinimalAF.Testing {
             IM.DrawRect(ctx, rect);
 
             ctx.SetDrawColor(Color.White);
-            _font.Draw(ctx, text, x + padding, y + padding, HAlign.Left, VAlign.Bottom);
+            _font.DrawText(ctx, text, x + padding, y + padding, HAlign.Left, VAlign.Bottom);
 
             return rect;
         }

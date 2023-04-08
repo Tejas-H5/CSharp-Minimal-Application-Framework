@@ -194,11 +194,14 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void ViewOrientation(Vector3 position, Quaternion rotation) {
-            Matrix4 orienation = Matrix4.CreateTranslation(-position);
-            orienation.Transpose();
-            orienation *= Matrix4.CreateFromQuaternion(rotation.Inverted());
-
-            s_shaderManager.SetViewMatrix(orienation);
+            s_shaderManager.SetViewMatrix(
+                Matrix4.CreateTranslation(-position) * 
+                Matrix4.CreateFromQuaternion(
+                    // we want +z to be forwards, so that this function is consistent with
+                    //   ViewLookAt(position, position + rotation + Vector3(0, 0, 1) * quaternion)
+                    Quaternion.FromAxisAngle(new Vector3(0, 1, 0), MathF.PI) * rotation.Inverted()
+                )
+            );
         }
 
 
@@ -209,10 +212,11 @@ namespace MinimalAF.Rendering {
         /// </para>
         /// </summary>
         internal static void Perspective(float fovy, float aspect, float depthNear, float depthFar, float centerX = 0, float centerY = 0) {
-            Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView(fovy, aspect, depthNear, depthFar);
-            perspective = perspective * Matrix4.CreateTranslation(centerX / ContextWidth, centerY / ContextHeight, 0);
-
-            SetProjection(perspective);
+            SetProjection(
+                Matrix4.CreatePerspectiveFieldOfView(fovy, aspect, depthNear, depthFar) * 
+                Matrix4.CreateTranslation(centerX / ContextWidth, centerY / ContextHeight, 0) * 
+                Matrix4.CreateScale(new Vector3(-1, 1, 1))  // TODO: understand why we have to scale x by -1
+            );
         }
 
         /// <summary>
@@ -222,10 +226,11 @@ namespace MinimalAF.Rendering {
         /// </para>
         /// </summary>
         internal static void Orthographic(float width, float height, float depthNear, float depthFar, float centerX = 0, float centerY = 0) {
-            Matrix4 ortho = Matrix4.CreateOrthographic(width, height, depthNear, depthFar);
-            ortho = ortho * Matrix4.CreateTranslation(centerX / ContextWidth, centerY / ContextHeight, 0);
-
-            SetProjection(ortho);
+            SetProjection(
+                Matrix4.CreateOrthographic(width, height, depthNear, depthFar) *
+                Matrix4.CreateTranslation(centerX / ContextWidth, centerY / ContextHeight, 0) *
+                Matrix4.CreateScale(new Vector3(-1, 1, 1))  // TODO: understand  why we have to scale x by -1
+            );
         }
 
         internal static void SetProjection(Matrix4 matrix) {

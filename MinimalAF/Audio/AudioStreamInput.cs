@@ -20,7 +20,7 @@ namespace MinimalAF.Audio {
     ///     either on the main thread or in a seperate one. Using several of these in a single 
     ///     program might be compute intensive. It could also be absolutely fine, I have yet to do any benchmarking and such
     /// </summary>
-    public class AudioSourceStreamed : IAudioSourceInput, IDisposable {
+    public class AudioStreamInput : IAudioSourceInput, IDisposable {
         const int NUM_BUFFERS = 4;
         const int BUFFER_SIZE = 65536; // 32kb of data in each buffer
 
@@ -32,8 +32,9 @@ namespace MinimalAF.Audio {
         double _lastKnownCursorPosition;
         Queue<double> _bufferCursorPositions = new Queue<double>();
 
+        public bool CanHaveMultipleConsumers => false;
 
-        public AudioSourceStreamed(IAudioStreamProvider stream = null) {
+        public AudioStreamInput(IAudioStreamProvider stream = null) {
             // initialize buffers
             for (int i = 0; i < _buffers.Length; i++) {
                 AudioCTX.ALCall(() => {
@@ -207,10 +208,52 @@ namespace MinimalAF.Audio {
             GC.SuppressFinalize(this);
         }
 
-        ~AudioSourceStreamed() {
+        ~AudioStreamInput() {
             Dispose(false);
         }
 
         #endregion
+    }
+
+
+    /// <summary>
+    /// Not sure if they are redundant or not yet, need to experiment with this 
+    /// </summary>
+    public struct StreamAdvanceResult {
+        public int WriteCount;
+        public double CursorPosSeconds;
+    }
+
+
+    /// <summary>
+    /// Should be used to playback of audio by calling low level OpenAL Apis, through a single Play() call,
+    /// streaming, or something else. 
+    /// 
+    /// Most of the time, custom audio generators can be created by implementing the IStreamDataProvider interface instead
+    /// of this one
+    /// </summary>
+    public interface IAudioStreamProvider {
+        /// <summary>
+        /// advances the stream by dataUnitsToWrite (short)s, then 
+        /// returns the new cursor position. This is to keep track of the current playback position.
+        /// </summary>
+        StreamAdvanceResult AdvanceStream(short[] outputBuffer, int dataUnitsToWrite);
+
+        double PlaybackPosition {
+            get; set;
+        }
+        double Duration {
+            get;
+        }
+
+        ALFormat Format {
+            get;
+        }
+        int SampleRate {
+            get;
+        }
+        int Channels {
+            get;
+        }
     }
 }

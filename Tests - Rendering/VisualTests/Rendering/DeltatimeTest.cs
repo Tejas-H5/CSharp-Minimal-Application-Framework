@@ -24,7 +24,7 @@ namespace RenderingEngineVisualTests {
             string dtTimerText = dtTimer.ToString(".000");
             string realTimerText = (_timer.ElapsedMilliseconds / 1000.0).ToString(".000");
             string text = "Delta time: " + dtTimerText + "\nReal time: " + realTimerText;
-            _font.Draw(ctx, text, ctx.VW * 0.5f, ctx.VH * 0.5f, HAlign.Center, VAlign.Center);
+            _font.DrawText(ctx, text, ctx.VW * 0.5f, ctx.VH * 0.5f, HAlign.Center, VAlign.Center);
         }
     }
 }

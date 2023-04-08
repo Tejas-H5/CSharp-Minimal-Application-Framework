@@ -50,7 +50,7 @@ namespace RenderingEngineVisualTests {
             }
 
             ctx.SetDrawColor(0, 0, 0, 1);
-            _font.Draw(
+            _font.DrawText(
                 ctx,
                 "Mouse test (And polyline test) - Drag that point with your mouse",
                 0, ctx.VH,

@@ -5,6 +5,83 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MinimalAF {
+    // Read the encoding table on this wikipedia article so that you can understand these comments: https://en.wikipedia.org/wiki/UTF-8.
+    // Using SkiaSharp's  StringUtilities.GetUnicodeCharacterCode function is a pain -
+    //  it doesn't work unless it is actually a unicode character, so I decided how about I just implemlent UTF-8 - How hard could it be?
+    //  According to Wikipedia, it isn't very hard at all, and C# already natively has a way to encode
+    //  a string as UTF-8 (not that I would need it though)
+    public struct MutableUT8String {
+        public byte[] Bytes;    // This is just a buffer that can be overwritten or resized. 
+        public int Length;      // This is the true length of this datastructure (in bytes, and not code points. sorry)
+
+        public MutableUT8String(string text) {
+            Bytes = Encoding.UTF8.GetBytes(text);
+            Length = Bytes.Length;
+        }
+
+        bool Is10XXXXXX(byte b1) {
+            return (
+                // (b1 & (00000011 << 6)) == 10000000
+                (b1 & (0x3 << 6)) == (0x1 << 7)
+            );
+        }
+
+        int Get__XXXXXX(byte b1) {
+            return b1 & 127;
+        }
+
+        // return size, codePoint
+        public (int, int) GetNextCodePoint(int pos) {
+            var b1 = Bytes[pos];
+            // (b1 & 1xxxxxxx) == 0
+            if ((b1 & (1 << 7)) == 0x0) {
+                return (1, b1);
+            }
+
+            var b2 = Bytes[pos + 1];
+            // 110xxxxx 10xxxxxx
+            if (
+                (b1 & (7 << 5)) == (3 << 6) // ((b1 & 00000111) << 5) == (11000000)
+                && Is10XXXXXX(b2)
+            ) {
+                return (
+                    2, 
+                    ((b1 & ((byte)31)) << 8) + Get__XXXXXX(b2)
+                );
+            }
+
+            var b3 = Bytes[pos + 2];
+            // 1110xxxx 10xxxxxx 10xxxxxx 
+            if (
+                (b1 & (15 << 4)) == (7 << 5)
+                && Is10XXXXXX(b2)
+                && Is10XXXXXX(b3)
+            ) {
+                return (
+                    3,
+                    ((b1 & ((byte)15)) << 16) + (Get__XXXXXX(b2) << 8) + (Get__XXXXXX(b3))
+                );
+            }
+
+            var b4 = Bytes[pos + 3];
+            // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+            if (
+                (b1 & (31 << 3)) == (15 << 4)
+                && Is10XXXXXX(b2)
+                && Is10XXXXXX(b3)
+                && Is10XXXXXX(b4)
+            ) {
+                return (
+                    4,
+                    ((b1 & ((byte)15)) << 24) + (Get__XXXXXX(b2) << 16) + (Get__XXXXXX(b3) << 8) + (Get__XXXXXX(b4))
+                );
+            }
+
+            throw new Exception("Not the start of a unicode char. I need to handle this edge case properly though");
+        }
+    }
+
+
     /// <summary>
     /// To reduce string allocations when printing out text in a render loop
     /// </summary>

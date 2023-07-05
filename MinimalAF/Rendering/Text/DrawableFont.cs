@@ -22,7 +22,7 @@ namespace MinimalAF {
         Dictionary<int, FontAtlas> _atlasForSize = new Dictionary<int, FontAtlas>();
 
 
-        public DrawableFont(string fontName, int fontSize) {
+        public DrawableFont(string fontName, int fontSize, string characters = FontAtlas.DefaultCharacters) {
             _fontName = fontName;
 
             if (fontSize <= 0) {
@@ -39,7 +39,8 @@ namespace MinimalAF {
                 new FontImportSettings {
                     FontName = fontName,
                     FontSize = fontSize
-                }
+                },
+                characters
             );
         }
 

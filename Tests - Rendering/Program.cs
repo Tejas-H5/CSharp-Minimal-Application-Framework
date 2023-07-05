@@ -26,7 +26,8 @@ namespace RenderingEngineVisualTests {
 
             tests.AddTest("Basic test", () => new BasicTest());
             tests.AddTest("Text Test", () => new TextTest());
-            tests.AddTest("Error test", () => new ErrorTest());
+            // For now, we are allowing errors to flow into the debugger (not catching them)
+            // tests.AddTest("Error test", () => new ErrorTest());
             tests.AddTest("Arc test", () => new ArcTest());
             tests.AddTest("Performance benchmark test", () => new Benchmark());
             tests.AddTest("Framebuffer test", () => new FramebufferTest());

@@ -155,6 +155,13 @@ namespace MinimalAF {
             var (bitmapWidth, bitmapHeight) = CalculateImageDimensions(positions, widths, padding);
             var bitmap = new SKBitmap(bitmapWidth, bitmapHeight);
 
+            var fontManager = SKFontManager.Default;
+            for (int i = 0; i < characters.Length; i++) {
+                var charCode = StringUtilities.GetUnicodeCharacterCode(characters[i].ToString(), SKTextEncoding.Utf16);
+                _skTypeface = fontManager.MatchCharacter(charCode);
+
+            }
+
             using (var canvas = new SKCanvas(bitmap)) {
                 float bitmapWidthF = bitmapWidth;
                 float bitmapHeightF = bitmapHeight;

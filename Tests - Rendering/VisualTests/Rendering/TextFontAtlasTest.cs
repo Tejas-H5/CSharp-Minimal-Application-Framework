@@ -4,8 +4,10 @@ using MinimalAF;
 namespace RenderingEngineVisualTests {
     class TextFontAtlasText : IRenderable {
         DrawableFont font;
+
         public TextFontAtlasText() {
-            font = new DrawableFont("Consolas", 16);
+            // font = new DrawableFont("Consolas", 16);
+            font = new DrawableFont("Consolas", 16, "昨夜のコンサートは最高でした");
         }
 
         float pos = 0;

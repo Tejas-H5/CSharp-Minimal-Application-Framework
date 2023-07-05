@@ -6,7 +6,7 @@ using System.Text;
 namespace AudioEngineTests.AudioTests {
     // @"Test that music can be loaded, played and seeked/scrolled through.
     // Note that this code is copypasted, and the code for " + nameof(MusicAndKeysTest) + " is more up to date",
-    class MusicPlayingTest : IRenderable {
+    class MusicPlayingTest : IRenderable, IDisposable {
         AudioSource _source;
         AudioStreamInput _audioStream;
         AudioStreamRawData _audioClipStream;
@@ -26,7 +26,12 @@ namespace AudioEngineTests.AudioTests {
             _listener = new AudioListener();
         }
 
+        public void Dispose() {
+            if (_source == null) return;
 
+            // stop all sounds we are playing
+            _source.Stop();
+        }
 
         public void Render(FrameworkContext ctx) {
             {

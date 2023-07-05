@@ -46,7 +46,7 @@ namespace MinimalAF.Audio {
         }
 
         public void Pause(OpenALSource alSource) {
-            alSource.Pause();
+            alSource.StopAndUnqueueAllBuffers();
             PlayStartOffset = alSource.GetSecOffset();
         }
 

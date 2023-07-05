@@ -1,6 +1,9 @@
 [Final features] TODO:
 
 FINAL Items :0		
+
+	- [x] Fix audio implementation
+	- [...] Get rendering utf8 text working
 	
 	-* Add way more unit tests 
 		-* Things we haven't yet tested:

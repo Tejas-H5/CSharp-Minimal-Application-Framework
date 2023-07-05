@@ -2,11 +2,19 @@
 using System;
 
 namespace MinimalAF.Audio {
+    public enum PlaybackEndBehaviourType {
+        Loop,
+        ContinueIntoTheVoid,
+        Stop
+    }
+
     /// <summary>
     /// Should only be used by one audio source at a time, otherwise multiple sources
     /// will be advancing the stream forward so the audio will not play correctly.
     /// 
     /// Multiple AudioClipStreamed instances can however point to the same AudioData.
+    /// 
+    /// TODO: rename to MemoryAudioStream for a naming convention that consistent with System.IO's MemoryStream
     /// </summary>
     public class AudioStreamRawData : IAudioStreamProvider {
         AudioRawData _data;
@@ -14,13 +22,8 @@ namespace MinimalAF.Audio {
 
         public bool AllowPlaybackToGoNegative;
         public bool IsLooping;
-        public PlaybackEndBehaviour PlaybackEnd;
+        public PlaybackEndBehaviourType PlaybackEndBehaviour;
 
-        public enum PlaybackEndBehaviour {
-            Loop,
-            ContinueIntoTheVoid,
-            Stop
-        }
 
         public AudioStreamRawData(AudioRawData data) {
             this._data = data;
@@ -41,11 +44,11 @@ namespace MinimalAF.Audio {
                 return 0;
 
             if (cursor >= _data.Samples.LongLength) {
-                if (PlaybackEnd == PlaybackEndBehaviour.Stop) {
+                if (PlaybackEndBehaviour == PlaybackEndBehaviourType.Stop) {
                     return _data.Samples.LongLength - 1;
                 }
 
-                if (PlaybackEnd == PlaybackEndBehaviour.Loop) {
+                if (PlaybackEndBehaviour == PlaybackEndBehaviourType.Loop) {
                     return 0;
                 }
 
@@ -76,7 +79,7 @@ namespace MinimalAF.Audio {
                 outputBuffer[i] = _data.Samples[cursor];
             }
 
-            if (PlaybackEnd == PlaybackEndBehaviour.ContinueIntoTheVoid) {
+            if (PlaybackEndBehaviour == PlaybackEndBehaviourType.ContinueIntoTheVoid) {
                 for (; i < dataToWrite; i++) {
                     outputBuffer[i] = 0;
                 }

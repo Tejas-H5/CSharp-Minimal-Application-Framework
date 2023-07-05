@@ -8,17 +8,13 @@ namespace MinimalAF.Audio {
         Stopped
     }
 
+    // TODO: rename to IPlayableAudio
     public interface IAudioSourceInput {
         /// <summary>
         /// Can this thing be consumed by multiple Audio sources at the same time?
         /// 
-        /// I was super worried about people attaching a streamed audio source input to multiple audio sources, and
-        /// all the 'smart' workarounds to make a simple API that just allowed this led to bad side-effects or implementation
-        /// details, so now, streamed audio source inputs will return true here, and this will trigger a check to see
-        /// if we have another audio source input that is currently trying to play this thing.
-        /// 
-        /// Ideally want to make sure that a streamed AudioSourceInput is only ever assigned to one thing, but 
-        /// I can't think of a non-fragile way of doing that so we have this thing
+        /// An 'audio stream' that advances each time we read a byte can't, whereas a 
+        /// 'clip' that gets loaded into an OpenAL buffer it's entirety can.
         /// </summary>
         bool CanHaveMultipleConsumers {
             get;
@@ -93,7 +89,6 @@ namespace MinimalAF.Audio {
 
             _currentInput.Play(alSource);
         }
-
 
         public void Pause() {
             if (_currentInput == null || CurrentALSource == null) return;

@@ -85,8 +85,13 @@ namespace MinimalAF.Audio {
             alSource.Play();
         }
 
+
         public void Pause(OpenALSource alSource) {
-            Stop(alSource);
+            if (_streamProvider == null) {
+                return;
+            }
+
+            alSource.Pause();
         }
 
         public void Stop(OpenALSource alSource) {
@@ -231,6 +236,8 @@ namespace MinimalAF.Audio {
     /// 
     /// Most of the time, custom audio generators can be created by implementing the IStreamDataProvider interface instead
     /// of this one
+    /// 
+    /// TODO: rename to IAudioStream
     /// </summary>
     public interface IAudioStreamProvider {
         /// <summary>

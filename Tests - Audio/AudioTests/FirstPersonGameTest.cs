@@ -10,7 +10,7 @@ namespace AudioEngineTests.AudioTests {
     // Is this thing big enough to be an example?
     // I think I would only make it an example when I start actually trying to make a maintainable
     // software and not just some demo thing
-    public class FirstPersonGameTest : IRenderable {
+    public class FirstPersonGameTest : IRenderable, IDisposable {
         struct GameObject {
             public Vector3 Position;
             public Quaternion Rotation;
@@ -21,7 +21,8 @@ namespace AudioEngineTests.AudioTests {
 
         AudioListener _listener;
         DrawableFont _font = new DrawableFont("Consolas", 16);
-        List<GameObject> _gameObjects;
+        GameObject[] _gameObjects;
+        GameObject _player;
 
         Vector3 _position = new Vector3(0, 0, -10);
         float _hAngleCurrent, _vAngleCurrent;
@@ -30,27 +31,30 @@ namespace AudioEngineTests.AudioTests {
 
         public FirstPersonGameTest() {
             _listener = new AudioListener();
-            _gameObjects = new List<GameObject>();
             _listener = new AudioListener();
 
             var audioData = AudioRawData.FromFile("./Res/testMusicShort.mp3");
 
             // make the scene
+            var gameObjects = new List<GameObject>();
             {
-                var obj = new GameObject {
+                _player = new GameObject {
                     Position = new Vector3(0, 0, 0),
                     Rotation = Quaternion.Identity,
                     Source = new AudioSource()
                 };
 
-                obj.Source.SetInput(
-                    new AudioStreamInput(new AudioStreamRawData(audioData))
+                var stream = new AudioStreamRawData(audioData);
+                stream.PlaybackEndBehaviour = PlaybackEndBehaviourType.Loop;
+                _player.Source.SetInput(
+                    new AudioStreamInput(stream)
                 );
-                
-                obj.Source.Play();
-
-                _gameObjects.Add(obj);
+                _player.Source.Play();
+                gameObjects.Add(_player);
             }
+
+            // OMG is this an ECS SYSTEM ?? NOW AY GUYS !!!? ?!
+            _gameObjects = gameObjects.ToArray();
         }
 
         void RenderCube(ref FrameworkContext ctx) {
@@ -139,7 +143,7 @@ namespace AudioEngineTests.AudioTests {
 
             // Draw things in the scene
             {
-                for (int i = 0; i < _gameObjects.Count; i++) {
+                for (int i = 0; i < _gameObjects.Length; i++) {
                     _gameObjects[i].Source.Position = _gameObjects[i].Position;
 
                     ctx.SetModel(_gameObjects[i].Transform);
@@ -194,7 +198,19 @@ namespace AudioEngineTests.AudioTests {
 
         public void Render(FrameworkContext ctx) {
             ctx.SetClearColor(Color.White);
-                
+
+            // if we have started rendering after being disposed, we reactivate our things
+            if (_disposed) {
+                _disposed = false;
+
+                // start all sounds we paused
+                for (int i = 0; i < _gameObjects.Length; i++) {
+                    if (_gameObjects[i].Source.PlaybackState == PlaybackState.Paused) {
+                        _gameObjects[i].Source.Play();
+                    }
+                }
+            }
+
             // process inputs
             {
                 if (ctx.KeyJustPressed(KeyCode.Escape)) {
@@ -208,6 +224,19 @@ namespace AudioEngineTests.AudioTests {
 
 
             RenderGame(ref ctx);
+        }
+
+        bool _disposed = false;
+        public void Dispose() {
+            if (_gameObjects == null) return;
+            if (_disposed) return;
+
+            _disposed = true;
+
+            // pause all sounds we are playing
+            for (int i = 0; i < _gameObjects.Length; i++) {
+                _gameObjects[i].Source.Pause();
+            }
         }
     }
 }

@@ -143,6 +143,8 @@ namespace MinimalAF.Testing {
         }
 
         void IncrementCurrentTest() {
+            OnTestChange();
+
             currentTestIndex++;
             if (currentTestIndex >= tests.Count) {
                 currentTestIndex = 0;
@@ -150,9 +152,20 @@ namespace MinimalAF.Testing {
         }
 
         void DecrementCurrentTest() {
+            OnTestChange();
+
             currentTestIndex--;
             if (currentTestIndex < 0) {
                 currentTestIndex = tests.Count - 1;
+            }
+        }
+
+        private void OnTestChange() {
+            if (tests.Count <= 1) return;
+
+            var test = tests[currentTestIndex];
+            if (test.Instance is IDisposable disposable) {
+                disposable.Dispose();
             }
         }
     }

@@ -103,7 +103,10 @@ namespace MinimalAF.Audio {
             if (nextAvailable != -1) {
                 s_allAvailableOpenALSources[nextAvailable].AudioSource = audioSource;
                 audioSource.Index = nextAvailable;
-                return s_allAvailableOpenALSources[nextAvailable].AlSource;
+
+                var source = s_allAvailableOpenALSources[nextAvailable].AlSource;
+                source.StopAndUnqueueAllBuffers();
+                return source;
             }
 
 
@@ -156,6 +159,7 @@ namespace MinimalAF.Audio {
                     var alSource = s_allAvailableOpenALSources[i].AlSource;
                     alSource.PullDataFrom(audioSource);
 
+                    // only reclaim an audio source slot if it isn't playing or paused
                     var alSourceState = alSource.GetSourceState();
                     if (
                         alSourceState != ALSourceState.Playing && 

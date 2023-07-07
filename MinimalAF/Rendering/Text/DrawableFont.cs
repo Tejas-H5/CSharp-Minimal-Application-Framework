@@ -38,7 +38,7 @@ namespace MinimalAF {
             _currentFontAtlas = FontAtlas.CreateFontAtlas(
                 new FontImportSettings {
                     FontName = fontName,
-                    FontSize = fontSize
+                    FontSize = fontSize,
                 },
                 characters
             );
@@ -53,7 +53,7 @@ namespace MinimalAF {
             _currentFontAtlas = FontAtlas.CreateFontAtlas(
                 new FontImportSettings {
                     FontName = _fontName,
-                    FontSize = size
+                    FontSize = size,
                 }
             );
             _atlasForSize[size] = _currentFontAtlas;

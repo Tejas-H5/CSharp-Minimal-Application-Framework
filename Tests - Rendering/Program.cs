@@ -24,6 +24,9 @@ namespace RenderingEngineVisualTests {
         static void Main(string[] args) {
             var tests = new VisualTestRunner();
 
+            MutableUT8String.Test();
+
+            tests.AddTest("Text Font Atlas Text", () => new TextFontAtlasText());
             tests.AddTest("Basic test", () => new BasicTest());
             tests.AddTest("Text Test", () => new TextTest());
             // For now, we are allowing errors to flow into the debugger (not catching them)
@@ -38,7 +41,6 @@ namespace RenderingEngineVisualTests {
             tests.AddTest("Nesting Test", () => new NestingTest());
             tests.AddTest("Polyline Test", () => new PolylineTest());
             tests.AddTest("Stencil Test", () => new StencilTest());
-            tests.AddTest("Text Font Atlas Text", () => new TextFontAtlasText());
             tests.AddTest("Texture Test", () => new TextureTest());
             tests.AddTest("Perspective Camera Test", () => new PerspectiveCameraTest());
 

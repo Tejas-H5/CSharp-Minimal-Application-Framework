@@ -231,7 +231,6 @@ namespace TextEditor {
         void ProcessInputs(ref FrameworkContext ctx) {
             ProcessInsertModeInputs(ref ctx);
 
-            Console.WriteLine(ctx.MouseWheelNotches);
             if (ctx.MouseWheelNotches > 0.5f) {
                 for (int i = 0; i < 5; i++) {
                     _cursorPos = _buffer.MoveCursorUpALine(_cursorPos);

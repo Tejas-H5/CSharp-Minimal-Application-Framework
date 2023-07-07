@@ -30,7 +30,7 @@ namespace MinimalAF {
         private SKPaint _skStyle;
         private float _fontBottom;
         private SKBitmap _bitmap;
-        private Dictionary<char, Rect> _characterQuadCoords;
+        private Dictionary<int, Rect> _characterQuadCoords;
         private FontImportSettings _importSettings;
 
         Texture _texture;
@@ -93,7 +93,7 @@ namespace MinimalAF {
 
             int padding = importSettings.Padding;
 
-            _characterQuadCoords = new Dictionary<char, Rect>();
+            _characterQuadCoords = new Dictionary<int, Rect>();
             _bitmap = RenderAtlas(characters, _characterQuadCoords, padding);
 
 #if DEBUG
@@ -109,12 +109,12 @@ namespace MinimalAF {
 #endif
         }
 
-        public Rect GetCharacterUV(char c) {
-            if (!HasCharacter(c)) {
-                c = '?';
+        public Rect GetCharacterUV(int codePoint) {
+            if (!HasCharacter(codePoint)) {
+                codePoint = '?';
             }
 
-            return _characterQuadCoords[c];
+            return _characterQuadCoords[codePoint];
         }
 
         public Vector2 GetCharacterSize(char c) {
@@ -128,7 +128,7 @@ namespace MinimalAF {
             );
         }
 
-        public bool HasCharacter(char c) {
+        public bool HasCharacter(int c) {
             return _characterQuadCoords.ContainsKey(c);
         }
 
@@ -148,65 +148,104 @@ namespace MinimalAF {
             }
         }
 
-        private SKBitmap RenderAtlas(string characters, Dictionary<char, Rect> coordMap, int padding) {
-            var positions = _skStyle.GetGlyphPositions(characters);
-            var widths = _skStyle.GetGlyphWidths(characters);
+        // TODO: better name
+        private void IterateCodePointStrs(SKFontManager fontManager, MutableUT8String utf8Chars, Action<int, int> fn) {
+            int codePoint = 0, size = 0;
+            for (int i = 0, pos = 0; pos < utf8Chars.Length; i++, pos += size) {
+                (size, codePoint) = utf8Chars.GetNextCodePoint(pos);
 
-            var (bitmapWidth, bitmapHeight) = CalculateImageDimensions(positions, widths, padding);
-            var bitmap = new SKBitmap(bitmapWidth, bitmapHeight);
+                SKTypeface typeFaceToUse;
+                if (_skTypeface.ContainsGlyph(codePoint)) {
+                    typeFaceToUse = _skTypeface;
+                } else {
+                    typeFaceToUse = fontManager.MatchCharacter(codePoint);
+                }
+                _skStyle.Typeface = typeFaceToUse;
 
+                fn(codePoint, size);
+            }
+        }
+
+        private SKBitmap RenderAtlas(string characters, Dictionary<int, Rect> coordMap, int padding) {
+            // Ensure that our font has all of the chosen characters available
+            var utf8Chars = new MutableUT8String(characters);
             var fontManager = SKFontManager.Default;
-            for (int i = 0; i < characters.Length; i++) {
-                var charCode = StringUtilities.GetUnicodeCharacterCode(characters[i].ToString(), SKTextEncoding.Utf16);
-                _skTypeface = fontManager.MatchCharacter(charCode);
 
+            // calculate the SKBitmap dimensions, and create it
+            SKBitmap bitmap;
+            float fontHeight = 0;   // TODO: move into scope if it is unused
+            {
+                float fontBottomMaximum = 0,
+                        fontBottomCount = 0,
+                        fontBottomSum = 0;
+                float bitmapWidth, bitmapHeight;
+                float currentWidth = padding;
+                IterateCodePointStrs(fontManager, utf8Chars, (codePoint, size) => {
+                    var codePointStr = MutableUT8String.CodePointToString(codePoint, size);
+                    var position = _skStyle.GetGlyphPositions(codePointStr)[0];
+                    var width = _skStyle.GetGlyphWidths(codePointStr)[0];
+                    currentWidth += width + padding;
+
+                    _skStyle.GetFontMetrics(out SKFontMetrics metrics);
+
+                    float charHeight = metrics.Bottom - metrics.Top;
+                    if (fontHeight < charHeight) {
+                        fontHeight = charHeight;
+                    }
+
+                    if (metrics.Bottom > fontBottomMaximum) {
+                        fontBottomMaximum = metrics.Bottom;
+                        fontBottomSum += metrics.Bottom;
+                        fontBottomCount++;
+                    }
+                });
+
+                _fontBottom = fontBottomSum / fontBottomCount;
+
+                fontHeight += 2 * padding;
+                
+
+                bitmapWidth = currentWidth;
+                bitmapHeight = fontHeight;
+                bitmap = new SKBitmap((int)MathF.Ceiling(currentWidth), (int)MathF.Ceiling(fontHeight));
             }
 
-            using (var canvas = new SKCanvas(bitmap)) {
-                float bitmapWidthF = bitmapWidth;
-                float bitmapHeightF = bitmapHeight;
+            // draw the chars to the bitmap via SKCanvas
+            {
+                float bitmapWidth = (float)bitmap.Width;
+                float bitmapHeight = (float)bitmap.Height;
+                float currentWidth = padding;
+                float vOffset = bitmap.Height - _fontBottom;
 
-                canvas.Clear(new SKColor(0,0,0,0));
+                using var canvas = new SKCanvas(bitmap);
+                
+                canvas.Clear(new SKColor(0, 0, 0, 0));
 
                 // render a line of text to the image
-                float vOffset = bitmapHeightF - _fontBottom;
+                // float vOffset = _fontBottom;
+                IterateCodePointStrs(fontManager, utf8Chars, (codePoint, size) => {
+                    var codePointStr = MutableUT8String.CodePointToString(codePoint, size);
+                    var position = _skStyle.GetGlyphPositions(codePointStr)[0];
+                    var width = _skStyle.GetGlyphWidths(codePointStr)[0];
+                    currentWidth += width + padding;
 
-                for(int i = 0; i < characters.Length; i++) {
-                    float currentX = positions[i].X + padding * i;
-                    canvas.DrawText(characters[i].ToString(), new SKPoint(currentX, vOffset), _skStyle);
-                }
+                    canvas.DrawText(codePointStr, new SKPoint(currentWidth, vOffset), _skStyle);
 
-                // assign each character a UV rectangle mapping it to a spot on the canvas
-                for (int i = 0; i < characters.Length; i++) {
-                    float currentX = positions[i].X + padding * i;
-                    float width = widths[i];
-                    char c = characters[i];
+                    // assign each character a UV rectangle mapping it to a spot on the canvas
+                    {
+                        float u0 = currentWidth / bitmapWidth;
+                        float v0 = 0;
 
-                    float u0 = currentX / bitmapWidthF;
-                    float v0 = 0;
+                        float u1 = (currentWidth + width) / bitmapWidth;
+                        float v1 = 1;
 
-                    float u1 = (currentX + width) / bitmapWidthF;
-                    float v1 = 1;
-
-                    Rect uv = new Rect(u0, v0, u1, v1).Rectified();
-                    coordMap[c] = uv;
-                }
+                        Rect uv = new Rect(u0, v0, u1, v1).Rectified();
+                        coordMap[codePoint] = uv;
+                    }
+                });
             }
 
             return bitmap;
-        }
-
-        private (int, int) CalculateImageDimensions(SKPoint[] positions, float[] widths, int padding) {
-            var lastCharWidth = widths[widths.Length - 1];
-            float width = positions[positions.Length - 1].X + lastCharWidth 
-                + padding + widths.Length * padding;
-
-            _skStyle.GetFontMetrics(out SKFontMetrics metrics);
-
-            float extents = metrics.Bottom - metrics.Top;
-            _fontBottom = metrics.Bottom;
-
-            return ((int)MathF.Ceiling(width), (int)MathF.Ceiling(extents));
         }
 
         public void Dispose() {

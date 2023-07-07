@@ -19,6 +19,82 @@ namespace MinimalAF {
             Length = Bytes.Length;
         }
 
+        struct TestCase {
+            public string String;
+            public int ExpectedCodePoint;
+            public int ExpectedSize;
+        }
+
+        // TODO: remove these tests
+        public static void Test() {
+            void Assert(bool fact, string testName) {
+                if (!fact) {
+                    Console.WriteLine("[FAILED] - " + testName);
+                } else {
+                    Console.WriteLine("[PASSED] - " + testName);
+                }
+            }
+
+            var testCases = new TestCase[] {
+                new TestCase{ String="\u0024", ExpectedSize=1, ExpectedCodePoint=0x24},
+                new TestCase{ String="\u00A3", ExpectedSize=2, ExpectedCodePoint=0xA3},
+                new TestCase{ String="\u0418", ExpectedSize=2, ExpectedCodePoint=0x418},
+                new TestCase{ String="\u0939", ExpectedSize=3, ExpectedCodePoint=0x939},
+                new TestCase{ String="\u20AC", ExpectedSize=3, ExpectedCodePoint=0x20AC},
+                new TestCase{ String="\uD55C", ExpectedSize=3, ExpectedCodePoint=0xD55C},
+                new TestCase{ String="\U0002825F", ExpectedSize=4, ExpectedCodePoint=0x2825F},
+            };
+
+            for(var i = 0; i < testCases.Length; i++) {
+                var testCase = testCases[i];
+                var str = new MutableUT8String(testCase.String);
+                int pos = 0, size, codePoint;
+                (size, codePoint) = str.GetNextCodePoint(pos);
+                var expectedCodePointHex = testCase.ExpectedCodePoint.ToString("X");
+                Assert(size == testCase.ExpectedSize, $"Code point {expectedCodePointHex} - {size}");
+                Assert(codePoint == testCase.ExpectedCodePoint, $"Code point {expectedCodePointHex} - {codePoint.ToString("X")}");
+
+                var backwards = CodePointToString(codePoint, size);
+                Assert(backwards == testCase.String, $"Code point {expectedCodePointHex} - Backwards conversion - '{backwards}'");
+            }
+        }
+
+        public static string CodePointToString(int codePoint, int size) {
+            if (size == 1) {
+                var bytes = new byte[] { (byte)codePoint };
+                return Encoding.UTF8.GetString(bytes);
+            }
+
+            if (size == 2) {
+                var bytes = new byte[] { 
+                    (byte)(((codePoint >> 6) & 31) + (3 << 6)),
+                    (byte)(((codePoint >> 0) & 63) + (1 << 7))
+                };
+                return Encoding.UTF8.GetString(bytes);
+            }
+
+            if (size == 3) {
+                var bytes = new byte[] {
+                    (byte)(((codePoint >> 12) & 15) + (7 << 5)),
+                    (byte)(((codePoint >> 6) & 63) + (1 << 7)),
+                    (byte)((codePoint & 63) + (1 << 7))
+                };
+                return Encoding.UTF8.GetString(bytes);
+            }
+
+            if (size == 4) {
+                var bytes = new byte[] {
+                    (byte)(((codePoint >> 18) & 7) + (15 << 4)),
+                    (byte)(((codePoint >> 12) & 63) + (1 << 7)),
+                    (byte)(((codePoint >> 6) & 63) + (1 << 7)),
+                    (byte)((codePoint & 63) + (1 << 7))
+                };
+                return Encoding.UTF8.GetString(bytes);
+            }
+
+            throw new Exception("invalid size for code point");
+        }
+
         bool Is10XXXXXX(byte b1) {
             return (
                 // (b1 & (00000011 << 6)) == 10000000
@@ -27,7 +103,7 @@ namespace MinimalAF {
         }
 
         int Get__XXXXXX(byte b1) {
-            return b1 & 127;
+            return b1 & 63;
         }
 
         // return size, codePoint
@@ -41,12 +117,12 @@ namespace MinimalAF {
             var b2 = Bytes[pos + 1];
             // 110xxxxx 10xxxxxx
             if (
-                (b1 & (7 << 5)) == (3 << 6) // ((b1 & 00000111) << 5) == (11000000)
+                (b1 & (7 << 5)) == (3 << 6) // ((b1 & (00000111) << 5 )) == (00000011 << 6)
                 && Is10XXXXXX(b2)
             ) {
                 return (
                     2, 
-                    ((b1 & ((byte)31)) << 8) + Get__XXXXXX(b2)
+                    ((b1 & ((byte)31)) << 6) + Get__XXXXXX(b2)
                 );
             }
 
@@ -59,7 +135,7 @@ namespace MinimalAF {
             ) {
                 return (
                     3,
-                    ((b1 & ((byte)15)) << 16) + (Get__XXXXXX(b2) << 8) + (Get__XXXXXX(b3))
+                    ((b1 & ((byte)15)) << 12) + (Get__XXXXXX(b2) << 6) + (Get__XXXXXX(b3))
                 );
             }
 
@@ -73,7 +149,7 @@ namespace MinimalAF {
             ) {
                 return (
                     4,
-                    ((b1 & ((byte)15)) << 24) + (Get__XXXXXX(b2) << 16) + (Get__XXXXXX(b3) << 8) + (Get__XXXXXX(b4))
+                    ((b1 & ((byte)15)) << 18) + (Get__XXXXXX(b2) << 12) + (Get__XXXXXX(b3) << 6) + (Get__XXXXXX(b4))
                 );
             }
 

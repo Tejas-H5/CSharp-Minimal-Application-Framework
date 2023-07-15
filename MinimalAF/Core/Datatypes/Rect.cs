@@ -92,9 +92,10 @@ namespace MinimalAF {
         public float Width => MathF.Abs(X0 - X1);
         public float Height => MathF.Abs(Y0 - Y1);
         
+
         public bool IsInverted() {
             return X0 > X1 || Y0 > Y1;
-        }
+        }        
 
         public override bool Equals(object obj) {
             return obj is Rect d &&
@@ -117,7 +118,7 @@ namespace MinimalAF {
         }
 
         public override string ToString() {
-            return "{" + X0 + ", " + Y0 + ", " + X1 + ", " + Y1 + "}";
+            return "{X0=" + X0 + ", Y0=" + Y0 + ", X1=" + X1 + ", Y1=" + Y1 + "}";
         }
 
         public Rect Moved(float x, float y) {
@@ -154,6 +155,7 @@ namespace MinimalAF {
         public static Rect operator *(Rect rect, float mult) {
             return new Rect(rect.X0 * mult, rect.Y0 * mult, rect.X1 * mult, rect.Y1 * mult);
         }
+
 
         public Vector2 Constrain(Vector2 point) {
             point.X = MathHelper.Clamp(point.X, X0, X1);

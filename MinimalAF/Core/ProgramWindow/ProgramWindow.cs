@@ -43,8 +43,6 @@ namespace MinimalAF {
         IRenderable _renderable;
         Func<FrameworkContext, IRenderable> _renderableConstructor;
 
-        private double _frameDuration;
-
         // We use this free some OpenGL resources every X frames. I forget why this was needed, but it was
         // (SMH 2 years ago me for not writing a comment)
         private int _deletionFrameCounter = 0;  
@@ -53,16 +51,9 @@ namespace MinimalAF {
         // GameWindow _w;
 
         /// <summary>
-        /// There is no update loop. It is dead, and we killed it
+        /// There is no update loop. It is dead, and we killed it. (There is only a render loop, for simplicity)
         /// </summary>
-        public double RenderFrequency {
-            get {
-                return 1.0 / _frameDuration;
-            }
-            set {
-                _frameDuration = 1.0 / value;
-            }
-        }
+        public double RenderFrequency;
 
         public Vector2i Size {
             get => _window.Size;
@@ -73,8 +64,6 @@ namespace MinimalAF {
             get => _window.Title;
             set => _window.Title = value;
         }
-
-        public double FrameDuration => _frameDuration;
 
         public ProgramWindow(Func<FrameworkContext, IRenderable> renderableConstructor) {
             this._renderableConstructor = renderableConstructor;
@@ -116,27 +105,20 @@ namespace MinimalAF {
 
             double frameEnd = GetSecondsSinceStart();
             dt = frameEnd - prevFrameEnd;
-            Time.deltaTime = (float)dt;
-            Time.time = frameEnd;
-
 
             // This is a power saving mechanism that will sleep the thread if we
             // have the time available to do so. It reduces overall CPU consumption.
-            // It also never kicks in if _frameDuration = 0
-            {
-                double wantedNextFrameEnd = prevFrameEnd + _frameDuration;
-                double remainingTimeTillWantedNextFrameEnd = wantedNextFrameEnd - frameEnd;
-                int timeTakenToDoThisStuffMS = 1;
-                int remainingTimeTillWantedNextFrameEndMS = (int)Math.Floor(
-                    (remainingTimeTillWantedNextFrameEnd) * 1000
-                ) - timeTakenToDoThisStuffMS;
-
-                if (remainingTimeTillWantedNextFrameEndMS > 0) {
-                    Thread.Sleep(remainingTimeTillWantedNextFrameEndMS);
-                    frameEnd = GetSecondsSinceStart();
-                    dt = frameEnd - prevFrameEnd;
-                }
+            // It also never kicks in if frameDuration = 0
+            var frameDuration = 1.0 / RenderFrequency;
+            var timeToNextFrame = frameDuration - dt;
+            if (timeToNextFrame > 0.0) {
+                Thread.Sleep(TimeSpan.FromSeconds(timeToNextFrame));
+                frameEnd = GetSecondsSinceStart();
+                dt = frameEnd - prevFrameEnd;
             }
+
+            Time.deltaTime = (float)dt;
+            Time.time = frameEnd;
 
             prevFrameEnd = frameEnd;
         }

@@ -40,11 +40,12 @@ namespace MinimalAF.Testing {
             if (w == null) return this;
 
             w.Title = "Visual tests";
+            w.RenderFrequency = 60;
             w.SetWindowState(WindowState.Maximized);
 
             ctx.SetClearColor(Color.White);
 
-            _font = new DrawableFont("Source Code Pro", 24);
+            _font = new DrawableFont("Source Code Pro", new DrawableFontOptions { });
 
             return this;
         }
@@ -57,9 +58,16 @@ namespace MinimalAF.Testing {
         }
 
         public Rect RenderTextBoxButton(ref FrameworkContext ctx, string text, float x, float y, float padding, Action onClick = null) {
-            float width = _font.GetStringWidth(text);
-            float height = _font.GetStringHeight(text);
-            var rect = new Rect(x, y, x + width + 2 * padding, y + height + 2 * padding);
+            // TODO: revert once we have finished testing text rendering
+            float height = 24;
+            var size = _font.MeasureText(ctx, text, new DrawTextOptions { 
+                FontSize=height
+            });
+
+            var rect = new Rect {
+                X0 = x, X1 = x + size.X + 2 * padding,
+                Y0 = y, Y1 = y + size.Y + 2 * padding
+            };
 
             var color = Color.Black;
             float alpha = 0.5f;
@@ -83,7 +91,9 @@ namespace MinimalAF.Testing {
             IM.DrawRect(ctx, rect);
 
             ctx.SetDrawColor(Color.White);
-            _font.DrawText(ctx, text, x + padding, y + padding, HAlign.Left, VAlign.Bottom);
+            _font.DrawText(ctx, text, new DrawTextOptions {
+                FontSize = height, X = rect.X0 + padding, Y = rect.Y0 + padding,
+            });
 
             return rect;
         }
@@ -92,7 +102,11 @@ namespace MinimalAF.Testing {
         public void Render(FrameworkContext ctx) {
             if (tests.Count == 0) {
                 ctx.SetDrawColor(Color.Black);
-                _font.DrawText(ctx, "No Tests", ctx.VW * 0.5f, ctx.VH * 0.5f);
+                _font.DrawText(ctx, "No Tests", new DrawTextOptions {
+                    FontSize = 24, 
+                    X = ctx.VW * 0.5f, Y = ctx.VH * 0.5f,
+                    HAlign = 0.5f, VAlign = 0.5f, 
+                });
                 return;
             }
 

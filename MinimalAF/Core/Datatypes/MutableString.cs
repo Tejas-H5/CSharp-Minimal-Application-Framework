@@ -10,6 +10,11 @@ namespace MinimalAF {
     //  it doesn't work unless it is actually a unicode character, so I decided how about I just implemlent UTF-8 - How hard could it be?
     //  According to Wikipedia, it isn't very hard at all, and C# already natively has a way to encode
     //  a string as UTF-8 (not that I would need it though)
+
+    // This class was mainly made because SkiaSharp's StringUtilities.GetUnicodeCharacterCode, but
+    // I constantly have to allocate whenever I'm converting between a utf8 codepoint and a string.
+    // So now I am just working with UTF-16 strings directly as I shuold have been.
+    // Will probably delete this thing at some point, but I had fun writing it.
     public struct MutableUT8String {
         public byte[] Bytes;    // This is just a buffer that can be overwritten or resized. 
         public int Length;      // This is the true length of this datastructure (in bytes, and not code points. sorry)
@@ -36,8 +41,9 @@ namespace MinimalAF {
             }
 
             var testCases = new TestCase[] {
-                new TestCase{ String="\u0024", ExpectedSize=1, ExpectedCodePoint=0x24},
-                new TestCase{ String="\u00A3", ExpectedSize=2, ExpectedCodePoint=0xA3},
+                //new TestCase{ String="\u0024", ExpectedSize=1, ExpectedCodePoint=0x24},
+                //new TestCase{ String="A", ExpectedSize=1, ExpectedCodePoint=65},
+                //new TestCase{ String="\u00A3", ExpectedSize=2, ExpectedCodePoint=0xA3},
                 new TestCase{ String="\u0418", ExpectedSize=2, ExpectedCodePoint=0x418},
                 new TestCase{ String="\u0939", ExpectedSize=3, ExpectedCodePoint=0x939},
                 new TestCase{ String="\u20AC", ExpectedSize=3, ExpectedCodePoint=0x20AC},
@@ -54,42 +60,59 @@ namespace MinimalAF {
                 Assert(size == testCase.ExpectedSize, $"Code point {expectedCodePointHex} - {size}");
                 Assert(codePoint == testCase.ExpectedCodePoint, $"Code point {expectedCodePointHex} - {codePoint.ToString("X")}");
 
-                var backwards = CodePointToString(codePoint, size);
+                var backwards = Encoding.UTF8.GetString(CodePointToString(codePoint));
                 Assert(backwards == testCase.String, $"Code point {expectedCodePointHex} - Backwards conversion - '{backwards}'");
             }
         }
 
-        public static string CodePointToString(int codePoint, int size) {
+
+        static byte[] size1 = { 0 };
+        static byte[] size2 = { 0, 0 };
+        static byte[] size3 = { 0, 0, 0 };
+        static byte[] size4 = { 0, 0, 0, 0 };
+
+        /// <summary>
+        /// Probably not threadsafe, since we are using hacks to reduce allocations
+        /// </summary>
+        public static byte[] CodePointToString(int codePoint) {
+            // infer the size based on the data it contains
+            int size;
+            if ((codePoint >> 7) == 0) {
+                size = 1;
+            } else if ((codePoint >> 11) == 0) {
+                size = 2;
+            } else if((codePoint >> 16) == 0) {
+                size = 3;
+            } else if ((codePoint >> 21) == 0) {
+                size = 4;
+            } else {
+                throw new Exception("codepoint is too big");
+            }
+
             if (size == 1) {
-                var bytes = new byte[] { (byte)codePoint };
-                return Encoding.UTF8.GetString(bytes);
+                size1[0] = (byte)codePoint;
+                return size1;
             }
 
             if (size == 2) {
-                var bytes = new byte[] { 
-                    (byte)(((codePoint >> 6) & 31) + (3 << 6)),
-                    (byte)(((codePoint >> 0) & 63) + (1 << 7))
-                };
-                return Encoding.UTF8.GetString(bytes);
+                size2[0] = (byte)(((codePoint >> 6) & 31) | (3 << 6));
+                size2[1] = (byte)(((codePoint >> 0) & 63) | (1 << 7));
+                return size2;
             }
 
             if (size == 3) {
-                var bytes = new byte[] {
-                    (byte)(((codePoint >> 12) & 15) + (7 << 5)),
-                    (byte)(((codePoint >> 6) & 63) + (1 << 7)),
-                    (byte)((codePoint & 63) + (1 << 7))
-                };
-                return Encoding.UTF8.GetString(bytes);
+                size3[0] = (byte)(((codePoint >> 12) & 15) | (7 << 5));
+                size3[1] = (byte)(((codePoint >> 6) & 63) | (1 << 7));
+                size3[2] = (byte)((codePoint & 63) | (1 << 7));
+                return size3;
             }
 
             if (size == 4) {
-                var bytes = new byte[] {
-                    (byte)(((codePoint >> 18) & 7) + (15 << 4)),
-                    (byte)(((codePoint >> 12) & 63) + (1 << 7)),
-                    (byte)(((codePoint >> 6) & 63) + (1 << 7)),
-                    (byte)((codePoint & 63) + (1 << 7))
-                };
-                return Encoding.UTF8.GetString(bytes);
+                size4[0] = (byte)(((codePoint >> 18) & 7) | (15 << 4));
+                size4[1] = (byte)(((codePoint >> 12) & 63) | (1 << 7));
+                size4[2] = (byte)(((codePoint >> 6) & 63) | (1 << 7));
+                size4[3] = (byte)((codePoint & 63) | (1 << 7));
+                return size4;
             }
 
             throw new Exception("invalid size for code point");

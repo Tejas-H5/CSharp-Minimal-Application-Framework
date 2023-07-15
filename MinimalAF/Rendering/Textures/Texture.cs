@@ -9,15 +9,15 @@ namespace MinimalAF.Rendering {
     // And then modified
     // A helper class, much like Shader, meant to simplify loading textures.
     public class Texture : IDisposable {
-        int handle;
+        int _handle;
         private int height;
         private int width;
         public string path;
-        TextureImportSettings importSettings;
+        TextureImportSettings _importSettings;
 
         public int Handle {
             get {
-                return handle;
+                return _handle;
             }
         }
 
@@ -69,10 +69,10 @@ namespace MinimalAF.Rendering {
         //TODO: implement this
         internal void Resize(int width, int height) {
             BindTextureHandle();
-            SendImageDataToOpenGL(width, height, (IntPtr)null, importSettings);
-            SendTextureParamsToOpenGL(importSettings);
+            SendImageDataToOpenGL(width, height, (IntPtr)null, _importSettings);
+            SendTextureParamsToOpenGL(_importSettings);
 
-            TextureManager.SetCurrentTextureChangedFlag();
+            TextureManager.SetOpenGLBoundTextureHasInadvertantlyChanged();
         }
 
         public Texture(SKBitmap image, TextureImportSettings settings = null) {
@@ -80,25 +80,25 @@ namespace MinimalAF.Rendering {
                 settings = new TextureImportSettings();
             }
 
-            var addr= image.GetPixels();
+            var addr = image.GetPixels();
 
             Init(image.Width, image.Height, addr, settings);
         }
 
         private void Init(int width, int height, IntPtr data, TextureImportSettings settings) {
-            handle = GL.GenTexture();
-            importSettings = settings;
+            _handle = GL.GenTexture();
+            _importSettings = settings;
 
             BindTextureHandle();
             SendImageDataToOpenGL(width, height, data, settings);
             SendTextureParamsToOpenGL(settings);
 
-            TextureManager.SetCurrentTextureChangedFlag();
+            TextureManager.SetOpenGLBoundTextureHasInadvertantlyChanged();
         }
 
         private void BindTextureHandle() {
             GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, handle);
+            GL.BindTexture(TextureTarget.Texture2D, _handle);
         }
 
 
@@ -106,15 +106,17 @@ namespace MinimalAF.Rendering {
             this.width = width;
             this.height = height;
 
-            GL.TexImage2D(TextureTarget.Texture2D,
-                            0,
-                            settings.InternalFormat,
-                            width,
-                            height,
-                            0,
-                            settings.PixelFormatType,
-                            PixelType.UnsignedByte,
-                            data);
+            GL.TexImage2D(
+                target:         TextureTarget.Texture2D,
+                level:          0,
+                internalformat: settings.InternalFormat,
+                width:          width,
+                height:         height,
+                border:         0,
+                format:         settings.PixelFormatType,
+                type:           PixelType.UnsignedByte,
+                pixels:         data
+            );
         }
 
         private static void SendTextureParamsToOpenGL(TextureImportSettings settings) {
@@ -167,6 +169,22 @@ namespace MinimalAF.Rendering {
         public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        internal void UpdateSubImage(int rowPx, int columnPx, SKBitmap subImage) {
+            GL.BindTexture(TextureTarget.Texture2D, Handle);
+            GL.TexSubImage2D(
+                TextureTarget.Texture2D, 0, 
+                rowPx, 
+                columnPx,
+                subImage.Width,
+                subImage.Height, 
+                _importSettings.PixelFormatType,
+                PixelType.UnsignedByte,
+                subImage.GetPixels()
+            );
+
+            TextureManager.SetOpenGLBoundTextureHasInadvertantlyChanged();
         }
         #endregion
     }

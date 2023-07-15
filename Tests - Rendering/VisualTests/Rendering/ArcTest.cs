@@ -7,7 +7,7 @@ namespace RenderingEngineVisualTests {
         float a;
         float b;
 
-        DrawableFont _font = new DrawableFont("Source code pro", 16);
+        DrawableFont _font = new DrawableFont("Source code pro", new DrawableFontOptions { });
 
         public void Render(FrameworkContext ctx) {
             ctx.SetDrawColor(1, 0, 0, 0.5f);
@@ -23,8 +23,9 @@ namespace RenderingEngineVisualTests {
             DrawHand(ref ctx, x0, y0, r, b);
 
             ctx.SetDrawColor(0, 0, 0, 1);
-            _font.DrawText(ctx, "Angle a: " + a, 0, ctx.VH - 30);
-            _font.DrawText(ctx, "Angle b: " + b, 0, ctx.VH - 50);
+            _font.DrawText(ctx, $"Angle a: {a}\nAngle b: {b}" + a, new DrawTextOptions {
+                FontSize = 16, X = 0, Y = ctx.VH, VAlign=1
+            });
 
             a += Time.DeltaTime;
             b += Time.DeltaTime * 2f;

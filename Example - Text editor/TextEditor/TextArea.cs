@@ -189,7 +189,7 @@ namespace TextEditor {
                                 // draw character
                                 float relY = relativeY(ref ctx);
                                 if (relY > -charHeight && relY < ctx.VH) {
-                                    var rect = AppConfig.MainFont.DrawChar(_textOutput, c, x, y);
+                                    var rect = AppConfig.MainFont.DrawGlyph(_textOutput, c, x, y);
 
                                     if (ctx.MouseIsOver(rect) && ctx.MouseButtonJustPressed(MouseButton.Left)) {
                                         _cursorPos = i;

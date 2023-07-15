@@ -24,7 +24,7 @@ namespace RenderingEngineVisualTests {
             RequiredFPS = requiredFPS;
         }
 
-        DrawableFont _font = new DrawableFont("Source code pro", 16);
+        DrawableFont _font = new DrawableFont("Source code pro", new DrawableFontOptions { });
         readonly Random rand = new Random(1);
         int frames = 0;
         double time = 0;
@@ -83,7 +83,9 @@ namespace RenderingEngineVisualTests {
 
             text.ToCharArray();
 
-            _font.DrawText(ctx, text, 10, ctx.VH - 50);
+            _font.DrawText(ctx, text, new DrawTextOptions {
+                FontSize = 16, X = 10, Y = ctx.VH - 50
+            });
         }
     }
 }

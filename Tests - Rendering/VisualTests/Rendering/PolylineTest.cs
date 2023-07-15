@@ -13,7 +13,7 @@ namespace RenderingEngineVisualTests {
 
         double timer = 0;
 
-        DrawableFont _font = new DrawableFont("", 0);
+        DrawableFont _font = new DrawableFont("", new DrawableFontOptions { });
 
         public void Render(FrameworkContext ctx) {
             timer += Time.DeltaTime;
@@ -50,12 +50,10 @@ namespace RenderingEngineVisualTests {
             }
 
             ctx.SetDrawColor(0, 0, 0, 1);
-            _font.DrawText(
-                ctx,
-                "Mouse test (And polyline test) - Drag that point with your mouse",
-                0, ctx.VH,
-                HAlign.Left, VAlign.Top
-            );
+            var instructions = "Mouse test (And polyline test) - Drag that point with your mouse";
+            _font.DrawText(ctx, instructions, new DrawTextOptions { 
+                X = 0, Y = ctx.VH, VAlign = 1.0f
+            });
 
             IM.DrawRectOutline(ctx, 5, new Rect(ctx.VW * 0.25f, ctx.VH * ctx.VH * 0.25f, ctx.VW * 0.75f, ctx.VH * 0.75f));
 

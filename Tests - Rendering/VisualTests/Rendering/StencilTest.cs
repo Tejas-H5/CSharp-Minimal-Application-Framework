@@ -4,7 +4,7 @@ using System;
 namespace RenderingEngineVisualTests {
     public class StencilTest : IRenderable {
         GeometryAndTextTest geometryAndTextTest;
-        DrawableFont _font = new DrawableFont("Source code pro", 16);
+        DrawableFont _font = new DrawableFont("Source code pro", new DrawableFontOptions { });
         public StencilTest() {
             geometryAndTextTest = new GeometryAndTextTest();
         }
@@ -17,7 +17,9 @@ namespace RenderingEngineVisualTests {
             xPos = 200 * MathF.Sin(time / 2.0f);
 
             ctx.SetDrawColor(1, 1, 1, 1);
-            _font.DrawText(ctx, "Stencil test", 0, ctx.VH, HAlign.Left, VAlign.Top);
+            _font.DrawText(ctx, "Stencil test", new DrawTextOptions {
+                X = 0, Y = ctx.VH, VAlign = 1.0f
+            });
 
             ctx.StartStencillingWithoutDrawing(true);
 

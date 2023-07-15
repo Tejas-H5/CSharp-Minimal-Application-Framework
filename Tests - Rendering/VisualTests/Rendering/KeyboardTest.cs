@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RenderingEngineVisualTests {
     public class KeyboardTest : IRenderable {
-        DrawableFont _font = new DrawableFont("Source code pro", 16);
+        DrawableFont _font = new DrawableFont("Source code pro", new DrawableFontOptions { });
 
         string GetCharactersHeld(ref FrameworkContext ctx) {
             var held = new StringBuilder();
@@ -46,8 +46,14 @@ namespace RenderingEngineVisualTests {
                 keys = keys.ToUpper();
             }
 
-            _font.DrawText(ctx, "Press some keys:", ctx.VW * 0.5f, ctx.VH * 0.75f, HAlign.Center, VAlign.Center);
-            _font.DrawText(ctx, keys, ctx.VW / 2, ctx.VH / 2, HAlign.Center, VAlign.Center);
+            _font.DrawText(ctx, "Press some keys:", new DrawTextOptions {
+                X = ctx.VW * 0.5f, Y = ctx.VH * 0.75f,
+                HAlign = 0.5f, VAlign = 0.5f
+            });
+
+            _font.DrawText(ctx, keys, new DrawTextOptions {
+                X = ctx.VW / 2, Y = ctx.VH / 2, HAlign = 0.5f, VAlign = 0.5f
+            });
         }
     }
 }

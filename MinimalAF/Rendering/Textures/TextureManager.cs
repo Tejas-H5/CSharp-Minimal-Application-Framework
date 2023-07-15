@@ -8,16 +8,12 @@ namespace MinimalAF.Rendering {
 
         //Since the current texture can be changed outside of this class even though it shouldnt,
         //this can be used to inform this class of it
-        internal static void SetCurrentTextureChangedFlag() {
+        internal static void SetOpenGLBoundTextureHasInadvertantlyChanged() {
             globalTextureChanged = true;
         }
 
         static Texture nullTexture = null;
         static bool globalTextureChanged = false;
-
-        public static bool GlobalTextureHasChanged() {
-            return globalTextureChanged;
-        }
 
         public Texture Get() {
             return currentTexture;
@@ -47,8 +43,12 @@ namespace MinimalAF.Rendering {
             UseCurrentTexture();
         }
 
+        public bool TextureHasChanged() {
+            return globalTextureChanged;
+        }
+
         public bool TextureHasChanged(Texture texture) {
-            return currentTexture != texture || GlobalTextureHasChanged();
+            return currentTexture != texture || TextureHasChanged();
         }
 
         private void UseCurrentTexture() {

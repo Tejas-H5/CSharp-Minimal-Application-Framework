@@ -10,7 +10,7 @@ namespace RenderingEngineVisualTests {
     internal class DeltatimeTest : IRenderable {
         double dtTimer = 0;
         Stopwatch _timer;
-        DrawableFont _font = new DrawableFont("Source code pro", 16);
+        DrawableFont _font = new DrawableFont("Source code pro", new DrawableFontOptions { });
         public DeltatimeTest() {
             _timer = new Stopwatch();
             _timer.Start();
@@ -24,7 +24,10 @@ namespace RenderingEngineVisualTests {
             string dtTimerText = dtTimer.ToString(".000");
             string realTimerText = (_timer.ElapsedMilliseconds / 1000.0).ToString(".000");
             string text = "Delta time: " + dtTimerText + "\nReal time: " + realTimerText;
-            _font.DrawText(ctx, text, ctx.VW * 0.5f, ctx.VH * 0.5f, HAlign.Center, VAlign.Center);
+            _font.DrawText(ctx, text, new DrawTextOptions {
+                X = ctx.VW * 0.5f, Y = ctx.VH * 0.5f,
+                VAlign = 0.5f, HAlign = 0.5f
+            });
         }
     }
 }

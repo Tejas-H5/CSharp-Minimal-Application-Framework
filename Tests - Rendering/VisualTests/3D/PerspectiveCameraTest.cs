@@ -11,7 +11,7 @@ namespace RenderingEngineVisualTests {
             this.zPos = zPos;
         }
 
-        DrawableFont _font = new DrawableFont("Source code pro", 16);
+        DrawableFont _font = new DrawableFont("Source code pro", new DrawableFontOptions { });
 
         public void Render(FrameworkContext ctx) {
             ctx.SetProjectionPerspective((float)Math.PI / 2.0f, 0.1f, 1000);
@@ -32,7 +32,7 @@ namespace RenderingEngineVisualTests {
             ctx.SetDrawColor(0, 0, 0, 1);
             IM.DrawRectOutline(ctx, 1, -50, -50, 50, 50);
 
-            _font.DrawText(ctx, "This is a wall.", 0, 0, HAlign.Center, VAlign.Center);
+            _font.DrawText(ctx, "This is a wall.", new DrawTextOptions { HAlign = 0.5f, VAlign = 0.5f });
 
             ctx.SetModel(Matrix4.CreateTranslation(rectPoint));
 

@@ -1,5 +1,6 @@
 ﻿using MinimalAF.Rendering;
 using MinimalAF;
+using OpenTK.Mathematics;
 using System;
 
 namespace RenderingEngineVisualTests {
@@ -8,9 +9,9 @@ namespace RenderingEngineVisualTests {
 
         public TextFontAtlasText() {
             // font = new DrawableFont("Consolas", 16);
-            // font = new DrawableFont("Source Code Pro", 44);
+            font = new DrawableFont("Source Code Pro", new DrawableFontOptions { BaseFontSize = 96, CacheGridSize=5 });
             // font = new DrawableFont("Courier New", 96);
-            font = new DrawableFont("", new DrawableFontOptions { BaseFontSize = 33 });
+            // font = new DrawableFont("", new DrawableFontOptions { BaseFontSize = 33 });
 
             // "昨夜のコンサートは最高でした уилщертхуилоыхнлойк MR Worldwide 😎😎😎 💯 💯 💯 "
         }
@@ -21,7 +22,7 @@ namespace RenderingEngineVisualTests {
 
             // var testText = "";
             // var testText = "1234567890=qwertyuiop[[[]asdfghjkl;'\\zxcvbnm,./";
-            var testText = "!#$%&\"()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'昨夜のコンサートは最高でした уилщертхуилоыхнлойк MR Worldwide 😎😎😎 💯 💯 💯 ";
+            var testText = "!#$%&\"()*+,-./ 😎😎😎 💯 0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'昨夜のコンサートは最高でした уилщертхуилоыхнлойк MR Worldwide 😎😎😎 💯 💯 💯 ";
 
             ctx.SetDrawColor(Color.Black);
             IM.DrawRect(ctx, 0, 0, ctx.VW, ctx.VH);
@@ -33,19 +34,26 @@ namespace RenderingEngineVisualTests {
                 VAlign = 1, HAlign = 0.5f
             });
 
-            var cX = ctx.VW * 0.5f;
-            var cY = ctx.VH * 0.5f;
-            var rect = new Rect(
-                cX - font.Texture.Width / 2f, cY - font.Texture.Height / 2f,
-                cX + font.Texture.Width / 2f, cY + font.Texture.Height / 2f
-            );
+            var mx = -1.2f * (-1 + 2 * ctx.MouseX / ctx.VW) * font.Texture.Height;
+            var my = -1.2f * (-1 + 2 * ctx.MouseY / ctx.VH) * font.Texture.Height;
 
+            var prev = ctx.GetModelMatrix();
+            ctx.SetModel(prev * Matrix4.CreateTranslation(new Vector3(mx, my, 0)));
+
+            var rect = new Rect {
+                X0 = 0, X1 = font.Texture.Height,
+                Y0 = 0, Y1 = font.Texture.Height
+            };
+
+            ctx.SetTexture(null);
             ctx.SetDrawColor(Color.Red);
             IM.DrawRectOutline(ctx, 2, rect);
 
             ctx.SetDrawColor(Color.White);
             ctx.SetTexture(font.Texture);
             IM.DrawRect(ctx, rect);
+
+            ctx.SetModel(prev);
         }
     }
 }

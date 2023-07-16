@@ -7,71 +7,83 @@ using OpenTK.Mathematics;
 namespace RenderingEngineVisualTests
 {
 	class TextTest : IRenderable {
-        List<string> rain;
-        StringBuilder sb = new StringBuilder();
-        Random rand = new Random();
-        double timer = 0;
-        float rainSpeed = 20;
-
-        DrawableFont font;
+        char[] _ringBuffer;
+        int _ringBufferPos;
+        string _builtString;
+        Random _rand = new Random();
+        DrawableFont _font;
 
         public TextTest(string fontName = "Consolas") {
-            font = new DrawableFont(fontName, new DrawableFontOptions { });
-            rain = new List<string>();
+            int cacheGridSize = 12;
+            _font = new DrawableFont(fontName, new DrawableFontOptions { CacheGridSize = cacheGridSize });
+            _ringBuffer = new char[cacheGridSize * cacheGridSize + 4];
+            _ringBufferPos = 0;
+            _builtString = "";
+            RebuildString();
         }
 
-        public void Render(FrameworkContext ctx) {
-            ctx.SetTexture(font.Texture);
-            ctx.SetDrawColor(0, 1, 0, 0.8f);
-            var fontHeight = 16;
-
-            timer += Time.DeltaTime * rainSpeed;
-            if (timer > 1.0) {
-                timer = 0;
-
-                // add one line to the rain
-                {
-                    sb.Clear();
-
-                    float totalLength = 0;
-                    while (totalLength < ctx.VW) {
-                        int character = rand.Next(1, 512);
-
-                        char c = (char)character;
-                        if (character > 126)    // TODO: unicode
-                            c = ' ';
-
-                        sb.Append(c);
-
-                        // totalLength += font.GetStringWidth("|");
-                        // totalLength += font.GetWidth(character);
-                        totalLength += fontHeight;
-                    }
-
-                    rain.Insert(0, sb.ToString());
-                    if ((rain.Count - 2) * fontHeight > ctx.VH) {
-                        rain.RemoveAt(rain.Count - 1);
-                    }
+        void RebuildString() {
+            var sb = new StringBuilder();
+            sb.Append("Start typing : ");
+            for (var i = 0; i < _ringBuffer.Length; i++) {
+                if (_ringBuffer[i] == 0) {
+                    continue;
                 }
+
+                sb.Append(_ringBuffer[i]);
             }
+            _builtString = sb.ToString();
+        }
 
-            
+        void RenderBuiltString(ref FrameworkContext ctx) {
+            ctx.SetDrawColor(Color.Green);
 
-            // idea being that we are pushing the rain down from 0 -> char height. When
-            // the timer resets to zero and a new line is added to the start, this translate amount will
-            // also jump back to zero, which will give the visual effect of smooth falling text
-            // rather than staggered grid-snapped terminal text
-            var translateAmount = fontHeight * timer;
-            ctx.SetModel(Matrix4.CreateTranslation(0, -((float)translateAmount), 0));
+            var result = _font.DrawText(ctx, _builtString, new DrawTextOptions {
+                FontSize = 24,
+                X = ctx.VW / 2.0f, Y = ctx.VH,
+                VAlign = 1, HAlign = 0.5f,
+                Width = ctx.VW - 50,
+                Count = _ringBufferPos
+            });
 
-            for (int i = 0; i < rain.Count; i++) {
-                font.DrawText(ctx, rain[i], new DrawTextOptions{
-                    FontSize = fontHeight, X = 0, Y = ctx.VH - fontHeight * i
-                });
+            if (ctx.CharsJustInputted.Count > 0) {
+                for (var i = 0; i < ctx.CharsJustInputted.Count; i++) {
+                    char nextUnicode = ' ';
+                    while (!char.IsLetterOrDigit(nextUnicode)) {
+                        nextUnicode = (char)_rand.Next(0, char.MaxValue);
+                    }
+                    _ringBuffer[_ringBufferPos] = nextUnicode;
+                    _ringBufferPos = (_ringBufferPos + 1) % _ringBuffer.Length;
+                }
 
-                // nah we're using a whole ass matrix bc i feel like it
-                // _font.Draw(ctx, rain[i], 0, -translateAmount + ctx.VH - ctx.GetCharHeight() * i);
+                RebuildString();
             }
+        }
+
+
+        public void Render(FrameworkContext ctx) {
+            ctx.SetDrawColor(Color.Black);
+            IM.DrawRect(ctx, 0, 0, ctx.VW, ctx.VH);
+
+            RenderBuiltString(ref ctx);
+
+            ctx.SetTexture(_font.Texture);
+            float size = _font.Texture.Height;
+            var rect = new Rect {
+                X0 = 0.5f * ctx.VW - size/2.0f, X1 = 0.5f * ctx.VW + size/2.0f,
+                Y0 = 0.5f * ctx.VH - size/2.0f, Y1 = 0.5f * ctx.VH + size/2.0f
+            };
+            ctx.SetDrawColor(Color.White);
+            IM.DrawRect(ctx, rect);
+            ctx.SetTexture(null); ctx.SetDrawColor(Color.Red);
+            IM.DrawRectOutline(ctx, 2, rect);
+
+            _font.DrawText(ctx, "cache misses: " + _font.CacheMissCount, new DrawTextOptions {
+                FontSize = 24,
+                X = ctx.VW * 0.5f, Y = 0.0f,
+                HAlign = 0.5f, VAlign = 0,
+            });
+            _font.CacheMissCount = 0;
         }
     }
 }

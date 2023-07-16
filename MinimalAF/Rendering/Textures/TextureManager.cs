@@ -9,11 +9,11 @@ namespace MinimalAF.Rendering {
         //Since the current texture can be changed outside of this class even though it shouldnt,
         //this can be used to inform this class of it
         internal static void SetOpenGLBoundTextureHasInadvertantlyChanged() {
-            globalTextureChanged = true;
+            globalTextureChangedOutFromUnderUs = true;
         }
 
         static Texture nullTexture = null;
-        static bool globalTextureChanged = false;
+        static bool globalTextureChangedOutFromUnderUs = false;
 
         public Texture Get() {
             return currentTexture;
@@ -33,22 +33,23 @@ namespace MinimalAF.Rendering {
         }
 
         public void Use(Texture texture) {
-            if (!TextureHasChanged(texture))
+            if (!HasTextureChanged(texture))
                 return;
 
             CTX.Flush();
 
             currentTexture = texture;
+            globalTextureChangedOutFromUnderUs = false;
 
             UseCurrentTexture();
         }
 
-        public bool TextureHasChanged() {
-            return globalTextureChanged;
+        public bool HasTextureChangedExternally() {
+            return globalTextureChangedOutFromUnderUs;
         }
 
-        public bool TextureHasChanged(Texture texture) {
-            return currentTexture != texture || TextureHasChanged();
+        public bool HasTextureChanged(Texture texture) {
+            return currentTexture != texture || HasTextureChangedExternally();
         }
 
         private void UseCurrentTexture() {

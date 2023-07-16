@@ -35,8 +35,30 @@ namespace MinimalAF {
     public class FontAtlas : IDisposable {
         private static readonly Random rand = new Random();
 
+        // occasionally, the same code-point can resolve to a different font, so we are donig this for now?
+        static Dictionary<int, SKTypeface> s_resolvedFonts = new Dictionary<int, SKTypeface>();
+
         private SKTypeface _skTypeface;
         private SKPaint _skPaint;
+        SKPaint GetSKPaintWithTheCorrectFont(int codePoint) {
+            // ask the font manager for a font with that character
+            if (!_skTypeface.ContainsGlyph(codePoint)) {
+                if (s_resolvedFonts.ContainsKey(codePoint)) {
+                    _skPaint.Typeface = s_resolvedFonts[codePoint];
+                } else {
+                    var fontManager = SKFontManager.Default;
+                    var resolvedTypeFace = fontManager.MatchCharacter(codePoint);
+                    _skPaint.Typeface = resolvedTypeFace;
+                    s_resolvedFonts[codePoint] = resolvedTypeFace;
+                }
+            } else {
+                _skPaint.Typeface = _skTypeface;
+            }
+
+            return _skPaint;
+        }
+
+
         private FontImportSettings _fontImportSettings;
 
         private Dictionary<int, int> _codePointGlyphValuesIndices;
@@ -162,30 +184,23 @@ namespace MinimalAF {
             return _freeSlot++;
         }
 
-        /// <summary>
-        /// returns info about the new glyph, and if the underlying texture has changed or not. 
-        /// (This happens in the case of a cache miss, and is useful if we are rendering a series of glyphs
-        /// in an immediate mode style with a buffered mesh).
-        /// 
-        /// If dryRun = true, then nothing actually happens to the glyph cache, and only the info is gotten. 
-        /// we will still return whether it would have been a cache miss or not.
-        /// </summary>
-        public (GlyphInfo, bool) GetOrAddGlyph(int codePoint) {
+        public (int, bool) GetFreeSlotForGlyph(int codePoint) {
             if (HasCharacter(codePoint)) {
                 // Cache hit
-                return (_glyphValues[_codePointGlyphValuesIndices[codePoint]], false);
+                return (_codePointGlyphValuesIndices[codePoint], false);
             }
 
             // Cache miss
 
             var slot = GetFreeSlot();
-            var glyphInfo = RenderGlyphIntoSlot(codePoint, slot);
 
-            _glyphValues[slot] = glyphInfo;
-            _codePointGlyphValuesIndices[codePoint] = slot;
-
-            return (glyphInfo, true);
+            return (slot, true);
         }
+
+        public GlyphInfo GetGlyphInfo(int slot) {
+            return _glyphValues[slot];
+        }
+
 
         public Vector2 GetGlyphNormalizedSize(int codePoint) {
             if (HasCharacter(codePoint)) {
@@ -193,14 +208,13 @@ namespace MinimalAF {
             }
 
             var codePointStr = MutableUT8String.CodePointToString(codePoint);
-            var (w, h, _) = GetGlyphSize(codePointStr);
-            var padding = 2 * _fontImportSettings.Padding;
+            var (w, h, _) = GetGlyphSizeInternal(codePointStr, codePoint);
             return new Vector2(
                 Normalized(w), Normalized(h)
             );
         }
 
-        (int, int, SKRect) GetGlyphSize(byte[] codePointStr) {
+        (int, int, SKRect) GetGlyphSizeInternal(byte[] codePointStr, int codePoint) {
             if (codePointStr.Length > 4) {
                 // TODO?: proper unicode validation
                 throw new Exception("codePointStr is supposed to be a single unicode utf-8 sequence");
@@ -208,8 +222,8 @@ namespace MinimalAF {
 
             // TODO: cleanup
             // TODO: reduce the number allocations somehow. IDK how though.
-
-            var w = _skPaint.GetGlyphWidths(codePointStr, out SKRect[] bounds)[0];
+            var skPaint = GetSKPaintWithTheCorrectFont(codePoint);
+            var w = skPaint.GetGlyphWidths(codePointStr, out SKRect[] bounds)[0];
             var glyphWidth = (int)MathF.Ceiling(bounds[0].Left + w); 
             // This is wrong, but it is kinda sorta working so it will stay for now.
             // var glyphHeight = _fontImportSettings.FontHeight;
@@ -221,9 +235,9 @@ namespace MinimalAF {
         /// <summary>
         /// This uploads a codepoint slot directly into OpenGL
         /// </summary>
-        private GlyphInfo RenderGlyphIntoSlot(int codePoint, int slot) {
+        public void RenderGlyphIntoSlot(int codePoint, int slot) {
             var codePointStr = MutableUT8String.CodePointToString(codePoint);
-            var (glyphWidth, glyphHeight, bounds) = GetGlyphSize(codePointStr);
+            var (glyphWidth, glyphHeight, bounds) = GetGlyphSizeInternal(codePointStr, codePoint);
             var padding = _fontImportSettings.Padding;
 
             var (row, col) = GetSlotRowCol(slot);
@@ -254,64 +268,59 @@ namespace MinimalAF {
                 var lY0 = _slotSize - (glyphY0 - colPx);
                 var lY1 = _slotSize - (glyphY1 - colPx);
 
-                if (!_skPaint.ContainsGlyphs(codePointStr)) {
-                    // ask the font manager for a font with that character
-                    var fontManager = SKFontManager.Default;
-                    if (!_skTypeface.ContainsGlyph(codePoint)) {
-                        _skPaint.Typeface = fontManager.MatchCharacter(codePoint);
-                    } else {
-                        _skPaint.Typeface = _skTypeface;
-                    }
-                }
+                var skPaint = GetSKPaintWithTheCorrectFont(codePoint);
+                // NOTE: _skPaint.Typeface can potentially be null here
 
                 // TODO: fix obsolete thinggo here
                 canvas.DrawText(
                     codePointStr,
                     new SKPoint(lX0, lY0 - glyphOffset),
-                    _skPaint
+                    skPaint
                 );
+
+#if false
 
                 // To debug the bounds
                 canvas.DrawLine(
                     new SKPoint { X = lX0, Y = lY0 },
                     new SKPoint { X = lX0, Y = lY1 },
-                    _skPaint
+                    skPaint
                 );
 
                 canvas.DrawLine(
                     new SKPoint { X = lX0, Y = lY0 },
                     new SKPoint { X = lX1, Y = lY0 },
-                    _skPaint
+                    skPaint
                 );
 
                 canvas.DrawLine(
                     new SKPoint { X = lX1, Y = lY1 },
                     new SKPoint { X = lX0, Y = lY1 },
-                    _skPaint
+                    skPaint
                 );
 
                 canvas.DrawLine(
                     new SKPoint { X = lX1, Y = lY1 },
                     new SKPoint { X = lX1, Y = lY0 },
-                    _skPaint
+                    skPaint
                 );
 
                 // To debug the font areas
                 canvas.DrawLine(
                     new SKPoint { X = _slotSize, Y = 0 },
                     new SKPoint { X = _slotSize, Y = _slotSize },
-                    _skPaint
+                    skPaint
                 );
 
                 canvas.DrawLine(
                     new SKPoint { Y = _slotSize, X = 0 },
                     new SKPoint { Y = _slotSize, X = _slotSize },
-                    _skPaint
+                    skPaint
                 );
+#endif
             }
 
             _texture.UpdateSubImage(rowPx, colPx, _intermediateGlyphBuffer);
-
 
             var info = new GlyphInfo {
                 CodePoint = codePoint,
@@ -324,8 +333,11 @@ namespace MinimalAF {
                 NormalizedVerticalOffset = Normalized(glyphOffset)
             };
 
-            return info;
+            _glyphValues[slot] = info;
+            _codePointGlyphValuesIndices[codePoint] = slot;
         }
+
+        Dictionary<int, GlyphInfo> debugSizes = new Dictionary<int, GlyphInfo>();
 
         private float Normalized(float val) {
             return val / (float)_fontImportSettings.FontHeight;
@@ -356,40 +368,3 @@ namespace MinimalAF {
         }
     }
 }
-
-//            // draw the chars to the bitmap via SKCanvas
-//            {
-//    float bitmapWidth = (float)bitmap.Width;
-//    float bitmapHeight = (float)bitmap.Height;
-//    float currentWidth = padding;
-//    float vOffset = bitmap.Height - _fontBottom;
-
-//    using var canvas = new SKCanvas(bitmap);
-
-
-
-//    // render a line of text to the image
-//    // float vOffset = _fontBottom;
-//    IterateCodePointStrs(fontManager, utf8Chars, (codePoint, size) => {
-//        var codePointStr = MutableUT8String.CodePointToString(codePoint, size);
-//        var position = _skStyle.GetGlyphPositions(codePointStr)[0];
-//        var width = _skStyle.GetGlyphWidths(codePointStr)[0];
-//        currentWidth += width + padding;
-
-//        canvas.DrawText(codePointStr, new SKPoint(currentWidth, vOffset), _skStyle);
-
-//        // assign each character a UV rectangle mapping it to a spot on the canvas
-//        {
-//            float u0 = currentWidth / bitmapWidth;
-//            float v0 = 0;
-
-//            float u1 = (currentWidth + width) / bitmapWidth;
-//            float v1 = 1;
-
-//            Rect uv = new Rect(u0, v0, u1, v1).Rectified();
-//            _characterQuadCoords[codePoint] = new GlyphInfo {
-//                UV = uv
-//            };
-//        }
-//    });
-//}

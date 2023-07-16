@@ -60,13 +60,13 @@ namespace MinimalAF.Testing {
         public Rect RenderTextBoxButton(ref FrameworkContext ctx, string text, float x, float y, float padding, Action onClick = null) {
             // TODO: revert once we have finished testing text rendering
             float height = 24;
-            var size = _font.MeasureText(ctx, text, new DrawTextOptions { 
+            var result = _font.MeasureText(ctx, text, new DrawTextOptions { 
                 FontSize=height
             });
 
             var rect = new Rect {
-                X0 = x, X1 = x + size.X + 2 * padding,
-                Y0 = y, Y1 = y + size.Y + 2 * padding
+                X0 = x, X1 = x + result.Bounds.Width + 2 * padding,
+                Y0 = y, Y1 = y + result.Bounds.Height + 2 * padding
             };
 
             var color = Color.Black;
@@ -92,7 +92,7 @@ namespace MinimalAF.Testing {
 
             ctx.SetDrawColor(Color.White);
             _font.DrawText(ctx, text, new DrawTextOptions {
-                FontSize = height, X = rect.X0 + padding, Y = rect.Y0 + padding,
+                FontSize = height, X = x + padding, Y = y + padding,
             });
 
             return rect;

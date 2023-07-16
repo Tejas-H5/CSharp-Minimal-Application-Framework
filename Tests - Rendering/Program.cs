@@ -26,9 +26,9 @@ namespace RenderingEngineVisualTests {
 
             MutableUT8String.Test();
 
+            tests.AddTest("Text Test", () => new TextTest());
             tests.AddTest("Text Font Atlas Text", () => new TextFontAtlasText());
             tests.AddTest("Basic test", () => new BasicTest());
-            tests.AddTest("Text Test", () => new TextTest());
             // For now, we are allowing errors to flow into the debugger (not catching them)
             // tests.AddTest("Error test", () => new ErrorTest());
             tests.AddTest("Arc test", () => new ArcTest());

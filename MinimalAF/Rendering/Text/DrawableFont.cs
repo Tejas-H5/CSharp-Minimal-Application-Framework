@@ -1,13 +1,35 @@
 ﻿using MinimalAF.Rendering;
 using OpenTK.Mathematics;
 using System;
+using SkiaSharp.HarfBuzz;
 using System.Collections.Generic;
 
 
 namespace MinimalAF {
+    public struct MeasureTextResult {
+        /// <summary>
+        /// The size of the text's bounding box. We don't return a rect here, because we don't know 
+        /// where the text is when we are measuring it, typically
+        /// </summary>
+        public Rect Bounds = new Rect { };
+
+        /// <summary>
+        /// Where was the last character drawn?
+        /// </summary>
+        public Vector2 LastCursorPos = Vector2.Zero;
+
+        /// <summary>
+        /// Where did we reach into the string?
+        /// </summary>
+        public int StringPosition = 0;
+
+        public MeasureTextResult() {}
+    }
+
 
     // Fun fact: If Raylib actually had a good text API, I would have stopped working on this framework,
-    // because it is most likely better than this one in every other way
+    // because it is most likely better than this one in every other way. It probably even implements
+    // the rendering stuff better (I am not a team of google engineers, or even a team), but this API is easier to use
     public struct DrawTextOptions {
         /// <summary> The font size </summary>
         public float FontSize = 24;
@@ -81,6 +103,8 @@ namespace MinimalAF {
 
         public Texture Texture => _fontAtlas.Texture;
 
+        public HarfBuzzSharp.Buffer _hbBuffer;
+
         /// <summary>
         /// Crank up the baseAtlasFontSize if you need to draw bigger fonts.
         /// TODO?: image pyramid
@@ -105,6 +129,12 @@ namespace MinimalAF {
                 },
                 options.CacheGridSize
             );
+
+            _hbBuffer = new HarfBuzzSharp.Buffer();
+            _hbBuffer.Reset();
+
+            // TODO: may need to change based on the language
+            _hbBuffer.Direction = HarfBuzzSharp.Direction.LeftToRight;
         }
 
         /// <summary>
@@ -112,7 +142,7 @@ namespace MinimalAF {
         /// 
         /// I yoinked it from this SO thread here: https://stackoverflow.com/questions/43564445/how-to-map-unicode-codepoints-from-an-utf-16-file-using-c
         /// </summary>
-        public (int, int) GetNextCodepoint(string text, int pos) {
+        public static (int, int) GetNextCodepoint(string text, int pos) {
             char c1 = text[pos];
             if (c1 >= 0xd800 && c1 < 0xdc00) {
                 char c2 = text[pos + 1];
@@ -137,7 +167,7 @@ namespace MinimalAF {
             int i = options.Start, codePoints = 0;
             int wantedCodePoints = options.Count < 0 ? text.Length : options.Count;
 
-            float w = 0;
+            float lineWidth = 0;
             while(i < text.Length && codePoints < wantedCodePoints) {
                 var (codePoint, cpLen) = GetNextCodepoint(text, i);
                 i += cpLen;
@@ -152,45 +182,44 @@ namespace MinimalAF {
                     continue;
                 }
 
-                float nextWidth = w;
-
                 if (codePoint == '\n') {
                     break;
                 }
 
-                if (codePoint == '\t') {
-                    var (spaceWidth, _) = MeasureGlyph((int)' ', options.FontSize);
+                float glyphWidth; /* => */ {
+                    if (codePoint == '\t') {
+                        var (spaceWidth, _) = MeasureGlyph((int)' ', options.FontSize);
 
-                    if (options.UseTabStops) {
-                        nextWidth += options.TabSize * spaceWidth;
+                        if (options.UseTabStops) {
+                            glyphWidth = options.TabSize * spaceWidth;
+                        } else {
+                            int toNextTabStop = options.TabSize - (codePoint % options.TabSize);
+                            glyphWidth = toNextTabStop * spaceWidth;
+                        }
+                    } else if (isDrawing) {
+                        var (width, _) = DrawGlyph(
+                            output,
+                            codePoint,
+                            options.X + lineWidth, options.Y,
+                            options.FontSize
+                        );
+                        glyphWidth = width;
                     } else {
-                        int toNextTabStop = options.TabSize - (codePoint % options.TabSize);
-                        nextWidth += toNextTabStop * spaceWidth;
+                        var (width, _) = MeasureGlyph(codePoint, options.FontSize);
+                        glyphWidth = width;
                     }
-                } else if (isDrawing) {
-                    var (width, _) = DrawGlyph(
-                        output,
-                        codePoint,
-                        options.X + w, options.Y,
-                        options.FontSize
-                    );
-                    nextWidth += width;
-                } else {
-                    var (width, _) = MeasureGlyph(codePoint, options.FontSize);
-                    nextWidth += width;
                 }
 
-                if (options.Width > 0 && nextWidth > options.Width) {
-                    // don't include this codepoint, as it will push us over the width limit
+                if (options.Width > 0 && (lineWidth + glyphWidth) > options.Width) {
                     codePoints -= 1;
                     i -= cpLen;
                     break;
                 }
 
-                w = nextWidth;
+                lineWidth += glyphWidth;
             }
 
-            return (w, i, codePoints);
+            return (lineWidth, i, codePoints);
         }
 
         /// <summary>
@@ -202,81 +231,88 @@ namespace MinimalAF {
         /// Maybe we will have a DrawTextEx in the future? 
         /// But this one here should be enough for things like text editors
         /// </summary>
-        public void DrawText<Out>(Out output, string text, DrawTextOptions options)
+        public MeasureTextResult DrawText<Out>(Out output, string text, DrawTextOptions options)
             where Out : IGeometryOutput<Vertex> 
         {
-            MeasureOrDrawText(ref output, text, true, ref options);
+            return MeasureOrDrawText(ref output, text, true, ref options);
         }
 
-        public Vector2 MeasureText<Out>(Out output, string text, DrawTextOptions options)
+        public MeasureTextResult MeasureText<Out>(Out output, string text, DrawTextOptions options)
             where Out : IGeometryOutput<Vertex> {
             return MeasureOrDrawText(ref output, text, false, ref options);
         }
 
-        private Vector2 MeasureOrDrawText<Out>(
+        private MeasureTextResult MeasureOrDrawText<Out>(
             ref Out output, string text, bool isDrawing, ref DrawTextOptions options
         ) 
             where Out : IGeometryOutput<Vertex> 
         {
-            // NOTE: it looks like there are still bugs here
-
             var prevTexture = CTX.Texture.Get();
             if (isDrawing) {
                 CTX.Texture.Use(_fontAtlas.Texture);
             }
 
-            var textSize = new Vector2();
+            var measureResult = new MeasureTextResult { };
             if (isDrawing) {
                 var optCopy = options;
-                textSize = MeasureOrDrawText(ref output, text, false, ref optCopy);
+                measureResult = MeasureOrDrawText(ref output, text, false, ref optCopy);
             }
 
             int wantedCodePoints = options.Count < 0 ? text.Length : options.Count;
             int initStart = options.Start;
             float lineHeight = options.FontSize;
 
-            // only useful when isDrawing is false
+            // only useful when measuring, (when isDrawing is false)
             float realWidth = 0;
 
             options.Start = initStart;
+
+            // the way the line is vertically anchored changes oppositely to how the text-block is anchored based on VAlign
             options.Y = options.Y + 
-                (1.0f - options.VAlign) * (textSize.Y - (lineHeight + options.LineSpacing))
+                (1.0f - options.VAlign) * (measureResult.Bounds.Height - (lineHeight + options.LineSpacing))
                 - (options.VAlign * lineHeight);
 
-            int codePoints = 0;
-            float initX = options.X, initY = options.Y;
-            while (options.Start < text.Length && codePoints < wantedCodePoints) {
-                options.X = initX;
+            float lineResetX = options.X;
 
+            float initialY = options.Y;
+            float minXPosition = options.X;
+            int codePoints = 0;
+
+            while (options.Start < text.Length && codePoints < wantedCodePoints) {
                 // TODO: if hAlign is zero we don't need to measure the line
                 var (lineWidth, nextLineStart, codePointsInLine) = MeasureOrDrawLine(ref output, text, options, isDrawing:false);
+
                 if (nextLineStart == options.Start) {
                     // Width is too narrow, as this is the only case when MeasureOrDrawLine won't advance nextLineStart
+                    options.Start++;
                     break;
                 }
 
+                options.X = lineResetX - options.HAlign * lineWidth;
+                minXPosition = MathF.Min(minXPosition, options.X);
+                realWidth = MathF.Max(realWidth, lineWidth);
+
                 if (isDrawing) {
-                    options.X = initX - options.HAlign * lineWidth;
                     MeasureOrDrawLine(ref output, text, options, isDrawing: true);
                 }
 
-                realWidth = MathF.Max(realWidth, lineWidth);
                 options.Start = nextLineStart;
-                codePoints += codePointsInLine;
+                options.X = lineResetX;
                 options.Y -= lineHeight - options.LineSpacing;
+                codePoints += codePointsInLine;
             }
 
             if (isDrawing) {
                 CTX.Texture.Use(prevTexture);
             }
 
-            float realHeight = MathF.Abs(options.Y - initY);
+            measureResult.StringPosition = options.Start;
+            measureResult.Bounds = new Rect {
+                X0 = minXPosition, X1 = minXPosition + (options.Width > 0 ? options.Width : realWidth),
+                Y0 = options.Y, Y1 = initialY
+            }.Rectified();
 
-            if (options.Width > 0) {
-                return new Vector2(options.Width, realHeight);
-            }
-
-            return new Vector2(realWidth, realHeight);
+            return measureResult;
         }
 
         public Vector2 MeasureGlyph(int codePoint, float fontSize) {
@@ -287,23 +323,33 @@ namespace MinimalAF {
             );
         }
 
+        public int CacheMissCount = 0;
+
         public Vector2 DrawGlyph<Out>(Out output, int codePoint, float x, float y, float fontSize)
             where Out : IGeometryOutput<Vertex> 
         {
-            var (glyph, wasCacheMiss) = _fontAtlas.GetOrAddGlyph(codePoint);
+            var (glyphSlot, wasCacheMiss) = _fontAtlas.GetFreeSlotForGlyph(codePoint);
+            if (
+                wasCacheMiss
+                || CTX.Texture.HasTextureChanged(_fontAtlas.Texture)
+            ) {
+                CacheMissCount++;
+                CTX.Texture.Use(_fontAtlas.Texture);
+                CTX.Flush();
+
+                _fontAtlas.RenderGlyphIntoSlot(codePoint, glyphSlot);
+            }
+
+            var glyph = _fontAtlas.GetGlyphInfo(glyphSlot);
             var glyphWidth = glyph.NormalizedSize.X * fontSize;
             var glyphHeight = glyph.NormalizedSize.Y * fontSize;
             var glyphVertOffset = glyph.NormalizedVerticalOffset * fontSize;
 
-            if (wasCacheMiss) {
-                CTX.Flush();
-            }
-
+            y -= glyphVertOffset;
             var rect = new Rect { 
                 X0 = x, X1 = x + glyphWidth, 
-                Y0 = y - glyphVertOffset, 
-                Y1 = y + glyphHeight - glyphVertOffset
-            }.Rectified();
+                Y0 = y, Y1 = y + glyphHeight
+            };
             IM.DrawRect(output, rect, glyph.UV);
 
             return new Vector2(glyphWidth, glyphHeight);

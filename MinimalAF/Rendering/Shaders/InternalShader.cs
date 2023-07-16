@@ -13,9 +13,10 @@ void main(){
 uniform vec4 color;
 uniform sampler2D sampler;
 in vec2 uv0;
+layout(location = 0) out vec4 frag_color;
 void main(){
     vec4 texColor = texture2D(sampler, uv0.xy);
-    gl_FragColor = color * texColor;
+    frag_color = color * texColor;
 }";
 
         Color color;

@@ -35,12 +35,12 @@ namespace MinimalAF.Testing {
 
         DrawableFont _font;
 
-        public VisualTestRunner Init(FrameworkContext ctx) {
+        public VisualTestRunner Init(AFContext ctx) {
             var w = ctx.Window;
             if (w == null) return this;
 
             w.Title = "Visual tests";
-            w.RenderFrequency = 60;
+            //w.RenderFrequency = 60;
             w.SetWindowState(WindowState.Maximized);
 
             ctx.SetClearColor(Color.White);
@@ -57,7 +57,7 @@ namespace MinimalAF.Testing {
             });
         }
 
-        public Rect RenderTextBoxButton(ref FrameworkContext ctx, string text, float x, float y, float padding, Action onClick = null) {
+        public Rect RenderTextBoxButton(ref AFContext ctx, string text, float x, float y, float padding, Action onClick = null) {
             // TODO: revert once we have finished testing text rendering
             float height = 24;
             var result = _font.MeasureText(ctx, text, new DrawTextOptions { 
@@ -98,8 +98,22 @@ namespace MinimalAF.Testing {
             return rect;
         }
 
+        int frames;
+        double timer;
+        int fps;
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
+            timer += Time.DeltaTime;
+            if (timer > 1) {
+                fps = frames;
+                Console.WriteLine("FPS: " + fps);
+                frames = 0;
+                timer = 0;
+            } else {
+                frames++;
+            }
+
+
             if (tests.Count == 0) {
                 ctx.SetDrawColor(Color.Black);
                 _font.DrawText(ctx, "No Tests", new DrawTextOptions {

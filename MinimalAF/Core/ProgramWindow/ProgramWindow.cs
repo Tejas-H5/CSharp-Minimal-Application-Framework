@@ -41,7 +41,7 @@ namespace MinimalAF {
 
     public sealed class ProgramWindow {
         IRenderable _renderable;
-        Func<FrameworkContext, IRenderable> _renderableConstructor;
+        Func<AFContext, IRenderable> _renderableConstructor;
 
         // We use this free some OpenGL resources every X frames. I forget why this was needed, but it was
         // (SMH 2 years ago me for not writing a comment)
@@ -65,7 +65,7 @@ namespace MinimalAF {
             set => _window.Title = value;
         }
 
-        public ProgramWindow(Func<FrameworkContext, IRenderable> renderableConstructor) {
+        public ProgramWindow(Func<AFContext, IRenderable> renderableConstructor) {
             this._renderableConstructor = renderableConstructor;
 
             _window = new OpenTKNativeWindowWrapper(new NativeWindowSettings { StartVisible = false });
@@ -106,15 +106,17 @@ namespace MinimalAF {
             double frameEnd = GetSecondsSinceStart();
             dt = frameEnd - prevFrameEnd;
 
-            // This is a power saving mechanism that will sleep the thread if we
-            // have the time available to do so. It reduces overall CPU consumption.
-            // It also never kicks in if frameDuration = 0
-            var frameDuration = 1.0 / RenderFrequency;
-            var timeToNextFrame = frameDuration - dt;
-            if (timeToNextFrame > 0.0) {
-                Thread.Sleep(TimeSpan.FromSeconds(timeToNextFrame));
-                frameEnd = GetSecondsSinceStart();
-                dt = frameEnd - prevFrameEnd;
+            if (RenderFrequency > .001f) {
+                // This is a power saving mechanism that will sleep the thread if we
+                // have the time available to do so. It reduces overall CPU consumption.
+                // It also never kicks in if frameDuration = 0
+                var frameDuration = 1.0 / RenderFrequency;
+                var timeToNextFrame = frameDuration - dt;
+                if (timeToNextFrame > 0.0) {
+                    Thread.Sleep(TimeSpan.FromSeconds(timeToNextFrame));
+                    frameEnd = GetSecondsSinceStart();
+                    dt = frameEnd - prevFrameEnd;
+                }
             }
 
             Time.deltaTime = (float)dt;
@@ -207,8 +209,8 @@ namespace MinimalAF {
         public int Width => _window.Size.X;
         public int Height => _window.Size.Y;
 
-        private FrameworkContext CreateFrameworkContext() {
-            return new FrameworkContext(
+        private AFContext CreateFrameworkContext() {
+            return new AFContext(
                 new Rect(0, 0, Width, Height),
                 this,
                 isClipping: false

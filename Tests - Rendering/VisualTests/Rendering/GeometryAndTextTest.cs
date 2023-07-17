@@ -20,7 +20,7 @@ namespace RenderingEngineVisualTests {
         }
 
         float a = 0;
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             a += (float)Time.DeltaTime;
 
             ctx.SetTexture(null);

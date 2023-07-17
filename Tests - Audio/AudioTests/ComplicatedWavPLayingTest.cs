@@ -20,7 +20,7 @@ namespace AudioEngineTests.AudioTests {
             _listener = new AudioListener();
         }
 
-        void DrawCrosshairs(ref FrameworkContext ctx, float x, float y, float size) {
+        void DrawCrosshairs(ref AFContext ctx, float x, float y, float size) {
             IM.DrawLine(ctx, x - size - 50, y, x - size + 50, y, 10, CapType.Circle);
             IM.DrawLine(ctx, x + size - 50, y, x + size + 50, y, 10, CapType.Circle);
             IM.DrawLine(ctx, x, y - size - 50, x, y - size + 50, 10, CapType.Circle);
@@ -42,7 +42,7 @@ namespace AudioEngineTests.AudioTests {
         List<Shot> _shots = new List<Shot>();
 
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             float aimPosX = ctx.MouseX;
             float aimPosY = ctx.MouseY;
             float spreadRadius = 100;

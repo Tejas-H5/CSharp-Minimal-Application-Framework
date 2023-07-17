@@ -17,7 +17,7 @@ namespace RenderingEngineVisualTests {
         }
 
         float pos = 0;
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             pos += 50 * ctx.MouseWheelNotches;
 
             // var testText = "";

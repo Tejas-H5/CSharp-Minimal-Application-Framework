@@ -15,7 +15,7 @@ namespace RenderingEngineVisualTests {
 
         DrawableFont _font = new DrawableFont("", new DrawableFontOptions { });
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             timer += Time.DeltaTime;
 
             points.Enqueue(linePoint);

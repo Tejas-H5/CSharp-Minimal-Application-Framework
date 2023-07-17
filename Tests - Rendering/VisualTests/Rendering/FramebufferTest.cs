@@ -11,7 +11,7 @@ namespace RenderingEngineVisualTests {
             fb.Resize(800, 600);
         }
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             float wCX = 400;
             float wCY = 300;
 
@@ -45,7 +45,7 @@ namespace RenderingEngineVisualTests {
             IM.DrawRectOutline(ctx, 10, wCX - wCY, wCY - wCY, wCX + wCY, wCY + wCY);
         }
 
-        private void DrawDualCirclesCenter(ref FrameworkContext ctx, float x, float y) {
+        private void DrawDualCirclesCenter(ref AFContext ctx, float x, float y) {
             IM.DrawCircle(ctx, x - 100, y - 100, 200);
             IM.DrawCircle(ctx, x + 100, y + 100, 200);
         }

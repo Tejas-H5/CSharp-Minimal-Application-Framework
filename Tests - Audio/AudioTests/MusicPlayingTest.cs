@@ -33,7 +33,7 @@ namespace AudioEngineTests.AudioTests {
             _source.Stop();
         }
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             {
                 string message = "Spacebar to Pause\nMousewheel to  move";
                 if (_source.PlaybackState != PlaybackState.Playing) {

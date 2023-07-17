@@ -18,7 +18,7 @@ namespace RenderingEngineVisualTests {
             stencilTest = new StencilTest();
         }
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             textTest.Render(
                 ctx.Width(ctx.VW * 0.5f, pivot: 0)
                     .Height(ctx.VH * 0.5f, pivot: 1)

@@ -19,7 +19,7 @@ namespace RenderingEngineVisualTests
 
         float t = 0;
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             t += Time.DeltaTime;
 
             ctx.SetDrawColor(1, 1, 1, 1);

@@ -4,7 +4,7 @@ using System;
 
 namespace RenderingEngineVisualTests {
     class GeometryOutlineTest : IRenderable {
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             ctx.SetDrawColor(1, 0, 0, 0.5f);
 
             IM.DrawRect(ctx, 20, 20, 100, 100);

@@ -9,7 +9,7 @@ namespace TextEditor {
     public class TextEditorRoot : IRenderable {
         TextEditor _editor = new TextEditor();
 
-        public TextEditorRoot(FrameworkContext ctx) {
+        public TextEditorRoot(AFContext ctx) {
             ctx.SetClearColor(AppConfig.BG);
             ctx.Window.Title = "Text editor";
             ctx.Window.SetWindowState(WindowState.Maximized);
@@ -18,7 +18,7 @@ namespace TextEditor {
             // ctx.Window.UpdateFrequency = 0;
         }
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             _editor.Render(ctx);
         }
     }

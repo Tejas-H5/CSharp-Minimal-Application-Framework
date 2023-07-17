@@ -81,7 +81,7 @@ namespace TextEditor {
             }
         }
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             RenderText(ctx, true);
         }
 
@@ -98,7 +98,7 @@ namespace TextEditor {
         /// Running this with isRenderPass = true should actually do rendering and input logic.
         /// 
         /// Am doing it like this so that we can 
-        void HydrateAndRender(ref FrameworkContext ctx, bool isRenderPass) {
+        void HydrateAndRender(ref AFContext ctx, bool isRenderPass) {
             float padding = 10;
 
             int currentLineNumber = 0;
@@ -108,7 +108,7 @@ namespace TextEditor {
 
             _currentScroll = MathHelpers.Lerp(_currentScroll, _wantedScrollPos, 40 * Time.DeltaTime);
 
-            var relativeY = (ref FrameworkContext ctx) => (documentY + ctx.VH * 0.5f - _currentScroll);
+            var relativeY = (ref AFContext ctx) => (documentY + ctx.VH * 0.5f - _currentScroll);
             int startPos = 0;
 
             // float startY = documentY;
@@ -253,7 +253,7 @@ namespace TextEditor {
         }
 
 
-        public void RenderText(FrameworkContext ctx, bool acceptInput) {
+        public void RenderText(AFContext ctx, bool acceptInput) {
             HydrateAndRender(ref ctx, isRenderPass: false);
             HydrateAndRender(ref ctx, isRenderPass: true);
 
@@ -281,7 +281,7 @@ namespace TextEditor {
         }
 
 
-        void ProcessInput(ref FrameworkContext ctx) {
+        void ProcessInput(ref AFContext ctx) {
             // selection part one
             {
                 _isSelecting = ctx.KeyIsDown(KeyCode.Shift);

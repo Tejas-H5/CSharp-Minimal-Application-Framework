@@ -42,7 +42,7 @@ namespace TextEditor {
             _error = err;
         }
         
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             if (_callback == null) {
                 return;
             }
@@ -176,7 +176,7 @@ namespace TextEditor {
             _commandStartCursorPos = -1;
         }
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             _editorTextArea.RenderText(ctx, _currentInputCommand == InputCommandType.None);
 
             // process inputs for the current command

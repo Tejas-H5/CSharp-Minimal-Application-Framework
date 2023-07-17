@@ -57,7 +57,7 @@ namespace AudioEngineTests.AudioTests {
             _gameObjects = gameObjects.ToArray();
         }
 
-        void RenderCube(ref FrameworkContext ctx) {
+        void RenderCube(ref AFContext ctx) {
             var corner1 = new Vector3(-0.5f, -0.5f, -0.5f);
             var corner2 = new Vector3(0.5f, 0.5f, 0.5f);
             var vx1y1z1 = new Vertex(new Vector3(corner1.X, corner1.Y, corner1.Z), new Vector2());
@@ -88,7 +88,7 @@ namespace AudioEngineTests.AudioTests {
 
         Quaternion _rotation;
 
-        void UpdateGame(ref FrameworkContext ctx) {
+        void UpdateGame(ref AFContext ctx) {
             _hAngleWanted += ctx.MouseXDelta * 0.005f;
             _vAngleWanted -= ctx.MouseYDelta * 0.005f;
             _vAngleWanted = MathHelper.Clamp(_vAngleWanted, -MathF.PI / 2f + 0.1f, MathF.PI / 2f - 0.1f);
@@ -124,7 +124,7 @@ namespace AudioEngineTests.AudioTests {
             }
         }
 
-        void RenderGame(ref FrameworkContext ctx) {
+        void RenderGame(ref AFContext ctx) {
             // Position camera/player
             {
                 ctx.SetProjectionPerspective(MathF.PI * 0.5f, 0.01f, 1000);
@@ -196,7 +196,7 @@ namespace AudioEngineTests.AudioTests {
             }
         }   
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             ctx.SetClearColor(Color.White);
 
             // if we have started rendering after being disposed, we reactivate our things

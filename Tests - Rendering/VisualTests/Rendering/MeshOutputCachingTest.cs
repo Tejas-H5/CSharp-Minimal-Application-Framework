@@ -14,7 +14,7 @@ namespace RenderingEngineVisualTests {
             IM.DrawCircle(mesh, 0, 0, 120f);
         }
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             ctx.SetDrawColor(1, 0, 0, 0.4f);
 
             for (int i = 0; i < 10; i++) {

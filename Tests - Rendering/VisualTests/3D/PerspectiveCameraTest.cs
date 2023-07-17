@@ -13,7 +13,7 @@ namespace RenderingEngineVisualTests {
 
         DrawableFont _font = new DrawableFont("Source code pro", new DrawableFontOptions { });
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             ctx.SetProjectionPerspective((float)Math.PI / 2.0f, 0.1f, 1000);
 
             Vector3 rectPoint = new Vector3(

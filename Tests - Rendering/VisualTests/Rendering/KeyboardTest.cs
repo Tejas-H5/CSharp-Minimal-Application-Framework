@@ -6,7 +6,7 @@ namespace RenderingEngineVisualTests {
     public class KeyboardTest : IRenderable {
         DrawableFont _font = new DrawableFont("Source code pro", new DrawableFontOptions { });
 
-        string GetCharactersHeld(ref FrameworkContext ctx) {
+        string GetCharactersHeld(ref AFContext ctx) {
             var held = new StringBuilder();
             for (KeyCode key = 0; key < KeyCode.EnumLength; key++) {
                 if (ctx.KeyIsDown(key)) {
@@ -18,7 +18,7 @@ namespace RenderingEngineVisualTests {
             return held.ToString();
         }
 
-        string GetCharactersReleased(ref FrameworkContext ctx) {
+        string GetCharactersReleased(ref AFContext ctx) {
             var held = new StringBuilder();
             for (KeyCode key = 0; key < KeyCode.EnumLength; key++) {
                 if (ctx.KeyJustReleased(key)) {
@@ -30,7 +30,7 @@ namespace RenderingEngineVisualTests {
             return held.ToString();
         }
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             ctx.SetDrawColor(0, 0, 0, 1);
 
             if (ctx.KeyIsDown(KeyCode.Any)) {

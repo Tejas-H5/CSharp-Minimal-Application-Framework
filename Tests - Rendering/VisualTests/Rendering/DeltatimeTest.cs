@@ -16,7 +16,7 @@ namespace RenderingEngineVisualTests {
             _timer.Start();
         }
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             dtTimer += Time.DeltaTime;
 
             ctx.SetDrawColor(Color.Black);

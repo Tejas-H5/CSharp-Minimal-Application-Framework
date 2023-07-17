@@ -31,7 +31,7 @@ namespace RenderingEngineVisualTests {
         int amount = 10000;
         readonly int jump = 6000;
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             time += Time.DeltaTime;
             frames++;
 

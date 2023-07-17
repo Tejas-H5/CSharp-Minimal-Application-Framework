@@ -6,14 +6,14 @@ using OpenTK.Mathematics;
 
 namespace RenderingEngineVisualTests {
     class ErrorTest : IRenderable {
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             throw new Exception("Using this component to test error boundaries");
         }
     }
 
     // You never know when this will come in handy
     class BasicTest : IRenderable {
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             ctx.SetDrawColor(Color.Red);
             IM.DrawRect(ctx, new Rect(250, 200, 500, 500));
         }
@@ -26,6 +26,7 @@ namespace RenderingEngineVisualTests {
 
             MutableUT8String.Test();
 
+            tests.AddTest("Text stress test", () => new TextStressTest());
             tests.AddTest("Text Test", () => new TextTest());
             tests.AddTest("Text Font Atlas Text", () => new TextFontAtlasText());
             tests.AddTest("Basic test", () => new BasicTest());

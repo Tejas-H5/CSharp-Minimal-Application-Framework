@@ -9,7 +9,7 @@ namespace RenderingEngineVisualTests {
 
         DrawableFont _font = new DrawableFont("Source code pro", new DrawableFontOptions { });
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             ctx.SetDrawColor(1, 0, 0, 0.5f);
 
             float x0 = ctx.VW * 0.5f;
@@ -31,7 +31,7 @@ namespace RenderingEngineVisualTests {
             b += Time.DeltaTime * 2f;
         }
 
-        private void DrawHand(ref FrameworkContext ctx, float x0, float y0, float r, float angle) {
+        private void DrawHand(ref AFContext ctx, float x0, float y0, float r, float angle) {
             IM.DrawLine(ctx, x0, y0, x0 + r * MathF.Sin(angle), y0 + r * MathF.Cos(angle), 15f, CapType.Circle);
         }
     }

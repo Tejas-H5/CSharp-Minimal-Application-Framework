@@ -12,7 +12,7 @@ namespace RenderingEngineVisualTests {
         float xPos = 0;
         float time;
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             time += (float)Time.DeltaTime;
             xPos = 200 * MathF.Sin(time / 2.0f);
 
@@ -48,14 +48,14 @@ namespace RenderingEngineVisualTests {
             ctx.StopUsingStencil();
         }
 
-        private void DrawBlueRectangle(ref FrameworkContext ctx, float size, float xPos) {
+        private void DrawBlueRectangle(ref AFContext ctx, float size, float xPos) {
             ctx.SetTexture(null);
             ctx.SetDrawColor(0, 0, 1, 1);
             IM.DrawRect(ctx, ctx.VW / 2 - size + xPos, ctx.VH / 2 - size,
                 ctx.VW / 2 + size + xPos, ctx.VH / 2 + size);
         }
 
-        private void DrawRedRectangle(ref FrameworkContext ctx, float size, float xPos) {
+        private void DrawRedRectangle(ref AFContext ctx, float size, float xPos) {
             ctx.SetTexture(null);
             ctx.SetDrawColor(1, 0, 0, 1);
             IM.DrawRect(ctx, ctx.VW / 2 - size + xPos, ctx.VH / 2 - size,

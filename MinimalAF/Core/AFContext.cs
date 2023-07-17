@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 
 namespace MinimalAF {
-    public struct FrameworkContext : IGeometryOutput<Vertex> {
+    public struct AFContext : IGeometryOutput<Vertex> {
         /// <summary>
         /// The rectangle where stuff will be drawn
         /// </summary>
@@ -21,13 +21,13 @@ namespace MinimalAF {
         public bool RectShouldClipOverflow;
 
 
-        internal FrameworkContext(Rect rect, ProgramWindow window, bool isClipping) {
+        internal AFContext(Rect rect, ProgramWindow window, bool isClipping) {
             Rect = rect;
             this.window = window;
             this.RectShouldClipOverflow = isClipping;
         }
 
-        public FrameworkContext WithRect(Rect newRect, bool clipOverflow = false) {
+        public AFContext WithRect(Rect newRect, bool clipOverflow = false) {
             var ctx = this;
             ctx.Rect = newRect;
             ctx.RectShouldClipOverflow = clipOverflow;
@@ -35,15 +35,15 @@ namespace MinimalAF {
             return ctx;
         }
 
-        public FrameworkContext Width(float newWidth, float pivot) {
+        public AFContext Width(float newWidth, float pivot) {
             return WithRect(Rect.ResizedWidth(newWidth, pivot));
         }
 
-        public FrameworkContext Height(float newHeight, float pivot) {
+        public AFContext Height(float newHeight, float pivot) {
             return WithRect(Rect.ResizedHeight(newHeight, pivot));
         }
 
-        public FrameworkContext Inset(float amount) {
+        public AFContext Inset(float amount) {
             return WithRect(Rect.Inset(amount));
         }
 
@@ -70,7 +70,7 @@ namespace MinimalAF {
         /// }
         /// </code>
         /// </summary>
-        public FrameworkContext Use() {
+        public AFContext Use() {
             CTX.Texture.Use(null);
             if (RectShouldClipOverflow) {
                 CTX.CurrentClippingRect = Rect;
@@ -255,6 +255,6 @@ namespace MinimalAF {
 
     // NOTE: Refrain from the temptation to add void Init(), void Update(), or any other methods here yeah
     public interface IRenderable {
-        void Render(FrameworkContext ctx);
+        void Render(AFContext ctx);
     }
 }

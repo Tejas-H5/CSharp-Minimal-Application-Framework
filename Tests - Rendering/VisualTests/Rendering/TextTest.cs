@@ -35,7 +35,7 @@ namespace RenderingEngineVisualTests
             _builtString = sb.ToString();
         }
 
-        void RenderBuiltString(ref FrameworkContext ctx) {
+        void RenderBuiltString(ref AFContext ctx) {
             ctx.SetDrawColor(Color.Green);
 
             var result = _font.DrawText(ctx, _builtString, new DrawTextOptions {
@@ -43,7 +43,6 @@ namespace RenderingEngineVisualTests
                 X = ctx.VW / 2.0f, Y = ctx.VH,
                 VAlign = 1, HAlign = 0.5f,
                 Width = ctx.VW - 50,
-                Count = _ringBufferPos
             });
 
             if (ctx.CharsJustInputted.Count > 0) {
@@ -61,7 +60,7 @@ namespace RenderingEngineVisualTests
         }
 
 
-        public void Render(FrameworkContext ctx) {
+        public void Render(AFContext ctx) {
             ctx.SetDrawColor(Color.Black);
             IM.DrawRect(ctx, 0, 0, ctx.VW, ctx.VH);
 

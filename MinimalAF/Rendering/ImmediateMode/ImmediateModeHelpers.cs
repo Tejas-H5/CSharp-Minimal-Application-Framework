@@ -42,17 +42,14 @@ namespace MinimalAF.Rendering {
     /// be able to make your own IGeometryOutput
     /// </summary>
     public class ImmediateModeHelpers<V> where V : struct {
-        // trying something new
-#if RELEASE
-        public static IVertexCreator2D<V> VertexCreator;
-#endif
-#if DEBUG
         static IVertexCreator2D<V> _vertexCreator;
         public static IVertexCreator2D<V> VertexCreator2D {
             get {
+                #if DEBUG
                 if (_vertexCreator == null) {
                     throw new Exception("You need to set IM<V>.VertexCreator before calling this function for this to work.");
                 }
+                #endif
 
                 return _vertexCreator;
             }
@@ -60,7 +57,6 @@ namespace MinimalAF.Rendering {
                 _vertexCreator = value;
             }
         }
-#endif
 
         static uint _polygonFirst;
         static uint _polygonSecond = 0;

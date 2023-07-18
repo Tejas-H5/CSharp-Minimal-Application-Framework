@@ -57,7 +57,7 @@ namespace MinimalAF.Testing {
             });
         }
 
-        public Rect RenderTextBoxButton(ref AFContext ctx, string text, float x, float y, float padding, Action onClick = null) {
+        public (Rect, bool) RenderTextBoxButton(ref AFContext ctx, string text, float x, float y, float padding) {
             // TODO: revert once we have finished testing text rendering
             float height = 24;
             var result = _font.MeasureText(ctx, text, new DrawTextOptions { 
@@ -71,18 +71,18 @@ namespace MinimalAF.Testing {
 
             var color = Color.Black;
             float alpha = 0.5f;
-            if (onClick != null) {
-                if (ctx.MouseIsOver(rect)) {
-                    if (ctx.MouseButtonJustReleased(MouseButton.Any)) {
-                        onClick();
-                    }
 
-                    if (ctx.MouseButtonIsDown(MouseButton.Any)) {
-                        color = Color.Black;
-                        alpha = 1;
-                    } else {
-                        color = Color.HSV(0, 0, 0.5f);
-                    }
+            bool wasClicked = false; 
+            if (ctx.MouseIsOver(rect)) {
+                if (ctx.MouseButtonJustReleased(MouseButton.Any)) {
+                    wasClicked = true;
+                }
+
+                if (ctx.MouseButtonIsDown(MouseButton.Any)) {
+                    color = Color.Black;
+                    alpha = 1;
+                } else {
+                    color = Color.HSV(0, 0, 0.5f);
                 }
             }
 
@@ -95,7 +95,7 @@ namespace MinimalAF.Testing {
                 FontSize = height, X = x + padding, Y = y + padding,
             });
 
-            return rect;
+            return (rect, wasClicked);
         }
 
         int frames;
@@ -125,7 +125,6 @@ namespace MinimalAF.Testing {
             }
 
             var currentTest = tests[currentTestIndex];
-            ctx.Window.Title = "Test - " + currentTest.Name;
 
             if (currentTest.Instance == null) {
                 currentTest.Instance = currentTest.CreateTest();
@@ -154,14 +153,20 @@ namespace MinimalAF.Testing {
             ctx.Use();
 
             var rect = new Rect();
-            rect = RenderTextBoxButton(ref ctx, " < ", rect.X1, 0, 10, DecrementCurrentTest);
-            rect = RenderTextBoxButton(ref ctx, " > ", rect.X1, 0, 10, IncrementCurrentTest);
-            rect = RenderTextBoxButton(ref ctx, currentTest.Name, rect.X1, 0, 10);
+            var isPressed = false;
+            (rect, isPressed) = RenderTextBoxButton(ref ctx, " < ", rect.X1, 0, 10);
+            if (isPressed) {
+                DecrementCurrentTest(ref ctx);
+            }
+            (rect, isPressed) = RenderTextBoxButton(ref ctx, " > ", rect.X1, 0, 10);
+            if (isPressed) {
+                IncrementCurrentTest(ref ctx);
+            }
+            (rect, isPressed) = RenderTextBoxButton(ref ctx, currentTest.Name, rect.X1, 0, 10);
 
-            if (showPropertiesPanel) {
-                rect = RenderTextBoxButton(ref ctx, "...", rect.X1, 0, 10, TogglePropertiesPanel);
-            } else {
-                rect = RenderTextBoxButton(ref ctx, " v ", rect.X1, 0, 10, TogglePropertiesPanel);
+            (rect, isPressed) = RenderTextBoxButton(ref ctx, showPropertiesPanel ? "..." : " v ", rect.X1, 0, 10);
+            if (isPressed) {
+                TogglePropertiesPanel();
             }
         }
 
@@ -169,8 +174,8 @@ namespace MinimalAF.Testing {
             showPropertiesPanel = !showPropertiesPanel;
         }
 
-        void IncrementCurrentTest() {
-            OnTestChange();
+        void IncrementCurrentTest(ref AFContext ctx) {
+            OnTestChange(ref ctx);
 
             currentTestIndex++;
             if (currentTestIndex >= tests.Count) {
@@ -178,8 +183,8 @@ namespace MinimalAF.Testing {
             }
         }
 
-        void DecrementCurrentTest() {
-            OnTestChange();
+        void DecrementCurrentTest(ref AFContext ctx) {
+            OnTestChange(ref ctx);
 
             currentTestIndex--;
             if (currentTestIndex < 0) {
@@ -187,13 +192,15 @@ namespace MinimalAF.Testing {
             }
         }
 
-        private void OnTestChange() {
+        private void OnTestChange(ref AFContext ctx) {
             if (tests.Count <= 1) return;
 
-            var test = tests[currentTestIndex];
-            if (test.Instance is IDisposable disposable) {
+            var currentTest = tests[currentTestIndex];
+            if (currentTest.Instance is IDisposable disposable) {
                 disposable.Dispose();
             }
+
+            ctx.Window.Title = "Test - " + currentTest.Name;
         }
     }
 }

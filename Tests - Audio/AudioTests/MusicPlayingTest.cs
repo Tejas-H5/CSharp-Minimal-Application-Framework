@@ -10,7 +10,7 @@ namespace AudioEngineTests.AudioTests {
         AudioSource _source;
         AudioStreamInput _audioStream;
         AudioStreamRawData _audioClipStream;
-        DrawableFont _font = new DrawableFont("Consolas", 16);
+        DrawableFont _font = new DrawableFont("Consolas", new DrawableFontOptions { });
         AudioListener _listener;
 
         public MusicPlayingTest() {
@@ -43,7 +43,9 @@ namespace AudioEngineTests.AudioTests {
                 var playbackPos = _source.PlaybackPosition;
                 message += "Time: " + playbackPos;
 
-                _font.DrawText(ctx, message, ctx.VW / 2, ctx.VH / 2, HAlign.Center, VAlign.Center);
+                _font.DrawText(ctx, message, 16, new DrawTextOptions {
+                    X = ctx.VW / 2, Y = ctx.VH / 2, HAlign = 0.5f, VAlign = 0.5f
+                });
 
                 ctx.SetDrawColor(1, 0, 0, 1);
                 float amount = (float)(playbackPos / _audioClipStream.Duration);
@@ -51,7 +53,7 @@ namespace AudioEngineTests.AudioTests {
                 IM.DrawLine(ctx, x, 0, x, ctx.VH, 2, CapType.None);
 
                 if (amount > 1) {
-                    _font.DrawText(ctx, "Duration: " + _audioClipStream.Duration, 0, 0, HAlign.Left, VAlign.Bottom);
+                    _font.DrawText(ctx, "Duration: " + _audioClipStream.Duration, 16, new DrawTextOptions { });
                 }
             }
 

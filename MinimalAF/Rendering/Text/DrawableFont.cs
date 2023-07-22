@@ -31,9 +31,6 @@ namespace MinimalAF {
     // because it is most likely better than this one in every other way. It probably even implements
     // the rendering stuff better (I am not a team of google engineers, or even a team), but this API is easier to use
     public struct DrawTextOptions {
-        /// <summary> The font size </summary>
-        public float FontSize = 24;
-
         /// <summary> Where in the string to start from? (in chars and not unicde code-points)</summary>
         public int Start = 0;
 
@@ -41,7 +38,12 @@ namespace MinimalAF {
         /// How many unicode code points to draw? 
         /// (Note: Some unicode code-points can span two C# UTF-16 chars in a string. Look up UTF-16 surrogate pairs in your own time)
         /// </summary>
-        public int Count = -1;
+        public int Count = int.MaxValue;
+
+        /// <summary>
+        /// Should the number of lines be limited?
+        /// </summary>
+        public int LineCount = int.MaxValue;
 
         /// <summary> Where should it be drawn ? </summary>
         public float X = 0, Y = 0;
@@ -55,7 +57,7 @@ namespace MinimalAF {
         /// <summary> 
         /// Text will be wrapped to this width. They are -1 by default to disable word wrap. 
         /// </summary>
-        public float Width = -1;
+        public float Width = float.MaxValue;
 
         /// <summary>
         /// How many spaces should a tab be? Any number you pick here will be fiercly debated, so don't overthink it
@@ -160,7 +162,7 @@ namespace MinimalAF {
         /// </summary>
         /// <returns>(width of the line, number of chars to the start of the next line, num of codepoints that were just iterated)</returns>
         private (float, int, int) MeasureOrDrawLine<Out>(
-            ref Out output, string text, DrawTextOptions options, bool isDrawing
+            ref Out output, string text, float fontSize, DrawTextOptions options, bool isDrawing
         )
             where Out : IGeometryOutput<Vertex> 
         {
@@ -188,7 +190,7 @@ namespace MinimalAF {
 
                 float glyphWidth; /* => */ {
                     if (codePoint == '\t') {
-                        var (spaceWidth, _) = MeasureGlyph((int)' ', options.FontSize);
+                        var (spaceWidth, _) = MeasureGlyph((int)' ', fontSize);
 
                         if (options.UseTabStops) {
                             glyphWidth = options.TabSize * spaceWidth;
@@ -201,16 +203,16 @@ namespace MinimalAF {
                             output,
                             codePoint,
                             options.X + lineWidth, options.Y,
-                            options.FontSize
+                            fontSize
                         );
                         glyphWidth = width;
                     } else {
-                        var (width, _) = MeasureGlyph(codePoint, options.FontSize);
+                        var (width, _) = MeasureGlyph(codePoint, fontSize);
                         glyphWidth = width;
                     }
                 }
 
-                if (options.Width > 0 && (lineWidth + glyphWidth) > options.Width) {
+                if (lineWidth + glyphWidth > options.Width) {
                     codePoints -= 1;
                     i -= cpLen;
                     break;
@@ -231,19 +233,19 @@ namespace MinimalAF {
         /// Maybe we will have a DrawTextEx in the future? 
         /// But this one here should be enough for things like text editors
         /// </summary>
-        public MeasureTextResult DrawText<Out>(Out output, string text, DrawTextOptions options)
+        public MeasureTextResult DrawText<Out>(Out output, string text, float fontSize, DrawTextOptions options)
             where Out : IGeometryOutput<Vertex> 
         {
-            return MeasureOrDrawText(ref output, text, true, ref options);
+            return MeasureOrDrawText(ref output, text, fontSize, true, ref options);
         }
 
-        public MeasureTextResult MeasureText<Out>(Out output, string text, DrawTextOptions options)
+        public MeasureTextResult MeasureText<Out>(Out output, string text, float fontSize, DrawTextOptions options)
             where Out : IGeometryOutput<Vertex> {
-            return MeasureOrDrawText(ref output, text, false, ref options);
+            return MeasureOrDrawText(ref output, text, fontSize, false, ref options);
         }
 
         private MeasureTextResult MeasureOrDrawText<Out>(
-            ref Out output, string text, bool isDrawing, ref DrawTextOptions options
+            ref Out output, string text, float fontSize, bool isDrawing, ref DrawTextOptions options
         ) 
             where Out : IGeometryOutput<Vertex> 
         {
@@ -255,12 +257,11 @@ namespace MinimalAF {
             var measureResult = new MeasureTextResult { };
             if (isDrawing) {
                 var optCopy = options;
-                measureResult = MeasureOrDrawText(ref output, text, false, ref optCopy);
+                measureResult = MeasureOrDrawText(ref output, text, fontSize, false, ref optCopy);
             }
 
-            int wantedCodePoints = options.Count < 0 ? text.Length : options.Count;
             int initStart = options.Start;
-            float lineHeight = options.FontSize;
+            float lineHeight = fontSize;
 
             // only useful when measuring, (when isDrawing is false)
             float realWidth = 0;
@@ -276,11 +277,15 @@ namespace MinimalAF {
 
             float initialY = options.Y;
             float minXPosition = options.X;
-            int codePoints = 0;
+            int codePointsDrawn = 0, linesDrawn = 0;
 
-            while (options.Start < text.Length && codePoints < wantedCodePoints) {
+            while (
+                options.Start < text.Length && 
+                codePointsDrawn < options.Count && 
+                linesDrawn < options.LineCount
+            ) {
                 // TODO: if hAlign is zero we don't need to measure the line
-                var (lineWidth, nextLineStart, codePointsInLine) = MeasureOrDrawLine(ref output, text, options, isDrawing:false);
+                var (lineWidth, nextLineStart, codePointsInLine) = MeasureOrDrawLine(ref output, text, fontSize, options, isDrawing:false);
 
                 if (nextLineStart == options.Start) {
                     // Width is too narrow, as this is the only case when MeasureOrDrawLine won't advance nextLineStart
@@ -293,13 +298,14 @@ namespace MinimalAF {
                 realWidth = MathF.Max(realWidth, lineWidth);
 
                 if (isDrawing) {
-                    MeasureOrDrawLine(ref output, text, options, isDrawing: true);
+                    MeasureOrDrawLine(ref output, text, fontSize, options, isDrawing: true);
                 }
 
                 options.Start = nextLineStart;
                 options.X = lineResetX;
                 options.Y -= lineHeight - options.LineSpacing;
-                codePoints += codePointsInLine;
+                codePointsDrawn += codePointsInLine;
+                linesDrawn += 1;
             }
 
             if (isDrawing) {
@@ -308,7 +314,7 @@ namespace MinimalAF {
 
             measureResult.StringPosition = options.Start;
             measureResult.Bounds = new Rect {
-                X0 = minXPosition, X1 = minXPosition + (options.Width > 0 ? options.Width : realWidth),
+                X0 = minXPosition, X1 = minXPosition + realWidth,
                 Y0 = options.Y, Y1 = initialY
             }.Rectified();
 

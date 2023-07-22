@@ -83,9 +83,7 @@ namespace RenderingEngineVisualTests {
 
             text.ToCharArray();
 
-            _font.DrawText(ctx, text, new DrawTextOptions {
-                FontSize = 16, X = 10, Y = ctx.VH - 50
-            });
+            _font.DrawText(ctx, text, 16, new DrawTextOptions { X = 10, Y = ctx.VH - 50 });
         }
     }
 }

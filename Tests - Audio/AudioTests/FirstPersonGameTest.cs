@@ -20,7 +20,7 @@ namespace AudioEngineTests.AudioTests {
         }
 
         AudioListener _listener;
-        DrawableFont _font = new DrawableFont("Consolas", 16);
+        DrawableFont _font = new DrawableFont("Consolas", new DrawableFontOptions { });
         GameObject[] _gameObjects;
         GameObject _player;
 
@@ -159,17 +159,18 @@ namespace AudioEngineTests.AudioTests {
                 // Debug
                 {
                     ctx.SetDrawColor(Color.Black);
-                    _font.DrawText(
-                        ctx, "Position: " + _position + "\n" + "Angles: " + _hAngleCurrent + " " + _vAngleCurrent,
-                        0, ctx.VH,
-                        HAlign.Left, VAlign.Top
-                    );
+                    var text = "Position: " + _position + "\n" + "Angles: " + _hAngleCurrent + " " + _vAngleCurrent;
+                    _font.DrawText(ctx, text, 16, new DrawTextOptions { 
+                        X = 0, Y = ctx.VH, HAlign = 0, VAlign = 1
+                    });
                 }
 
 
                 if (_paused) {
                     ctx.SetDrawColor(Color.Black);
-                    _font.DrawText(ctx, "Paused", ctx.VW / 2, ctx.VH / 2, HAlign.Center, VAlign.Center);
+                    _font.DrawText(ctx, "Paused", 16, new DrawTextOptions {
+                        X = ctx.VW / 2, Y = ctx.VH / 2, HAlign = 0.5f, VAlign = 0.5f
+                    });
                     ctx.MouseState = OpenTK.Windowing.Common.CursorState.Normal;
                 } else {
                     // Crosshairs

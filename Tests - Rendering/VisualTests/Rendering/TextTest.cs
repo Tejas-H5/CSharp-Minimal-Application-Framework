@@ -38,8 +38,7 @@ namespace RenderingEngineVisualTests
         void RenderBuiltString(ref AFContext ctx) {
             ctx.SetDrawColor(Color.Green);
 
-            var result = _font.DrawText(ctx, _builtString, new DrawTextOptions {
-                FontSize = 24,
+            var result = _font.DrawText(ctx, _builtString, 24, new DrawTextOptions {
                 X = ctx.VW / 2.0f, Y = ctx.VH,
                 VAlign = 1, HAlign = 0.5f,
                 Width = ctx.VW - 50,
@@ -77,8 +76,7 @@ namespace RenderingEngineVisualTests
             ctx.SetTexture(null); ctx.SetDrawColor(Color.Red);
             IM.DrawRectOutline(ctx, 2, rect);
 
-            _font.DrawText(ctx, "cache misses: " + _font.CacheMissCount, new DrawTextOptions {
-                FontSize = 24,
+            _font.DrawText(ctx, "cache misses: " + _font.CacheMissCount, 24, new DrawTextOptions {
                 X = ctx.VW * 0.5f, Y = 0.0f,
                 HAlign = 0.5f, VAlign = 0,
             });

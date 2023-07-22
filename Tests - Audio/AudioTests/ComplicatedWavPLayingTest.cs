@@ -9,7 +9,7 @@ namespace AudioEngineTests.AudioTests {
     public class ComplicatedWavPLayingTest : IRenderable {
         AudioClipInput _clackSound;
         AudioListener _listener;
-        DrawableFont _font = new DrawableFont("Consolas", 16);
+        DrawableFont _font = new DrawableFont("Consolas", new DrawableFontOptions { });
         Random _random = new Random();
 
         public ComplicatedWavPLayingTest() {
@@ -61,9 +61,14 @@ namespace AudioEngineTests.AudioTests {
                 }
                 DrawCrosshairs(ref ctx, aimPosX, aimPosY, spreadRadius);
                 if (isFiring) {
-                    _font.DrawText(ctx, ">>> Firing", aimPosX + spreadRadius, aimPosY - spreadRadius);
+                    _font.DrawText(ctx, ">>> Firing", 16, new DrawTextOptions {
+                        X = aimPosX + spreadRadius, Y = aimPosY - spreadRadius
+                    });
                 } else {
-                    _font.DrawText(ctx, "> Ready", aimPosX + spreadRadius, aimPosY - spreadRadius);
+                    _font.DrawText(ctx, "> Ready", 16, new DrawTextOptions {
+                        X = aimPosX + spreadRadius,
+                        Y = aimPosY - spreadRadius
+                    });
                 }
             }
 
@@ -71,7 +76,7 @@ namespace AudioEngineTests.AudioTests {
             {
                 ctx.SetDrawColor(Color.Black);
                 for (int i = 0; i < _shots.Count; i++) {
-                    IM.DrawCircle(ctx, _shots[i].X, _shots[i].Y, 10.0f);
+                    IM.DrawCircle(ctx, _shots[i].X, _shots[i].Y, 5.0f);
 
                     if (_shots[i].AudioSource.PlaybackState == PlaybackState.Stopped) {
                         // programmers hate this one simple trick
@@ -102,14 +107,17 @@ namespace AudioEngineTests.AudioTests {
                 _bulletsToFire += (_barrelSpeed * BarrelMaxFrequency) * Time.DeltaTime;
 
                 for(;_bulletsToFire > 1.0f; _bulletsToFire -= 1.0f) {
-                //if (_bulletsToFire > 1.0f) {
-                //    _bulletsToFire -= 1.0f;
+                    //if (_bulletsToFire > 1.0f) {
+                    //    _bulletsToFire -= 1.0f;
 
                     // fire a bullet
 
+                    var angle = _random.NextSingle() * 2.0f * MathF.PI;
+                    var radius = _random.NextSingle() * spreadRadius;
+
                     var shot = new Shot {
-                        X = aimPosX + (0.5f - _random.NextSingle()) * spreadRadius,
-                        Y = aimPosY + (0.5f - _random.NextSingle()) * spreadRadius,
+                        X = aimPosX + MathF.Cos(angle) * radius,
+                        Y = aimPosY + MathF.Sin(angle) * radius,
                         AudioSource = new AudioSource()
                     };
                     _shots.Add(shot);

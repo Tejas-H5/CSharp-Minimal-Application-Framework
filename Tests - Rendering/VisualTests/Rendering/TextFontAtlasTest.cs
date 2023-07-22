@@ -28,8 +28,8 @@ namespace RenderingEngineVisualTests {
             IM.DrawRect(ctx, 0, 0, ctx.VW, ctx.VH);
 
             ctx.SetDrawColor(Color.White);
-            font.DrawText(ctx, testText, new DrawTextOptions {
-                FontSize = 24, X = ctx.VW / 2, Y = ctx.VH,
+            font.DrawText(ctx, testText, 24, new DrawTextOptions {
+                X = ctx.VW / 2, Y = ctx.VH,
                 Width = ctx.VH - 20, // VH not a typo here
                 VAlign = 1, HAlign = 0.5f
             });

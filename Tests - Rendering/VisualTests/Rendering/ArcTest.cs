@@ -23,8 +23,8 @@ namespace RenderingEngineVisualTests {
             DrawHand(ref ctx, x0, y0, r, b);
 
             ctx.SetDrawColor(0, 0, 0, 1);
-            _font.DrawText(ctx, $"Angle a: {a}\nAngle b: {b}" + a, new DrawTextOptions {
-                FontSize = 16, X = 0, Y = ctx.VH, VAlign=1
+            _font.DrawText(ctx, $"Angle a: {a}\nAngle b: {b}" + a, 16, new DrawTextOptions {
+                X = 0, Y = ctx.VH, VAlign=1
             });
 
             a += Time.DeltaTime;

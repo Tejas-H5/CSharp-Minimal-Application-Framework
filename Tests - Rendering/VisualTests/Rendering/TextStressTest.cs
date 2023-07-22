@@ -30,8 +30,8 @@ namespace RenderingEngineVisualTests {
             ctx.SetDrawColor(Color.Green);
             for (int i = 0; i < _strings.Count; i++) {
                 float y = (ctx.VH - i * _fontSize);
-                _font.DrawText(ctx, _strings[i], new DrawTextOptions {
-                    FontSize = _fontSize, VAlign = 1, Y = y,
+                _font.DrawText(ctx, _strings[i], _fontSize, new DrawTextOptions {
+                    VAlign = 1, Y = y,
                 });
             }
         }

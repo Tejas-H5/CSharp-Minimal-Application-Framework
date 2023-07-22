@@ -21,6 +21,13 @@ namespace RenderingEngineVisualTests {
             points.Enqueue(linePoint);
             times.Enqueue(timer);
 
+            if (ctx.KeyJustPressed(KeyCode.R)) {
+                linePoint = new Vector2 {
+                    X = ctx.VX(0.5f),
+                    Y = ctx.VY(0.5f)
+                };
+            }
+
             // remove points after 0.5 seconds
             if (timer - times.Peek() > 0.5f) {
                 points.Dequeue();
@@ -60,16 +67,16 @@ namespace RenderingEngineVisualTests {
             if (points.Count < 2)
                 return;
 
-            int i = 0;
+            var nLineDrawer = IM.NewNLineDrawer();
+            var i = 0;
             foreach (Vector2 p in points) {
-                if (i == 0) {
-                    IM.DrawNLineBegin(ctx, p.X, p.Y, p.X + 10, p.Y + 10);
-                } else {
-                    IM.DrawNLineExtend(ctx, p.X, p.Y, p.X + 10, p.Y + 10);
-                }
-
+                nLineDrawer.ExtendNLine(ctx, 
+                    new Vertex { PosX = p.X, PosY = p.Y },
+                    new Vertex { PosX = p.X, PosY = p.Y + 10 }
+                );
                 i++;
             }
+            IM.DrawCircle(ctx, linePoint.X, linePoint.Y, radius);
         }
     }
 }

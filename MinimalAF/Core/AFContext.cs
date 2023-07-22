@@ -95,6 +95,16 @@ namespace MinimalAF {
             return CTX.MeshOutput.FlushIfRequired(incomingVertexCount, incomingIndexConut);
         }
 
+        public float VX0 => Rect.X0;
+        public float VY0 => Rect.Y0;
+        public float VX1 => Rect.X1;
+        public float VY1 => Rect.Y1;
+        public float VX(float t) {
+            return MathHelpers.Lerp(VX0, VX1, t);
+        }
+        public float VY(float t) {
+            return MathHelpers.Lerp(VY0, VY1, t);
+        }
 
         public float VW => Rect.Width;
         public float VH => Rect.Height;

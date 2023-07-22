@@ -35,6 +35,99 @@ namespace MinimalAF.Rendering {
 
 
     /// <summary>
+    /// Required to hold the state required to draw an NLine in an immedaite mode style.
+    /// V is a type of vertex.
+    /// </summary>
+    public struct NLineDrawer<V> where V : struct {
+        public NLineDrawer(){}
+
+        public V FirstVertex = default(V);
+        public V SecondVertex = default(V);
+        public uint FirstVertexIndex = 0;
+        public uint SecondVertexIndex = 0;
+        public bool Started = false;
+
+        /// <summary>
+        /// Start drawing the NLine, or extend the NLine. 
+        /// Because different usecases require different line tangents, I have deffered this responsibility to you.
+        /// Therefore, for each 'point' in the line, you will actually be inputting 2 vertices, which will be bridged with the two previous vertices to 
+        /// make a quad. This method should really be called something like `DrawQuadStrip`.
+        /// 
+        /// Note: Ideally this should be drawn entirely in 1 go. It is unclear what will happen
+        /// when you have two NLines and you are interlacing calls to this method
+        /// </summary>
+        public void ExtendNLine<Out>(Out outputStream, V v1, V v2) where Out : IGeometryOutput<V> {
+            if (!Started) {
+                FirstVertex = v1;
+                SecondVertex = v2;
+                FirstVertexIndex = outputStream.AddVertex(v1);
+                SecondVertexIndex = outputStream.AddVertex(v2);
+                Started = true;
+                return;
+            }
+
+            uint nextLast1Index = outputStream.AddVertex(v1);
+            uint nextLast2Index = outputStream.AddVertex(v2);
+
+            if (outputStream.FlushIfRequired(2, 6)) {
+                // the last two vertex just got flushed, so we need to add them back.
+                FirstVertexIndex = outputStream.AddVertex(FirstVertex);
+                SecondVertexIndex = outputStream.AddVertex(SecondVertex);
+            }
+
+            outputStream.MakeTriangle(FirstVertexIndex, SecondVertexIndex, nextLast2Index);
+            outputStream.MakeTriangle(nextLast2Index, nextLast1Index, FirstVertexIndex);
+
+            FirstVertex = v1;
+            SecondVertex = v2;
+            FirstVertexIndex = nextLast1Index;
+            SecondVertexIndex = nextLast2Index;
+        }
+    }
+
+
+    /// <summary>
+    /// Required to hold the state required to draw an NGon in an immedaite mode style.
+    /// V is a type of vertex
+    /// </summary>
+    public struct NGonDrawer<V> where V : struct {
+        public NGonDrawer() {}
+
+        public uint PolygonFirst = 0;
+        public uint PolygonSecond = 0;
+        public V FirstVertex = default(V);
+        public V SecondVertex = default(V);
+        public uint FirstVertexIndex = 0;
+        public uint SecondVertexIndex = 0;
+
+
+        // we need at least 2 vertices to start creating triangles with NGonContinue.
+        // TODO: 
+        public void DrawNGonBegin<Out>(Out outputStream, V v1, V v2) where Out : IGeometryOutput<V> {
+            PolygonFirst = outputStream.AddVertex(v1);
+            FirstVertex = v1;
+
+            PolygonSecond = outputStream.AddVertex(v2);
+            SecondVertex = v2;
+        }
+
+        public void DrawNGonExtend<Out>(Out outputStream, V v) where Out : IGeometryOutput<V> {
+            if (outputStream.FlushIfRequired(1, 3)) {
+                // the first and second verts got flushed, so we need to re-add them
+                PolygonFirst = outputStream.AddVertex(FirstVertex);
+                PolygonSecond = outputStream.AddVertex(SecondVertex);
+            }
+
+            uint polygonThird = outputStream.AddVertex(v);
+            outputStream.MakeTriangle(PolygonFirst, PolygonSecond, polygonThird);
+
+            PolygonSecond = polygonThird;
+            SecondVertex = v;
+        }
+    }
+
+
+    /// <summary>
     /// Short for ImmediateMode, it's been abbreviated because we will be using it ALL the time.
     /// 
     /// Has a couple of helper functions used to append vertices and indices onto geometry ouput streams,
@@ -58,12 +151,7 @@ namespace MinimalAF.Rendering {
             }
         }
 
-        static uint _polygonFirst;
-        static uint _polygonSecond = 0;
-        static V _firstVertex;
-        static V _secondVertex;
-        static uint _firstVertexIndex;
-        static uint _secondVertexIndex;
+        
 
         public void DrawTriangle<Out>(Out outputStream, V v1, V v2, V v3) where Out : IGeometryOutput<V> {
             outputStream.FlushIfRequired(3, 3);
@@ -75,6 +163,17 @@ namespace MinimalAF.Rendering {
             outputStream.MakeTriangle(i1, i2, i3);
         }
 
+
+        // Basically, I don't want people directly referencing our Vertex class very often, and
+        // this is how I am doing that
+
+        public static NLineDrawer<V> NewNLineDrawer() {
+            return new NLineDrawer<V> { };
+        }
+
+        public static NGonDrawer<V> NewNGonDrawer() {
+            return new NGonDrawer<V> { };
+        }
 
         public void DrawTriangle<Out>(
             Out outputStream,
@@ -109,10 +208,11 @@ namespace MinimalAF.Rendering {
             var v1Outer = VertexCreator2D.CreateVertex(v11.X, v11.Y, v11.X, v11.Y);
             var v2Outer = VertexCreator2D.CreateVertex(v22.X, v22.Y, v22.X, v22.Y);
 
-            DrawNLineBegin(outputStream, v0Inner, v0Outer);
-            DrawNLineExtend(outputStream, v1Inner, v1Outer);
-            DrawNLineExtend(outputStream, v2Inner, v2Outer);
-            DrawNLineExtend(outputStream, v0Inner, v0Outer);
+            var nLineDrawer = new NLineDrawer<V> { };
+            nLineDrawer.ExtendNLine(outputStream, v0Inner, v0Outer);
+            nLineDrawer.ExtendNLine(outputStream, v1Inner, v1Outer);
+            nLineDrawer.ExtendNLine(outputStream, v2Inner, v2Outer);
+            nLineDrawer.ExtendNLine(outputStream, v0Inner, v0Outer);
         }
 
         /// <summary>
@@ -176,29 +276,6 @@ namespace MinimalAF.Rendering {
             return edgeCount;
         }
 
-        // we need at least 2 vertices to start creating triangles with NGonContinue
-        public static void DrawNGonBegin<Out>(Out outputStream, V v1, V v2) where Out : IGeometryOutput<V> {
-            _polygonFirst = outputStream.AddVertex(v1);
-            _firstVertex = v1;
-
-            _polygonSecond = outputStream.AddVertex(v2);
-            _secondVertex = v2;
-        }
-
-        public static void DrawNGonExtend<Out>(Out outputStream, V v) where Out : IGeometryOutput<V> {
-            if (outputStream.FlushIfRequired(1, 3)) {
-                // the first and second verts got flushed, so we need to re-add them
-                _polygonFirst = outputStream.AddVertex(_firstVertex);
-                _polygonSecond = outputStream.AddVertex(_secondVertex);
-            }
-
-            uint polygonThird = outputStream.AddVertex(v);
-            outputStream.MakeTriangle(_polygonFirst, _polygonSecond, polygonThird);
-
-            _polygonSecond = polygonThird;
-            _secondVertex = v;
-        }
-
         private static void DrawArc<Out>(Out outputStream, float xCenter, float yCenter, float radius, float startAngle, float endAngle, int edgeCount) where Out : IGeometryOutput<V> {
             if (edgeCount < 0)
                 return;
@@ -208,6 +285,7 @@ namespace MinimalAF.Rendering {
             var vCenter = VertexCreator2D.CreateVertex(xCenter, yCenter, 0, 0);
 
             bool first = true;
+            var ngonDrawer = new NGonDrawer<V> { };
             for (float angle = endAngle; angle > startAngle - deltaAngle + 0.001f; angle -= deltaAngle) {
                 float X = xCenter + radius * MathF.Sin(angle);
                 float Y = yCenter + radius * MathF.Cos(angle);
@@ -215,9 +293,9 @@ namespace MinimalAF.Rendering {
 
                 if (first == true) {
                     first = false;
-                    DrawNGonBegin(outputStream, vCenter, v);
+                    ngonDrawer.DrawNGonBegin(outputStream, vCenter, v);
                 } else {
-                    DrawNGonExtend(outputStream, v);
+                    ngonDrawer.DrawNGonExtend(outputStream, v);
                 }
             }
         }
@@ -234,6 +312,7 @@ namespace MinimalAF.Rendering {
             float deltaAngle = (endAngle - startAngle) / edgeCount;
 
             bool first = true;
+            var nLineDrawer = new NLineDrawer<V> { };
             for (float angle = startAngle; angle < endAngle + deltaAngle - 0.001f; angle += deltaAngle) {
                 float sinAngle = MathF.Sin(angle);
                 float cosAngle = MathF.Cos(angle);
@@ -247,61 +326,13 @@ namespace MinimalAF.Rendering {
                 var v2 = VertexCreator2D.CreateVertex(X2, Y2, sinAngle, cosAngle);
 
                 if (first) {
-                    DrawNLineBegin(outputStream, v1, v2);
+                    nLineDrawer.ExtendNLine(outputStream, v1, v2);
                     first = false;
                 } else {
-                    DrawNLineExtend(outputStream, v1, v2);
+                    nLineDrawer.ExtendNLine(outputStream, v1, v2);
                 }
             }
         }
-
-
-        public static void DrawNLineBegin<Out>(Out outputStream, float v1x, float v1y, float v2x, float v2y) where Out : IGeometryOutput<V> {
-            DrawNLineBegin(
-                outputStream,
-                VertexCreator2D.CreateVertex(v1x, v1y, v1x, v1y),
-                VertexCreator2D.CreateVertex(v2x, v2y, v2x, v2y)
-            );
-        }
-
-        public static void DrawNLineBegin<Out>(Out outputStream, V v1, V v2) where Out : IGeometryOutput<V> {
-            _firstVertex = v1;
-            _secondVertex = v2;
-            _firstVertexIndex = outputStream.AddVertex(v1);
-            _secondVertexIndex = outputStream.AddVertex(v2);
-        }
-
-        public static void DrawNLineExtend<Out>(Out outputStream, float v1x, float v1y, float v2x, float v2y) where Out : IGeometryOutput<V> {
-            DrawNLineExtend(
-                outputStream,
-                VertexCreator2D.CreateVertex(v1x, v1y, v1x, v1y),
-                VertexCreator2D.CreateVertex(v2x, v2y, v2x, v2y)
-            );
-        }
-
-
-        /// <summary>
-        /// NLines don't need to be ended now. Just extedn them however many times you need.
-        /// </summary>
-        public static void DrawNLineExtend<Out>(Out outputStream, V v1, V v2) where Out : IGeometryOutput<V> {
-            uint nextLast1Index = outputStream.AddVertex(v1);
-            uint nextLast2Index = outputStream.AddVertex(v2);
-
-            if (outputStream.FlushIfRequired(2, 6)) {
-                // the last two vertex just got flushed, so we need to add them back.
-                _firstVertexIndex = outputStream.AddVertex(_firstVertex);
-                _secondVertexIndex = outputStream.AddVertex(_secondVertex);
-            }
-
-            outputStream.MakeTriangle(_firstVertexIndex, _secondVertexIndex, nextLast2Index);
-            outputStream.MakeTriangle(nextLast2Index, nextLast1Index, _firstVertexIndex);
-
-            _firstVertex = v1;
-            _secondVertex = v2;
-            _firstVertexIndex = nextLast1Index;
-            _secondVertexIndex = nextLast2Index;
-        }
-
 
         public static void DrawLine<Out>(Out outputStream, float x0, float y0, float x1, float y1, float thickness, CapType cap = CapType.None) where Out : IGeometryOutput<V> {
             thickness /= 2;

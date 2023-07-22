@@ -8,6 +8,22 @@ namespace MinimalAF {
         public Vector3 position;
         public Vector2 uv;
 
+        public float PosX {
+            get => position.X;
+            set => position.X = value;
+        }
+
+        public float PosY {
+            get => position.Y;
+            set => position.Y = value;
+        }
+
+        public float PosZ {
+            get => position.Z;
+            set => position.Z = value;
+        }
+
+
         public Vector3 Position {
             get => position;
             set => position = value;

@@ -67,10 +67,10 @@ namespace RenderingEngineVisualTests {
             if (points.Count < 2)
                 return;
 
-            var nLineDrawer = IM.NewNLineDrawer();
+            var nLineDrawer = IM.NewNLineDrawer(ctx);
             var i = 0;
             foreach (Vector2 p in points) {
-                nLineDrawer.ExtendNLine(ctx, 
+                nLineDrawer.ExtendNLine(
                     new Vertex { PosX = p.X, PosY = p.Y },
                     new Vertex { PosX = p.X, PosY = p.Y + 10 }
                 );

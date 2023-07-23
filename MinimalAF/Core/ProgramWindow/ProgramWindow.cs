@@ -53,7 +53,7 @@ namespace MinimalAF {
         /// <summary>
         /// There is no update loop. It is dead, and we killed it. (There is only a render loop, for simplicity)
         /// </summary>
-        public double RenderFrequency;
+        public double TargetFramerate;
 
         public Vector2i Size {
             get => _window.Size;
@@ -106,11 +106,11 @@ namespace MinimalAF {
             double frameEnd = GetSecondsSinceStart();
             dt = frameEnd - prevFrameEnd;
 
-            if (RenderFrequency > .001f) {
+            if (TargetFramerate > .001f) {
                 // This is a power saving mechanism that will sleep the thread if we
                 // have the time available to do so. It reduces overall CPU consumption.
                 // It also never kicks in if frameDuration = 0
-                var frameDuration = 1.0 / RenderFrequency;
+                var frameDuration = 1.0 / TargetFramerate;
                 var timeToNextFrame = frameDuration - dt;
                 if (timeToNextFrame > 0.0) {
                     Thread.Sleep(TimeSpan.FromSeconds(timeToNextFrame));

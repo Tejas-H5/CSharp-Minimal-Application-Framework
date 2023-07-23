@@ -35,19 +35,12 @@ namespace MinimalAF.Testing {
 
         DrawableFont _font;
 
-        public VisualTestRunner Init(AFContext ctx) {
-            var w = ctx.Window;
-            if (w == null) return this;
-
-            w.Title = "Visual tests";
-            //w.RenderFrequency = 60;
-            w.SetWindowState(WindowState.Maximized);
-
+        public VisualTestRunner(AFContext ctx) {
+            ctx.Window.Title = "Visual tests";
+            ctx.Window.SetWindowState(WindowState.Maximized);
             ctx.SetClearColor(Color.White);
 
             _font = new DrawableFont("Source Code Pro", new DrawableFontOptions { });
-
-            return this;
         }
 
         public void AddTest(string name, Func<IRenderable> test) {
@@ -127,27 +120,22 @@ namespace MinimalAF.Testing {
                 currentTest.Instance = currentTest.CreateTest();
             }
 
-            // do the test
-            {
-                // its probably better if we don't catch the exceptions just yet.
-                // maybe I could do some work on this later?
-                // try {
-                    currentTest.Instance.Render(ctx);
-                //} catch (Exception err) {
-                //    ctx.Use();
-                //    ctx.UseFramebuffer(null);
-
-                //    string stackTrace = "";
-                //    if (err.StackTrace != null) {
-                //        stackTrace = err.StackTrace;
-                //    }
-
-                //    ctx.SetDrawColor(Color.Red);
-                //    _font.Draw(ctx, err.ToString(), ctx.VW * 0.5f, ctx.VH * 0.5f, HAlign.Center, VAlign.Center);
-                //}
-            }
+            // do the test.
+            // Use a slightly indented and off-centered context to catch some common layouting errors.
+            // Also set clipping to true, to test if it breaks the clipping system.
+            var insetRect = ctx.Rect
+                .ResizedWidth(ctx.Rect.Width * 0.75f, 0.6f)
+                .ResizedHeight(ctx.Rect.Height * 0.75f, 0.6f);
+            currentTest.Instance.Render(
+                ctx
+                    .WithRect(insetRect)
+                    .WithClipping(true)
+                    .Use()
+            );
 
             ctx.Use();
+            ctx.SetDrawColor(Color.Red);
+            IM.DrawRectOutline(ctx, 5, insetRect);
 
             var rect = new Rect();
             var isPressed = false;

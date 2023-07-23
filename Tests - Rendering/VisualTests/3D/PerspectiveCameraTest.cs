@@ -28,13 +28,13 @@ namespace RenderingEngineVisualTests {
                 up: new Vector3(0, 1, 0)
             );
 
-            ctx.SetModel(Matrix4.CreateTranslation(new Vector3(0, 0, -20)));
+            ctx.SetTransform(Matrix4.CreateTranslation(new Vector3(0, 0, -20)));
             ctx.SetDrawColor(0, 0, 0, 1);
             IM.DrawRectOutline(ctx, 1, -50, -50, 50, 50);
 
             _font.DrawText(ctx, "This is a wall.", 24, new DrawTextOptions { HAlign = 0.5f, VAlign = 0.5f });
 
-            ctx.SetModel(Matrix4.CreateTranslation(rectPoint));
+            ctx.SetTransform(Matrix4.CreateTranslation(rectPoint));
 
             ctx.SetDrawColor(1, 0, 0, 0.5f);
             IM.DrawRect(ctx, new Rect(-1, -1, 1, 1) * 10);

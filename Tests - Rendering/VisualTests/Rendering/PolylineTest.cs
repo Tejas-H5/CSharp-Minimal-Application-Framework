@@ -23,8 +23,7 @@ namespace RenderingEngineVisualTests {
 
             if (ctx.KeyJustPressed(KeyCode.R)) {
                 linePoint = new Vector2 {
-                    X = ctx.VX(0.5f),
-                    Y = ctx.VY(0.5f)
+                    X = ctx.VW * 0.5f, Y = ctx.VH * 0.5f
                 };
             }
 

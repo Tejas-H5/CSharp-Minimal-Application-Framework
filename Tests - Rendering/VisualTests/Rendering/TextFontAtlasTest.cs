@@ -38,7 +38,7 @@ namespace RenderingEngineVisualTests {
             var my = -1.2f * (-1 + 2 * ctx.MouseY / ctx.VH) * font.Texture.Height;
 
             var prev = ctx.GetModelMatrix();
-            ctx.SetModel(prev * Matrix4.CreateTranslation(new Vector3(mx, my, 0)));
+            ctx.SetTransform(prev * Matrix4.CreateTranslation(new Vector3(mx, my, 0)));
 
             var rect = new Rect {
                 X0 = 0, X1 = font.Texture.Height,
@@ -53,7 +53,7 @@ namespace RenderingEngineVisualTests {
             ctx.SetTexture(font.Texture);
             IM.DrawRect(ctx, rect);
 
-            ctx.SetModel(prev);
+            ctx.SetTransform(prev);
         }
     }
 }

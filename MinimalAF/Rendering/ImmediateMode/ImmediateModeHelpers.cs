@@ -89,8 +89,15 @@ namespace MinimalAF.Rendering {
 
 
     /// <summary>
-    /// Required to hold the state required to draw an NGon in an immedaite mode style.
-    /// V is a type of vertex
+    /// Holds the state required to draw an NGon in an immedaite mode style.
+    /// Usage: 
+    /// 
+    /// <code>
+    /// var ngonDrawer = IM.NewNGonDrawer();
+    /// ngonDrawer.Extend(v1);
+    /// ngonDrawer.Extend(v2);
+    /// ngonDrawer.Extend(v3);
+    /// </code>
     /// </summary>
     public struct NGonDrawer<V, Out> where V : struct where Out : IGeometryOutput<V> {
         public NGonDrawer() {}
@@ -101,20 +108,40 @@ namespace MinimalAF.Rendering {
         public V SecondVertex = default(V);
         public uint FirstVertexIndex = 0;
         public uint SecondVertexIndex = 0;
+        public uint Count = 0;
 
         public Out OutputStream = default(Out);
 
-        // we need at least 2 vertices to start creating triangles with NGonContinue.
-        // TODO: 
-        public void DrawNGonBegin(V v1, V v2) {
-            PolygonFirst = OutputStream.AddVertex(v1);
-            FirstVertex = v1;
+        /// <summary>
+        /// It chains together a whole bunch of triangles that all connect back to the first vertex.
+        /// For this reason, you will most likely get better results if you put your first point in the NGon's center, and then 
+        /// places the rest of the points. (this is actually how I am drawing the circles).
+        /// 
+        /// You should draw the entire NGon in one series of calls, that aren't interlaced with other 
+        /// immediate mode draw calls in-between, as this can cause faces to be missing.
+        /// 
+        /// TODO: fix several issues (of which there are too many for me to name rn)
+        /// - Doesn't work for convex
+        /// - doesn't work for inconsistent winding
+        /// - Doesn't work for n &lt; 2, nor gives any error or warning or hint.
+        /// </summary>
+        public void ExtendNGon(V v) {
+            // we need at least 2 vertices to start creating triangles with NGonContinue.
 
-            PolygonSecond = OutputStream.AddVertex(v2);
-            SecondVertex = v2;
-        }
+            if (Count == 0) {
+                PolygonFirst = OutputStream.AddVertex(v);
+                FirstVertex = v;
+                Count++;
+                return;
+            }
 
-        public void DrawNGonExtend(V v) {
+            if (Count == 1) {
+                PolygonSecond = OutputStream.AddVertex(v);
+                SecondVertex = v;
+                Count++;
+                return;
+            }
+
             if (OutputStream.FlushIfRequired(1, 3)) {
                 // the first and second verts got flushed, so we need to re-add them
                 PolygonFirst = OutputStream.AddVertex(FirstVertex);
@@ -126,6 +153,8 @@ namespace MinimalAF.Rendering {
 
             PolygonSecond = polygonThird;
             SecondVertex = v;
+
+            Count++;
         }
     }
 
@@ -287,19 +316,14 @@ namespace MinimalAF.Rendering {
 
             var vCenter = VertexCreator2D.CreateVertex(xCenter, yCenter, 0, 0);
 
-            bool first = true;
             var ngonDrawer = NewNGonDrawer(outputStream);
+            ngonDrawer.ExtendNGon(vCenter);
             for (float angle = endAngle; angle > startAngle - deltaAngle + 0.001f; angle -= deltaAngle) {
                 float X = xCenter + radius * MathF.Sin(angle);
                 float Y = yCenter + radius * MathF.Cos(angle);
                 var v = _vertexCreator.CreateVertex(X, Y, X / radius, Y / radius);
 
-                if (first == true) {
-                    first = false;
-                    ngonDrawer.DrawNGonBegin(vCenter, v);
-                } else {
-                    ngonDrawer.DrawNGonExtend(v);
-                }
+                ngonDrawer.ExtendNGon(v);
             }
         }
 

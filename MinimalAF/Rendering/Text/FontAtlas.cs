@@ -183,7 +183,7 @@ namespace MinimalAF {
         }
 
         GlyphRasterResult RasterizeGlyph(int codePoint, SKBitmap bitmap) {
-            var codePointStr = MutableUT8String.CodePointToString(codePoint);
+            var codePointStr = CharArrayList.CodePointToString(codePoint);
             var (glyphWidth, glyphHeight, bounds) = GetGlyphSizeInternal(codePointStr, codePoint);
             var padding = _fontImportSettings.Padding;
             float glyphOffset = bounds.Bottom;
@@ -307,7 +307,7 @@ namespace MinimalAF {
                 return _glyphValues[_codePointGlyphValuesIndices[codePoint]].NormalizedSize;
             }
 
-            var codePointStr = MutableUT8String.CodePointToString(codePoint);
+            var codePointStr = CharArrayList.CodePointToString(codePoint);
             var (w, h, _) = GetGlyphSizeInternal(codePointStr, codePoint);
             return new Vector2(
                 Normalized(w), Normalized(h)

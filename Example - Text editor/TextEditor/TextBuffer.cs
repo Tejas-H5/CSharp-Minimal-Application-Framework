@@ -2,7 +2,7 @@
 
 namespace TextEditor {
     class TextBuffer {
-        MutableString _buffer = new MutableString();        
+        MinimalAF.CharArrayList _buffer = new MinimalAF.CharArrayList();        
         public int Length => _buffer.Length;
         public char this[int pos] => _buffer[pos];
 
@@ -13,7 +13,8 @@ namespace TextEditor {
         }
 
         public TextBuffer(string initText) {
-            _buffer.Resize(initText.Length);
+            _buffer.MaxCapacity = int.MaxValue;
+            _buffer.Chars.Resize(initText.Length);
             for (int i = 0; i < initText.Length; i++) {
                 _buffer[i] = initText[i];
             }
@@ -25,11 +26,25 @@ namespace TextEditor {
             return newPosition;
         }
 
+        void removeAt(int pos) {
+            pos = ClampCursorPosition(pos);
+            _buffer.Chars.RemoveAt(pos);
+            // TODO: handle unicode. or maybe the caller should?
+            for (int i = pos; i < _buffer.Chars.Length - 1; i++) {
+                _buffer.Chars.Data[i] = _buffer.Chars.Data[i + 1];
+            }
+        }
+
+        void insertAt(int pos, char c) {
+            pos = ClampCursorPosition(pos);
+            _buffer.Chars.InsertAt(pos, c);
+        }
+
         public int BackspaceLetter(int cursorPosition) {
             cursorPosition--;
-            // we really want to remove a character that is behind the cursor
-            _buffer.Remove(cursorPosition);
 
+            // we really want to remove a character that is behind the cursor
+            removeAt(cursorPosition);
             OnTextEdited();
 
             return ClampCursorPosition(cursorPosition);
@@ -43,7 +58,7 @@ namespace TextEditor {
                 return BackspaceLetter(cursorPosition);
             }
 
-            _buffer.Insert(c, cursorPosition);
+            insertAt(cursorPosition, c);
             OnTextEdited();
 
             return ClampCursorPosition(cursorPosition + 1);
@@ -196,7 +211,7 @@ namespace TextEditor {
         public int CountOccurrances(string s) {
             int count = 0;
             for(int i = 0; i < _buffer.Length; i++) {
-                if (_buffer.CompareAtPosition(s, i)) {
+                if (_buffer.CompareSlice(s, i)) {
                     count++;
                 }
             }
@@ -204,7 +219,13 @@ namespace TextEditor {
         }
 
         public void RemoveRange(int start, int end) {
-            _buffer.RemoveRange(start, end);
+            if (start > end) {
+                var temp = end;
+                end = start;
+                start = temp;
+            }
+
+            _buffer.Chars.RemoveRange(start, end - start);
         }
 
         /// <summary>
@@ -234,15 +255,11 @@ namespace TextEditor {
         }
 
 
-
         public void Clear() {
             _buffer.Clear();
             OnTextEdited();
         }
 
-        public string BuildString() {
-            return _buffer.BuildString();
-        }
 
 #if DEBUG
         public static void RunTests(Testing t) {

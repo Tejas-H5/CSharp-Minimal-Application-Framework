@@ -10,11 +10,13 @@ namespace TextEditor {
         TextEditor _editor = new TextEditor();
 
         public TextEditorRoot(AFContext ctx) {
+            // The text rendering seems to still be pretty bad. 
+
             ctx.SetClearColor(AppConfig.BG);
             ctx.Window.Title = "Text editor";
             ctx.Window.SetWindowState(WindowState.Maximized);
 
-            ctx.Window.RenderFrequency = 60;
+            ctx.Window.TargetFramerate = 60;
             // ctx.Window.UpdateFrequency = 0;
         }
 

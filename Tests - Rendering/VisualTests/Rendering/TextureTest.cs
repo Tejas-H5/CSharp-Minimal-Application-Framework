@@ -29,7 +29,7 @@ namespace RenderingEngineVisualTests
             Rect rect2 = new Rect(ctx.VW / 2 + 20, 20, ctx.VW - 20, ctx.VH - 20);
 
 
-            ctx.SetModel(
+            ctx.SetTransform(
                 Matrix4.CreateScale(MathF.Sin(t)) *
                 Matrix4.CreateRotationZ(t) *
                 Matrix4.CreateTranslation(rect2.CenterX, rect2.CenterY, 0)

@@ -25,7 +25,7 @@ namespace RenderingEngineVisualTests {
             }
 
             ctx.SetDrawColor(Color.Black);
-            IM.DrawRect(ctx, ctx.Rect);
+            IM.DrawRect(ctx, 0, 0, ctx.VW, ctx.VH);
 
             ctx.SetDrawColor(Color.Green);
             for (int i = 0; i < _strings.Count; i++) {

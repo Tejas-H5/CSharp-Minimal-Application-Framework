@@ -35,6 +35,12 @@ namespace MinimalAF {
             return ctx;
         }
 
+        public AFContext WithClipping(bool shouldClipOverflow) {
+            var ctx = this;
+            ctx.RectShouldClipOverflow = shouldClipOverflow;
+            return ctx;
+        }
+
         public AFContext Width(float newWidth, float pivot) {
             return WithRect(Rect.ResizedWidth(newWidth, pivot));
         }
@@ -72,13 +78,14 @@ namespace MinimalAF {
         /// </summary>
         public AFContext Use() {
             CTX.Texture.Use(null);
+
             if (RectShouldClipOverflow) {
                 CTX.CurrentClippingRect = Rect;
             } else {
                 CTX.DisableClipping();
             }
 
-            SetModel(Matrix4.Identity);
+            SetTransform(Matrix4.Identity);
             SetProjectionCartesian2D(1, 1, 0, 0);
             return this;
         }
@@ -93,17 +100,6 @@ namespace MinimalAF {
 
         public bool FlushIfRequired(int incomingVertexCount, int incomingIndexConut) {
             return CTX.MeshOutput.FlushIfRequired(incomingVertexCount, incomingIndexConut);
-        }
-
-        public float VX0 => Rect.X0;
-        public float VY0 => Rect.Y0;
-        public float VX1 => Rect.X1;
-        public float VY1 => Rect.Y1;
-        public float VX(float t) {
-            return MathHelpers.Lerp(VX0, VX1, t);
-        }
-        public float VY(float t) {
-            return MathHelpers.Lerp(VY0, VY1, t);
         }
 
         public float VW => Rect.Width;
@@ -131,9 +127,9 @@ namespace MinimalAF {
         }
 
         /// <summary>
-        /// Sets the shader's model matrix
+        /// Sets the shader's model aka transform matrix.
         /// </summary>
-        public void SetModel(Matrix4 transform) {
+        public void SetTransform(Matrix4 transform) {
             CTX.SetModel(transform);
         }
 
@@ -189,8 +185,8 @@ namespace MinimalAF {
         /// <summary>
         /// <inheritdoc cref="CTX.Cartesian2D(float, float, float, float)"/>
         /// </summary>
-        public void SetProjectionCartesian2D(float scaleX, float scaleY, float offsetX, float offsetY) {
-            CTX.Cartesian2D(scaleX, scaleY, Rect.X0 + offsetX, Rect.Y0 + offsetY);
+        public void SetProjectionCartesian2D(float scaleX, float scaleY, float originX, float originY) {
+            CTX.Cartesian2D(scaleX, scaleY, Rect.X0 + originX, Rect.Y0 + originY);
         }
 
         /// <summary>

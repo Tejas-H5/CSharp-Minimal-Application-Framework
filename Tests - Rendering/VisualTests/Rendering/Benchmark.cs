@@ -31,6 +31,8 @@ namespace RenderingEngineVisualTests {
         int amount = 10000;
         readonly int jump = 6000;
 
+        CharArrayList _benchmarkInfoText = new CharArrayList { };
+
         public void Render(AFContext ctx) {
             time += Time.DeltaTime;
             frames++;
@@ -74,16 +76,12 @@ namespace RenderingEngineVisualTests {
 
             ctx.SetDrawColor(0, 0, 0, 1f);
 
-            string text = "FPS: " + FPS.ToString("0.000") +
-                "\nLines drawn: " + amount +
-                "\nCapType: " + CapType.ToString();
-                //"\nVertex refreshes: " + CTX.TimesVertexThresholdReached +
-                //"\nIndex refreshes: " + CTX.TimesIndexThresholdReached +
-                //"\nVertex:Index Ratio: " + CTX.VertexToIndexRatio;
+            _benchmarkInfoText.Clear();
+            _benchmarkInfoText.Str("FPS: "); _benchmarkInfoText.Double(FPS, 3);
+            _benchmarkInfoText.Str("\nLines drawn: "); _benchmarkInfoText.Int(amount);
+            _benchmarkInfoText.Str("\nCap type: "); _benchmarkInfoText.Str(CapType.ToString());
 
-            text.ToCharArray();
-
-            _font.DrawText(ctx, text, 16, new DrawTextOptions { X = 10, Y = ctx.VH - 50 });
+            _font.DrawText(ctx, _benchmarkInfoText, 16, new DrawTextOptions { X = 10, Y = ctx.VH - 50 });
         }
     }
 }

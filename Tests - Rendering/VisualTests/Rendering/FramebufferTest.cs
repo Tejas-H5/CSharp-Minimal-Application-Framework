@@ -20,7 +20,7 @@ namespace RenderingEngineVisualTests {
                 ctx.Clear(Color.RGBA(0, 0, 0, 0));
 
                 ctx.SetProjectionCartesian2D(1, 1, 0, 0);
-                ctx.SetModel(Matrix4.CreateTranslation(0, 0, 0));
+                ctx.SetTransform(Matrix4.CreateTranslation(0, 0, 0));
 
                 ctx.SetDrawColor(0, 0, 1, 1);
                 DrawDualCirclesCenter(ref ctx, wCX, wCY);

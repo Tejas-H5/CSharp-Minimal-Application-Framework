@@ -7,7 +7,6 @@ namespace TextEditor {
         public bool AutoClose = true;
 
         TextArea _textInput;
-        Action<string>? _callback;
 
         string _title = "";
         string _error = "";
@@ -21,13 +20,7 @@ namespace TextEditor {
                 _justEdited = true;
             };
 
-            _callback = callback;
-
             _error = "";
-        }
-
-        public string GetText() {
-            return _textInput.GetText();
         }
 
         public void Clear() {
@@ -43,11 +36,7 @@ namespace TextEditor {
         }
         
         public void Render(AFContext ctx) {
-            if (_callback == null) {
-                return;
-            }
-
-            var charHeight = AppConfig.MainFont.GetCharHeight();
+            var charHeight = 24;
             var padding = 5;
 
             var rect = new Rect(0, 0, ctx.VW, charHeight + 2 * padding);
@@ -59,12 +48,16 @@ namespace TextEditor {
 
             ctx.SetDrawColor(AppConfig.FG);
             ctx.SetTexture(AppConfig.MainFont.Texture);
-            var labelEnd = AppConfig.MainFont.DrawText(ctx, _title, padding, padding);
+            var labelEnd = AppConfig.MainFont.DrawText(ctx, _title, charHeight, new DrawTextOptions {
+                X = padding, Y = padding
+            });
 
             ctx.SetDrawColor(AppConfig.ErrorCol);
-            labelEnd = AppConfig.MainFont.DrawText(ctx, _error, labelEnd.X + padding, padding);
+            labelEnd = AppConfig.MainFont.DrawText(ctx, _error, charHeight, new DrawTextOptions {
+                X = labelEnd.Bounds.Width + padding, Y = padding
+            });
 
-            rect.X0 = labelEnd.X + padding;
+            rect.X0 = labelEnd.Bounds.Width + padding;
 
             _textInput.Render(
                 ctx.WithRect(rect).Use()
@@ -72,7 +65,7 @@ namespace TextEditor {
 
             if (_justEdited) {
                 _justEdited = false;
-                _callback(_textInput.GetText());
+                // todo: callback. or return a bool and branch on it
             }
         }
     }

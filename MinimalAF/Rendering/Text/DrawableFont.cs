@@ -140,29 +140,13 @@ namespace MinimalAF {
         }
 
         /// <summary>
-        /// Gets the next code point in a C# UTF-16 string.
-        /// 
-        /// I yoinked it from this SO thread here: https://stackoverflow.com/questions/43564445/how-to-map-unicode-codepoints-from-an-utf-16-file-using-c
-        /// </summary>
-        public static (int, int) GetNextCodepoint(string text, int pos) {
-            char c1 = text[pos];
-            if (c1 >= 0xd800 && c1 < 0xdc00) {
-                char c2 = text[pos + 1];
-                int codePoint = ((c1 & 0x3ff) << 10) + (c2 & 0x3ff) + 0x10000;
-                return (codePoint, 2);
-            }
-
-            return (c1, 1);
-        }
-
-        /// <summary>
         /// Measure the width of or draw a single line of text.
         /// 
         /// Alignment options is ignorder, because we can't align text we don't know the width of!
         /// </summary>
         /// <returns>(width of the line, number of chars to the start of the next line, num of codepoints that were just iterated)</returns>
         private (float, int, int) MeasureOrDrawLine<Out>(
-            ref Out output, string text, float fontSize, DrawTextOptions options, bool isDrawing
+            ref Out output, ReadOnlySpan<char> text, float fontSize, DrawTextOptions options, bool isDrawing
         )
             where Out : IGeometryOutput<Vertex> 
         {
@@ -171,7 +155,7 @@ namespace MinimalAF {
 
             float lineWidth = 0;
             while(i < text.Length && codePoints < wantedCodePoints) {
-                var (codePoint, cpLen) = GetNextCodepoint(text, i);
+                var (codePoint, cpLen) = CharArrayList.GetNextCodepoint(text, i);
                 i += cpLen;
                 codePoints += 1;
 
@@ -233,19 +217,19 @@ namespace MinimalAF {
         /// Maybe we will have a DrawTextEx in the future? 
         /// But this one here should be enough for things like text editors
         /// </summary>
-        public MeasureTextResult DrawText<Out>(Out output, string text, float fontSize, DrawTextOptions options)
+        public MeasureTextResult DrawText<Out>(Out output, ReadOnlySpan<char> text, float fontSize, DrawTextOptions options)
             where Out : IGeometryOutput<Vertex> 
         {
             return MeasureOrDrawText(ref output, text, fontSize, true, ref options);
         }
 
-        public MeasureTextResult MeasureText<Out>(Out output, string text, float fontSize, DrawTextOptions options)
+        public MeasureTextResult MeasureText<Out>(Out output, ReadOnlySpan<char> text, float fontSize, DrawTextOptions options)
             where Out : IGeometryOutput<Vertex> {
             return MeasureOrDrawText(ref output, text, fontSize, false, ref options);
         }
 
         private MeasureTextResult MeasureOrDrawText<Out>(
-            ref Out output, string text, float fontSize, bool isDrawing, ref DrawTextOptions options
+            ref Out output, ReadOnlySpan<char> text, float fontSize, bool isDrawing, ref DrawTextOptions options
         ) 
             where Out : IGeometryOutput<Vertex> 
         {

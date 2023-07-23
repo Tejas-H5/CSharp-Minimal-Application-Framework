@@ -114,6 +114,12 @@ namespace MinimalAF {
             return new Color(v, v, v, a);
         }
 
+        public Color WithAlpha(float a) {
+            var c = this;
+            c.A = a;
+            return c;
+        }
+
         public static bool operator ==(Color a, Color b) {
             float eps = 0.0001f;
             return MathF.Abs(a.R - b.R) +

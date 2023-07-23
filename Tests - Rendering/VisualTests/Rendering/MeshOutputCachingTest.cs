@@ -24,7 +24,7 @@ namespace RenderingEngineVisualTests {
                 float y = ctx.VH * xNorm;
 
                 ctx.SetDrawColor(xNorm, 0, 1f - xNorm, 0.4f);
-                ctx.SetModel(Matrix4.CreateTranslation(x, y, 0));
+                ctx.SetTransform(Matrix4.CreateTranslation(x, y, 0));
                 mesh.Render();
             }
         }

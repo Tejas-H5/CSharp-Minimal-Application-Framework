@@ -18,6 +18,8 @@ namespace TextEditor {
         TextBuffer _buffer;
         bool _bufferContentsChanged;
 
+        CharArrayList _lineNumbers = new CharArrayList { };
+
         // offset from start of bufferer where we are inserting/removing characters
         int _cursorPos = 0;
 
@@ -44,10 +46,6 @@ namespace TextEditor {
 
         public int SelectPos => _selectStartPos;
 
-
-        public string GetText() {
-            return _buffer.BuildString();
-        }
 
         public int IndexOf(string s, int start) {
             return _buffer.IndexOf(s, start);
@@ -102,8 +100,7 @@ namespace TextEditor {
             float padding = 10;
 
             int currentLineNumber = 0;
-            float charHeight = AppConfig.MainFont.GetCharHeight();
-            float charWidth = AppConfig.MainFont.GetCharWidth();
+            float charHeight = 24f;
             float documentY = 0;
 
             _currentScroll = MathHelpers.Lerp(_currentScroll, _wantedScrollPos, 40 * Time.DeltaTime);
@@ -111,14 +108,14 @@ namespace TextEditor {
             var relativeY = (ref AFContext ctx) => (documentY + ctx.VH * 0.5f - _currentScroll);
             int startPos = 0;
 
-            // float startY = documentY;
-            // int startLineNumber = currentLineNumber;
+            float startY = documentY;
+            int startLineNumber = currentLineNumber;
 
             float lineNumberMargin = padding;
             if (LineNumbers) {
                 int totalLineCount = _buffer.CountOccurrances("\n");
                 // the lengths I go to avoid allocation :(
-                lineNumberMargin = AppConfig.MainFont.GetStringWidth("0") * (1 + MathF.Floor(MathF.Log10(MathHelpers.Max(1, totalLineCount))))
+                lineNumberMargin = charHeight * (1 + MathF.Floor(MathF.Log10(MathHelpers.Max(1, totalLineCount))))
                     + 2 * padding;
             }
 
@@ -150,8 +147,11 @@ namespace TextEditor {
                         if (isRenderPass) {
                             float relY = relativeY(ref ctx);
                             if (relY > -charHeight && relY < ctx.VH) {
-                                // TODO: stop allocation
-                                AppConfig.MainFont.DrawText(ctx, currentLineNumber.ToString(), padding, relY);
+                                _lineNumbers.Clear();
+                                _lineNumbers.Int(currentLineNumber + 1);
+                                AppConfig.MainFont.DrawText(ctx, _lineNumbers, charHeight, new DrawTextOptions {
+                                    X = padding, Y = relY
+                                });
                             }
                         }
                         currentLineNumber++;
@@ -180,7 +180,9 @@ namespace TextEditor {
 
                                     if (HasSelection && (i >= minSel && i < maxSel)) {
                                         var rect = new Rect(
-                                            characterStartX, characterStartY, characterStartX + newlineHighlightWidth, characterStartY + charHeight
+                                            characterStartX, characterStartY, 
+                                            characterStartX + charHeight, 
+                                            characterStartY + charHeight
                                         );
                                         IM.DrawRect(_highlightRangeOutput, rect);
                                     }
@@ -189,8 +191,11 @@ namespace TextEditor {
                                 // draw character
                                 float relY = relativeY(ref ctx);
                                 if (relY > -charHeight && relY < ctx.VH) {
-                                    var rect = AppConfig.MainFont.DrawGlyph(_textOutput, c, x, y);
-
+                                    var size = AppConfig.MainFont.DrawGlyph(_textOutput, c, x, y, charHeight);
+                                    var rect = new Rect {
+                                        X0 = x, X1 = x + size.X,
+                                        Y0 = y, Y1 = y + charHeight,
+                                    };
                                     if (ctx.MouseIsOver(rect) && ctx.MouseButtonJustPressed(MouseButton.Left)) {
                                         _cursorPos = i;
                                     }
@@ -206,12 +211,12 @@ namespace TextEditor {
 
                                     x += rect.Width;
                                 } else {
-                                    x += AppConfig.MainFont.GetCharWidth(c);
+                                    x += charHeight;
                                 }
 
                                 // TODO: wrap words somehow instead of characters. would involve
                                 // some sort of lookahead I think
-                                if (x + charWidth > ctx.VW) {
+                                if (x + charHeight > ctx.VW) {
                                     x = lineNumberMargin + wrapMargin;
                                     documentY -= charHeight;
                                 }

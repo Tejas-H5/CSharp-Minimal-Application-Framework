@@ -6,38 +6,6 @@ namespace MinimalAF.Rendering {
     public interface IMesh : IDisposable {
     }
 
-    struct ArrayList<T> {
-        public T[] Data;
-        public int Length;
-
-        public ArrayList(T[] data, int length) {
-            Data = data;
-            Length = length;
-        }
-
-
-        public int Capacity => Data.Length;
-
-        public void Clear() {
-            Length = 0;
-        }
-
-        public void Resize(int newSize) {
-            T[] newData = new T[newSize];
-            Array.Copy(Data, newData, Data.Length);
-            Data = newData;
-        }
-
-        public void Append(T item) {
-            if (Length >= Data.Length) {
-                Resize(MathHelpers.Max(1, Data.Length * 2));
-            }
-
-            Data[Length] = item;
-            Length++;
-        }
-    }
-
     public enum MeshBufferType {
         Static, Dynamic, Stream
     }

@@ -146,7 +146,7 @@ namespace AudioEngineTests.AudioTests {
                 for (int i = 0; i < _gameObjects.Length; i++) {
                     _gameObjects[i].Source.Position = _gameObjects[i].Position;
 
-                    ctx.SetModel(_gameObjects[i].Transform);
+                    ctx.SetTransform(_gameObjects[i].Transform);
                     RenderCube(ref ctx);
                 }
             }

@@ -38,7 +38,7 @@ namespace RenderingEngineVisualTests
         void RenderBuiltString(ref AFContext ctx) {
             ctx.SetDrawColor(Color.Green);
 
-            var result = _font.DrawText(ctx, _builtString, 24, new DrawTextOptions {
+            var result = _font.DrawText(ctx, _builtString, ctx.VH * 0.1f, new DrawTextOptions {
                 X = ctx.VW / 2.0f, Y = ctx.VH,
                 VAlign = 1, HAlign = 0.5f,
                 Width = ctx.VW - 50,
@@ -66,7 +66,7 @@ namespace RenderingEngineVisualTests
             RenderBuiltString(ref ctx);
 
             ctx.SetTexture(_font.Texture);
-            float size = _font.Texture.Height;
+            float size = MathF.Min(ctx.VW, ctx.VH);
             var rect = new Rect {
                 X0 = 0.5f * ctx.VW - size/2.0f, X1 = 0.5f * ctx.VW + size/2.0f,
                 Y0 = 0.5f * ctx.VH - size/2.0f, Y1 = 0.5f * ctx.VH + size/2.0f

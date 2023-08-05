@@ -27,9 +27,9 @@ namespace RenderingEngineVisualTests {
 
                 CharArrayList.Test();
 
+                tests.AddTest("Text Test", () => new TextTest());
                 tests.AddTest("Basic test", () => new BasicTest());
                 tests.AddTest("Text stress test", () => new TextStressTest());
-                tests.AddTest("Text Test", () => new TextTest());
                 tests.AddTest("Text Font Atlas Text", () => new TextFontAtlasText());
                 // For now, we are allowing errors to flow into the debugger (not catching them)
                 // tests.AddTest("Error test", () => new ErrorTest());

@@ -1,7 +1,6 @@
 ﻿using MinimalAF.Rendering;
 using OpenTK.Mathematics;
 using System;
-using SkiaSharp.HarfBuzz;
 using System.Collections.Generic;
 
 
@@ -105,8 +104,6 @@ namespace MinimalAF {
 
         public Texture Texture => _fontAtlas.Texture;
 
-        public HarfBuzzSharp.Buffer _hbBuffer;
-
         /// <summary>
         /// Crank up the baseAtlasFontSize if you need to draw bigger fonts.
         /// TODO?: image pyramid
@@ -131,12 +128,6 @@ namespace MinimalAF {
                 },
                 options.CacheGridSize
             );
-
-            _hbBuffer = new HarfBuzzSharp.Buffer();
-            _hbBuffer.Reset();
-
-            // TODO: may need to change based on the language
-            _hbBuffer.Direction = HarfBuzzSharp.Direction.LeftToRight;
         }
 
         /// <summary>

@@ -1,9 +1,9 @@
 ﻿using MinimalAF.Rendering;
 using OpenTK.Mathematics;
-using SkiaSharp;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using FreeTypeSharp;
+using static FreeTypeSharp.Native.FT;
 
 namespace MinimalAF {
     // taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
@@ -37,26 +37,30 @@ namespace MinimalAF {
     // concept taken from https://gamedev.stackexchange.com/questions/123978/c-opentk-text-rendering
     public class FontAtlas : IDisposable {
         private static readonly Random rand = new Random();
+        private static FreeTypeLibrary s_FreeTypeLibrary;
+
+        static FontAtlas() {
+            s_FreeTypeLibrary = new FreeTypeLibrary();
+
+            FT_Library_Version(s_FreeTypeLibrary.Native, out var major, out var minor, out var patch);
+            Console.WriteLine($"FreeType version: {major}.{minor}.{patch}");
+        }
 
         // TODO: check if this really speeds things up or not
         Dictionary<int, SKTypeface> s_resolvedFonts = new Dictionary<int, SKTypeface>();
 
         struct GlyphRasterResult {
-            public SKBitmap Bitmap;
             public GlyphInfo GlyphInfo = new GlyphInfo { };
             public int GlyphWidth = 0;
             public int GlyphHeight = 0;
             public int GlyphX0 = 0;
             public int GlyphY0 = 0;
-            public GlyphRasterResult(SKBitmap bitmap) {
-                Bitmap = bitmap;
-            }
         }
         // TODO: add a max count onto here to prevent people from just rendering every single unicode character and
         // blowing out their memory
         Dictionary<int, GlyphRasterResult> _rasterCache = new Dictionary<int, GlyphRasterResult>();
 
-        private SKTypeface _skTypeface;
+        private FreeTypeFaceFacade _skTypeface;
         private SKPaint _skPaint;
         SKPaint GetSKPaintWithTheCorrectFont(int codePoint) {
             // ask the font manager for a font with that character
@@ -86,7 +90,7 @@ namespace MinimalAF {
         private int _slotSize;
         private int _numSlots;
         private int _freeSlot = 0;
-        private SKBitmap _intermediateGlyphBuffer;
+        private Image _intermediateGlyphBuffer;
 
         Texture _texture;
         public Texture Texture => _texture;
@@ -103,7 +107,7 @@ namespace MinimalAF {
 
 
         public static FontAtlas CreateFontAtlas(FontImportSettings importSettings, int cacheGridSize) {
-            SKTypeface systemFont = TryLoadFont(importSettings);
+            var systemFont = TryLoadFont(importSettings);
             if (systemFont == null)
                 return null;
 
@@ -120,20 +124,12 @@ namespace MinimalAF {
         /// Cache misses should also flush the current immediate mode mesh buffer after
         /// the OpenGL texter is modified.
         /// </summary>
-        private FontAtlas(FontImportSettings importSettings, SKTypeface font, int cacheGridSize) {
+        private FontAtlas(FontImportSettings importSettings, FreeTypeFaceFacade font, int cacheGridSize) {
             _fontImportSettings = importSettings;
             _skTypeface = font;
             _codePointGlyphValuesIndices = new Dictionary<int, int>();
 
-            importSettings.FontName = font.FamilyName;
-            _skPaint = new SKPaint {
-                Typeface = _skTypeface,
-                TextSize = importSettings.FontHeight,
-                Color = new SKColor(0xFF, 0xFF, 0xFF, 0xFF),
-                TextAlign = SKTextAlign.Left,
-                IsAntialias = importSettings.IsAntiAliased
-            };
-
+            importSettings.FontName = font.MarshalFamilyName();
             _slotGridSize = cacheGridSize;
 
             // Idk how much larger than the font size this should be to actually fit all the glyphs, but it is what it is.
@@ -142,15 +138,13 @@ namespace MinimalAF {
             float magicFontSizeMultiplerNumberLmao = 1.5f;
             _slotSize = (int)MathF.Floor(magicFontSizeMultiplerNumberLmao * _fontImportSettings.FontHeight) + 2 * _fontImportSettings.Padding;
             _bitmapSize = _slotSize * _slotGridSize;
-            var bitmap = new SKBitmap(_bitmapSize, _bitmapSize);
-            _intermediateGlyphBuffer = new SKBitmap(_slotSize, _slotSize);
-            using (var canvas = new SKCanvas(bitmap)) {
-                canvas.Clear(new SKColor(0, 0, 0, 0));
-            }
+
+            // TODO: SDF
+            _intermediateGlyphBuffer = new Image(_slotSize, _slotSize, 4);
             _numSlots = _slotGridSize * _slotGridSize;
             _glyphValues = new GlyphInfo[_numSlots];
             _texture = new Texture(
-                bitmap,
+                new Image(_bitmapSize, _bitmapSize, 4),
                 new TextureImportSettings {
                     Filtering = FilteringType.Bilinear
                 }
@@ -182,10 +176,9 @@ namespace MinimalAF {
             return (row, column);
         }
 
-        GlyphRasterResult RasterizeGlyph(int codePoint, SKBitmap bitmap) {
+        GlyphRasterResult RasterizeGlyph(int codePoint, Image bitmap) {
             var codePointStr = CharArrayList.CodePointToString(codePoint);
             var (glyphWidth, glyphHeight, bounds) = GetGlyphSizeInternal(codePointStr, codePoint);
-            var padding = _fontImportSettings.Padding;
             float glyphOffset = bounds.Bottom;
 
             var lX0 = _slotSize / 2 - glyphWidth / 2;
@@ -196,19 +189,25 @@ namespace MinimalAF {
             var lY0 = _slotSize - lY0NotFlipped;
             var lY1 = _slotSize - lY1NotFlipped;
 
+            var err = FT_Load_Char(_face)
+
+// to debug the font atlas
+#if false
             using (var canvas = new SKCanvas(bitmap)) {
                 canvas.Clear();
                 var skPaint = GetSKPaintWithTheCorrectFont(codePoint);
                 // NOTE: _skPaint.Typeface can potentially be null here
 
-                // TODO: fix obsolete thinggo here
+                var padding = _fontImportSettings.Padding;
+                // TODO: fix obsolete call here.
+                // SkiaSharp has zero allocation methods in there, but they are all private/internal. 
+                // This is very sad and infuriating :(
                 canvas.DrawText(
                     codePointStr,
-                    new SKPoint(lX0, lY0 - glyphOffset),
+                    new SKPoint(lX0 + padding, lY0 - glyphOffset),
                     skPaint
                 );
 
-#if false
 
                 // To debug the bounds
                 canvas.DrawLine(
@@ -247,8 +246,10 @@ namespace MinimalAF {
                     new SKPoint { Y = _slotSize, X = _slotSize },
                     skPaint
                 );
-#endif
             }
+#endif
+
+
 
             var info = new GlyphInfo {
                 CodePoint = codePoint,
@@ -329,7 +330,12 @@ namespace MinimalAF {
             // var glyphHeight = _fontImportSettings.FontHeight;
             var glyphHeight = (int)MathF.Ceiling(bounds[0].Height);
 
-            return (glyphWidth, glyphHeight, bounds[0]);
+            var padding = _fontImportSettings.Padding;
+            var bounds0 = bounds[0];
+            bounds0.Top += padding;
+            bounds0.Bottom += padding;
+
+            return (glyphWidth, glyphHeight + 2 * padding, bounds0);
         }
 
         /// <summary>
@@ -380,20 +386,18 @@ namespace MinimalAF {
             return _codePointGlyphValuesIndices.ContainsKey(c);
         }
 
-        private static SKTypeface TryLoadFont(FontImportSettings fontSettings) {
-            try {
-                SKTypeface skTypeFace;
-
-                if (!string.IsNullOrWhiteSpace(fontSettings.FromFile)) {
-                    skTypeFace = SKTypeface.FromFile(fontSettings.FromFile);
-                } else {
-                    skTypeFace = SKTypeface.FromFamilyName(fontSettings.FontName);
-                }
-
-                return skTypeFace;
-            } catch {
-                return null;
+        private static FreeTypeFaceFacade TryLoadFont(FontImportSettings fontSettings) {
+            var error = FT_New_Face(s_FreeTypeLibrary.Native,
+                                    fontSettings.FontName,
+                                    0,
+                                    out IntPtr aface);
+            if (error == FreeTypeSharp.Native.FT_Error.FT_Err_Unknown_File_Format) {
+                throw new Exception($"Couldn't load font {fontSettings.FontName} - unsupported format");
+            } else if (error != FreeTypeSharp.Native.FT_Error.FT_Err_Ok) {
+                throw new Exception($"Couldn't load font {fontSettings.FontName} - some error occurred - {error}");
             }
+
+            return new FreeTypeFaceFacade(s_FreeTypeLibrary, aface);
         }
 
         public void Dispose() {

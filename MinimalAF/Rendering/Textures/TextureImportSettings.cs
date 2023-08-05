@@ -18,5 +18,23 @@ namespace MinimalAF.Rendering {
 
         internal PixelInternalFormat InternalFormat = PixelInternalFormat.Rgba;
         internal PixelFormat PixelFormatType = PixelFormat.Bgra;
+
+        public TextureMinFilter GetGLMinFilter() {
+            switch (Filtering) {
+                case FilteringType.NearestNeighbour:
+                    return TextureMinFilter.Nearest;
+                default:
+                    return TextureMinFilter.Linear;
+            }
+        }
+
+        public TextureMagFilter GetGLMagFilter() {
+            switch (Filtering) {
+                case FilteringType.NearestNeighbour:
+                    return TextureMagFilter.Nearest;
+                default:
+                    return TextureMagFilter.Linear;
+            }
+        }
     }
 }

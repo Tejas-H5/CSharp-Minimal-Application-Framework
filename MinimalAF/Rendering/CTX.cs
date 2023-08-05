@@ -14,7 +14,8 @@ namespace MinimalAF.Rendering {
         private static IGLFWGraphicsContext glContext;
 
         private static int contextWidth, contextHeight;
-        internal static int ScreenWidth, ScreenHeight;
+        internal static int ScreenWidth { get; set; };
+        internal static int ScreenHeight;
         // The context width and height depend on the current framebuffer that is being used
         // (And not the screen size, which would be ScreenWidth and ScreenHeight
         public static int ContextWidth {

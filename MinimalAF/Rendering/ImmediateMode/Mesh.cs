@@ -51,9 +51,8 @@ namespace MinimalAF.Rendering {
 
             _allowResizing = allowResizing;
 
-            // There is also BufferUsageHint.DynamicDraw but idk whats so great about that
-            // (but maybe this is an incorrect assumption)
-            _bufferUsage = stream ? BufferUsageHint.StreamDraw : BufferUsageHint.StaticDraw;
+            // DynamicDraw should be used for what I thought StreamDraw was for
+            _bufferUsage = stream ? BufferUsageHint.DynamicDraw : BufferUsageHint.StaticDraw;
 
             // Set up mesh within OpenGL
             {

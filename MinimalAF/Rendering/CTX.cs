@@ -88,7 +88,7 @@ namespace MinimalAF.Rendering {
         }
 
         internal static void Init(IGLFWGraphicsContext context) {
-            s_meshOutputStream = new MeshOutputStream<Vertex>(8 * 4096, 8 * 4096);
+            s_meshOutputStream = new MeshOutputStream<Vertex>(2000, 6000);
             IM.VertexCreator2D = new VertexCreator();
 
             glContext = context;
